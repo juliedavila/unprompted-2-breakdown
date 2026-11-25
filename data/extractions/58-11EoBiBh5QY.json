@@ -1,0 +1,207 @@
+{
+  "nn": "58",
+  "id": "11EoBiBh5QY",
+  "url": "https://www.youtube.com/watch?v=11EoBiBh5QY",
+  "title": "0-Click Remote Exploits in an AI World",
+  "speakers": [
+    {"name": "Anna Groza", "affiliation": "Calif.io (Security Researcher)"},
+    {"name": "Bruce Dang", "affiliation": "Calif.io"}
+  ],
+  "format": "talk",
+  "duration_min": 23,
+  "thesis": "LLM agents can now find and, with a strong enough starting point, weaponize remotely reachable bugs in messaging apps at a cost of under five figures in API fees, so the trusted-contact gating that messaging apps rely on is no longer a dependable boundary.",
+  "summary": "Anna Groza of Calif.io opened by saying the talk is not the one originally proposed. The plan was to use LLM agents to enumerate and audit the remotely reachable attack surface of mobile messaging apps, combining static analysis with a lightweight man-in-the-middle setup that lets an agent alter messages between two phones and watch what the receiving client does. Results on large messaging apps came out far better than expected, so the talk became a tour of what that produced. She first gave background: the 2019 Group FaceTime logic bug, Natalie Silvanovich's 2021 state-machine survey of calling stacks, and a 2025 Project Zero report on WhatsApp contact gating. Then three findings. The first was a flaw in a legacy WeChat calling stack that the agents found, which the team turned into a proof-of-concept worm demo called WeWorm; she said it was found with a frontier model and a $200 subscription, in an app with about 1.5 billion users. The second was a Samsung parser bug paired with a WhatsApp 0-click path from a trusted contact, with the details redacted, a fix that turned out to be incomplete, and cooperation from Meta's product security team. The third was an AI-assisted exploit for an iOS graphics bug recently exploited in the wild, which she said an unreleased OpenAI cyber model produced in roughly three hours from a short prompt, even with Apple's newest memory and pointer protections on. She closed on model behavior under mitigations, the fragility of trusted-contact gating, and an iPhone demo. Q&A covered Lockdown Mode, WhatsApp, and untrusted senders.",
+  "argument": [
+    "Enumerating remote attack surface in messaging apps is slow and tedious for humans, so the team asked how much of it an LLM agent could do with static analysis plus a message-tampering harness between two phones.",
+    "The agents found simple but serious logic bugs, and the real value was the reachability work that got the team to them, which is the same pattern as earlier state-machine research on calling stacks.",
+    "Newer models cut the manual steering the team had been supplying, so one research session began to cover work that used to take many human iterations.",
+    "A strong starting primitive plus an agent goal loop produced a working exploit for an in-the-wild iOS bug in about three hours, and it survived repeated testing across reboots and environments.",
+    "Because exploits now cost under five figures in API fees, attackers can afford to target a victim's trusted contacts or other hops in the social graph instead of needing a bug reachable from strangers.",
+    "The defensive implication is that your own security should not depend on every trusted contact being secure, and that broader sandboxing beats trying to close each trusted-sender logic hole."
+  ],
+  "claims": [
+    {
+      "claim": "LLM agents given static analysis and a message-tampering harness found serious, simple logic bugs in several major messaging apps and did so better than the team expected.",
+      "evidence": "Stated as the outcome of testing across major messaging apps; the findings were then presented as case studies.",
+      "grade": "case",
+      "t": "01:40",
+      "source": "both"
+    },
+    {
+      "claim": "A flaw in the legacy WeChat calling stack was found by agents and used to build a proof-of-concept worm that spreads between WeChat contacts.",
+      "evidence": "Call-flow diagrams and a three-phone demo video showing a message appearing on each device; the speaker said the legacy stack was deprecated afterward.",
+      "grade": "demo",
+      "t": "05:15",
+      "source": "both"
+    },
+    {
+      "claim": "The WeChat finding was produced with a frontier model and a $200 per month coding-assistant subscription, in an app used by roughly 1.5 billion people.",
+      "evidence": "Stated by the speaker; the exact model name is garbled in the captions.",
+      "grade": "assertion",
+      "t": "07:21",
+      "source": "said"
+    },
+    {
+      "claim": "A Samsung-side parser bug was paired with a WhatsApp path reachable with zero clicks from a trusted contact; a first fix was incomplete.",
+      "evidence": "Redacted slide with a CVE placeholder and a demo video on two Samsung phones; Meta's product security team collaborated on attack surface reduction. The speaker said developing the exploit needed substantial human steering.",
+      "grade": "demo",
+      "t": "08:22",
+      "source": "both"
+    },
+    {
+      "claim": "Calif's exploit for the iOS CoreGraphics anti-aliasing bug (CVE-2026-86950), recently exploited in the wild, was produced by an unreleased OpenAI cyber model in about three hours from a short prompt and a goal command.",
+      "evidence": "Prompt and goal command shown on slides, a 'Goal achieved! ~3h' slide, and a speaker account of retesting across many boots and porting to another OS version. The speaker said she first doubted the result and only believed it after repeated testing.",
+      "grade": "demo",
+      "t": "14:37",
+      "source": "both"
+    },
+    {
+      "claim": "The AI-produced exploit was described as more capable than the in-the-wild sample, which reportedly worked only with memory-tagging and pointer-authentication protections disabled.",
+      "evidence": "Speaker comparison with public reporting on the in-the-wild sample; no side-by-side data shown.",
+      "grade": "assertion",
+      "t": "16:10",
+      "source": "both"
+    },
+    {
+      "claim": "The same bug class is reachable from Signal, WhatsApp, iMessage, Gmail, Slack and anything else that parses PDFs through native iOS or macOS APIs, as a 0-click or 1-click depending on when thumbnailing occurs.",
+      "evidence": "Slide statement; a phone demo showed a PDF attachment received in a messaging app. No per-app test matrix shown.",
+      "grade": "demo",
+      "t": "15:39",
+      "source": "both"
+    },
+    {
+      "claim": "Given a very strong primitive, models perform better at exploitation under stronger mitigations, probably because mitigations prune the search space.",
+      "evidence": "Based on the speaker's own limited experiments, flagged on the slide with an asterisk; she called her experience brief.",
+      "grade": "anecdote",
+      "t": "16:42",
+      "source": "both"
+    },
+    {
+      "claim": "The exploits shown each cost under five figures at API prices and were not especially complicated.",
+      "evidence": "Speaker estimate; no cost table shown.",
+      "grade": "assertion",
+      "t": "17:13",
+      "source": "said"
+    },
+    {
+      "claim": "Lockdown Mode did not stop the PDF-based iOS exploit, because PDF rendering still happens in that mode.",
+      "evidence": "Q&A answer; the speaker said much of the testing was on a Lockdown Mode phone and they only noticed late.",
+      "grade": "anecdote",
+      "t": "20:49",
+      "source": "said"
+    },
+    {
+      "claim": "A second demo showed a 0-day-release-day chain on a newly released iOS version ending in sandbox escape and shell access, produced in about two weeks.",
+      "evidence": "Screen recording of a phone running an app that reports escaping the sandbox, followed by an SSH session and installed tweaks.",
+      "grade": "demo",
+      "t": "18:14",
+      "source": "both"
+    }
+  ],
+  "numbers": [
+    {"figure": "1.5 billion", "meaning": "approximate user base of the WeChat app where the calling-stack finding was made", "t": "07:21"},
+    {"figure": "$200", "meaning": "monthly coding-assistant subscription said to be enough to find the WeChat bug", "t": "07:21"},
+    {"figure": "~3h", "meaning": "time for the AI agent to reach its goal on the iOS graphics bug (slide: Goal achieved! ~3h)", "t": "15:39"},
+    {"figure": "under five figures", "meaning": "API cost per exploit shown, per the speaker", "t": "17:13"},
+    {"figure": "about two weeks", "meaning": "time to produce the second iOS chain demo", "t": "18:14"},
+    {"figure": "90 minutes", "meaning": "idle time after which a locked phone triggers the background behavior in the Samsung demo", "t": "08:53"},
+    {"figure": "28.3 MB", "meaning": "size of the PDF attachment shown in the iOS demo message", "t": "15:08"}
+  ],
+  "frameworks": [
+    {
+      "name": "Weird machines and exploitability (Dullien)",
+      "description": "Framing from Thomas Dullien's paper: a bug pushes the implementation into states its intended finite state machine never allowed, so normal operations take on unintended effects. The speaker used it to explain why a small primitive such as a pointer to code plus arithmetic is enough to defeat address randomization."
+    },
+    {
+      "name": "LangSec",
+      "description": "Early-2000s language-theoretic security argument that complex, Turing-complete input languages enable exploitation and that formats should be simple with explicit validation. The speaker noted that popular formats such as PDF make this hard to enforce."
+    },
+    {
+      "name": "Messaging-app state-machine bugs",
+      "description": "Natalie Silvanovich's 2021 Project Zero survey of calling state machines in messaging apps, used as the lineage for the reachability work."
+    }
+  ],
+  "artifacts": [
+    {"name": "The State of State Machines (Project Zero blog, Natalie Silvanovich, 2021)", "kind": "paper", "note": "Prior survey of calling state-machine bugs in messaging apps, cited as background.", "url": ""},
+    {"name": "Group FaceTime bug (2019)", "kind": "cve", "note": "Original logic bug that let a caller hear a target's audio without consent; found by a teenager and cited as the origin of this research line.", "url": ""},
+    {"name": "WhatsApp contact-gating issue (Project Zero, Brendon Tiszka, 2025)", "kind": "cve", "note": "Issue tracker report on automatic media download bypassing contact gating; the slide shows a 90-day disclosure deadline of 2025-11-30.", "url": ""},
+    {"name": "CVE-2021-30860 (FORCEDENTRY)", "kind": "cve", "note": "Earlier NSO zero-click iMessage exploit, written up by Project Zero, used as the comparison point.", "url": ""},
+    {"name": "CVE-2026-86950", "kind": "cve", "note": "iOS CoreGraphics anti-aliasing bug recently exploited in the wild; Calif's AI-assisted exploit work is labelled FORCEDENTRY++ on the slides.", "url": ""},
+    {"name": "The Great Glyph Grift (Calif research blog post)", "kind": "paper", "note": "Public root-cause write-up of the iOS bug; the slide gives a QR code for it.", "url": "https://calif.io/research/the-great-glyph-grift"},
+    {"name": "Weird Machines, Exploitability, and Provable Unexploitability (Thomas Dullien, IEEE TETC)", "kind": "paper", "note": "Theory paper used to frame why small primitives suffice.", "url": ""}
+  ],
+  "slide_only": [
+    "The WeChat flow diagram contrasts a normal call topology, where both endpoints check in to the vendor-operated relay, with the abnormal topology where a forged relay-data update sent through a VoIP sync endpoint redirects the callee's check-ins to an attacker-controlled endpoint.",
+    "The WeWorm demo slide shows three iPhones and ends with an on-screen dialog reading 'With <3 from Calif.io'.",
+    "The Samsung slide is titled '(RE)DACTED' with the placeholder CVE-2026-?????, lists a bug in a redacted Samsung parser, states that a reliable exploit needed substantial guidance and steering, and says the team thought it was fixed and it was not.",
+    "The FORCEDENTRY++ slide lists CVE-2026-86950, states the exploit is very reliable with MIE and PAC on the latest vulnerable iOS version (pre 26.7.1), and says the finer details will be discussed at a future conference.",
+    "A closing-thoughts slide ends with a note that the model-and-mitigation observation comes from experiments given a very strong primitive, marked with an asterisk.",
+    "One slide, 'Close-circle infection', lists the assumptions a targeted attack breaks: target has no smartphone, changes phones often, number unknown, highly alert."
+  ],
+  "demos": [
+    "WeWorm: three phones running WeChat, with a message dialog appearing on each as the worm proof of concept spreads between contacts.",
+    "Samsung plus WhatsApp: two Android phones running a demo app, with the speaker noting the real trigger happens in the background after about 90 minutes of idle time and was shortcut for the stage.",
+    "FORCEDENTRY++: a Signal-style message with a PDF attachment on an iPhone; opening it results in a new app icon appearing on the home screen.",
+    "iPhone release-day chain: a recorded run showing escape from the app sandbox, bootstrapping tools, an SSH session into the phone and installed jailbreak-style tweaks, shown on the day of the 26.7.1-era OTA release."
+  ],
+  "quotes": [
+    {"text": "The trusted untrusted gating in messaging apps has never felt more fragile to me.", "speaker": "Anna Groza", "t": "17:13"},
+    {"text": "Models strangely enough behave a lot better at exploitation when they are constrained by very strong mitigations.", "speaker": "Anna Groza", "t": "16:42"},
+    {"text": "Focusing on just untrusted sender only is counterproductive, and more broader sandboxing is probably a better solution.", "speaker": "Anna Groza", "t": "22:25"}
+  ],
+  "offense": [
+    "A logic flaw in a legacy WeChat calling stack let a caller redirect the peer's relay check-in; Calif built a proof-of-concept worm demo around it, and the stack has since been deprecated.",
+    "A bug in a Samsung media parser, paired with a trusted-contact WhatsApp delivery path, was demonstrated as a zero-click chain; the first fix was incomplete.",
+    "A CoreGraphics rendering bug (CVE-2026-86950), exploited in the wild, was shown with an AI-built exploit that works across messaging apps that preview PDFs natively on iOS and macOS."
+  ],
+  "defense": [
+    "Do not let a victim's security depend on every trusted contact being secure: reduce what a message from a trusted contact is allowed to trigger without user action.",
+    "Prefer broader sandboxing of document and media parsing over closing individual trusted-sender logic gaps, since attackers can use a contact one hop away.",
+    "Reduce remotely exposed attack surface in the app itself; Calif worked with Meta's product security team on this and with other vendors on fixes.",
+    "Patch promptly: the speaker said most of the cited WhatsApp and PDF issues were fixed in the iOS update released shortly before the talk.",
+    "Do not treat Lockdown Mode as sufficient against document-rendering bugs, per the speaker."
+  ],
+  "takeaways": [
+    "Budget for attackers who can pay a few thousand dollars in API fees for a working mobile exploit, and revisit any threat model that assumes such exploits are rare.",
+    "Treat trusted-contact or contact-gating checks as a convenience control, not a security boundary, in any messaging or collaboration product you build or buy.",
+    "Fund isolation of file and media parsing (separate process, reduced privileges) because logic gaps in gating will keep appearing.",
+    "Run the same kind of agent-driven reachability audit on your own apps: a message-tampering harness plus static analysis is cheap enough to try.",
+    "Plan for compressed patch-to-exploit timelines when a bug is already known in the wild, because a model may rebuild a stronger exploit within hours."
+  ],
+  "limits": [
+    "The speaker said the Samsung exploit needed substantial human guidance and steering.",
+    "Some details are withheld pending vendor fixes: the Samsung component and CVE are redacted, and the full iOS exploit details are reserved for a future conference.",
+    "The observation that models do better under strong mitigations comes from very brief experiments with one strong primitive.",
+    "The speaker said the model's output was so surprising that she first believed it was fake and verified it by repeated testing across boots."
+  ],
+  "critique": [
+    "The headline results rest on a small number of case studies, with no hit rate, false-positive rate or total spend across the audited apps shown, so the claim that this scales is stated rather than measured.",
+    "Cost figures such as 'under five figures' and a $200 subscription are speaker estimates with no cost table shown, and the talk does not say whether they include researcher time spent steering the agents and building the harness.",
+    "The iOS result starts from a bug that was already publicly exploited and written up by the team, so it shows strong exploit development from a known primitive, not autonomous discovery.",
+    "The comparison with the in-the-wild sample rests on public reporting that it needed mitigations disabled, and no independent verification was shown.",
+    "The Lockdown Mode answer was not quantified, and the closing social-graph point is a hypothesis, not a finding.",
+    "The model is referred to by a name that is partly garbled in the transcript and by an unreleased model label on a slide, so readers cannot reproduce or independently evaluate it."
+  ],
+  "qa": [
+    "Q: After a bug is patched, does re-running the goal prompt find variants? A: The speaker said there were a bunch of reported variants and that the shape of the primitive mattered more than the specific bug; there are more bugs in related code.",
+    "Q: Does Lockdown Mode make a difference? A: Not in practice for this exploit, since PDF rendering still happens in that mode; much testing was done on a Lockdown Mode phone and the team only realized at the end. A number of the easiest issues were patched in an iOS update released a few days earlier.",
+    "Q: Any zero-click WhatsApp bugs? A: They exist and were fixed in the latest iOS update, but only from trusted contacts, which the speaker called lame.",
+    "Q: Any scenario exploitable from an untrusted contact under Lockdown Mode with zero clicks? A: The speaker said the more interesting angle is the target's broader social graph, for example a relative sending a PDF, and that focusing only on untrusted senders is counterproductive."
+  ],
+  "tags": ["vuln-discovery-exploit", "autonomous-offense", "appsec-secure-development", "threat-intel-in-the-wild"],
+  "key_frames": [
+    {"file": "t00125.jpg", "caption": "Silvanovich's State of State Machines post, the lineage for the reachability approach."},
+    {"file": "t00230.jpg", "caption": "WeWorm call-flow diagrams contrasting a normal relay topology with the redirected one."},
+    {"file": "t00552.jpg", "caption": "Redacted Samsung plus WhatsApp finding, stating the need for steering and that the first fix was incomplete."},
+    {"file": "t00997.jpg", "caption": "Slide stating the iOS goal was achieved in about three hours."},
+    {"file": "t01060.jpg", "caption": "Summary slide: the AI exploit is claimed to be more sophisticated than the in-the-wild sample and to work across apps that parse PDFs natively."}
+  ],
+  "signal": {"score": 4, "reason": "Concrete demonstrations that agent-driven research found real bugs and produced a strong iOS exploit in hours, the evidence shown is a few case studies and no aggregate data."},
+  "caveats": [
+    "Summary-level record: exploit mechanics deliberately not recorded.",
+    "Auto-captions garble several names: the frontier model name ('Opus Freight') and the cyber-model name are unclear in the transcript; the slide labels the exploit author as 'Astra Cyber' and the speaker thanked OpenAI for letting her name the model.",
+    "The captions render iOS version numbers as '271' and '27 2'; the slide shows 'pre 26.7.1', so the fixed version is probably 26.7.2 but was not confirmed on a slide.",
+    "The speaker name for the 2025 report is captioned 'Brandon Titska'; the slide reads Brendon Tiszka.",
+    "Slides contain Wi-Fi details on the conference template, which are not recorded."
+  ]
+}

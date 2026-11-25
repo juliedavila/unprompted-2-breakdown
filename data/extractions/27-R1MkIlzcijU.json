@@ -1,0 +1,364 @@
+{
+  "nn": "27",
+  "id": "R1MkIlzcijU",
+  "url": "https://www.youtube.com/watch?v=R1MkIlzcijU",
+  "title": "Cryptography Under AI Pressure",
+  "speakers": [
+    {
+      "name": "Sunghyeon Jo",
+      "affiliation": "Co-founder and cybersecurity researcher at QED Audit; Ph.D. student at Georgia Institute of Technology"
+    }
+  ],
+  "format": "talk",
+  "duration_min": 20,
+  "thesis": "AI now pressures cryptography in three ways at once: it makes attacks on weak designs cheap, it makes slow cryptography practical, and it helps prove stronger security bounds, so newer and weaker schemes will not survive while strong ones will, and replacements will emerge when one breaks.",
+  "summary": "Jo opens with two contradictory predictions from October 7, 2026: Matthew Green saying we might lose public key cryptography, and Yehuda Lindell saying there is no evidence of a break of decades-old hardness assumptions such as elliptic curve cryptography. After months of using AI to test cryptography he sorts the pressure into three kinds: attack, efficiency and mathematical foundation. For attack, he describes reusing Lemma, the LLM bug-hunting harness his startup QED uses for blockchain bounties: feed it a paper PDF, it generates hypotheses and a triager validates them. On the TALUS v4 threshold ML-DSA proposal it produced three findings, one of them a key recovery from two signatures that reuse a nonce across different quorums when T-1 parties are corrupt; he reported it on July 30, the authors reproduced it a day later, and TALUS v5 shipped on August 11 with an acknowledgment. He also describes a polynomial-time bit recovery against an affine determinant program witness encryption scheme found with ChatGPT, and a 28-round Poseidon partial collision for the Ethereum Foundation challenge that exploited the rule allowing an arbitrary MDS matrix and earned a $10K ex gratia payment rather than the prize. For efficiency, an open autoresearch leaderboard made BLAKE3 proving about 3.5 times faster, so Poseidon is less necessary. For foundations, he worked on the Ethereum Foundation's $1M Proximity Prize and published a Reed-Solomon bound beyond the Johnson radius. His GPT Pro attempts to break lattice cryptography failed, so he says lattice safety is unknown. Q&A covers symmetric versus public-key risk, designing cryptography with AI, and the human role.",
+  "argument": [
+    "Leading cryptographers disagree on whether AI will break public-key cryptography, and the evidence needed to settle it is being generated now.",
+    "AI pressure on cryptography comes from three places: cheap attacks on weak designs, efficiency gains that make heavy cryptography practical, and stronger mathematical bounds on which parameters are safe.",
+    "A bug-hunting harness built for blockchain bounties transfers to cryptography papers because complex logic bugs in code and in protocol designs look alike; he used it to find a key recovery in TALUS v4 and other attacks.",
+    "Efficiency pressure can retire a design: AI-driven public autoresearch of proving cost made standard hashes fast enough in zero-knowledge proofs that Poseidon is no longer needed, and Ethereum is moving away from it.",
+    "The attacks so far hit new, non-production schemes; his repeated GPT Pro attempts on lattice cryptography failed, so whether strong schemes are safe is unknown but they are being heavily tested.",
+    "The expected end state is that weak cryptography will not survive AI battle-testing, strong cryptography will, and if a popular scheme breaks, other schemes with the same functionality will emerge."
+  ],
+  "claims": [
+    {
+      "claim": "The LLM harness Lemma, used for blockchain bug bounties, generates weakness hypotheses from a paper PDF and a triager validates them; on TALUS v4 it produced three findings and one was a real key recovery attack.",
+      "evidence": "Speaker's account; slide shows the harness pipeline (start, sync target, two finder containers, join finders, triage) and a finding write-up with an invariant violation and a reachability walkthrough.",
+      "grade": "case",
+      "t": "05:27",
+      "source": "both"
+    },
+    {
+      "claim": "In TALUS v4, a threshold ML-DSA proposal, when T-1 parties are corrupted and the rest honest, two valid signatures made in different quorums with the same nonce reveal the secret key share by subtraction: s1 = (c0 - c1)^-1 (z0 - z1).",
+      "evidence": "Slide derivation with quorums S0 and S1 sharing P1..Pt-1 and differing honest party; authors confirmed, reproduced it on July 31 and published v5 on August 11, thanking him in the paper.",
+      "grade": "case",
+      "t": "04:25",
+      "source": "both"
+    },
+    {
+      "claim": "The TALUS fix had no trivial form and involved a design trade-off: v5 adds quorum binding, requires offline committee liveness and a fixed quorum chosen per nonce at preprocessing.",
+      "evidence": "Acknowledgment excerpt on slide quoting the v5 text; speaker says there was no trivial fix.",
+      "grade": "case",
+      "t": "04:57",
+      "source": "both"
+    },
+    {
+      "claim": "An ADP-based witness encryption scheme (Bartusek et al., ITCS 2020) admits a polynomial-time bit recovery of the message without a witness, found with LLM help.",
+      "evidence": "Cited as Jo, Cryptanalysis of a Candidate Witness Encryption Scheme for Affine Determinant Programs, ePrint 2026/1583; no attack details shown in the talk.",
+      "grade": "assertion",
+      "t": "07:03",
+      "source": "both"
+    },
+    {
+      "claim": "He found a 28-round Poseidon partial collision for the Ethereum Foundation Poseidon cryptanalysis challenge by choosing a special MDS matrix, which the rules allowed but was not the intended solution, and received a $10K ex gratia payment instead of the prize.",
+      "evidence": "Slide shows the challenge text (partial collision on the first q elements, awards q=3 $32K claimed April 6 2026, q=4 $64K, q=5 $128K, q=6 $256K, q=7 $512K), ePrint 2026/1760 and the QED blog post; speaker says he cheated on the rule.",
+      "grade": "case",
+      "t": "08:07",
+      "source": "both"
+    },
+    {
+      "claim": "Four more Poseidon cryptanalysis papers appeared in August 2026, so even without a full break Poseidon carries serious risk.",
+      "evidence": "Stated by the speaker; papers not shown.",
+      "grade": "assertion",
+      "t": "09:10",
+      "source": "said"
+    },
+    {
+      "claim": "AI-driven public autoresearch (SNARK.fast) raised zero-knowledge proving speed for standard hashes by about 3.5 times, reaching 1.85 million BLAKE3 compressions per second on one M3 Max, enough for a zkVM, which makes Poseidon unnecessary.",
+      "evidence": "Slide leaderboard screenshot ('258.58% more post-quantum TPS for Ethereum on Mac') and the 1.85M figure; the 3.5 times figure is said aloud.",
+      "grade": "measured",
+      "t": "10:14",
+      "source": "both"
+    },
+    {
+      "claim": "The Ethereum Foundation's Proximity Prize ($1,000,000 to prove or disprove Reed-Solomon proximity gap conjectures) leaderboard shows the provable soundness gap narrowed by 8.592%, with a current provable lower bound of 68.15 bits against an attack at 116.13 bits.",
+      "evidence": "Slide screenshot of the prize site (81 promoted submissions, 22 solvers) beside his paper abstract.",
+      "grade": "measured",
+      "t": "11:17",
+      "source": "both"
+    },
+    {
+      "claim": "He proved that for Reed-Solomon codes with arbitrary evaluation sets, beyond the Johnson radius every affine line has at most O(K^6) bad parameters, giving a deterministic polynomial bound on mutual correlated agreement.",
+      "evidence": "Abstract of his paper dated August 19, 2026 shown on slide; speaker says there are still huge gaps.",
+      "grade": "measured",
+      "t": "11:49",
+      "source": "slide"
+    },
+    {
+      "claim": "His daily GPT Pro jobs trying to attack learning with errors (LWE) all failed, so whether lattice cryptography is safe is unknown.",
+      "evidence": "Slide shows four chat transcripts titled Quantum Polynomial Algorithm with verdicts such as 'I did not obtain a valid polynomial-time quantum key-recovery algorithm'; slide text reads 'no practical attack with GPT/Claude with xxx billions of tokens'.",
+      "grade": "anecdote",
+      "t": "13:23",
+      "source": "both"
+    },
+    {
+      "claim": "The attacks he found hit new, not widely used schemes, and broader attacks on strong schemes by frontier labs and others using hundreds of billions of tokens have so far not broken lattice cryptography, which he treats as crypto-economic evidence of safety.",
+      "evidence": "Speaker's reasoning; no data on others' attempts.",
+      "grade": "assertion",
+      "t": "13:55",
+      "source": "said"
+    },
+    {
+      "claim": "Symmetric-key systems may take the most damage from AI because they are widely used in production and considered safer, while public-key systems like elliptic curves are already known to fall to quantum algorithms.",
+      "evidence": "Answer to an audience question; reasoning only.",
+      "grade": "assertion",
+      "t": "16:01",
+      "source": "said"
+    }
+  ],
+  "numbers": [
+    {
+      "figure": "3 findings, 1 real",
+      "meaning": "hypotheses surviving triage on the TALUS paper, one being the actual key recovery attack",
+      "t": "05:57"
+    },
+    {
+      "figure": "Jul 30 / Jul 31 / Aug 11 / Aug 12",
+      "meaning": "TALUS timeline: reported, authors reproduce, v5 published, ePrint released",
+      "t": "04:57"
+    },
+    {
+      "figure": "28 rounds",
+      "meaning": "Poseidon rounds in the partial collision found for the challenge",
+      "t": "08:07"
+    },
+    {
+      "figure": "$10K",
+      "meaning": "ex gratia payment for the Poseidon submission instead of the challenge award",
+      "t": "08:38"
+    },
+    {
+      "figure": "$32K / $64K / $128K / $256K / $512K",
+      "meaning": "Poseidon challenge awards for q=3 (claimed April 6, 2026) through q=7",
+      "t": "08:07"
+    },
+    {
+      "figure": "4",
+      "meaning": "other Poseidon cryptanalysis papers published in August",
+      "t": "09:10"
+    },
+    {
+      "figure": "3.5 times",
+      "meaning": "speedup of BLAKE3 proving from the public autoresearch project",
+      "t": "10:14"
+    },
+    {
+      "figure": "1.85 million per second",
+      "meaning": "BLAKE3 compressions proved per second on one M3 Max",
+      "t": "10:14"
+    },
+    {
+      "figure": "$1,000,000",
+      "meaning": "Proximity Prize pool from the Ethereum Foundation",
+      "t": "11:17"
+    },
+    {
+      "figure": "8.592%",
+      "meaning": "narrowing of the provable soundness gap shown on the Proximity Prize leaderboard",
+      "t": "12:21"
+    },
+    {
+      "figure": "68.15 bits / 116.13 bits",
+      "meaning": "current provable soundness lower bound and best attack on the leaderboard",
+      "t": "12:21"
+    },
+    {
+      "figure": "128 bits",
+      "meaning": "security level zero-knowledge virtual machines aim for",
+      "t": "11:17"
+    }
+  ],
+  "frameworks": [
+    {
+      "name": "Three kinds of AI pressure on cryptography",
+      "description": "Attack (find weak designs: TALUS v4, witness encryption), Efficiency (make cryptography practical: Poseidon versus SHA-256 and BLAKE3 proving cost), Mathematical foundation (prove stronger security bounds: Reed-Solomon, Proximity Prize)."
+    },
+    {
+      "name": "Lemma harness pipeline",
+      "description": "Bug-hunting LLM harness: sync the target (a repo or a paper PDF), run finder agents in parallel containers to generate hypotheses, join the findings, then a triager and validator decide whether each hypothesis is a real attack."
+    },
+    {
+      "name": "Outlook: cryptography after AI battle-testing",
+      "description": "Weak cryptography will not survive AI testing, strong cryptosystems will, and if one is broken other systems offering the same functionality will emerge."
+    }
+  ],
+  "artifacts": [
+    {
+      "name": "Lemma",
+      "kind": "tool",
+      "note": "QED's LLM bug-hunting harness (container images under qed-audit) used for blockchain bounties and then for the TALUS v4 analysis.",
+      "url": ""
+    },
+    {
+      "name": "TALUS",
+      "kind": "paper",
+      "note": "Threshold ML-DSA proposal by Kao and Chang (2026), previewed for NIST's threshold call; v4 broken, v5 published.",
+      "url": "arXiv:2603.22109"
+    },
+    {
+      "name": "ML-DSA (FIPS 204)",
+      "kind": "standard",
+      "note": "NIST post-quantum signature standard that TALUS thresholdizes.",
+      "url": ""
+    },
+    {
+      "name": "Cryptanalysis of a Candidate Witness Encryption Scheme for Affine Determinant Programs",
+      "kind": "paper",
+      "note": "Jo's attack on the ADP-based witness encryption scheme of Bartusek et al. (ITCS 2020).",
+      "url": "ePrint 2026/1583"
+    },
+    {
+      "name": "Poseidon partial collision write-up",
+      "kind": "paper",
+      "note": "Jo's 28-round Poseidon collision, ePrint 2026/1760, with a QED blog post on the challenge.",
+      "url": "https://qedaudit.io/blog/poseidon-collision/"
+    },
+    {
+      "name": "poseidon-tools partial collision verifier",
+      "kind": "repo",
+      "note": "Verifier for the Ethereum Foundation Poseidon challenge.",
+      "url": "https://github.com/khovratovich/poseidon-tools"
+    },
+    {
+      "name": "SNARK.fast",
+      "kind": "benchmark",
+      "note": "Public autoresearch leaderboard for zero-knowledge proving speed on Ethereum workloads, used to show BLAKE3 and SHA-256 proving getting cheaper.",
+      "url": ""
+    },
+    {
+      "name": "The Proximity Prize",
+      "kind": "benchmark",
+      "note": "Ethereum Foundation prize site (with Yukon and zkSecurity) tracking provable soundness bounds for Reed-Solomon proximity gaps, with a leaderboard of attacks and soundness lower bounds.",
+      "url": ""
+    },
+    {
+      "name": "Reed-Solomon Mutual Correlated Agreement Beyond the Johnson Radius",
+      "kind": "paper",
+      "note": "Jo's August 19, 2026 paper proving a polynomial bound on bad parameters beyond the Johnson radius.",
+      "url": ""
+    },
+    {
+      "name": "Tachyon: Saving $600M from a time-warp attack",
+      "kind": "paper",
+      "note": "Deep dive article by Sunghyeon Jo and Yonghwi Jin, February 22, 2026, shown as an example of earlier blockchain bug-bounty work.",
+      "url": ""
+    }
+  ],
+  "slide_only": [
+    "Predictions slide attributions: Matthew Green (Johns Hopkins University) and Yehuda Lindell (Bar Ilan University, Coinbase), both dated October 7, 2026.",
+    "Where we started - QED slide: a forwarded disclosure email dated December 23, 2025 titled BLS Threshold Signature Malleability Enables Leader Election Manipulation in Tempo (forged certificates still pass verify_certificate while manipulating seed_signature), beside the Tachyon article; question posed: if complex consensus bugs can be found, can we do the same in a cryptography paper.",
+    "TALUS diagram: five shares; any T of N can sign, T-1 cannot; footnote: ML-DSA is the NIST post-quantum signature standard FIPS 204, TALUS is the threshold ML-DSA proposal by Kao and Chang 2026, arXiv:2603.22109.",
+    "Attack equations: quorum S0 = {P1..Pt-1, H0} gives z0 = y + c0 s1; quorum S1 = {P1..Pt-1, H1} gives z1 = y + c1 s1; subtract the transcripts to get s1 = (c0 - c1)^-1 (z0 - z1). Caption: each honest party used its share once, the corrupt parties reused theirs.",
+    "Authors' v5 note: added requirements are offline committee liveness and, per nonce, a fixed quorum chosen at preprocessing; the authors thank Sunghyeon Jo (Georgia Tech and QED) for the cross-quorum nonce-reuse key-recovery attack on an earlier version and say an independent note is in preparation.",
+    "Lemma finding excerpt: violated invariant is that every party evaluation point must be nonzero and every pairwise difference between evaluation points must be a unit in the sharing ring; reachability example uses an MPC profile with T=2 and N=q=8,380,417 and one statically corrupted party.",
+    "Witness encryption slide: statement f, secret message m, C = Encrypt(f, m), can decrypt C only when knowing w such that f(w)=0; attack labeled polynomial-time bit recovery.",
+    "Poseidon challenge text: find two 15-element inputs X, Y so that H(0xc09de4, X) = H(0xc09de4, Y) on the first q elements, H being full Poseidon1 in compression mode.",
+    "SNARK.fast page: banner says Apple Silicon and x86 results, collaborators Ethereum Foundation and Succinct among others, headline 258.58% more post-quantum TPS for Ethereum on Mac, and a rising record curve.",
+    "Proximity Prize page shows KoalaBear and Binary tabs; the gap narrowed by 8.592%; attack at 116.13 bits and soundness at 68.15 bits; leaderboard 81 promoted submissions from 22 solvers; paper abstract fixes integers r and h and error budget E = floor(n - sqrt(n(K-1))) + h, proving each affine line has at most O(K^6) bad parameters.",
+    "Lattice slide: screenshots of GPT Pro chats named Quantum Polynomial Algorithm (August 17) and Quantum Polynomial-Time Algorithm (August 12) with conclusions that no valid polynomial-time quantum key-recovery algorithm was obtained; follow-up slide says 'we don't know' about lattice safety and that there is no practical attack with GPT or Claude with xxx billions of tokens (placeholder number left on the slide).",
+    "Closing slide: weak cryptography won't survive AI battle-testing, strong cryptosystems will survive, if one is broken other systems will emerge."
+  ],
+  "demos": [],
+  "quotes": [
+    {
+      "text": "The AI made finding weak designs and attacks in the cryptography really cheap.",
+      "speaker": "Sunghyeon Jo",
+      "t": "01:12"
+    },
+    {
+      "text": "I kind of cheated on the rule.",
+      "speaker": "Sunghyeon Jo",
+      "t": "08:07"
+    },
+    {
+      "text": "Is lattice cryptography safe? I think the answer is we don't know.",
+      "speaker": "Sunghyeon Jo",
+      "t": "13:23"
+    },
+    {
+      "text": "Only strong crypto systems will survive with their robustness.",
+      "speaker": "Sunghyeon Jo",
+      "t": "14:25"
+    }
+  ],
+  "offense": [
+    "Cross-quorum nonce reuse in a threshold ML-DSA scheme: with T-1 corrupted parties and one honest party per quorum, the same nonce in two quorums lets two valid signatures reveal the key share by subtraction.",
+    "Polynomial-time message bit recovery against an affine determinant program witness encryption scheme, without knowing a witness.",
+    "Rule-exploiting Poseidon collision: choosing a special MDS matrix, permitted by the challenge rules, to get a trivial collision in 28 rounds.",
+    "Using a general LLM bug-hunting harness against paper PDFs as well as code to generate and validate attack hypotheses on proposed cryptosystems.",
+    "Blockchain consensus and signature malleability bugs (BLS threshold signature verification allowing forged certificates and leader election manipulation) found with the same harness."
+  ],
+  "defense": [
+    "Run an LLM attack harness against your own cryptographic proposals and papers before submission, including a triage step that validates each hypothesis.",
+    "Bind a nonce to a fixed quorum at preprocessing in threshold signing, as the TALUS v5 fix does.",
+    "Prefer cryptographic constructions that have survived heavy AI and human testing, and plan for replacement by keeping systems agile.",
+    "Close challenge rules tightly: the Poseidon challenge allowed any MDS matrix, so a trivial instance counted.",
+    "Use public proving-cost leaderboards to reassess algebraic hashes against standard hashes such as SHA-256 and BLAKE3 before committing to them in a protocol."
+  ],
+  "takeaways": [
+    "If you build or review cryptographic designs, run an AI harness over the spec and require validated findings; the TALUS case went from report to fixed version in about two weeks.",
+    "Treat new threshold, witness encryption and algebraic hash proposals as high risk until they have survived AI battle-testing, and avoid production dependence on them.",
+    "Do not read the early results as evidence that established public-key or lattice schemes are broken; the speaker says it is unknown, and the attacks shown were on non-production schemes.",
+    "When choosing primitives for zero-knowledge systems, re-evaluate algebraic hashes such as Poseidon against SHA-256 and BLAKE3 because the proving-cost gap is closing.",
+    "Watch prize and challenge programs (Ethereum Foundation Poseidon and Proximity Prize, NIST threshold call) as sources of tested bounds and cases."
+  ],
+  "limits": [
+    "The schemes he broke are new and not used in production.",
+    "He cannot say whether lattice cryptography is safe; his GPT Pro attempts failed and the slide still carries an xxx placeholder for the token count.",
+    "The Poseidon result was not an intended solution and did not break the hash function in practice.",
+    "The Reed-Solomon work leaves a large gap between provable and attack bounds, so there is a long way to go."
+  ],
+  "critique": [
+    "The TALUS case includes a concrete derivation, an author-confirmed reproduction, a dated timeline and an acknowledgment in the fixed version. The witness encryption claim is cited to an ePrint, and its details were not shown in the talk.",
+    "The harness result is described as three findings with one real attack and no success rate over many papers, so how well Lemma generalizes is not established from the talk; the account is the speaker's own.",
+    "The Poseidon payout was for exploiting a rules loophole, not for a cryptanalytic break, and the talk's use of it as evidence of Poseidon risk leans on the four other August papers, which are not shown.",
+    "The efficiency argument credits AI autoresearch for the BLAKE3 proving gain, but the leaderboard shown does not separate AI contribution from human or conventional optimization. The speaker is a co-founder of QED Audit, which does audit work in this area.",
+    "The slide placeholder 'xxx billions of tokens' and the 'crypto-economic evidence' framing for lattice safety are not backed by data in the talk, and the negative GPT Pro runs were by one person, so they do not settle the question either way.",
+    "The answer that symmetric systems take the most damage was given as reasoning only; the examples shown concern new public-key, hash and proof components."
+  ],
+  "qa": [
+    "Question: where does AI do the most damage, theoretical public-key math or incremental symmetric tricks? Answer: probably symmetric-key systems, because they are considered safer and widely used in production, while public-key systems like elliptic curves already have a known quantum algorithm.",
+    "Question: if you developed a cryptosystem with AI, what strategies would you take from attacking to make it stronger? Answer: use AI to optimize strong but impractical functionality, for example indistinguishability obfuscation, to make it practical, and design with AI.",
+    "Question: what is left for humans in cryptography research, given the pace? Answer: humans can direct AI toward a functionality, but AI may find and solve problems itself, and it is a risk to cybersecurity if frontier labs hold attacks on existing cryptography; mathematics and cryptography are areas where frontier and open models are very good."
+  ],
+  "tags": [
+    "cryptography-formal-methods",
+    "vuln-discovery-exploit",
+    "autonomous-offense",
+    "evals-benchmarks-metrics"
+  ],
+  "key_frames": [
+    {
+      "file": "t00271.jpg",
+      "caption": "TALUS v4 key recovery: two quorums sharing the corrupt parties' nonce contributions give z0 and z1, and subtracting the transcripts yields the key share s1."
+    },
+    {
+      "file": "t00289.jpg",
+      "caption": "The TALUS v5 acknowledgment (quorum binding, offline committee liveness, fixed quorum per nonce) above the disclosure timeline: Jul 30 reported, Jul 31 reproduced, Aug 11 v5 published, Aug 12 ePrint."
+    },
+    {
+      "file": "t00315.jpg",
+      "caption": "The Lemma bug-hunting harness pipeline (sync target, two finder containers, join, triage) and a validated finding stating the violated evaluation-point invariant."
+    },
+    {
+      "file": "t00466.jpg",
+      "caption": "Poseidon partial collision challenge text and award ladder (q=3 $32K claimed April 6 2026 up to q=7 $512K), with the $10K gratia outcome and write-up link."
+    },
+    {
+      "file": "t00728.jpg",
+      "caption": "Proximity Prize leaderboard (gap narrowed 8.592%, attack 116.13 bits, soundness 68.15 bits) beside Jo's August 19 2026 Reed-Solomon bound abstract."
+    }
+  ],
+  "signal": {
+    "score": 3,
+    "reason": "One documented new attack (TALUS v4) and a three-pressure frame; the other results were shown with fewer checkable details, and the attacks shown are on non-production schemes."
+  },
+  "caveats": [
+    "Auto-caption errors: the TALUS report date is garbled as July 13 30 and the slide shows July 30; Lemma, SNARK.fast and Proximity Prize names are partly garbled (snark.test, better.code); slide spellings used where visible.",
+    "The transcript attributes a 3.5 times speedup to the public autoresearch project, while the slide shows a different figure (258.58% more post-quantum TPS) and 1.85M BLAKE3 compressions per second; both are recorded.",
+    "The question on indistinguishability appears in the transcript as indistinguishability of location, which is probably indistinguishability obfuscation; recorded as obfuscation with that caveat.",
+    "The relationship between the Tachyon article and the BLS malleability email on one slide is not explained by the speaker; recorded only as shown.",
+    "Frames include speaker-only shots and a conference sponsor end card; no slides were available for the Q&A."
+  ]
+}

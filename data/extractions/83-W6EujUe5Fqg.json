@@ -1,0 +1,109 @@
+{
+  "nn": "83",
+  "id": "W6EujUe5Fqg",
+  "url": "https://www.youtube.com/watch?v=W6EujUe5Fqg",
+  "title": "CISOs Debrief: What We Learned, What We Need",
+  "speakers": [
+    {"name": "Allison Henry", "affiliation": "Chief information security officer, University of California Berkeley"},
+    {"name": "Maarten Van Horenbeeck", "affiliation": "Formerly chief security officer at Adobe; now technical fellow on the Adobe security team"},
+    {"name": "Sean Cassidy", "affiliation": "CISO, Plaid"},
+    {"name": "Greg Notch", "affiliation": "Chief technology officer and chief security officer, Expel"}
+  ],
+  "format": "panel",
+  "duration_min": 24,
+  "thesis": "Four CISOs, prompted by an interrupting moderator, say the conference left them more hopeful about defense than the last edition but that defense still trails offense, and they split on whether the first move is basic hygiene or new AI-era defensive capability.",
+  "summary": "A moderator opens by saying the CISOs asked not to hold a panel, so he will interrupt them to keep it short takeaways. Each of the four introduces themselves in ten seconds. Greg Notch says he has more hope than after the previous edition, which he found offense-heavy, and names talks on detection and response engineering, a stealthier offensive benchmark for purple teaming, and an OpenAI talk on binary patching of router firmware. Sean says he is hopeful about the people but sees much more breaking than fixing. Maarten says the lesson is to ground AI conversations in other people's perspectives because nobody knows how models work, so curiosity is the key trait. Allison argues for basic hygiene (EDR, firewalls, retiring unpatchable technology), which prompts a debate with the moderator about whether organizations that failed at basics for twenty years can succeed now. Asked what else they would prioritize, they name upskilling everyone including boards, faster pressure testing of high-risk paths, detection and response investment, people trained to be AI combat effective, and detection further left in the attack chain. Asked what they need built, they name AWS egress controls per Kubernetes pod, defensive models, and a rethink of business applications. The panel then pitches dream talks for next time, and the moderator challenges the CISOs to submit talks about what actually worked in their programs.",
+  "argument": [
+    "Compared with the previous edition, the content on display left at least one CISO more hopeful because defensive work in detection engineering and binary patching is now visible.",
+    "Offense is still moving faster than defense, so security programs are not built to handle what is breaking and risk acceptance will stop being viable.",
+    "One camp says the first move is basic hygiene for under-resourced sectors; another says hygiene alone cannot keep up and the investment must go to detection, response, people and defensive AI.",
+    "Defenders need new capability: detection earlier in the attack chain, egress controls, defensive models matched to offensive acceleration, and live adversarial exercises.",
+    "CISOs are also learning and should publish what has worked in risk management, even when it is not novel."
+  ],
+  "claims": [
+    {"claim": "Compared with the previous edition, this one gave Greg Notch more hope because the earlier talks were largely offensive and this time he saw defensive work he could take to his teams and board.", "evidence": "Personal impression; he named talks on graph-based detection and response engineering, a stealth benchmark for purple teaming, and an OpenAI binary-patching talk.", "grade": "assertion", "t": "02:43", "source": "said"},
+    {"claim": "Binary patching with AI matters because much infrastructure lacks source code, and the speaker cited patching of ASUS routers as an example from the OpenAI talk.", "evidence": "Reference to a talk at the conference; no data restated on the panel.", "grade": "anecdote", "t": "03:46", "source": "said"},
+    {"claim": "Firmware patching by AI will be hard to apply in practice because maintainers lack expertise and critical devices such as pacemakers or aircraft controls cannot be casually modified.", "evidence": "Moderator-side reasoning about barriers; no example beyond the generic ones named.", "grade": "assertion", "t": "04:19", "source": "said"},
+    {"claim": "The conference shows a lot of breaking and little fixing in proportion, so Sean Cassidy is less optimistic about the technology than about the people.", "evidence": "Personal observation; he joined only this edition.", "grade": "assertion", "t": "05:23", "source": "said"},
+    {"claim": "Nobody knows how models work or which model is best for which problem, so curiosity is the number one trait and teams should ground AI views in other people's perspectives.", "evidence": "Drawn from an earlier talk on how models work; reasoning, no data.", "grade": "assertion", "t": "06:24", "source": "said"},
+    {"claim": "Security tools built over decades were grounded in the problem of the moment, and AI will pressure test all of them quickly, giving security teams a chance to rebuild with public backing.", "evidence": "Stated as a takeaway from the first talk of the conference.", "grade": "assertion", "t": "07:25", "source": "said"},
+    {"claim": "Many critical-service organizations, including universities, water, power and rail providers, lack basics such as EDR, firewalls and retirement of unpatchable technology, so hygiene is the first priority.", "evidence": "Allison Henry's experience at Berkeley and recollection of Jason Clinton's advice to 'wash your hands'.", "grade": "anecdote", "t": "09:00", "source": "said"},
+    {"claim": "Defense is behind offense, and one reason is lack of training data and clear objectives; instrumenting high-risk paths, attack surface reduction and sandboxes can speed up the basics.", "evidence": "Reasoning based on conference talks on the defender side; no data given.", "grade": "assertion", "t": "11:35", "source": "said"},
+    {"claim": "Risk acceptance of known weaknesses will stop working because attacks will go drastically wrong, so programs must burn down the practice of risk-accepting and fix now.", "evidence": "Opinion stated by Sean Cassidy.", "grade": "assertion", "t": "12:38", "source": "said"},
+    {"claim": "A decade of detection has concentrated at the point of exploitation (EDR, identity threat detection), and with unlimited novel exploitation, detection must move left in the MITRE framework.", "evidence": "Greg Notch's reasoning; no measurements.", "grade": "assertion", "t": "17:19", "source": "said"},
+    {"claim": "Defensive agent swarms will face an authorization asymmetry because they need access in a critical moment without being allowed to hack into everything.", "evidence": "Raised as an open problem drawn from the opening agent-swarm talk.", "grade": "assertion", "t": "15:12", "source": "said"},
+    {"claim": "Defenders need outbound controls on AWS so each Kubernetes pod's egress can be specifically controlled.", "evidence": "Stated as a product wish by Sean Cassidy.", "grade": "assertion", "t": "18:23", "source": "said"}
+  ],
+  "numbers": [
+    {"figure": "10 seconds", "meaning": "Introduction time the moderator gave each CISO", "t": "01:08"},
+    {"figure": "10 years", "meaning": "Period over which, per Greg Notch, detection has concentrated at the point of exploitation (EDR, identity threat detection)", "t": "17:19"},
+    {"figure": "20 years", "meaning": "Period of security technology Sean Cassidy says a team may have to leapfrog by making people AI combat effective; the moderator also uses 20 years of data breaches as the failed-basics record", "t": "16:16"},
+    {"figure": "about 15 minutes", "meaning": "How long before the session the panelists met and changed the format from the planned panel", "t": "00:37"}
+  ],
+  "frameworks": [
+    {"name": "Basics versus new capability", "description": "The debate the moderator forces: either do hygiene (EDR, firewalls, retire unpatchable systems) or, if basics cannot be done, name one thing to reprioritize (upskilling people including boards, pressure testing high-risk paths, detection and response investment, people trained for AI-era defense)."},
+    {"name": "Left of boom detection", "description": "Move detection earlier than the point of exploitation in the MITRE ATT&CK chain, because novel exploitation is effectively unbounded and EDR and identity detection sit at the exploitation point."}
+  ],
+  "artifacts": [
+    {"name": "Graphistry talk", "kind": "product", "note": "Cited by Greg Notch as strong detection and response engineering work at this conference; no details given on the panel.", "url": ""},
+    {"name": "Stealth bench talk", "kind": "benchmark", "note": "Cited by Greg Notch as making offensive security more stealthy and realistic for purple teaming; name as transcribed, spelling unconfirmed.", "url": ""},
+    {"name": "OpenAI binary patching talk (ASUS router patching)", "kind": "paper", "note": "Cited as showing patching of firmware where source code is unavailable.", "url": ""},
+    {"name": "Workshop on training models for cyber security work", "kind": "tool", "note": "Greg Notch wants his team to download an open model and use it for defense without the controls of commercial models.", "url": ""}
+  ],
+  "slide_only": [],
+  "demos": [],
+  "quotes": [
+    {"text": "In a world where everything is changing, the most consequential and interesting era of history, it's really a boring choice to be a doomer.", "speaker": "Sean Cassidy", "t": "08:28"},
+    {"text": "We need to burn down that whole side of security programs where we're like, yep, risk accept, put it on the road map, I'll fix it in a year.", "speaker": "Sean Cassidy", "t": "13:08"},
+    {"text": "My board needs to download an agent and use it right now so we are relevant.", "speaker": "Allison Henry", "t": "14:40"},
+    {"text": "I'm going to make sure that everybody on my team is AI combat effective.", "speaker": "Greg Notch", "t": "16:16"},
+    {"text": "CISOs are trying to learn too, and many CISOs are feeling outmoded too.", "speaker": "Moderator", "t": "20:57"}
+  ],
+  "offense": [
+    "Offense is accelerating with agent swarms and novel exploitation, outpacing defender tooling.",
+    "Unpatchable and legacy devices in critical services remain exposed without basic controls."
+  ],
+  "defense": [
+    "Do basic hygiene: EDR, firewalls, blocking machines without protections from the network, and retiring or securing deprecated technology that cannot be patched.",
+    "Instrument, slow or block high-risk paths and reduce attack surface; use sandboxes for this.",
+    "Stop relying on risk acceptance for known weaknesses and fix them now.",
+    "Invest in detection and response, and move detection earlier in the attack chain.",
+    "Add egress controls on cloud workloads, specifically per Kubernetes pod.",
+    "Upskill staff and executives, including boards, by having them use agents directly.",
+    "Run live exercises between attacking and defending agent swarms inside the environment."
+  ],
+  "takeaways": [
+    "Decide explicitly whether your first dollar goes to hygiene gaps or to new defensive capability; the panel did not agree, and the answer depends on where your program sits relative to the cyber poverty line.",
+    "Stop treating risk acceptance as a standing outlet; define which known weaknesses will be fixed immediately rather than road-mapped.",
+    "Consider adding detection to the left of exploitation, not only at EDR and identity points.",
+    "Have executives and the board use an agent hands-on so they understand the pace of change.",
+    "Treat authorization for defensive agents as an open design problem to solve before you rely on swarms in an incident."
+  ],
+  "limits": [
+    "Greg Notch said he could not see how patching of device firmware would actually get applied given technical, financial and awareness barriers.",
+    "Allison Henry said she has no good answer for academic resistance to controls, and that safe places to play are needed.",
+    "Sean Cassidy said he does not know what to do about the access asymmetry for defensive agents.",
+    "The moderator noted the industry does not know what works or what to prioritize and hears conflicting messages."
+  ],
+  "critique": [
+    "The session was panel commentary with no data, slides or demos; the claims are the panelists' opinions and anecdotes.",
+    "The moderator challenged the panelists on naming only what they already know; several answers (detection and response investment, upskilling, egress controls) restate existing priorities.",
+    "The hygiene-versus-new-capability disagreement was prompted by the moderator and left unresolved; no panelist offered a way to decide between them.",
+    "The egress-control request and the left-of-exploitation detection argument were stated without a mechanism or supporting evidence."
+  ],
+  "qa": [],
+  "tags": ["org-adoption-culture", "governance-policy", "ai-soc-detection-response"],
+  "key_frames": [
+    {"file": "t00133.jpg", "caption": "Full panel on stage with badges legible: the four CISOs and the moderator; useful for confirming speaker names from badges."},
+    {"file": "t00044.jpg", "caption": "Moderator introducing the format with the conference welcome screen behind him; no content slide."}
+  ],
+  "signal": {"score": 2, "reason": "A camera-only CISO panel debrief of opinions and requests, with no slides or data shown."},
+  "caveats": [
+    "Camera-only: the 16 frames show the stage and panel, with no slides, so there is no slide authority for spellings or figures.",
+    "The transcript spells the Adobe panelist as Martin Von Hornbeck; the badge in the frames reads approximately Maarten Van Horenbeeck. I used the badge spelling but could not read it at full resolution.",
+    "The Plaid CISO introduces himself only as Sean; the badge appears to read Sean Cassidy, which I could not fully confirm.",
+    "The moderator is never named clearly in the transcript (rendered as Gotti, Gi, GDI); not included in speakers. His shirt appears to carry a logo but I could not read an affiliation.",
+    "Talk names cited by Greg Notch (graphistry, stealth bench) are as transcribed from auto-captions and may be garbled.",
+    "The meta description gives no speaker list; affiliations come from the speakers' own introductions."
+  ]
+}

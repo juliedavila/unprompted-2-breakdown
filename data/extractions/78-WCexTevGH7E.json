@@ -1,0 +1,144 @@
+{
+  "nn": "78",
+  "id": "WCexTevGH7E",
+  "url": "https://www.youtube.com/watch?v=WCexTevGH7E",
+  "title": "Building Trust in AI-Generated Code",
+  "speakers": [{"name": "Ela Avrahami", "affiliation": "Founder, AI Systems and Security Architect; presenting work for Knostic (OpenAnt)"}],
+  "format": "talk",
+  "duration_min": 23,
+  "thesis": "Generating a plausible security patch and having enough evidence to trust it are different problems. OpenAnt Auto Patcher makes the trust decision explicit with an adversarial Challenger, a separate insufficient-evidence state, and stage-scoped context, and issues a green light on only 1 of 50 real CVEs, which matched the upstream fix.",
+  "summary": "Avrahami opens by arguing that AI patch generators look good on automated benchmarks but fall apart under deeper evidence checks. She cites PatchEval-Verified at 84 percent (193 of 230 CVEs passing basic security and functionality tests) and AutoPatchBench-Lite, where 65 percent of patches built without crashing, 11 percent survived fuzzing and differential testing, and 4 percent were accepted by humans. She contrasts automated checks (does it fix, do tests pass) with what a human reviewer asks: root cause, preserved behavior, repository fit, new risks, and what evidence exists. She then presents OpenAnt Auto Patcher, part of the open source OpenAnt project from Knostic, which takes a CVE or finding plus a repository and runs investigate, patch, challenge and check stages to produce a patch and a trust report with one of four fixed-policy recommendations: deploy after validation, manual review, do not apply, or no patch produced. A live demo failed on the venue network, so she showed a recorded run on urllib3 CVE-2023-43804 that ended in manual review with three unresolved concerns. She gives three lessons: try to prove the patch wrong with a Challenger, give uncertainty its own state, and control what context each stage inherits. On 50 real CVEs the result was 2 percent green, 68 percent manual review, 0 percent do not apply and 30 percent no patch. Against held-out upstream fixes, 40 percent of the 35 generated patches matched, the single green was correct, all 19 partial or divergent patches were held, and 13 of 14 good patches were also held. Q&A covers model choice, team-sourced concerns, fuzzing and the ground truth.",
+  "argument": [
+    "Benchmarks that stop at tests passing overstate patch quality: the same patches lose most of their apparent success under fuzzing, differential testing and human review.",
+    "A human decision to merge a patch rests on root cause, repository fit, regression risk and supporting evidence, so an autonomous system must output evidence and a recommendation rather than only a diff.",
+    "OpenAnt Auto Patcher pairs each patch with a trust report whose recommendation comes from fixed policy rules, not an LLM verdict, and defaults to manual review when evidence is incomplete.",
+    "Three design lessons improved trust: an adversarial Challenger that looks for ways the patch is wrong, an explicit insufficient-evidence state so missing evidence stays missing, and stage-specific context so earlier concerns do not harden into facts.",
+    "On 50 real CVEs the system is very conservative (one green), but the green was justified and no flawed patch got an approval, so trustworthy approval comes before approving more.",
+    "The question to carry away is what evidence would justify acting on an AI output, since the path to autonomy is evidence."
+  ],
+  "claims": [
+    {"claim": "Standard automated evaluation overstates patch quality: PatchEval-Verified reports 84 percent (193 of 230) passing basic security and functionality tests.", "evidence": "Benchmark figure on a slide, labeled best reported result on that benchmark.", "grade": "measured", "t": "02:14", "source": "both"},
+    {"claim": "On AutoPatchBench-Lite 65 percent of patches (73 of 113) built with no crash, 11 percent survived fuzzing and differential testing, and 4 percent were accepted by humans.", "evidence": "Benchmark figures cited from the Meta benchmark on a slide; speaker cautioned the measures are not comparable to each other.", "grade": "measured", "t": "02:45", "source": "both"},
+    {"claim": "On 50 real-world CVEs, OpenAnt Auto Patcher gave 2 percent deploy after validation, 68 percent manual review, 0 percent do not apply and 30 percent no patch produced; only 1 of 50 earned the strongest recommendation.", "evidence": "Own experiment on 50 CVEs sampled at random from one benchmark (not named).", "grade": "measured", "t": "14:56", "source": "both"},
+    {"claim": "Against upstream maintainer fixes held out during generation, 40 percent (14 of 35) of generated patches were equivalent or substantially aligned, 20 percent partial, 34 percent divergent, and 6 percent unverifiable.", "evidence": "Comparison of 35 generated patches with upstream fixes, compared only after generation.", "grade": "measured", "t": "15:59", "source": "both"},
+    {"claim": "The trust recommendation was calibrated in this sample: the only green patch matched upstream, and all 19 partial or divergent patches were held for manual review.", "evidence": "Slide counts 1 of 1 and 19 of 19 from the 35-patch comparison.", "grade": "measured", "t": "17:01", "source": "both"},
+    {"claim": "13 of 14 patches aligned with upstream were also withheld from green for lack of evidence, so the system produces many false negatives.", "evidence": "Slide count 13 of 14, acknowledged by the speaker as the next challenge.", "grade": "measured", "t": "17:32", "source": "both"},
+    {"claim": "Adding an adversarial Challenger that looks for residual vulnerabilities, behavior changes, hidden assumptions and missing evidence moved the question from does it work to how could it still be wrong.", "evidence": "Design lesson with a demo trust report showing three unresolved Challenger concerns; no ablation data.", "grade": "case", "t": "11:16", "source": "both"},
+    {"claim": "Forcing a binary fixed or still-vulnerable answer makes LLMs guess; adding an explicit insufficient-evidence state produces consistent outcomes.", "evidence": "Stated lesson from building the system; no measurement shown.", "grade": "assertion", "t": "12:18", "source": "both"},
+    {"claim": "Sharing too much context between stages biased the model so that its own concerns became facts; stage-specific context fixed this.", "evidence": "Stated lesson after over-correcting from too little shared context; no measurement shown.", "grade": "anecdote", "t": "13:20", "source": "both"},
+    {"claim": "Using different models gave basically the same recommendations.", "evidence": "Answer to an audience question; speaker said she mostly used the strongest model and no comparison data was shown.", "grade": "assertion", "t": "20:07", "source": "said"}
+  ],
+  "numbers": [
+    {"figure": "84% (193/230)", "meaning": "PatchEval-Verified best reported result: real-world CVEs with patches passing basic security and functionality tests", "t": "02:14"},
+    {"figure": "65% (73/113)", "meaning": "AutoPatchBench-Lite patches that built with no crash", "t": "02:45"},
+    {"figure": "11%", "meaning": "AutoPatchBench-Lite patches surviving fuzzing and differential testing", "t": "02:45"},
+    {"figure": "4%", "meaning": "AutoPatchBench-Lite patches accepted by human review", "t": "03:18"},
+    {"figure": "50", "meaning": "real-world CVEs sampled for the OpenAnt evaluation", "t": "14:56"},
+    {"figure": "2% / 68% / 0% / 30%", "meaning": "recommendation split: deploy after validation, manual review, do not apply, no patch produced", "t": "14:56"},
+    {"figure": "35", "meaning": "generated patches compared against upstream fixes", "t": "15:59"},
+    {"figure": "40% (14/35)", "meaning": "patches equivalent or substantially aligned with the upstream fix", "t": "15:59"},
+    {"figure": "20% / 34% / 6%", "meaning": "partial, divergent and unverifiable patches versus upstream", "t": "16:30"},
+    {"figure": "1/1", "meaning": "green-light patches that matched the upstream fix", "t": "17:01"},
+    {"figure": "19/19", "meaning": "partial or divergent patches held for manual review", "t": "17:01"},
+    {"figure": "13/14", "meaning": "good (upstream-aligned) patches that did not get a green light", "t": "17:32"},
+    {"figure": "3 unresolved, 0 blocking", "meaning": "Challenger concerns in the demo urllib3 trust report", "t": "09:42"},
+    {"figure": "40 files, 557 functions, 106 classes", "meaning": "size of the urllib3 repository as analyzed in the demo", "t": "08:06"}
+  ],
+  "frameworks": [
+    {"name": "OpenAnt Auto Patcher pipeline", "description": "Input is a CVE or finding plus a repository. Core engine runs investigate, patch, challenge and check. The demo output shows five stages: Analyze (repository analysis, remediation plan generated, plan verified, final strategy generated), Prepare (target context ready, edits ready), Generate (patch generated, target conformance passed, patch context reconstructed, patch applicable), Validate (adversarial review completed with concerns remaining), and a final report. Output is a patch plus a trust report."},
+    {"name": "Trust report decision states", "description": "Four recommendations determined by fixed policy rules, not an LLM verdict: green deploy after validation (automated checks passed with high confidence), orange manual review (requires human reviewer verification before merge), red do not apply (validation failed or introduced regression risks), and no patch produced (insufficient evidence or unfixable automatically)."},
+    {"name": "Trust signals table", "description": "Per-patch questions with a status and notes: does the patch apply, does it address the vulnerability, are there unresolved concerns, is deployment risk low, was the edited content verified against the repository, and were there new test failures after the patch."},
+    {"name": "Human reviewer questions versus automated checks", "description": "Automated: does it fix the vulnerability, do tests pass, does it survive automated validation. Broader trust decision: the bigger picture (root cause, preserved intended behavior, what else changed), repository fit (architecture and conventions), and risk, evidence and completeness (new security or regression risks, supporting evidence, what is missing)."},
+    {"name": "Three lessons", "description": "Lesson 1, try to prove the patch wrong: add an adversarial Challenger. Lesson 2, give uncertainty its own state: fixed, still vulnerable, and insufficient evidence, so missing evidence stays missing. Lesson 3, control what context each stage inherits: each stage gets the evidence it needs, the outputs it should build on, and only the prior conclusions it should inherit."}
+  ],
+  "artifacts": [
+    {"name": "OpenAnt", "kind": "repo", "note": "Open source project from Knostic, of which Auto Patcher is a part; the closing slide invites contributions.", "url": "github.com/knostic/OpenAnt"},
+    {"name": "OpenAnt Auto Patcher", "kind": "tool", "note": "CLI invoked as openant patch with --cve, --repo-root and --output; produces a patch and a trust report in Markdown.", "url": ""},
+    {"name": "PatchEval-Verified", "kind": "benchmark", "note": "Cited for 84 percent (193 of 230) passing basic security and functionality tests.", "url": ""},
+    {"name": "AutoPatchBench-Lite", "kind": "benchmark", "note": "Meta benchmark, cited for the 65, 11 and 4 percent funnel.", "url": ""},
+    {"name": "CVE-2023-43804", "kind": "cve", "note": "urllib3 Cookie header not stripped on cross-origin redirect; used in the demo.", "url": ""}
+  ],
+  "slide_only": [
+    "PatchEval-Verified card shows 193/230 real-world CVEs and a footnote that 84 percent is the best reported result on the benchmark; the AutoPatchBench-Lite card shows 73/113 built with no crash.",
+    "Trust report decision-state slide states that recommendations are determined by fixed policy rules, not an LLM verdict.",
+    "Demo terminal shows the command openant patch --cve CVE-2023-43804 --repo-root /tmp/urllib3-eval --output /tmp/urllib3-report, with model Anthropic claude-opus-4-8, repository Python 40 files, 557 functions, 106 classes, target file src/urllib3/util/retry.py, Retry.DEFAULT_REMOVE_HEADERS_ON_REDIRECT, edits ready 1 of 1, and Validate step adversarial review completed with concerns remaining.",
+    "Earlier terminal frame shows the live run failed (exit 130, after 0m 59s) with no trust report produced, and the earlier report was moved aside.",
+    "Proposed patch changes DEFAULT_REMOVE_HEADERS_ON_REDIRECT from frozenset([\"Authorization\"]) to frozenset([\"Cookie\", \"Authorization\"]).",
+    "Trust Signals table in the demo report: patch applies cleanly with no hygiene issues (good); address the vulnerability needs review because available evidence is insufficient to verify the fix and no residual vulnerability has been demonstrated; unresolved concerns needs review (0 blocking, 3 unresolved, 0 non-blocking of 3 structured Challenger concerns, classifications are deterministic and citation-checked of model-reported facts, not independent verification); deployment risk low (localized change, small static impact surface); edited content verified against the repository (1 hunk matched uniquely); new test failures not verified because existing test comparison is opt-in via --compare-existing-tests.",
+    "Challenger lists four things it looks for: residual vulnerabilities, behavior changes, hidden assumptions, missing evidence.",
+    "Lesson 2 slide: if your system cannot represent uncertainty it will eventually turn uncertainty into confidence; missing evidence must stay missing.",
+    "Lesson 3 slide diagram: too little context is disconnected, too much is everything, right-sized is relevant context; context is not just information but influence.",
+    "Upstream comparison slide notes upstream fixes were held out during generation and compared only afterward, and defines the categories: equivalent or substantially aligned, partial (incomplete fix), divergent (wrong or different fix), unverifiable (no upstream fix or inconsistent reference evidence).",
+    "Closing slide gives GitHub knostic/OpenAnt with a QR code and the speaker's LinkedIn."
+  ],
+  "demos": [
+    "Live demo of openant patch against urllib3 failed because of venue network problems (a failed run is visible on screen); she switched to a recorded two-minute run.",
+    "Recorded run: repository analysis, remediation plan generated and verified, target context prepared, patch generated and conformance-checked, adversarial review ending with concerns remaining, then a Markdown trust report with recommendation manual review, the proposed diff adding Cookie to the headers removed on redirect, and a trust signals table with three unresolved Challenger concerns and a not-verified test comparison."
+  ],
+  "quotes": [
+    {"text": "Generating a plausible fix and having enough evidence to trust it are different problems.", "speaker": "Ela Avrahami", "t": "03:18"},
+    {"text": "If your system can't represent uncertainty, it will eventually turn uncertainty into confidence. Missing evidence must stay missing.", "speaker": "Ela Avrahami", "t": "12:49"},
+    {"text": "Context doesn't just inform the answer, it can bias it.", "speaker": "Ela Avrahami", "t": "14:26"},
+    {"text": "What evidence would justify acting on this?", "speaker": "Ela Avrahami", "t": "19:37"}
+  ],
+  "offense": [
+    "Plausible-but-wrong patches: patches that pass build and basic tests but fail under fuzzing, differential testing or human review (11 percent and 4 percent survival on AutoPatchBench-Lite).",
+    "LLMs guessing when evidence is missing, producing inconsistent fixed or vulnerable verdicts.",
+    "Context contamination between pipeline stages, where one stage's unverified concern is read as established fact downstream.",
+    "Divergent or partial fixes that do not address the root cause (34 percent divergent and 20 percent partial in the 35-patch sample)."
+  ],
+  "defense": [
+    "Add an adversarial Challenger stage that looks for residual vulnerabilities, behavior changes, hidden assumptions and missing evidence, separate from the patch generator.",
+    "Represent uncertainty as its own state such as insufficient evidence, and never let it collapse into a binary verdict.",
+    "Scope context per stage: give each stage the evidence it needs and only the prior conclusions it should inherit.",
+    "Make the final recommendation a deterministic policy over collected signals, not an LLM verdict, with a default of manual review.",
+    "Ship a trust report with each patch: does it apply, does it address the vulnerability, unresolved concerns, deployment risk, edit verification and test results, plus the actions a human should take.",
+    "Calibrate by holding out upstream maintainer fixes during generation and comparing only afterward.",
+    "Run existing-test comparison as part of the trust signals (opt-in in the demo, and reported as not verified when skipped)."
+  ],
+  "takeaways": [
+    "When adopting AI patching, require a trust report and treat green, orange, red and no-patch as policy outputs; measure how often green is right and how often good patches are withheld, not patch pass rates.",
+    "Put an adversarial reviewer and an explicit insufficient-evidence state into any agent pipeline that issues approvals, so that missing evidence blocks autonomy instead of being guessed over.",
+    "Scope what each pipeline stage can see; do not forward upstream model conclusions as facts.",
+    "Do not read a high benchmark pass rate as readiness for autonomy: ask what the funnel looks like after fuzzing, differential testing and human review.",
+    "Build a held-out comparison against maintainer fixes as a cheap calibration set before trusting a patching system's green light."
+  ],
+  "limits": [
+    "Only 1 of 50 CVEs earned the green recommendation and 13 of 14 good patches were withheld, so the system has many false negatives and low automation yield.",
+    "The 30 percent no-patch rate means a large share of CVEs get no fix at all.",
+    "Fuzzing is not part of the pipeline.",
+    "The live demo failed because of network problems, so the demo was recorded.",
+    "The upstream fix is used as ground truth only as an easy sanity check, on the reasoning that a maintainer approving and merging it is a good sign."
+  ],
+  "critique": [
+    "The calibration claim rests on a single green case (1 of 1); that cannot show that green is reliable, only that it was not wrong once. The sample of 35 patches is small and the 50 CVEs were drawn from one unnamed benchmark.",
+    "Using upstream fixes as ground truth treats divergence as error, though a different fix can be correct, and maintainers' fixes can also be incomplete; the speaker acknowledged it was a sanity check.",
+    "The calibration figures reflect a policy that rarely issues green: 19 of 19 withheld is the expected result for a policy that withholds almost everything, and the matching false-negative figure is 13 of 14 good patches withheld.",
+    "The three lessons are presented without ablation or numbers showing the Challenger, the insufficient-evidence state or context scoping improved outcomes.",
+    "The speaker presents work for Knostic as a founder and advisor; the code is open source and the reported results include the 2 percent green rate and the 13 of 14 good patches withheld.",
+    "The trust report notes that its classification of Challenger concerns is of model-reported facts checked for citations, not independent verification, so the evidence for a green light still depends on model-produced claims.",
+    "The published description cites experiments on which ideas failed to improve quality and on training from maintainer patches; the recording does not show them."
+  ],
+  "qa": [
+    "Did you try different models? Yes, and recommendations were basically the same; she mostly used the strongest model. The questioner noted the demo showed an Anthropic Opus model.",
+    "Have you asked engineering teams what could break, to add to risk classification? Yes, several teams were asked and more is on the roadmap; one concern was that engineers think about vulnerabilities they already closed and worry an automated patcher will not account for that.",
+    "Did you include fuzzing as a mandatory step, given the benchmark result? No, fuzzing is not in the pipeline.",
+    "Was the ground truth the real developer patch and why trust it? Yes, the upstream fix; it was an easy sanity check and the reasoning was that a maintainer approving and merging a fix is a good sign."
+  ],
+  "tags": ["appsec-secure-development", "evals-benchmarks-metrics", "coding-agent-security", "guardrails-runtime-controls"],
+  "key_frames": [
+    {"file": "t00212.jpg", "caption": "The problem slide: PatchEval-Verified at 84 percent versus the AutoPatchBench-Lite funnel from 65 percent built to 4 percent human-accepted."},
+    {"file": "t00379.jpg", "caption": "OpenAnt Auto Patcher flow and the four trust report decision states, determined by fixed policy rules rather than an LLM verdict."},
+    {"file": "t00586.jpg", "caption": "Demo trust signals table: the patch applies, but the fix is unverified, three Challenger concerns are unresolved, and test comparison was not run."},
+    {"file": "t00897.jpg", "caption": "Results on 50 real CVEs: 2 percent green, 68 percent manual review, 0 percent do not apply, 30 percent no patch."},
+    {"file": "t01085.jpg", "caption": "Calibration against upstream fixes: the one green was right, 19 of 19 flawed patches were withheld, and 13 of 14 good patches were also withheld."}
+  ],
+  "signal": {"score": 3, "reason": "A trust-and-evidence design with measured results on 50 CVEs; the sample is small, the design lessons are shown without ablations, and the headline calibration rests on a single green case."},
+  "caveats": [
+    "Auto-captions garble names: the organization was said as Nastic but the slides show Knostic; PatchEval was captioned Patch Evolve and AutoPatchBench-Lite as Auto Patch Bench Light; slide spellings used.",
+    "Speaker said there were six unverifiable patches while the slide gives 6 percent (about 2 of 35); the slide percentage is used.",
+    "The speaker said 40 percent of 35 patches; the slide gives 14 of 35, which is 40 percent.",
+    "The speaker also said the 50 CVEs were random from one of the benchmarks without naming which.",
+    "The model named in the demo terminal is claude-opus-4-8 as shown on screen; the speaker did not name it aloud."
+  ]
+}

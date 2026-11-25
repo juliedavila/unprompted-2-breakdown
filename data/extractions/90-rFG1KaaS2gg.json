@@ -1,0 +1,132 @@
+{
+  "nn": "90",
+  "id": "rFG1KaaS2gg",
+  "url": "https://www.youtube.com/watch?v=rFG1KaaS2gg",
+  "title": "Shadow Testing Our SOC Agent",
+  "speakers": [
+    {"name": "Tal Waitzenberg", "affiliation": "Research Scientist, Wiz (Google)"},
+    {"name": "Erez Harush", "affiliation": "Head of AI Research, Wiz (Google)"}
+  ],
+  "format": "talk",
+  "duration_min": 23,
+  "thesis": "A production SOC agent can only be improved safely if changes are validated by shadow testing on live traffic and the agent's own run-to-run noise is measured, isolated by splitting investigation from verdict, and reduced by constraining the investigation.",
+  "summary": "The speakers describe Wiz's autonomous SOC agent, which investigates more than 10,000 threats a day, and two problems that motivated the talk: how to evaluate a new model or prompt when the team changes the agent constantly, and a real incident where the agent flagged a rogue-agent attack as malicious and then, on a retrigger thirteen minutes later with almost the same evidence, called it benign. First challenge: a benchmark of about 200 threats showed a cheaper model matching the baseline at roughly one sixth of the cost, but a shadow agent that ran silently beside production on about 11,000 live threats showed 98 percent verdict agreement yet 44 percent more false positives and a higher error rate, so the model was rejected. Second challenge: rerunning the same threats showed verdicts flipping about 5.8 percent of the time, which makes metric deltas hard to interpret. Asking the model for confidence failed because one threat investigated 33 times produced high confidence every time and 32 wrong answers. They split the single agent into an investigation agent that writes structured findings and a verdict agent that reads only those findings, and found the verdict agent stable across five reruns, so the noise was in investigation. Third challenge: the flat playbook of 10 to 15 questions let the agent pick a different subset each run; replacing it with staged recipes naming mandatory and optional steps, evidence and tools cut instability from about 5.8 percent to about 0.7 percent. A short Q&A covered sub-agents and cost control.",
+  "argument": [
+    "Benchmarks on a small static set are a starting point, not a ship decision, because production volume and variety expose differences the benchmark misses.",
+    "Shadow testing, a silent candidate agent running on the same live threats as production and only recording its verdict, gives a like-for-like comparison and caught a cheaper model that raised false positives.",
+    "Agents disagree with themselves, and until that baseline noise is measured an A/B delta cannot be attributed to a change.",
+    "Self-reported confidence is not a usable signal for reliability.",
+    "Splitting the agent into investigation and verdict stages lets you tell whether instability comes from evidence gathering or from judgment, and lets you tune and simulate the verdict stage on stored findings.",
+    "Constraining the investigation with structured recipes instead of a flat question list sharply reduces instability, which makes later shadow tests meaningful."
+  ],
+  "claims": [
+    {"claim": "Wiz's SOC agent investigates more than 10,000 threats a day and decides whether each is malicious.", "evidence": "Stated on a slide and by the speakers.", "grade": "assertion", "t": "00:38", "source": "both"},
+    {"claim": "In a real rogue-agent incident the agent first marked the activity malicious (password cracking, credential harvesting, VNC server execution across 18 containers) and 13 minutes later, after an unrelated event retriggered investigation, marked it a benign false positive from automated package installation.", "evidence": "Incident timeline slide with both verdict quotes at 13:20 and 13:33; reruns gave different verdicts each time.", "grade": "case", "t": "02:14", "source": "both"},
+    {"claim": "On a static benchmark of about 200 threats a cheaper model matched the production model, with precision 93.0 vs 92.1 percent, FPR 6 vs 7 percent, recall 80 vs 82 percent, no errors, at 0.4 vs 2.5 dollars (about six times cheaper).", "evidence": "Benchmark results slide comparing baseline and experiment.", "grade": "measured", "t": "04:21", "source": "both"},
+    {"claim": "A shadow run of the same model on about 11,000 live threats showed 98 percent verdict agreement and identical true positives (22 each), but 216 false positives versus 150 for production and errors of 2.1 versus 0.1 percent, so the model was rejected.", "evidence": "Shadow vs production slide with a 'New Model Rejected, Baseline Retained' banner.", "grade": "measured", "t": "06:56", "source": "both"},
+    {"claim": "Rerunning the agent on the same threat flips the verdict about 5.8 percent of the time.", "evidence": "Repeated-run experiment; slide states roughly 5.8 percent. Number of threats and runs not given.", "grade": "measured", "t": "09:30", "source": "both"},
+    {"claim": "Asking the agent for its confidence is not a useful reliability signal: one threat investigated 33 times in one day gave high confidence every time and 32 wrong verdicts.", "evidence": "Single worked example on a slide.", "grade": "case", "t": "11:04", "source": "both"},
+    {"claim": "Separating an investigation agent (writes structured findings) from a verdict agent (reads only findings) isolates the source of disagreement: if findings differ, look at investigation; if findings match but verdicts differ, look at judgment.", "evidence": "Before and after architecture diagram and reasoning.", "grade": "assertion", "t": "12:08", "source": "both"},
+    {"claim": "Rerunning the verdict agent five times on the same findings returned the same verdict each time, so the verdict stage is stable and the noise lies in investigation.", "evidence": "Five-run diagram on a slide; the number of finding sets tested was not stated.", "grade": "measured", "t": "13:10", "source": "both"},
+    {"claim": "Stored findings let the verdict agent be tuned and simulated separately without rerunning the investigation, and a wrong verdict on correct findings can be fixed by changing only the verdict agent.", "evidence": "Calibration workflow slide (findings, wrong verdict, fix only verdict agent, simulate and deploy) and Q&A comment about customer-reported verdicts.", "grade": "case", "t": "13:42", "source": "both"},
+    {"claim": "The flat playbook of 10 to 15 guiding questions led each run to choose a different subset of questions, producing different findings.", "evidence": "Slide showing two investigations picking different questions; observed from run comparisons.", "grade": "case", "t": "14:45", "source": "both"},
+    {"claim": "Replacing playbooks with recipes, one per threat type with mandatory and optional stages naming the evidence to collect and tools to call, reduced instability from about 5.8 percent to about 0.7 percent.", "evidence": "Before and after result slide, measured by repeating investigations and comparing findings semantically.", "grade": "measured", "t": "16:20", "source": "both"},
+    {"claim": "Cost can be controlled by capping the number of investigation stages and forcing the agent to conclude a verdict.", "evidence": "Stated in Q&A as one option; no data.", "grade": "assertion", "t": "22:00", "source": "said"}
+  ],
+  "numbers": [
+    {"figure": "10,000+", "meaning": "threats investigated by the agent per day", "t": "00:38"},
+    {"figure": "~200", "meaning": "threats in the static benchmark", "t": "05:22"},
+    {"figure": "92.1% vs 93.0%", "meaning": "benchmark precision, baseline vs cheaper model", "t": "04:51"},
+    {"figure": "7% vs 6%", "meaning": "benchmark false positive rate, baseline vs experiment", "t": "04:51"},
+    {"figure": "82% vs 80%", "meaning": "benchmark recall, baseline vs experiment", "t": "04:51"},
+    {"figure": "$2.5 vs $0.4", "meaning": "benchmark cost, baseline vs experiment (about 6x cheaper)", "t": "05:22"},
+    {"figure": "~11K", "meaning": "live threats in the shadow run", "t": "06:56"},
+    {"figure": "98%", "meaning": "verdict agreement between shadow and production", "t": "06:56"},
+    {"figure": "22 vs 22", "meaning": "true positives, production vs shadow", "t": "07:26"},
+    {"figure": "150 vs 216", "meaning": "false positives, production vs shadow (about 44% more)", "t": "07:26"},
+    {"figure": "0.1% vs 2.1%", "meaning": "error rate, baseline vs experiment in shadow", "t": "07:26"},
+    {"figure": "~5.8%", "meaning": "verdict flip rate on repeated runs of the same threat", "t": "09:30"},
+    {"figure": "33 and 32", "meaning": "investigations of one threat in a day, and how many were wrong despite high confidence", "t": "11:04"},
+    {"figure": "5", "meaning": "verdict agent reruns on the same findings, all identical", "t": "13:10"},
+    {"figure": "10 to 15", "meaning": "questions in the flat playbook", "t": "14:45"},
+    {"figure": "~0.7%", "meaning": "instability with recipes (from ~5.8% with playbooks)", "t": "16:51"},
+    {"figure": "13 minutes", "meaning": "gap between malicious and not-malicious verdicts in the rogue agent incident", "t": "02:14"}
+  ],
+  "frameworks": [
+    {"name": "Shadow agent testing", "description": "A candidate version receives the same live threat as production, performs a full investigation and records its verdict only, while production acts. Results are compared on agreement, true positives, false positives and errors."},
+    {"name": "Investigation agent / verdict agent split", "description": "Alert goes to an investigation agent that outputs structured findings, then a verdict agent that reads only the findings and outputs the verdict. Disagreements are triaged by whether findings or judgment differed."},
+    {"name": "Recipes versus playbooks", "description": "A playbook is a flat list of 10 to 15 guiding questions by threat type. A recipe is a staged plan per threat type: mandatory evidence collection (process, network and file activity around the detection), mandatory anomaly check (compare with this machine's past and similar machines), and a triggered optional forensics stage that runs a forensics agent only if a forensic snapshot exists."},
+    {"name": "Measure noise before measuring change (A/A testing)", "description": "Repeat the unchanged agent on the same threats to estimate baseline instability, then compare candidate deltas against that noise."},
+    {"name": "Four key takeaways", "description": "Measure in production via shadow testing; do not rely on agent confidence; control your agents by breaking them down and measuring each part; measure your noise and fix its source."}
+  ],
+  "artifacts": [
+    {"name": "Wiz SOC agent", "kind": "product", "note": "The autonomous investigation agent whose evaluation is the subject of the talk; internal evaluation details, not a public benchmark.", "url": ""}
+  ],
+  "slide_only": [
+    "The cost-control opening slide shows a Slack thread where one engineer proposes Gemini 4, another says migration to Opus 5.5 just finished, and a FinOps person proposes benchmarking Gemini Flash and Claude Haiku 5.5; the thread is labeled Model, Task, Cost.",
+    "The incident slide quotes the malicious verdict as password cracking, /etc/shadow, credential harvesting and VNC server execution across 18 containers at 13:20, then the not-malicious rationale as a benign false positive from automated package installation at 13:33, with the note that the retrigger found no new relevant evidence.",
+    "The benchmark slide gives exact baseline and experiment numbers for precision, errors, FPR, recall and cost.",
+    "The shadow slide gives exact true positive (22 and 22) and false positive (150 and 216) counts and error rates (0.1 and 2.1 percent).",
+    "The playbook slide shows example questions: has the actor created projects before, does the S3 bucket contain sensitive data, should the container run with high privileges, is the source IP anomalous for this identity.",
+    "The recipe slide lists stage 1 evidence collection (mandatory), stage 2 anomaly check (mandatory) and a forensics stage that runs only if a forensic snapshot exists.",
+    "The stability slide states instability was measured by repeating investigations and comparing findings semantically."
+  ],
+  "demos": [],
+  "quotes": [
+    {"text": "We had the same threat, same agent and opposite verdict.", "speaker": "Erez Harush", "t": "03:16"},
+    {"text": "Being confident doesn't mean being correct.", "speaker": "Tal Waitzenberg", "t": "11:04"},
+    {"text": "The splitting doesn't automatically make our agent more reliable. It just made the problem easier to measure.", "speaker": "Tal Waitzenberg", "t": "14:13"},
+    {"text": "You want to stop guessing what your agent does and start measuring what the agent will do.", "speaker": "Erez Harush", "t": "19:26"}
+  ],
+  "offense": [
+    "A real rogue agent incident in a customer environment, described only from the detection side (credential harvesting, password cracking, VNC server execution across 18 containers); no attacker technique detail beyond that."
+  ],
+  "defense": [
+    "Run a silent shadow version of any changed agent beside production on live traffic and compare agreement, true positives, false positives and errors before shipping.",
+    "Measure baseline run-to-run variance by repeating unchanged runs before interpreting any metric delta.",
+    "Do not use model-stated confidence as a reliability signal; use a separate judge prompt or model if an LLM judge is needed.",
+    "Split investigation from verdict and persist structured findings so each stage can be rerun, tuned and simulated independently.",
+    "Replace open-ended question lists with staged recipes per threat type that name mandatory steps, the evidence to collect and the tools to call.",
+    "Cap investigation stages and force a verdict to control cost."
+  ],
+  "takeaways": [
+    "Before accepting a vendor or in-house AI SOC agent change, require a shadow run on live volume with false positive counts, not a small static benchmark.",
+    "Ask AI SOC vendors for their verdict flip rate on repeated identical inputs, and treat any improvement smaller than that rate as unproven.",
+    "Persist the evidence an investigation agent gathered separately from its verdict so you can audit and correct judgment without rerunning the investigation.",
+    "Constrain agent investigations with explicit per-threat-type stages rather than leaving question selection to the model, and measure the effect on stability.",
+    "Do not use self-reported confidence to route alerts to humans."
+  ],
+  "limits": [
+    "Splitting the agent does not remove nondeterminism; it only makes its source measurable.",
+    "A retriggered investigation can change the verdict even with no new evidence, which they identified as the real-world failure that started the work."
+  ],
+  "critique": [
+    "The shadow comparison rests on very few true positives (22 each across about 11,000 threats), so the recall effect of the cheaper model is essentially unmeasured; the rejection is driven by false positives and errors.",
+    "No ground-truth source for the shadow run was shown in the talk (the description mentions analyst ground truth), and the benchmark and shadow precision figures are not directly comparable.",
+    "The 5.8 percent to 0.7 percent stability result is measured by semantic comparison of findings, a method not described in detail, and sample sizes were not given.",
+    "The headline of an agent confidently wrong 32 times out of 33 is one example, not a rate.",
+    "Verdict stability on five reruns of the same findings is a small test, and stable verdicts do not show that the verdict is correct.",
+    "Stabilizing by constraining the investigation could reduce coverage of novel attacks; the talk did not report detection recall under recipes.",
+    "The speakers work for Wiz, which sells a product of this kind; the results describe Wiz's own agent and can be read as a method rather than a benchmark."
+  ],
+  "qa": [
+    "Question: why use many sub-agents rather than one agent? Answer: the main SOC agent controls the flow and runs sub-agents for tasks with large, irrelevant context, such as forensics; sub-agents do not share context and return a report. Splitting verdict from investigation also made it faster to fix customer-reported wrong verdicts, since the findings could be confirmed correct and only the interpretation changed.",
+    "Question: how do you control cost beyond choosing a cheaper model? Answer: restrict the number of investigation stages and force the agent to finalize and conclude a verdict."
+  ],
+  "tags": ["ai-soc-detection-response", "evals-benchmarks-metrics", "org-adoption-culture"],
+  "key_frames": [
+    {"file": "t00373.jpg", "caption": "Static benchmark of about 200 threats: the cheaper model looks equal on quality at 0.4 dollars versus 2.5."},
+    {"file": "t00487.jpg", "caption": "Shadow versus production on about 11K live threats: 98 percent agreement but 216 versus 150 false positives and 2.1 versus 0.1 percent errors."},
+    {"file": "t00730.jpg", "caption": "Before and after architecture: single agent split into investigation agent, findings and verdict agent."},
+    {"file": "t00794.jpg", "caption": "Five verdict agent reruns on the same findings give the same malicious verdict, locating the noise in investigation."},
+    {"file": "t00950.jpg", "caption": "Result: instability falls from about 5.8 percent with playbooks to about 0.7 percent with recipes."}
+  ],
+  "signal": {"score": 4, "reason": "A method for evaluating and stabilizing a production AI SOC agent with benchmark, shadow-run and stability figures; sample sizes and ground-truth sources were not given for every figure."},
+  "caveats": [
+    "The description says the agent has handled 5,000 threats a day; the speakers and slide say 10,000 or more.",
+    "Transcript garbles names (Tal Weitzenberg, Erez Zarush, stock agent for SOC agent, Opus 4 5.5); spellings taken from the title slide and Slack thread slide.",
+    "Speaker said the error rate went up 2 percent; the slide shows 0.1 percent to 2.1 percent.",
+    "Speaker rounded the flip and stability rates to 6 percent and under 1 percent; slides give 5.8 and 0.7 percent.",
+    "The Slack thread slide names model versions (Gemini 4, Opus 5.5, Haiku 5.5) as illustrative scenario text; the speaker did not say which models were actually compared."
+  ]
+}

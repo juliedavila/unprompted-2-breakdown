@@ -1,0 +1,147 @@
+{
+  "nn": "66",
+  "id": "bf60B__4FDo",
+  "url": "https://www.youtube.com/watch?v=bf60B__4FDo",
+  "title": "From DARPA AIxCC to Microsoft FORGE Lab: Lessons Building Hyperscale AI Code Scanning Tools",
+  "speakers": [{"name": "Taesoo Kim", "affiliation": "VP, Security Research, Microsoft (also professor at Georgia Tech, on leave, per the Microsoft blog author page shown)"}],
+  "format": "talk",
+  "duration_min": 27,
+  "thesis": "AI vulnerability discovery has moved from a research demonstration (DARPA AIxCC) to production at hyperscale (Microsoft MDASH), and the hard problems are now cost per audit, deciding when to stop spending tokens, and feeding the expensive validation and remediation stages back into finding, which is why FORGE Lab is pivoting to exploitability as the organizing signal.",
+  "summary": "Kim opens with the DARPA AI Cyber Challenge as the ChatGPT moment for security: a $30 million competition his Team Atlanta won, with the winning system, a long technical report, a systematization-of-knowledge paper and the OSS-CRS code and CRSBench benchmark all released. He claims AIxCC showed AI can do professional-level cyber tasks at about $150 per task, and that frontier labs then productized the idea (Big Sleep, CodeMender, Aardvark, Claude Code Security, Codex Security Review). He shows open source skepticism (curl's Daniel Stenberg) turning into acceptance and Microsoft's monthly Patch Tuesday CVE count climbing sharply after March 2026. Five Team Atlanta members joined Microsoft and, within five months, shipped MDASH, a multi-model, multi-agent scanning harness with five stages: prepare, scan, validate, dedup, prove. He explains four design ideas: turn search into decision problems, use the function as the orchestration unit, funnel candidates through increasingly expensive validation, and enrich source with LLM-written taint and bounds annotations. He reports 229 Windows and Hyper-V CVEs fixed, including 38 remote code execution bugs, and a Linux kernel exploit-generation experiment. He closes with three shifts (scale and cost, reasoning economics, a continuous learning loop), all pushing toward exploitability, and takes questions on patch diffing, open-weight models, context design, variant analysis, model churn and pipeline erosion.",
+  "argument": [
+    "DARPA AIxCC showed that LLM-driven systems can find and patch real vulnerabilities at professional level for roughly $150 per task, and the frontier labs productized that within about a year.",
+    "Skepticism from open source maintainers and the security community flipped to adoption, visible in a steep rise in Microsoft CVEs fixed per Patch Tuesday after March 2026.",
+    "MDASH makes AI scanning work in production by forcing agents through an explicit pentester-style workflow, with function-level decision questions, shared annotated context, and multi-persona validation before expensive proving.",
+    "With discovery solved, the bottlenecks are cost per audit, knowing how many tokens are enough, and the much costlier triage, validation and deployment stages, so findings must be ranked and learned from.",
+    "FORGE Lab therefore prioritizes exploitable bugs: reason about exploitation early, spend tokens on exploitation reasoning, and use exploit techniques as the feedback loop, demonstrated on automatic exploit generation against the Linux kernel."
+  ],
+  "claims": [
+    {"claim": "AIxCC concluded that AI can conduct professional-level cyber tasks at about $150 per successful task.", "evidence": "Stated as a statistic from the competition; the slide repeats $150 / task with no breakdown of how it was computed.", "grade": "assertion", "t": "03:12", "source": "both"},
+    {"claim": "Team Atlanta dominated AIxCC, scoring 392.76 against 219.35 for the second-place team.", "evidence": "Final scoreboard on the slide with columns for correct submission rate, vulnerability discovery, program repair, SARIF assessment and bundle score; Atlantis also leads the cumulative score chart across the rounds.", "grade": "measured", "t": "01:40", "source": "slide"},
+    {"claim": "Microsoft fixes about 70 CVEs in a typical Patch Tuesday, and the count rose to over 1,100 by July 2026, with a sharp rise after March 2026.", "evidence": "Line chart of CVEs fixed per month (MSRC / Patch Tuesday): a flat baseline near 69 to 80 through February 2026, then 1,142 in July 2026. The speaker said about 1600 aloud, which the slide does not support.", "grade": "measured", "t": "05:18", "source": "both"},
+    {"claim": "MDASH was built and announced within five months of five Team Atlanta members joining Microsoft, and is now adopted internally and commercialized as part of the Defender product.", "evidence": "Timeline slide showing the MDASH announcement at Microsoft Build; the Defender commercialization claim is spoken only.", "grade": "case", "t": "06:18", "source": "both"},
+    {"claim": "Forcing agents through an explicit multi-stage pentester workflow (prepare, scan, validate, dedup, prove), with termination after each stage, beats loosely coupled skills layered on a general agent harness by giving control over token spend per stage.", "evidence": "Architecture description and Q&A answer; no head-to-head comparison against skill-based tools was shown.", "grade": "assertion", "t": "25:33", "source": "said"},
+    {"claim": "More concrete, narrower questions (a function, a bug class, a line) give higher success and fewer hallucinations than asking an agent to find bugs in a repo, but are hard to scale by hand.", "evidence": "Experience reported from building the tool, illustrated by a ladder of copilot prompts from whole repo down to a line-level integer overflow question.", "grade": "anecdote", "t": "09:26", "source": "both"},
+    {"claim": "Inlining LLM-generated taint, data-flow and bounds annotations into function source drastically reduced false positives, and sharing the annotated source across the 100-plus agents cuts redundant reasoning.", "evidence": "Speaker's description of tinkering with comments and then automating it with an LLM; the slide shows an annotated SQLite-style function with categories (Vuln, Bounds, Flow, Control, Safety, Meta). No false-positive rates were given.", "grade": "anecdote", "t": "11:32", "source": "both"},
+    {"claim": "MDASH on a multi-model configuration scores above single frontier models (Claude Mythos Preview, GPT-5.5, GPT-5.4) on an unnamed benchmark, despite using older-generation models at announcement time.", "evidence": "Scatter plot of success rate against model release date with MDASH circled at roughly 88 to 90 percent; the benchmark is not named on the slide or aloud.", "grade": "measured", "t": "12:04", "source": "both"},
+    {"claim": "MDASH-reported fixes on Windows and Hyper-V total 229 critical or important CVEs, including 38 remote code execution bugs at an average CVSS of 7.7, growing from 16 in the May launch cohort to 89 in October.", "evidence": "Stacked bar chart by month with critical and important counts: May 16, June 10, July 27, August 35, September 52, October 89; the speaker said about 200.", "grade": "measured", "t": "12:36", "source": "both"},
+    {"claim": "In an automatic exploit generation experiment on the Linux kernel, about 5 percent of MDASH static reports reproduced as crashes (600-plus at about $3.6 per PoC), and about 1.8 percent of those crashes became exploits, yielding 11 local privilege escalations at $10 or more per exploit.", "evidence": "Results slide with token-cost and time charts over 182 matched crash cases and a small set of mitigated LPE cases, labeled GPT-5.5; most crashes depend on non-default configuration so are not security concerns.", "grade": "measured", "t": "16:15", "source": "both"},
+    {"claim": "Cost per stage rises steeply (finding less than triaging, much less than validation, far less than deployment), so the expensive later stages should feed back into cheaper, better-ranked finding.", "evidence": "Shift 3 slide stating the cost ordering; no cost data given. Spoken estimate is weeks to months for the post-discovery work.", "grade": "assertion", "t": "14:42", "source": "both"},
+    {"claim": "Binary diffing of published patches to find and exploit the fixed bug now takes drastically less time because of AI, so organizations must push updates to customers with extreme care.", "evidence": "Speaker answer to an audience question; no timing data.", "grade": "assertion", "t": "19:20", "source": "said"},
+    {"claim": "Frontier-lab safeguards increasingly block binary analysis and exploit-related requests, so many practitioners use open-weight models such as Kimi and GLM, which Kim says are extremely capable for this work.", "evidence": "Speaker's observation from recent model cards and practice; no comparison shown.", "grade": "anecdote", "t": "20:22", "source": "said"}
+  ],
+  "numbers": [
+    {"figure": "$30 million", "meaning": "DARPA AIxCC total prize pool; Team Atlanta won the $4 million first prize and donated it to Georgia Tech", "t": "00:38"},
+    {"figure": "42 teams, 7 finalists", "meaning": "teams that competed and teams advancing to finals per the AIxCC infographic (speaker said about 100 registered, about 40 in semifinals, 7 in the final)", "t": "01:10"},
+    {"figure": "392.76 vs 219.35", "meaning": "AIxCC final score of Team Atlanta versus second-place Trail of Bits", "t": "01:40"},
+    {"figure": "$150", "meaning": "cost per successful professional-level security task in AIxCC", "t": "03:12"},
+    {"figure": "about 70 per month", "meaning": "typical CVEs fixed in Patch Tuesday before the rise; slide baseline 69, 80 in February 2026", "t": "05:18"},
+    {"figure": "1,142", "meaning": "CVEs fixed in the July 2026 Patch Tuesday per the slide (speaker said about 1600)", "t": "05:18"},
+    {"figure": "100+", "meaning": "specialized scanning agents per bug type in MDASH, with 3 to 5 relevant subagents picked per function", "t": "07:53"},
+    {"figure": "229 CVEs, 38 RCEs, 7.7 CVSS", "meaning": "critical and important CVEs fixed via MDASH on Windows and Hyper-V; remote code execution count; average severity", "t": "12:36"},
+    {"figure": "16, 10, 27, 35, 52, 89", "meaning": "MDASH CVEs fixed per month cohort, May launch through October", "t": "12:36"},
+    {"figure": "5%, $3.6 per PoC, 600+", "meaning": "share of MDASH Linux reports reproduced as crashes, average token cost per PoC, number reproduced", "t": "16:15"},
+    {"figure": "1.8%, 11 LPEs, $10+ per exploit", "meaning": "share of Linux crashes turned into exploits, local privilege escalations obtained, cost per exploit", "t": "16:47"},
+    {"figure": "182 cases", "meaning": "Linux crash cases in the cost chart; 174 of 182 within a $10 target and 175 of 182 within 60 minutes, average $3.61 and 21.5 minutes", "t": "16:15"}
+  ],
+  "frameworks": [
+    {"name": "MDASH pipeline", "description": "Multi-model agentic scanning harness with five stages. Prepare builds a per-repo knowledge base (threat model, repo map, call graph, CVEs and patches mined from Git). Scan runs 100-plus specialized agents per bug type, choosing 3 to 5 relevant ones per function. Validate has Models A, B and C debate as different personas and vote, two of three. Dedup collapses duplicates. Prove generates a proof of concept in three stages (self-contained, reachability harness, fuzzing) in a Docker build with sanitizers, then optional patch generation (AutoFix) and patch validation with audit."},
+    {"name": "Four core design ideas", "description": "Idea 1: turn the search problem into decision problems by asking narrower questions. Idea 2: use the function as the unit of orchestration, with each function checked by parallel agents per bug class. Idea 3: scale by funneling through static self-dispute, multi-perspective debate, reachability evaluation, dynamic constraint concretization, and finally a PoC, with cost rising at each step. Idea 4: enrich source with LLM-generated inline annotations for taint and boundaries."},
+    {"name": "Three shifts", "description": "Shift 1, from frontier capability to scale: cut tokens per audit with small, specialized or multiple models. Shift 2, from token consumption to reasoning economics: security is roughly the tokens spent on security reasoning, so decide what is enough and spend cost-effectively. Shift 3, validation and remediation as a continuous learning loop: rank bugs, reuse past lessons. FORGE restates each shift around exploitation."},
+    {"name": "Hybrid static and dynamic spectrum", "description": "Atlantis started from dynamic fuzzing and added LLMs; MDASH started from static LLM reasoning and added tooling and proving; both move toward a hybrid with better applicability and low false positives."}
+  ],
+  "artifacts": [
+    {"name": "MDASH", "kind": "product", "note": "Microsoft multi-model, multi-agent vulnerability scanning and remediation harness; used on Windows in CI/CD and described as part of Defender.", "url": ""},
+    {"name": "Atlantis (Team Atlanta CRS)", "kind": "tool", "note": "AIxCC winning cyber reasoning system, started from fuzzing harnesses with LLM assistance; has a 150-plus page technical report.", "url": "https://team-atlanta.github.io/"},
+    {"name": "SoK: DARPA's AI Cyber Challenge (AIxCC): Competition Design, Architectures, and Lessons Learned", "kind": "paper", "note": "Systematization paper at USENIX Security 26 comparing CRS designs across teams; shown with a distinguished paper award ribbon.", "url": "https://arxiv.org/abs/2602.07666"},
+    {"name": "CtxFuzz, PatchIsland, OSS-CRS papers", "kind": "paper", "note": "Companion papers listed as ASE 26, ACSAC 26 and WOOT 26.", "url": ""},
+    {"name": "OSS-CRS and CRSBench", "kind": "benchmark", "note": "Open-source cyber reasoning system framework and a full-pipeline benchmark under OpenSSF, built from AIxCC challenges.", "url": "https://oss-crs.openssf.org/crsbench"},
+    {"name": "Microsoft FORGE Lab CVE list", "kind": "dataset", "note": "JSON file of CVEs found by the lab, linked on the community slide.", "url": "https://github.com/microsoft/forge-lab/blob/main/cve/cve.json"},
+    {"name": "LF Akrites", "kind": "standard", "note": "Linux Foundation coordinated, confidential vulnerability remediation effort for critical open source, with Microsoft and Google participating.", "url": ""},
+    {"name": "Microsoft Security blog posts by Taesoo Kim", "kind": "paper", "note": "Three posts listed: 3 lessons from frontier AI vulnerability research (October 7), Beyond the benchmark: Advancing security at AI speed (June 17), Defense at AI speed: Microsoft's new multi-model agentic security system tops leading industry benchmark (May 12).", "url": ""}
+  ],
+  "slide_only": [
+    "AIxCC infographic: 42 teams competed, 7 advance to finals, 5 challenge projects (Linux Kernel, NGINX, Tika, Jenkins, SQLite), 59 synthetic vulnerabilities, 4 hours per round, $100 per round AI budget, each CRS had 3 nodes of 64 cores and 256 GB RAM.",
+    "AIxCC final scoreboard columns (total, correct submission %, vulnerability discovery, program repair, SARIF, bundle): Team Atlanta 392.76, 91.27%, 79.71, 171.10, 5.99, 136.38; Trail of Bits 219.35; Theori 210.68; All You Need IS A Fuzzing Brain 153.70; Shellphish 135.89; 42-b3yond-6ug 105.03; Lacrosse 9.59.",
+    "Industry timeline: Google Big Sleep; Aardvark (OpenAI) and CodeMender (DeepMind) in October 2025; Claude Code Security (Anthropic) in February 2026; Codex Security Review (OpenAI) in March 2026; MDASH (Microsoft) in June 2026. The AIxCC slogan 'AI + CRS = The Future' is struck through and replaced with NOW.",
+    "Team Atlanta members went to Microsoft, with others to DeepMind, OpenAI, Armadin, XBOW and QED.",
+    "Microsoft Windows Blog post of July 9, 2026 by Pavan Davuluri: Windows set up dedicated cloud infrastructure for scanning and proving; a scanner pipeline scans critical binaries and validates candidates using multi-model debate across model families; confirmed candidates flow to a Windows-specific prove pipeline to eliminate false positives so only highest-confidence findings reach engineers.",
+    "Annotated-code slide shows layer counts (Vuln 15, Bounds 48, Flow 52, Control 3, Safety 9, Meta 6; 133 annotations across 114 lines) on an FTS5 function with notes such as attacker-controlled blob data.",
+    "Model comparison chart plots success rate against release date from DeepSeek-V3 near 4 percent in January 2025 up to roughly 80 to 90 percent in 2026 (Claude Mythos Preview, GPT-5.5, GPT-5.4, Claude Opus and Sonnet 4.x, GLM, Kimi K2.5, Muse Spark), with MDASH multi-model circled at the top.",
+    "Linux kernel slide: PoC-crash step uses GPT-5.5; average token cost $3.61 (median $2.34), average time 21.5 minutes (median 14.3); mitigated LPE cases average $8.56 (median $7.22) and 25.0 minutes; examples of why crashes are not security issues: non-default device driver, non-popular config, corrupted filesystem image.",
+    "Akrites community timeline: LF Alpha-Omega (March 2026), Anthropic Glasswing (April), IBM and Red Hat Project Lightwell (May), OpenAI Patch the Planet (May), LF Akrites with Microsoft and Google (June).",
+    "FORGE Lab expands to Frontier Offensive Research and Generative Exploitation.",
+    "Daniel Stenberg posts: first, banning reporters of AI slop and 'we are effectively being DDoSed'; later, that every one of 20-plus new curl CVEs announced October 14 was found by clever humans using harnesses powered by AI models.",
+    "Microsoft author page lists the speaker as Vice President, Agentic Security."
+  ],
+  "demos": [],
+  "quotes": [
+    {"text": "Given enough tokens, probably all security bugs are shallow.", "speaker": "Taesoo Kim", "t": "14:42"},
+    {"text": "Cost and infrastructure is way more important than just demonstrating your super capability, finding bugs and exploitation as well.", "speaker": "Taesoo Kim", "t": "14:10"},
+    {"text": "Because of super intelligence, non-security expert now becomes security expert, which is a huge wake-up call to the entire security community.", "speaker": "Taesoo Kim", "t": "05:48"},
+    {"text": "If AGI comes, probably we don't introduce bugs. So this is a huge assumption that we have right now.", "speaker": "Taesoo Kim", "t": "26:04"}
+  ],
+  "offense": [
+    "Patch diffing: with AI, the time to reverse a published patch (including binaries) into a working exploit has dropped drastically, shrinking the window between patch release and attacker exploitation.",
+    "AI reduces the cost to attack, so low-skill attackers become powerful and the scope of required auditing expands.",
+    "Automatic exploit generation against the Linux kernel: from patch, report or crash to local privilege escalation or remote code execution, yielding 11 LPEs from 600-plus reproduced crashes.",
+    "Frontier models resist binary analysis plus exploitation requests, pushing offensive users toward open-weight models."
+  ],
+  "defense": [
+    "Run an explicit staged pipeline (prepare, scan, validate, dedup, prove) rather than a single general agent, so token budget can be set per stage.",
+    "Ask narrow decision questions per function and bug class, run them in parallel, and let agents flag suspicious sites before any exploitation work.",
+    "Pre-annotate source with LLM-generated taint and boundary information and share it across all agents to cut false positives and redundant reasoning.",
+    "Validate with multi-persona debate across different model backends (developer, defender, attacker) and a two-of-three vote before proving.",
+    "Require a PoC or reachability evidence for high-assurance findings; allow developers to consume the earlier suspicious-site output for pre-commit scans.",
+    "Mine Git history and CVE or MSRC tags in commits for variant analysis across the codebase.",
+    "Keep the pipeline model agnostic and run a benchmark suite whenever a new model ships; use powerful models for high-stakes targets and cheaper models for broad scans.",
+    "Coordinate disclosure of upstream findings through community channels such as LF Akrites rather than posting to public lists."
+  ],
+  "takeaways": [
+    "Budget AI code scanning by stage: spend cheaply on broad per-function discovery and reserve expensive models and dynamic proving for candidates that survive static debate.",
+    "Measure and plan for cost per audit and for when to stop, since the talk argues token spend is becoming the proxy for assurance.",
+    "Expect patch-to-exploit time for your shipped software to shrink and plan patch rollout speed and customer update enforcement accordingly.",
+    "Invest in ranking and exploitability triage, because validation and deployment, not finding, are the dominant cost and the point where false positives hurt most.",
+    "Do not assume frontier-model access for offensive-adjacent security work; test open-weight models and keep your pipeline model-agnostic."
+  ],
+  "limits": [
+    "Speaker acknowledged most Linux crashes depend on non-default configurations and are not security concerns.",
+    "Cost and infrastructure, not capability, now limit adoption because few organizations need or can afford frontier-level scanning.",
+    "Post-discovery work remains expensive and manual, taking weeks to months.",
+    "The design assumes bugs keep being introduced; the speaker noted that if AGI arrives, that premise may change."
+  ],
+  "critique": [
+    "The benchmark behind the model comparison chart is not named, and MDASH is compared as a multi-model system against single models, so the chart does not isolate the value of the pipeline design.",
+    "Claims about false-positive reduction from annotations and multi-persona debate come with no rates, ablations or comparisons to simpler pipelines.",
+    "The CVE counts include only fixed, shipped Windows and Hyper-V bugs by cohort; there is no denominator for scanned code, triage effort, rejected findings or how many findings were severe versus low value.",
+    "The Patch Tuesday chart is attributed to AI-driven discovery in general, not just MDASH, and the speaker's spoken figure (about 1600) conflicts with the slide (1,142).",
+    "The $150 per task figure is repeated without definition of task, success or how it generalizes beyond the AIxCC challenge projects.",
+    "The speaker works for Microsoft, which ships MDASH and runs FORGE Lab. The Q&A answer on pipeline erosion argues for staged control; no comparison against simpler agent-plus-strong-model setups was shown.",
+    "The audience question on verifying generated patches was not answered; the response covered only variant analysis."
+  ],
+  "qa": [
+    "Q: How long to reverse engineer a Windows patch, and can open models do this locally? A: Binary diffing used to be slow; with AI the time to analyze and exploit drops drastically, so even large vendors must be careful pushing updates to customers. Open-weight models such as Kimi and GLM work very well, and many people use them because frontier models block binary analysis plus exploitation.",
+    "Q: What context goes into the annotation pass and the per-function pass, and do agents have tools to look up definitions? A: Static analysis (taint tracking and a CodeQL-backed code graph) feeds the LLM, which writes inline comments on each function; all agents then share the same annotated source.",
+    "Q: How do you think about variance and about verifying patches? A: Answered variant analysis only: agents use CVE or MSRC tags in commits to generalize where similar bugs may exist; patch verification was not addressed.",
+    "Q: How much of the pipeline must be retested per model release? A: A large benchmark pipeline retests model combinations; the system is model agnostic, so models are interchangeable, with powerful models for high-stakes targets and cheaper ones for large-scale scans.",
+    "Q: Does a stronger model erode the benefit of a segmented pipeline, and what does it do to cost? A: Open-source scanners such as skill-based harnesses are loosely coupled; forcing explicit stages gives control over token spend per stage. The speaker did not claim the pipeline remains optimal as models improve."
+  ],
+  "tags": ["vuln-discovery-exploit", "autonomous-offense", "appsec-secure-development", "evals-benchmarks-metrics"],
+  "key_frames": [
+    {"file": "t00425.jpg", "caption": "MDASH architecture: Prepare, Scan, Validate, Dedup, Prove stages with 100-plus agents per bug type, three-model debate vote and PoC generation stages."},
+    {"file": "t00765.jpg", "caption": "Monthly MDASH CVEs fixed on Windows and Hyper-V, totaling 229 including 38 RCEs, rising from 16 to 89 per month."},
+    {"file": "t00962.jpg", "caption": "Linux kernel automatic exploit generation results with conversion rates, per-case costs and times, and cost charts."},
+    {"file": "t00647.jpg", "caption": "Funnel of increasingly expensive validation from static self-dispute to dynamic PoC."},
+    {"file": "t00820.jpg", "caption": "Three shifts framing the hybrid static and dynamic future: scale, reasoning economics, continuous learning loop."}
+  ],
+  "signal": {"score": 4, "reason": "Specific production numbers and a concrete pipeline design from a team that ships hyperscale AI scanning; the talk shows no ablations or rates for several of its design claims, and the speaker works for the company that ships the product."},
+  "caveats": [
+    "Auto-captions garble names: Entropy means Anthropic, Mithos means Mythos, R Vark means Aardvark, and the moderator's name is unclear.",
+    "Speaker said about 200 vulnerabilities and about 1600 Patch Tuesday fixes; slides show 229 MDASH CVEs and 1,142 for July 2026, so slide values were used.",
+    "Speaker said the Windows team adopted MDASH in CI/CD since April; the CVE chart labels the first cohort May launch.",
+    "The Linux kernel chart text is small and values were read from a mid-resolution frame; the 11 LPE count is from the slide and speech while the right chart shows 6 mitigated LPE cases.",
+    "The benchmark in the model-comparison chart is not named, and chart values are estimated from point positions.",
+    "Slide title reads Microsoft Security FORGE Lab: The Next Journey, while the listed talk title is From DARPA AIxCC to Microsoft FORGE Lab.",
+    "Speaker affiliation appears as VP, Security Research on the slide and Vice President, Agentic Security on the Microsoft author page."
+  ]
+}

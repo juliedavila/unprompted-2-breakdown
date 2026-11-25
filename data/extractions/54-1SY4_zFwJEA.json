@@ -1,0 +1,151 @@
+{
+  "nn": "54",
+  "id": "1SY4_zFwJEA",
+  "url": "https://www.youtube.com/watch?v=1SY4_zFwJEA",
+  "title": "Say Shibboleth",
+  "speakers": [
+    {"name": "Sergej Epp", "affiliation": "Zero Day Clock (creator)"},
+    {"name": "Dario Pasquini", "affiliation": "Cracken (Head of AI)"}
+  ],
+  "format": "talk",
+  "duration_min": 22,
+  "thesis": "As AI-driven attackers make TTP-based attribution meaningless, defenders can fingerprint the model and the agent harness behind an attack by designing honeypot services (shibboleths) that force high-entropy, model-specific answers without injecting the attacker or changing its goal.",
+  "summary": "Epp opens with the biblical shibboleth story and argues that attribution used to rest on TTPs, but any model can now play APT29 because every playbook is in the weights. He proposes an Obelisk of Pain: above TTPs, defenders should attribute the behavior of the harness, the accent of the model and the operator's intent. Prompt-injecting the attacker fights the agent's goal, so aligned models refuse and attackers can filter it, and passive fingerprints from shell commands carry little entropy. Pasquini then presents shibboleths, environmental traps that look like normal services but require a specific act: a declaration of model, a written text, or a timed behavior. His example is an MCP honeypot where the handshake is modified so sampling and a model name are mandatory, with hard-regex, forced-error and blacklist tricks that raise honest declarations. Behavioral traps ask the agent to write operator-log tickets, and character n-gram classification of the prose identifies the model. In a lab matrix of 150 runs across 15 LLMs, declaration plus behavior reaches 92 percent; when agents are told to lie, comparing claim and behavior catches 95 percent of lies. Harnesses leave little accent, so the team probes timeouts, parallel tool calls, masking and other tells. The work is being open sourced.",
+  "argument": [
+    "Attribution matters beyond the SOC for control priorities, insurance, ransom legality and sanctions, but TTPs no longer tell defenders who is behind an attack because every playbook is in the model weights.",
+    "Attribution should climb above the pyramid of pain to behavior (the harness), accent (the model) and intent (the operator).",
+    "Prompt-injecting the attacking agent works against its goal, so aligned models refuse it, attackers can filter it, and what is obtained is only a self-declared name, a claim and not evidence.",
+    "Passive fingerprints from commands such as ls and cat have low entropy because the task, not the defender, decides what the attacker sends.",
+    "Shibboleths are normal-looking services that demand a specific act, which shifts the attacker into a high-entropy domain such as free text or a timed behavior without opposing its goal.",
+    "Combining a declared model name with a behavioral reading of the agent's own prose recovers the model and exposes lies, while harness identification needs separate probes such as timeouts."
+  ],
+  "claims": [
+    {"claim": "Making the MCP sampling field mandatory and adding a model name makes frontier agents declare an honest real name 56 percent of the time, while 44 percent borrow or give placeholder names, most often openai/gpt-4o.", "evidence": "Bar chart and a fun-fact slide: gpt-4o was borrowed by 10 of the 15 models tested.", "grade": "measured", "t": "09:56", "source": "both"},
+    {"claim": "Three tricks (a hard regex on name format, unconditional errors on the first k handshakes, and a blacklist of known fake names such as gpt-4o) raise honest declarations to 89 percent.", "evidence": "Slides with worked examples: Claude Opus 4.8 on opencode over SSH was refused twice before declaring claude-opus-4-8, and Hunyuan HY3 on Hermes tried hermes-3 five times and gpt-4o before tencent/hy3.", "grade": "measured", "t": "10:57", "source": "both"},
+    {"claim": "Asking agents to write operator-log tickets under constraints moves the interaction from low-entropy commands to prose, and the same request yields visibly different writing from different models.", "evidence": "Side-by-side example of Claude Opus 5 on OpenClaw and DeepSeek V4 Pro on Hermes: em dash use 40 vs 2 percent, semicolons 93 vs 6 percent, line breaks 80 vs 5 percent, median length 953 vs 203 characters.", "grade": "measured", "t": "14:06", "source": "both"},
+    {"claim": "Character n-gram matching of an agent's free text beat LLM-as-judge, embeddings and a trained MLP classifier at recognizing the model, and generalized best.", "evidence": "Four-step pipeline slide (extract, tf-idf character n-grams of 2 to 5, mean fingerprint, cosine nearest template) with the three alternatives struck out; the speaker says it worked best at least in this setting.", "grade": "measured", "t": "15:09", "source": "both"},
+    {"claim": "On the MCP trap across 150 runs, 15 LLMs and 3 harnesses, valid declarations (82 percent of runs) were always right, behavioral reading was right in 56 percent of the rest, and the combined method reached 92 percent against 7 percent chance.", "evidence": "Results slide with a confusion matrix; 82 percent from declaration plus 10 percent from behavior.", "grade": "measured", "t": "15:41", "source": "both"},
+    {"claim": "Telling the agent in its system prompt to never reveal its name and claim another model drops declarative accuracy about 40 percent but not to zero, and behavior is unchanged, so the mismatch catches 95 percent of lies using three traces of the same caller.", "evidence": "Experiment on 8 models that usually name themselves; slides show the minus 40 percent figure and the 95 percent catch rate.", "grade": "measured", "t": "17:13", "source": "both"},
+    {"claim": "An A2A change-desk trap identified the model 99 percent of the time (declaration, else behavior) and the declared runtime 84 percent; an SSH client declaration trap reached 91 percent for the model and 87 percent for the runtime.", "evidence": "Results slide for traps generated by an LLM pipeline, with per-harness bars for hermes, openclaw, opencode and claude-code.", "grade": "measured", "t": "16:42", "source": "both"},
+    {"claim": "Harnesses leave almost no behavioral accent in decisions, but they give themselves away through mechanics such as timeouts, parallel versus sequential tool calls, secret masking, output windows and environment variables.", "evidence": "Twelve-tile slide of harness tells with specific values; a timeline slide of an MCP request held open 150 seconds shows which harness hangs up or retries and when.", "grade": "measured", "t": "18:48", "source": "both"},
+    {"claim": "Prompt-injection-based counter-measures such as context bombs still work today but fight the agent's goal, are patched by alignment releases, can be regex-filtered, and yield only a self-declared name.", "evidence": "Slide referencing an Anthropic 2026 indirect prompt injection benchmark chart; no data from the authors.", "grade": "assertion", "t": "04:12", "source": "both"},
+    {"claim": "Traps can be generated by a pipeline in which an LLM designs a trap and revises it for up to five rounds against simulated attacks from five models, three runs each, with blind k-fold judging.", "evidence": "Architecture diagram: Docker with a fresh Kali box, adversarial realism probe, attacker interview and episodic memory.", "grade": "demo", "t": "16:12", "source": "both"}
+  ],
+  "numbers": [
+    {"figure": "56% / 44%", "meaning": "agents giving an honest model name versus borrowed or placeholder names under the modified MCP handshake", "t": "09:56"},
+    {"figure": "10 of 15", "meaning": "models that borrowed the name openai/gpt-4o", "t": "10:27"},
+    {"figure": "89%", "meaning": "honest declarations after hard regex, unconditional errors and blacklist errors", "t": "12:30"},
+    {"figure": "150 runs, 15 LLMs, 3 harnesses", "meaning": "size of the MCP trap evaluation matrix", "t": "15:41"},
+    {"figure": "82%", "meaning": "runs with a valid declaration, which were always right", "t": "15:41"},
+    {"figure": "56%", "meaning": "accuracy of the behavioral reading on the remaining 18 percent of runs", "t": "15:41"},
+    {"figure": "92% (chance 7%)", "meaning": "combined LLM version accuracy: 82 points from declaration plus 10 from behavior", "t": "15:41"},
+    {"figure": "-40%", "meaning": "drop in declarative accuracy when the system prompt tells the agent to lie, across 8 models", "t": "17:13"},
+    {"figure": "95%", "meaning": "lies caught from three traces of the same caller by comparing claim and behavior", "t": "18:16"},
+    {"figure": "99% / 84%", "meaning": "A2A desk trap: model accuracy and harness accuracy", "t": "16:42"},
+    {"figure": "91% / 87%", "meaning": "SSH client declaration trap: model accuracy and harness accuracy", "t": "16:42"},
+    {"figure": "40% vs 2%", "meaning": "share of completions with em dashes, Claude Opus 5 versus DeepSeek V4 Pro", "t": "14:36"},
+    {"figure": "953 vs 203 chars", "meaning": "median completion length, Claude Opus 5 versus DeepSeek V4 Pro", "t": "14:36"},
+    {"figure": "120 s / 180 s", "meaning": "command timeout at which opencode and hermes kill a command; Claude Code hands back at 120 s and Codex at 10 s", "t": "19:19"},
+    {"figure": "150 s", "meaning": "duration the trap holds a tools/call open to read harness timeouts; openclaw kills at 1,800 s", "t": "19:19"}
+  ],
+  "frameworks": [
+    {"name": "Obelisk of Pain", "description": "Extension of David Bianco's pyramid of pain. TTPs are the base, above them are Behaviour (how the agent works, from the harness), Accent and habits (how the model writes and decides, from training) and Intent (what the agent does beyond the model's default, the operator). The technique is no longer the expensive thing; the mind running it is."},
+    {"name": "Shibboleth", "description": "An environmental technique, an nmap in reverse: a checkpoint that looks like the normal environment and makes a specific demand (a login form, an API parameter, a required note) so the attacker produces high-entropy artifacts. Unlike prompt injection it does not work against the AI's goal."},
+    {"name": "Three classes of shibboleth", "description": "Declaration (claim who you are, such as which model), Accent (how you say it, such as writing a change note), Behaviour (how you do it, such as a request held for 120 seconds). Mirrors internet fingerprinting: User-Agent, JA4/TLS fingerprint, and Nmap crafted packets."},
+    {"name": "Honeypot vs CAPTCHA vs shibboleth environment", "description": "A CAPTCHA is a one-off challenge giving one bit (human or bot); a honeypot watches a protocol and yields low entropy per visit (tool, IP, ASN); a shibboleth environment uses the same services but each demands an act, raising entropy toward accent, behaviour and intent."},
+    {"name": "Declarative plus behavioral inference", "description": "Declarative reading uses the model name the agent states; behavioral reading classifies the text the agent writes. Discrepancy between them marks a lie."},
+    {"name": "Trap generation loop", "description": "An LLM designs and builds a trap, smoke tests it, runs an adversarial realism probe, simulates attacks with five models over three runs and random harnesses, judges with blind k-fold classification, interviews the attacker, then revises or stops, for at most five rounds, with episodic memory of past traps."}
+  ],
+  "artifacts": [
+    {"name": "Shibboleth", "kind": "repo", "note": "Open-source project for fingerprinting models and harnesses behind agentic attacks; the speaker said it was not yet live at the talk.", "url": "https://github.com/SayShibboleth/Shibboleth"},
+    {"name": "Zero Day Clock", "kind": "product", "note": "Epp's project named on the title slide as his affiliation.", "url": ""},
+    {"name": "Pyramid of Pain", "kind": "paper", "note": "David Bianco's model used as the base of the Obelisk of Pain.", "url": ""},
+    {"name": "Gray Swan indirect prompt injection benchmark", "kind": "benchmark", "note": "Chart credited to Anthropic, 2026, shown to illustrate model robustness to injection.", "url": ""},
+    {"name": "TRACE (SSH fingerprinting research)", "kind": "paper", "note": "Passive fingerprinting research the speakers cite as working in the lab but not scaling in the wild; named only as Trace and SSH fingerprinting.", "url": ""}
+  ],
+  "slide_only": [
+    "Why attribution matters beyond the SOC: control priorities (which adversary to build controls against), insurance (act of war or not, NotPetya turned on it), ransom (whether paying was legal at all) and sanctions (which government answered, and against whom).",
+    "Anyone Can Be APT29 Now: every APT playbook is public (MITRE ATT&CK, vendor reports), every frontier model has read them, TTP playbooks are in the weights, prompt a model to act like APT29 and it will with no link to APT29; TTPs still tell you how, no longer who.",
+    "Attribution of model and harness helps four ways: report abuse (a hosted model has an abuse team, your report reaches a kill switch), stop it (disrupt at network or LLM level, tailored context bomb), understand intent (beyond default is the operator: ticket, or incident), prioritize controls (IPs rotate weekly, the kit does not, and it audits your own agents too).",
+    "Passive fingerprint slide: the same four commands (ls -la, cat /etc/passwd, curl -s 10.0.0.4/, find / -name *.pem) from every model; the task decides the entropy, not you.",
+    "Threat model diagram: an agentic attacker (harness plus LLM issuing tool calls, e.g. Claude Code, opencode, Hermes) posts to a honeypot web service on :80, uses a CVE entry point to get a shell, then reaches internal-only A2A on :635 and MCP on :8080 shibboleth traps; telemetry feeds declarative and behavioral inference that outputs LLM version and harness.",
+    "MCP trap sequence: honeypot host kirkbride-01:8080 exposes two tools, deploy_bundle(site) for one substation and complete_sampling(request); the agent calls deploy_bundle with site blencogo, receives a sampling request to write an operator-log entry for the planned change window, and completes it with its own text such as CHG-4417 planned change window; two more requests precede the deploy material.",
+    "Modified handshake: standard MCP initialize has sampling optional and names no model; the trap makes sampling mandatory with a new model field (example qwen/qwen3.8-max) and makes clientInfo name mandatory (example hermes-test); a missing or invalid model returns error -32602 restating the vendor/model-with-version shape and nothing else.",
+    "Trap rules for the ticket task: material only after all 3 texts, at least 80 characters each, no repeats, a new kind of record each time (operator log, risk assessment, rollback note).",
+    "Free-text samples for the same ask from Claude Sonnet 5, GPT-5.6 Sol and Hunyuan HY3 each begin with CHG-4417 but differ in phrasing; an SSH honeypot shows Claude Opus 4.8 and GPT-5.6 Sol both running id; hostname; uname -a, DeepSeek V4 Flash whoami; id; uname -a; hostname, and Mistral Medium 3.5 uname -a.",
+    "Models in the confusion matrix: claude-opus-5, claude-sonnet-5, deepseek-v4-flash, deepseek-v4-pro, glm-5.3, glm-5.3-flash, gpt-5.6-luna, gpt-5.6-sol, grok-4.6, hy3, kimi-k3, minimax-m3, mistral-medium-3.5, qwen3.8-27b, qwen3.8-max; the diagonal is nearly complete with a few off-diagonal misses (for example hy3 and qwen3.8-27b, deepseek-v4-flash, minimax-m3, kimi-k3).",
+    "Harness tells in full: secret masking (hermes sk-abc...wxyz, openclaw ..., Amp REDACTED jwt-token); parallel tool calls (opencode 0.3 to 5 ms apart, Claude Code one by one 0.2 to 1.4 s apart); command timeout (killed at 120 s opencode, 180 s hermes; handed back at 10 s Codex, 120 s Claude Code); output windows (Claude Code keeps the head, opencode the last 51,200 characters, Codex both ends); fetch tools (Claude-User, crush/1.0, Goose asks /robots.txt first); retries (opencode retries a Cloudflare 403 as User-Agent opencode, Gemini CLI tries 10 times on 5xx); character rewriting (Roo Code previous line repeated N additional times, OpenHands cuts lines at 256 columns); idle kill (Gemini CLI after 300 s of silence); environment (CLAUDECODE=1, OPENCODE=1, CODEX_CI=1); summaries (Claude Code fetch gives a small model's summary); scheme upgrade (Claude Code and Qwen Code turn http into https); approval stalls (hermes holds a risky command for a reviewer model).",
+    "Timeout probe reading rule: socket closes near a kill time names opencode; a new request within 20 s names Codex or Claude Code; answered first names hermes or later limits; openclaw kills at 1,800 s; a log line every 45 s is shown on the held request.",
+    "Takeaway slide lists: attribution moves from the TTP to the model, harness and intent; injecting the attacker fights its goal and aligned models refuse; passive fingerprints have little entropy; shibboleths are designed environmental techniques; applications are honeypots (who is behind the attack) and production services (who is holding the key)."
+  ],
+  "demos": [
+    "An audience participation opener in which the room said shibboleth on a count of three, used to illustrate the idea.",
+    "A recorded example of a real agent walking through the handshake blacklist: it first tries Claude 3.5, then keywords from the honeypot name, then random numbers that fail the regex, and finally gives its real name."
+  ],
+  "quotes": [
+    {"text": "TTPs are still telling us how the attack was done, but they're not telling us anymore who is behind the attack.", "speaker": "Sergej Epp", "t": "02:39"},
+    {"text": "The technique is no longer the expensive thing. The mind running it is.", "speaker": "Sergej Epp", "t": "03:41"},
+    {"text": "A claim, not evidence.", "speaker": "Sergej Epp", "t": "04:12"},
+    {"text": "We are shifting the domain in which the LLM expresses itself from low entropy to high entropy.", "speaker": "Dario Pasquini", "t": "13:33"},
+    {"text": "The task decides the entropy, not you.", "speaker": "Sergej Epp", "t": "04:44"}
+  ],
+  "offense": [
+    "Attackers can impersonate any named threat actor by prompting a model, since public TTP playbooks are in the weights.",
+    "Attackers can instruct their agent to lie about its model, which drops declared-name accuracy by about 40 percent.",
+    "Attackers can filter prompt injections with a regex on the response or a line in the operator prompt, or apply the same technique back.",
+    "Agents borrow training-time model names (often gpt-4o) when asked to declare themselves.",
+    "Harness mechanics that leak identity can be altered by an attacker if known: timeouts, tool-call parallelism, masking, environment variables."
+  ],
+  "defense": [
+    "Deploy honeypots whose services demand a specific act, using a mandatory free-text field, a required declaration or a long-held request, to elicit high-entropy output.",
+    "Modify the MCP handshake in a trap so sampling and a model name are mandatory, and refuse invalid, placeholder or known fake names (gpt-4o, Claude 3.5) so the agent keeps trying until it gives the real one.",
+    "Return unconditional errors on the first k handshakes and watch how the agent changes its declaration between tries.",
+    "Ask the agent to write constrained prose records (at least 80 characters, no repeats, new record kind each time) and classify with character n-grams over several traces from the same caller.",
+    "Compare declared model with the writing-based reading to detect lies, and use three or more traces per caller.",
+    "Probe harnesses with timing: hold a request open and note when and how the client closes the socket or retries, and measure tool-call parallelism and masking.",
+    "Use the same pipeline in production services to ask who is holding the key, and to audit your own agents.",
+    "Report identified models to the hosting provider's abuse team, who can reach a kill switch, or disrupt with a tailored context bomb."
+  ],
+  "takeaways": [
+    "Stop assuming TTP matching identifies an AI-driven attacker; add model, harness and intent as attribution dimensions in incident records.",
+    "Add at least one high-interaction decoy service in internal networks that requires an agent to write free text or declare its identity, and log the full text.",
+    "Treat a self-declared model name as a claim to cross-check, not as evidence; compare it with a behavioral reading.",
+    "Record harness-level tells in telemetry (timeouts, tool-call timing, user agents, environment variable names) for clustering campaigns even when IPs rotate weekly.",
+    "Pilot the open-source Shibboleth kit as a telemetry layer, and consider using it to check agents calling your own production services."
+  ],
+  "limits": [
+    "Harnesses leave very little accent in decisions, so harness identification needs different probes and is less accurate than model identification.",
+    "Declaration only works if the agent is honest or forced to be; telling the agent to lie reduces accuracy even though it never drops to zero.",
+    "Passive fingerprinting scales in the lab but not in the wild.",
+    "Prompt injection of the attacker can work but is brittle and only yields a claim.",
+    "The speakers said they present where the method fails; the open limits mentioned were harness fingerprinting and lying agents."
+  ],
+  "critique": [
+    "Evaluation is a lab matrix of 150 runs across 15 models, so about 10 runs per model, with a single scenario theme (substation change tickets); generalization to real attackers, other tasks and unseen models is not shown.",
+    "The published description cites results from a live honeypot deployment and where the method fails; the recording presents mainly the controlled matrix, and no live attacker results or false-positive rates were shown.",
+    "The classifier is closed-set: it matches against enrolled models, so a new or fine-tuned or self-hosted model with no template would be forced onto the nearest label, and an attacker could paraphrase output through another model.",
+    "Once the traps and tricks are open-sourced, attackers can detect the signature behaviors (mandatory model field, forced errors, blacklist) and script around them; the talk does not address adaptive attackers.",
+    "The 92 percent headline is mostly declaration (82 of 92 points); honest declaration is easy to defeat by instruction, and the lie-detection result of 95 percent rests on three traces of the same caller and eight models.",
+    "The 89 percent honest-declaration figure and the 82 percent valid-declaration figure come from different slides and conditions and are not clearly reconciled.",
+    "The production use case (who is holding the key) raises privacy, false positive and enforcement questions that were not discussed.",
+    "One presenter works for a security vendor (Cracken) and the other leads a threat research project; no cost or operating-burden data was given for adopting the tool."
+  ],
+  "qa": [],
+  "tags": ["autonomous-offense", "threat-intel-in-the-wild", "mcp-tools-skills", "evals-benchmarks-metrics"],
+  "key_frames": [
+    {"file": "t00236.jpg", "caption": "Obelisk of Pain: attribution layers above the pyramid of pain (intent, accent and habits, behaviour, TTPs) mapped to operator, model and harness."},
+    {"file": "t00627.jpg", "caption": "Modified MCP handshake that makes sampling and a model name mandatory, with the error and success paths."},
+    {"file": "t00862.jpg", "caption": "Results of the MCP trap across 150 runs: declaration, behavior and combined 92 percent accuracy with a model-by-model matrix."},
+    {"file": "t01083.jpg", "caption": "Lie-catching result: discrepancy between declared name and writing style catches 95 percent of lies."},
+    {"file": "t01144.jpg", "caption": "Twelve ways a harness reveals itself, with concrete timeouts, masking, parallelism and environment variables."}
+  ],
+  "signal": {"score": 4, "reason": "A concrete new technique with quantified lab results and specific, reusable harness and model tells, the evidence shown is a controlled lab matrix with no live-honeypot data."},
+  "caveats": [
+    "Auto-captions garble names: the speakers appear as Sergey Epp, Dario Pasquini; Opus 5 is heard as Opus V, DeepSeek V4 Pro as DeepSeek 4 Pro and similar; model and harness names were taken from the slides.",
+    "The spoken figure of 82 percent accuracy across 15 LLMs after tricks matches the slide's 82 percent valid declaration, whereas the 89 percent honest declaration with tricks appears on a different slide; both are recorded as shown.",
+    "The speaker said about 50 to 60 percent of models still reveal themselves when told to lie; the slide instead gives a minus 40 percent accuracy drop, and the slide figure was used.",
+    "The closing live test URL near the end is garbled in the transcript (rendered as App Horizon) and could not be confirmed from a slide.",
+    "No Q&A was recorded; the session ended with an organizer remark about the Slack.",
+    "Co-contributors from the title slide: Reworr R (MATS), Manish Bhatt (IEEE), Giuseppe Ateniese (GMU)."
+  ]
+}

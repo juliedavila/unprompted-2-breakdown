@@ -1,0 +1,139 @@
+{
+  "nn": "22",
+  "id": "Ovr_d182YbU",
+  "url": "https://www.youtube.com/watch?v=Ovr_d182YbU",
+  "title": "Rebuilding AI Intake That Works (abstract title: Built to Spec, Ignored in Practice: Rebuilding AI Intake People Actually Use)",
+  "speakers": [
+    {"name": "Olivia Rose", "affiliation": "Co-Founder, Williams Rose AI Cyber Advisory"},
+    {"name": "Kayla Williams", "affiliation": "Co-Founder, Williams Rose AI Cyber Advisory"}
+  ],
+  "format": "talk",
+  "duration_min": 24,
+  "thesis": "A standard vendor-risk style intake and approval process for AI tools goes unused because it is slow, one-queue, judges the tool instead of its use and gives people no amnesty, so shadow AI wins. Rebuilding intake around use-based tiers, instant self-service low-risk decisions, human review only for high risk, and amnesty raised submissions from 20 to 96 in three months at one pharmaceutical client.",
+  "summary": "The speakers, both former CISOs, tell a composite story: a CEO returns from an AI conference and tells everyone to use AI, the CISO responds with a conventional request form, three risk tiers and a monthly governance review, and three months later only 20 requests are on file while a 24-hour log pull finds 35 unauthorized AI tools. They say this is a real recent engagement with a large pharmaceutical company. They name five failure points: inadequate rollout with no training or amnesty, a lengthy single-queue intake, blanket risk evaluation based on vendor rather than use, non-prioritized committee review that leaves low-risk requests stuck behind high-risk ones such as pharmacovigilance, and inconsistent decisions, which stretch decisions to weeks or months and push people to shadow AI. Kayla Williams then gives a six-step fix that must be done in order: define risk tiers and controls, define evaluation criteria (data sensitivity, autonomy level, business impact), define decision outcomes, make the intake form easy, write the SOP and circulate it for consensus, and get people to use it with training, a central tool list, office hours, executive support and amnesty. They report results from the first three months of the rebuilt process, summarize four winning factors, and show screenshots of a custom AI risk register tool that tiers requests by keyword triggers, maps a cumulative control library and produces reports. Q&A covers the amnesty cases, small-company applicability, people gaming the questions and how to talk to a CEO excited about AI.",
+  "argument": [
+    "A conventional vendor-style AI request process looks adequate on paper but is not used, so approved requests (20) badly undercount real AI tool use (35 unauthorized tools in one day of logs).",
+    "Five process defects explain the gap: no training or amnesty, a single slow queue, blanket vendor-based risk evaluation, non-prioritized review and inconsistent decisions.",
+    "Fix it by tiering the use not the tool, scoring each request on data sensitivity, autonomy and business impact, and conservatively taking the highest of the three.",
+    "Let low-risk requests clear automatically with mandated baseline controls, reserve the human committee for high-risk requests, and give clear outcomes (approve, condition, defer, return, prohibit) with a documented exception path.",
+    "Make the form easy, encode tier rules with keyword triggers, document the SOP, get leadership consensus, then train, over-communicate and offer amnesty for existing tools.",
+    "Measured over three months at one client: submissions 20 to 96, median decision time for low risk from four weeks to immediate or one day, and 32 amnesty submissions."
+  ],
+  "claims": [
+    {"claim": "Three months after a standard intake process launched, only 20 AI tool requests had been filed, while a 24-hour log sample showed 35 unauthorized AI tools in use.", "evidence": "Presented as a real engagement with a large pharmaceutical company; logs were pulled by the CISO; no list of the 35 tools shown beyond one example (a deepfake tool) mentioned aloud.", "grade": "case", "t": "02:44", "source": "both"},
+    {"claim": "Intake fails for five reasons: inadequate rollout (no training, no amnesty), one lengthy queue, blanket vendor-based risk evaluation, non-prioritized committee review and inconsistent decisions.", "evidence": "Staged diagram on the How It Goes Wrong slide with decision time stretching to weeks or months and frustration escalating; reasoning drawn from the case and the speakers' CISO experience.", "grade": "case", "t": "03:49", "source": "both"},
+    {"claim": "Vendor-level risk assessment misses use-level risk: a low-risk vendor such as Grammarly becomes high risk when confidential board minutes or trade secrets are put into it.", "evidence": "Hypothetical example given verbally.", "grade": "anecdote", "t": "10:04", "source": "said"},
+    {"claim": "Evaluating each request on data sensitivity, autonomy level and business impact, and taking the highest rating, yields an instant tier.", "evidence": "Criteria table with low, moderate and high descriptors per question; speaker says to be conservative and go to the highest degree.", "grade": "assertion", "t": "10:35", "source": "both"},
+    {"claim": "After rebuilding the process, submissions rose from 20 to 96 over a three-month window and approvals from 20 to 95, with one prohibited.", "evidence": "Results table, before (v1) versus after (v2); speaker says the one excluded was DeepSeek. Single client, no control group.", "grade": "measured", "t": "14:42", "source": "both"},
+    {"claim": "Median time to decision fell from four weeks (low risk) and six to eight weeks (high risk) to immediate or one day for low risk and one week for high risk.", "evidence": "Results table; transcript states 4 to 8 weeks before and up to 4 weeks even for low-risk requests.", "grade": "measured", "t": "15:13", "source": "both"},
+    {"claim": "32 amnesty submissions came in, and about 70 percent of total volume now auto-clears, with a goal of 90 percent including moderate-risk tools.", "evidence": "Results table.", "grade": "measured", "t": "15:43", "source": "both"},
+    {"claim": "Amnesty surfaced high-risk shadow tools, such as an AI research data platform fed non-deidentified research data with no contract.", "evidence": "Q&A example: Ganymede Bio, a niche AI tool for pharmaceutical research data, used on corporate email without contracts and found in a SentinelOne output; legal reacted strongly.", "grade": "case", "t": "20:00", "source": "said"},
+    {"claim": "The process does not depend on company size or a ticketing system; the client's first version was an Excel template.", "evidence": "Speaker's statement in Q&A, with the advice to use a table rather than formulas in Excel.", "grade": "anecdote", "t": "21:01", "source": "said"},
+    {"claim": "Self-reported answers can be gamed, and the mitigation is logging and monitoring in the SIEM process plus follow-up diligence on unfamiliar tools after approval.", "evidence": "Q&A answer; no data on how often it happens.", "grade": "assertion", "t": "22:06", "source": "said"}
+  ],
+  "numbers": [
+    {"figure": "20 vs 35", "meaning": "official AI tool requests after three months versus unauthorized AI tools found in a 24-hour log pull", "t": "02:44"},
+    {"figure": "20 to 96", "meaning": "submissions in the three-month window before (v1) and after (v2) the rebuild", "t": "14:42"},
+    {"figure": "20 to 95", "meaning": "approvals before and after, with one tool prohibited in v2", "t": "14:42"},
+    {"figure": "4 weeks / 6 to 8 weeks to immediate or 1 day / 1 week", "meaning": "median time to decision for low-risk and high-risk tiers, v1 versus v2", "t": "15:13"},
+    {"figure": "32", "meaning": "amnesty submissions for existing shadow tools", "t": "15:13"},
+    {"figure": "70% (goal 90%)", "meaning": "share of total volume that auto-clears", "t": "15:43"},
+    {"figure": "6", "meaning": "steps in the fix, to be done in order", "t": "06:55"},
+    {"figure": "6 / 8", "meaning": "controls in the demo control library's Tier 1 baseline and Tier 3 governed sets", "t": "17:22"}
+  ],
+  "frameworks": [
+    {"name": "Five-stage failure staircase", "description": "Inadequate rollout (no training or amnesty), lengthy request intake (one queue, thank you and wait), blanket risk evaluation (not aligned to how the tool will be used), non-prioritized review (committee reviews everything, low risk stuck behind high), inconsistent decisions. Decisions take weeks or months and frustration escalates."},
+    {"name": "Six-step fix", "description": "1 Define risk tiers and controls; 2 Define evaluation criteria; 3 Define decision outcomes; 4 Make it easy for users; 5 Create the standard operating procedure; 6 Get people to actually use it. Steps must run in order because each defines the next."},
+    {"name": "Risk tier and control table", "description": "Low: auto-approved with baseline safeguards, no committee review, sample controls SSO/SAML, registration in an AI inventory, named owner. Moderate: approvals from business owner, IT/Security and Legal, committee possibly (depends on risk tolerance), low controls plus registration and data classification, named business owner, role-based access. High: same approvers plus committee review yes, moderate controls plus access reviews for agents and admins, independent verification, full audit trail and change control, sandboxing, read-only default for agents."},
+    {"name": "Three evaluation questions", "description": "Data sensitivity (what data does the request touch): public, internal business data, or regulated, confidential, personal, lending, clinical, legal. Autonomy level (how much does the system decide on its own): read-only with human review of every output, write access in a limited environment with human review, or consequential decisions, agentic AI, write access or removing the human from the loop. Business impact (what happens if this goes wrong): minimal, potential for risk, or financial, regulatory and brand risk. Take the highest."},
+    {"name": "Decision outcomes", "description": "Low tier: approved instantly. Moderate and high tiers: condition, defer (bring in privacy, legal, CFO), return, prohibit. Exception process with documented approval for controls that cannot be applied. The submitter sees their tier, required controls and needed review instantly."},
+    {"name": "Winning factors", "description": "Tier the use, not the tool; expedite low-risk tool decisions; help your users out (easy to submit, transparent, communicate, train); offer amnesty for existing tools."}
+  ],
+  "artifacts": [
+    {"name": "AI Risk Register (demo tool)", "kind": "tool", "note": "Custom intake and register tool the speakers built and showed in screenshots: keyword-driven tiering, risk tier definitions, cumulative control library, use case inventory, submission form, analyst assessment with manual override, and reports (tier distribution, department heatmap, use cases requiring action, control gap analysis). The slide labelled it Demo with a link named Loveable; no URL was visible.", "url": ""},
+    {"name": "Williams Rose AI", "kind": "product", "note": "The speakers' advisory firm; contact pages shown on the closing slide.", "url": "www.WilliamsRose.ai"}
+  ],
+  "slide_only": [
+    "Slide titles and cartoon panels: HumanX conference story (AI is awesome, Agents = ROI, three days later the CEO says huge returns, already working, more agents), what are we doing about AI, unleash the hounds with the CISO on the floor, the CISO's request process (request form, tool tiers 1 to 3 low, moderate, high, governance review, approve or deny), three months later only 20, 24 hours of logs 35 AI tools.",
+    "The summary slide reads: three months later 20 official requests, 24-hour log pull later 35 unauthorized tools in use; your risk and governance processes do not work for AI tooling requests.",
+    "Step 4 slide, data in: use checkboxes, examples and clarifications; fields listed are data used or sensitivity, autonomy level, business impact, existing or new tool, use case ID, requestor, business function owner approval, users or impacted groups, business value, tool, platform and vendor, description or intended use, existing or stated controls. A callout says to encode tier rules to automatically route using keyword triggers (PHI, SSN, research, regulated, client).",
+    "Step 5 slide: the SOP should include evaluation factors, tier requirements, tier decisions and approvals, decision outcomes, AI committee roles and responsibilities, metrics and measurements; circulate for consensus.",
+    "Step 6 slide checklist: communicate and train, maintain a centralized accessible list of approved and non-approved tools, hold office hours and provide resources, executive support and direction, amnesty is provided.",
+    "Results slide row for volume: v1 not applicable, v2 70 percent auto-clearing with a goal of 90 percent that includes moderate-risk tiered tools; approvals footnote reads one prohibited.",
+    "Demo risk keyword configuration: high-risk triggers where any match sets the tier to High include patient, phi, pii, health, medical, clinical, hipaa, gdpr, gxp, fda, regulatory, regulated, biometric, hiring, employment, credit, legal, safety, autonomous, incident response, financial reporting, sox, model training, production system and audit; moderate triggers apply when no high trigger is present.",
+    "Demo risk tier definitions (four tiers): Low is productivity-oriented internal AI use with no material influence on regulated decisions, limited to approved tools and business accounts (meeting summaries, writing assistance, internal search, design assistance, coding support with non-sensitive data); Moderate supports internal business, operational, financial, scientific or technical workflows, may touch identifiable, proprietary or controlled data, with meaningful human review; High is use in or affecting regulatory, quality, cybersecurity response or external-facing decisions where outputs could materially affect legal or regulatory compliance and may cross into EU AI Act high-risk obligations; Prohibited covers uses that create unacceptable risk, use unapproved tools with sensitive or regulated data, enable autonomous regulated decisions without approval or bypass governance, unless an exception is formally approved with compensating controls.",
+    "Demo control library: controls are cumulative (Moderate needs Tier 1 plus 2, High needs all three). Tier 1 Baseline for all use cases has 6 controls, including governance and usage (approved tools under business accounts, evidence approved tool list and account provisioning record), data protection (no confidential, personal or regulated data entered; DLP configuration and user attestation), human responsibility (a named person reviews and owns every output), training and awareness, transparency. Tier 3 Governed, high risk only, 8 controls, including governance and approval (AI Governance Committee approval with Legal, Privacy, Security and Compliance sign-off), regulatory and compliance (EU AI Act, HIPAA, GxP mapped), validation and lifecycle management, data governance (advanced), model risk management, auditability and documentation, human oversight (RBAC matrix, SOP).",
+    "Demo reports and inventory: five sample use cases with tier counts of one each for low, moderate, high, prohibited and needs review (three pending review); sample table of use cases requiring action: AI-002 coding assistant (Moderate, pending), AI-003 patient intake triage (High, committee review required), AI-004 brainstorm helper (Needs Review), AI-005 resume screening on personal ChatGPT (Prohibited, rejected); control gap analysis lists missing controls per case; tier distribution donut and department heatmap.",
+    "Demo case detail AI-002: GitHub Copilot in Engineering, source code data, assistive autonomy; automated and final tier Moderate; the word code matched the moderate trigger; approval path business owner plus IT/Security/Privacy review; control set is Tier 1 plus Tier 2 (use case registration, business owner, data classification, human-in-the-loop, output validation, logging, periodic review). Analyst assessment panel has status, recommended risk tier, tier rationale, next steps and a manual override tier that replaces the automated tier. Submission form says the tier is calculated on submit. The sample submitter and date shown are sample data."
+  ],
+  "demos": [
+    "Screenshots of an AI Risk Register web tool (live demo failed because the internet was down): keyword-based auto-tiering, tier definitions, cumulative control library, inventory with filters and CSV export, submission form, per-case detail with highlighted trigger words and analyst override, and reports with tier distribution, department heatmap, actionable cases and control gap analysis."
+  ],
+  "quotes": [
+    {"text": "Don't block a low risk behind a high risk tool. You are asking for shadow AI right there to happen.", "speaker": "Olivia Rose", "t": "16:16"},
+    {"text": "If it's not written down, it never happened.", "speaker": "Kayla Williams", "t": "12:06"},
+    {"text": "Tier the use, not the tool.", "speaker": "slide", "t": "15:43"},
+    {"text": "If someone's going to lie and put the company at risk, maybe it should be uncomfortable for them.", "speaker": "Kayla Williams", "t": "22:37"},
+    {"text": "Your risk and governance processes as they are today do not work for AI tooling requests.", "speaker": "Olivia Rose", "t": "03:14"}
+  ],
+  "offense": [
+    "Shadow AI: employees use unapproved AI tools, including a deepfake tool, research-data AI platforms and personal ChatGPT accounts, rather than submit to a slow process.",
+    "Data exposure through well-reviewed vendors: a low-risk vendor becomes high risk when confidential or trade-secret data is entered, and vendor-level assessment does not see it.",
+    "Gaming the intake: knowing the criteria lets people answer questions to get an automatic low rating.",
+    "Missing contracts and non-deidentified research data in a shadow AI platform, found by chance in endpoint tool output."
+  ],
+  "defense": [
+    "Define low, moderate and high tiers with the executive team's risk appetite, auto-approve low risk with mandated baseline controls (SSO, registration in an AI inventory, named owner, optionally MFA), and keep the committee for high-risk requests.",
+    "Evaluate each request on data sensitivity, autonomy level and business impact, and take the highest rating when in doubt.",
+    "Define decision outcomes (approve, condition, defer, return, prohibit) and a documented exception process so controls that cannot be applied are approved in writing.",
+    "Build an easy form with checkboxes and examples, encode tier rules as keyword triggers that route automatically, and show the submitter the tier, controls and review path instantly.",
+    "Write the SOP (evaluation factors, tiers, approvals, outcomes, committee roles, metrics), and circulate it to every leader for buy-in before launch.",
+    "Run training, a central approved and non-approved tool list, office hours, executive backing and an explicit amnesty for tools already in use.",
+    "Detect misreported answers through logging and monitoring in the SIEM process and by looking up unfamiliar tools after approval and asking follow-up questions."
+  ],
+  "takeaways": [
+    "Compare your approved AI tool register to a 24-hour sample of network or endpoint logs: a large gap means the intake process is the problem, not the employees.",
+    "Tier by use (data, autonomy, impact) rather than by vendor, and let low-risk requests clear in a day without a committee.",
+    "Announce an amnesty window and train people before enforcing the process, so shadow tools surface instead of hiding.",
+    "Track submission count, time to decision per tier and share of requests that auto-clear as the program's health metrics.",
+    "Build in a way to check self-reported intake answers, since criteria published for self-service can be gamed."
+  ],
+  "limits": [
+    "The speakers said the live demo could not run because the internet was down, so only screenshots were shown.",
+    "The speakers acknowledged that people may answer the intake questions dishonestly and that detection lives elsewhere (SIEM and follow-up diligence).",
+    "The speakers said the executive conversation is hard because risk and ROI are different love languages, and that tying risk to business drivers is not easy.",
+    "The auto-clearing rate is 70 percent against a goal of 90 percent, and moderate-risk tools are not yet included."
+  ],
+  "critique": [
+    "Evidence is one client, one three-month window and a before and after comparison with no control. More submissions is not the same as less shadow AI, and no second log pull was reported to show the 35 unauthorized tools fell.",
+    "95 of 96 submissions were approved, which is consistent with the process mostly registering existing use; the talk gives no breakdown by tier, no control-adherence data and no outcomes such as incidents avoided.",
+    "Tier decisions rest on keyword triggers and self-reported answers; the demo shows the word code lifting a Copilot request to Moderate, and the speaker said the analyst can override it manually, so false tiers and gaming are real design costs that were not measured.",
+    "The abstract cites both rubrics side by side and a walkthrough of the tooling; the v1 rubric was not shown, and the tool was shown as screenshots of sample data with no link visible.",
+    "Tier the use, not the tool, sits alongside blanket prohibition of one named vendor (DeepSeek); the talk does not explain how that prohibition fits the use-based model.",
+    "The opening cartoon story is a composite narrative, so details of the CEO and CISO should not be read as case facts beyond the stated numbers; the abstract says 20 submissions in six months while the talk says three months.",
+    "The speakers co-founded an advisory firm that offers this kind of service. The six steps follow common GRC practice; the elements reported with results are the amnesty, auto-clear and speed targets."
+  ],
+  "qa": [
+    "Q: What were the amnesty cases, and what risk levels did they carry? A: At the pharmaceutical client they were niche tools. One example was an AI research data platform, Ganymede Bio, fed non-deidentified research data from the data lake, with no contracts, used with corporate email; it was high risk, legal was upset, and it was found in a SentinelOne output.",
+    "Q: Does this change for small businesses versus large enterprises? A: No, the process can be the same. It started as an Excel template because the client was between ticketing systems; if using Excel, make it a table and do not rely on formulas.",
+    "Q: If criteria are announced, how much do people cheat to get a low rating? A: It is a huge risk because people lie; detect through logging and monitoring in the SIEM, and look up unfamiliar tools later as part of diligence and ask questions, even if uncomfortable.",
+    "Q: How do you balance the CEO's focus on reward with a risk message? A: It is similar to any risk conversation: tie it to business drivers (make money, save money, automate, get to AI ROI faster); the speakers said it is difficult."
+  ],
+  "tags": ["governance-policy", "org-adoption-culture"],
+  "key_frames": [
+    {"file": "t00369.jpg", "caption": "The six-step fix: risk tiers, evaluation criteria, decision outcomes, easy form, SOP, adoption."},
+    {"file": "t00447.jpg", "caption": "Risk tier table: approvals, committee review and sample required controls for low, moderate and high."},
+    {"file": "t00605.jpg", "caption": "Evaluation criteria: data sensitivity, autonomy level and business impact at each tier."},
+    {"file": "t00889.jpg", "caption": "Results table, v1 versus v2: submissions, approvals, time to decision, amnesty and auto-clearing share."},
+    {"file": "t01134.jpg", "caption": "Demo case detail showing automated tier, approval path and required control set for a coding assistant."}
+  ],
+  "signal": {"score": 3, "reason": "Before and after numbers from one client for an intake redesign; the process steps follow common GRC practice and no data was shown on whether shadow AI use fell."},
+  "caveats": [
+    "Auto-captions garbled some terms: pharmacovigilance spelled aloud, 'Deep Six' for DeepSeek, 'Human X' for the conference on the slides (HumanX), 'Rovo and Service Now' for tools in a demo aside; slides used for names and numbers.",
+    "The transcript says results came after 3 months of the new process and 4 to 8 weeks before; the slide gives four weeks for low risk and six to eight weeks for high risk, which is used. The abstract says 20 submissions in six months; the talk and slide say three months.",
+    "The speaker said 95 approvals excluding DeepSeek; the slide says one prohibited. The slide does not name the tool; the speaker did.",
+    "The live demo failed; screenshots show sample data (for example a sample submitter name and date) so the figures in the demo are not client data.",
+    "Speaker names were taken from the speakers' own introduction and the closing slide; which speaker said each line in Q&A was inferred from context where not stated.",
+    "The v1 rubric promised in the abstract was not displayed in the recording."
+  ]
+}

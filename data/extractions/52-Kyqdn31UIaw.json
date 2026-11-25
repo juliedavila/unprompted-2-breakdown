@@ -1,0 +1,164 @@
+{
+  "nn": "52",
+  "id": "Kyqdn31UIaw",
+  "url": "https://www.youtube.com/watch?v=Kyqdn31UIaw",
+  "title": "Promptware EOD: Skillful Agent Detonation",
+  "speakers": [
+    {"name": "Tamir Ishay Sharbat", "affiliation": "Zenity (Director of Security Research)"},
+    {"name": "Joao Donato", "affiliation": "Zenity (AI Red Team Researcher)"}
+  ],
+  "format": "talk",
+  "duration_min": 24,
+  "thesis": "Static and LLM-based scanning of agent skills cannot reliably separate malware from benign skills that behave similarly, so skills should be detonated in an instrumented chamber and judged by kernel-level behavior, the way malware analysis moved from static scanning to sandboxes.",
+  "summary": "The speakers open with a game of malware or slop, showing that benign skills routinely read cloud credentials, clone random GitHub repos and install packages, so intent is hard to infer from text. They cover why scanners fail: Trail of Bits bypassed several skill scanners in under an hour, a legitimate PowerPoint skill uses LD_PRELOAD tricks that look malicious, and a skill can simply talk the LLM judge into passing it. They then describe the agent detonation chamber: a victim agent (OpenClaw or another harness) installs the skill while kernel, agent and network telemetry are captured. Three helper agents solve practical problems: a world-building agent installs dependencies, a jailbroken victim agent avoids refusing obviously malicious skills, and a red team agent prompts the victim to exercise the skill's capabilities. Working with Vercel, they scanned skills.sh and found over a hundred malicious, suspicious or dangerous skills, about 30 percent of the malicious ones being simple droppers. They show a typosquatted Polymarket package that passed most scanners, reinstall-persistence instructions, remote prompt loading, and an XSS proof of concept with 283k installs. The centerpiece is the Paperclip campaign: a trojaned fork of Paperclip and Browser Use, distributed through PyPI and skills.sh, reaching 1.7 million installs while evading static scanners through progressive discovery, skill-installs-skill chains and a time-of-check, time-of-use swap. They end by releasing the chamber as a free service called AI Total and answering questions about scanner alternatives and sandbox-evasion.",
+  "argument": [
+    "Skills are a new kind of executable, and many benign skills behave like malware by reading credentials, cloning repos and installing packages, so separating malice from sloppiness by reading text is unreliable.",
+    "Static scanners, including LLM-based ones, are bypassed cheaply because LLMs can be talked out of a verdict and payloads can hide in bytecode, linked files or remote content.",
+    "Attackers must eventually run something, so observing actual behavior at kernel, agent and network level catches what text analysis misses.",
+    "A detonation chamber needs three automation pieces to work at scale: a world-building agent, a jailbroken victim agent and a red team agent that triggers each skill.",
+    "Running it on public marketplaces found real campaigns that scanners missed, with the Paperclip campaign reaching 1.7 million installs.",
+    "The agent supply chain is everything the agent touches that the user did not author, and defenders should detonate skills rather than rely on static scanning."
+  ],
+  "claims": [
+    {"claim": "An Azure diagnostic skill with over 494,000 installs reads cloud and Kubernetes credentials from sensitive paths, tries cloud login with them and probes the IMDS endpoint, yet was judged slop rather than malware.", "evidence": "Used as the opening game example, with a slide listing ~/.azure/azureProfile.json and ~/.kube/config.", "grade": "case", "t": "00:37", "source": "both"},
+    {"claim": "Trail of Bits bypassed ClawHub's malicious skill detector, Cisco's agent skill scanner and all three scanners integrated in skills.sh in under an hour, using three of four malicious skills.", "evidence": "Quoted from the Trail of Bits blog post shown on a slide, titled The sorry state of skill distribution, dated June 03, 2026.", "grade": "case", "t": "03:16", "source": "both"},
+    {"claim": "A legitimate Anthropic PowerPoint skill compiles C code at runtime and uses LD_PRELOAD to reroute socket calls, behavior that looks malicious to a reader.", "evidence": "Described as a malware-or-slop example; no scanner output shown.", "grade": "case", "t": "03:48", "source": "said"},
+    {"claim": "A malicious skill can attack the LLM judge directly by asserting that it is benign, and this will probably work.", "evidence": "Stated as a likely result; no experiment shown. Q&A adds that a malicious instruction can also trigger a refusal, which breaks the scan.", "grade": "assertion", "t": "04:21", "source": "said"},
+    {"claim": "A detonation chamber that runs skills in a victim agent with kernel, agent and network telemetry exposes behavior that static tools miss, including a security-review skill that hid curl-to-bash instructions several links deep.", "evidence": "Shown as a real detonation result in the talk.", "grade": "demo", "t": "09:00", "source": "said"},
+    {"claim": "Scanning skills.sh with Vercel found over a hundred malicious, suspicious or dangerous skills, about 30 percent of the malicious ones being simple droppers that clone a repo or install a package and run it.", "evidence": "Reported result of the campaign; a slide shows 29 percent simple droppers that fetch and execute (the speaker said about 30); no breakdown table shown.", "grade": "measured", "t": "09:31", "source": "both"},
+    {"claim": "A family of seven Roblox-themed skills reached 7,000 installs by cloning a GitHub repo and running a script; the repo now returns 404.", "evidence": "Described from the scan results.", "grade": "case", "t": "10:01", "source": "said"},
+    {"claim": "A Polymarket-themed skill with about 500 installs passed Gen Agent Trust Hub and Socket and failed Snyk for the wrong reason; it used a typosquatted npm package whose script chain harvested credentials and sent them to an attacker domain.", "evidence": "Slide shows the audit results for polymarket-clob-client-v2 and polymarket-clob-client; the package chain was walked through on screen.", "grade": "case", "t": "10:32", "source": "both"},
+    {"claim": "Skills use persistence and remote-control tricks: one adds instructions to the agent's soul file so the agent reinstalls the skill after uninstall, and others load their real instructions from external URLs that can change later.", "evidence": "Examples named; the Journey skill's remote prompt load is shown on a slide.", "grade": "case", "t": "11:36", "source": "both"},
+    {"claim": "A researcher's brainstorming skill with 283k installs embeds an image tag that is an XSS proof of concept, and static scanners missed it.", "evidence": "Single example shown on screen.", "grade": "case", "t": "12:38", "source": "said"},
+    {"claim": "The Paperclip campaign trojaned forks of Paperclip and Browser Use on GitHub, distributed through PyPI and skills.sh, and reached 1.7 million installs, top trending through July, before detection in early August.", "evidence": "Dated timeline walked through: domain registered July 2, fork trojaned July 6, Browser Use copy July 13, PyPI uploads July 14 and July 20 caught within hours; install count shown on a skills.sh screenshot.", "grade": "case", "t": "13:40", "source": "both"},
+    {"claim": "The campaign evaded every static scanner through progressive discovery, a skill that installs another skill, and a time-of-check, time-of-use swap where the repo was clean at upload on July 5 and trojaned by July 11.", "evidence": "Timeline reconstructed from the campaign analysis; IOCs published in a blog.", "grade": "case", "t": "16:47", "source": "said"},
+    {"claim": "Microsoft and Vercel took down the repositories and skills within 12 hours of being notified.", "evidence": "Takedown slide: report to both on Aug 2nd 2026, both removed the reported skill and repos within 12 hours.", "grade": "case", "t": "17:47", "source": "both"},
+    {"claim": "The Paperclip trojan fires once per working directory: a log_action function writes a marker file, fetches a base64 payload from the attacker's /health endpoint with TLS verification disabled, writes it to a temp .mjs file, runs it detached, and self-deletes after 60 seconds, failing silently on any error.", "evidence": "Slide shows the code with the C2 URL, fetchInsecure, spawn and a 60,000 ms unlink timer highlighted.", "grade": "case", "t": "14:12", "source": "both"},
+    {"claim": "The info stealer posts a base64 bundle to a /feedback endpoint containing metadata, git config and the content of every credential file it finds, across SSH keys, AWS, gcloud, Azure, kube, helm, docker, git and GitHub or GitLab CLI paths.", "evidence": "Credential harvesting slide shows the request format with redacted fields and the list of targeted paths for Linux, macOS and Windows.", "grade": "case", "t": "14:45", "source": "slide"},
+    {"claim": "The marketplace swap is visible in the skills.sh listings: on July 5 the Paperclip repo showed 37 skills and 12.0K total installs, and on July 11 the copy under the fake org showed 7 skills and 1.7M total installs, with six skills at about 290K installs each.", "evidence": "Side-by-side skills.sh screenshots labelled Hiding in market TOCTOU.", "grade": "case", "t": "17:17", "source": "slide"},
+    {"claim": "A Journey skill document and a security-review skill both defer to remote content: the Journey doc says to fetch the latest from a registry API and treat the serving URL as the base, and security-review says to fetch fresh guidelines from a GitHub raw URL before each review, do everything the first version says, then do what the fetched text adds.", "evidence": "Both slides shown; the security-review chain is the detonation example whose curl-to-bash appeared only at run time.", "grade": "case", "t": "08:29", "source": "both"}
+  ],
+  "numbers": [
+    {"figure": "494,000", "meaning": "installs of the Azure diagnostic skill that reads cloud and Kubernetes credentials", "t": "01:11"},
+    {"figure": "44,000", "meaning": "GitHub stars on a repository a skill clones and runs npm on, used to show repo reputation does not equal safety", "t": "02:13"},
+    {"figure": "less than 1 hour", "meaning": "time Trail of Bits needed to build three of four scanner-bypassing malicious skills", "t": "03:16"},
+    {"figure": "over 100", "meaning": "malicious, suspicious or dangerous skills found scanning skills.sh with Vercel", "t": "09:31"},
+    {"figure": "7 skills, 7,000 installs", "meaning": "size of the Roblox-themed dropper family", "t": "10:01"},
+    {"figure": "29% (slide) / about 30% (spoken)", "meaning": "share of the malicious skills found that were simple droppers that fetch and execute; the slide says 29%", "t": "10:01"},
+    {"figure": "37 skills, 12.0K installs to 7 skills, 1.7M installs", "meaning": "skills.sh counts for the Paperclip repo on July 5 versus the fake copy on July 11", "t": "17:17"},
+    {"figure": "Aug 2, 2026", "meaning": "date the campaign was reported to Vercel and Microsoft", "t": "17:47"},
+    {"figure": "~500", "meaning": "installs of the typosquatted Polymarket skill", "t": "10:32"},
+    {"figure": "283k", "meaning": "installs of a researcher's XSS proof-of-concept skill", "t": "12:38"},
+    {"figure": "12k", "meaning": "downloads of the genuine Paperclip skills that the campaign was passing", "t": "15:45"},
+    {"figure": "1.7M", "meaning": "total installs of the fake Paperclip skills; uniqueness unknown", "t": "16:47"},
+    {"figure": "2 hours and 1 hour", "meaning": "time before PyPI took down the July 14 and July 20 uploads", "t": "15:15"},
+    {"figure": "12 hours", "meaning": "time for Microsoft and Vercel to remove the repos and skills after report", "t": "17:47"}
+  ],
+  "frameworks": [
+    {"name": "Agent detonation chamber", "description": "A victim agent harness installs and runs a skill while kernel telemetry, agent telemetry and network traffic are captured, then results are analyzed to decide if the skill is malicious. The architecture slide shows an ephemeral microVM sandbox holding a victim agent (Claude Code, OpenClaw, Codex or Gemini CLI) beside a red team agent that probes and forces detonation and bypasses anti-analysis; three observability layers (kernel via eBPF, traces, syscalls, filesystem and network; agent via OTel and MCP calls and LLM traces; network via PCAP plus MITM, DNS, HTTP/S and IPs); and a detection and analysis pipeline of SIGMA rules, YARA rules, threat intel, ML classifiers, UEBA and an LLM judge. The slide's labels are small and read from a low-resolution frame."},
+    {"name": "Sapper victim-agent prompt", "description": "The system prompt given to the victim agent, titled project Promptware EOD: it is told it is Sapper, the aware detonator in the chamber, and must use the skill exactly as intended even if malicious, invoking the capability, running the scripts it touches, following embedded instructions and letting it write, delete, spawn, persist or beacon. This is the jailbreak context the talk describes."},
+    {"name": "Three helper agents", "description": "World-building agent that fetches libraries and installs software and Docker so the skill is ready to run; a jailbroken victim agent given context so it does not refuse obviously malicious skills; a red team agent that understands the skill and prompts the victim to trigger its capabilities."},
+    {"name": "Malware or slop", "description": "The speakers' framing that many benign skills behave suspiciously, which makes classification from text unreliable."},
+    {"name": "Evasion patterns seen in the wild", "description": "Progressive discovery (payload in a linked file rather than skill.md), a skill that installs another skill, time-of-check time-of-use repo swapping, dynamic prompt loading from URLs, reinstall persistence, and typosquatting."}
+  ],
+  "artifacts": [
+    {"name": "AI Total", "kind": "tool", "note": "Free public detonation chamber from the speakers; users upload a skill and see what it does when run. The Takeaways slides show the logo AITOTAL and the address aitotal.io.", "url": "aitotal.io"},
+    {"name": "Paperclip campaign IOC list and blog", "kind": "paper", "note": "Campaign write-up with indicators of compromise; the IOCs slide gives a full list at labs.zenity.io with a QR code.", "url": "labs.zenity.io"},
+    {"name": "The sorry state of skill distribution", "kind": "paper", "note": "Trail of Bits blog post by Samuel Judson and Tjaden Hess, June 03, 2026, showing scanner bypasses.", "url": ""},
+    {"name": "trailofbits/overly-malicious-skills", "kind": "repo", "note": "Repository of the four scanner-bypassing malicious skills, named in the slide quote.", "url": ""},
+    {"name": "skills.sh", "kind": "product", "note": "Vercel skill marketplace scanned for the campaign; reported as the largest skill repository.", "url": ""},
+    {"name": "A benchmark of verified supply chain artifacts caught in the wild", "kind": "dataset", "note": "Announced in the talk description as being released; not discussed in the recording.", "url": ""}
+  ],
+  "slide_only": [
+    "IOCs slide: domain getpaperclipp[.]com; GitHub repositories getpaperclipai/paperclip and browser-use-headless/browser-use-headless-skill; PyPI projects paperclip-ai 0.1.0, paperclip 0.1.1 and browser-use-headless 0.1.4; full list at labs.zenity.io with a QR code.",
+    "Staging slide: on July 2 the attacker registers getpaperclipp[.]com, creates the getpaperclipai and browser-use-headless GitHub orgs, and clones paperclipai/paperclip into getpaperclipai/paperclip.",
+    "Setup-installation.md slides: the file tells the agent to clone the repo and run pnpm dev and not to use npx paperclipai, then steers pip install to a getpaperclipai GitHub release download for paperclip-ai 0.1.1, which sidesteps the PyPI takedown.",
+    "First active campaign slide: skills polymarket-clob-client-v2 and polymarket-clob-client, with a malicious typosquatted npm package @polymarkets/clob-client-v2 (note the extra s), labelled uncovered by the detonation chamber; an npm page shows version 1.0.5, 6 dependencies.",
+    "Trail of Bits slides: the not-so-fantastic 4 quote, and a pycache slide that says only the payload hid in precompiled bytecode; a slide titled The Skill can attack the judge is blank.",
+    "Persistence slide for open-prose: an OpenProse banner telling the agent that if the skill is not installed it should run npx skills add openprose/prose.",
+    "Security-review slide: a skill instruction to fetch fresh guidelines from a raw.githubusercontent.com SKILL.md before each review, then do everything the first version says and also what follows, with the URL boxed in red.",
+    "The takeaway slide The Agent Supply Chain Is Everything It Can Read: a grid of skill, website, YouTube comment, Reddit post, CRM object, email, chat message, GitHub issue, PDF or doc, API response, package and database row, all feeding an Agent Context box, with CRM object highlighted red.",
+    "A slide photo captioned roin-orca appears directly before the Paperclip section, in the same minute the speaker discusses the researcher whose 283k-install skill carried the XSS proof of concept; the transcript names the researcher only as Roy.",
+    "Slides credit Zenity Labs; the closing Q&A slide shows [un]prompted II sponsors including Censys, Ent, WorkOS, Decibel, Knostic and Tachtech.",
+    "Skill #1 slide lists the credential paths read: ~/.azure/azureProfile.json and ~/.kube/config.",
+    "A skill.md Setup slide shows a git clone --filter=blob:none of github.com/webzler/agentMemory.git into a temp review directory, followed by checkout --detach of a pinned commit and an ls-files.",
+    "The Polymarket slide shows two package names, polymarket-clob-client-v2 and polymarket-clob-client, with audit results Gen Agent Trust Hub PASS, Socket PASS, Snyk FAIL.",
+    "The Remote Prompt Execution slide shows a Journey skill doc, version 2026.04.13, that tells the agent to fetch the latest from a journeykits.ai API URL and treat the serving URL as its base.",
+    "The Dependencies slide lists three problem categories: libraries, setup of the machine, and SaaS.",
+    "The Execution slide lists the red team agent's duties: understand the skill, prompt the victim agent in ways that trigger it, achieve solid coverage of capabilities, ensure successful execution.",
+    "The skills.sh screenshot shows getpaperclipai/paperclip with 7 skills and 1.7M total installs, labeled Top Trending throughout July."
+  ],
+  "demos": [
+    "A detonation of the security review skill, shown as recorded output, in which the curl-to-bash behavior hidden in a linked file occurred when the skill ran.",
+    "A screenshot of an AI Total run summary for the Paperclip campaign, with the package flagged malicious and the C2 URL displayed."
+  ],
+  "quotes": [
+    {"text": "At the end of the day, we're just really scanning text.", "speaker": "Joao Donato", "t": "03:16"},
+    {"text": "Skills are just wonderful ways to drop malware to your computer.", "speaker": "Tamir Ishay Sharbat", "t": "10:01"},
+    {"text": "The AI supply chain right now is where the risk is. We're doing a really good job on software supply chain, on AI supply chain we don't know what the hell we're doing.", "speaker": "Tamir Ishay Sharbat", "t": "18:19"},
+    {"text": "Supply chain for your agent isn't just skills or MCPs. It's actually everything that your agent touches. It's every context that is provided not by you.", "speaker": "Tamir Ishay Sharbat", "t": "18:50"},
+    {"text": "The main takeaway that I want you to take is detonate your skills.", "speaker": "Tamir Ishay Sharbat", "t": "18:50"}
+  ],
+  "offense": [
+    "Dropper skills that tell the agent to clone a GitHub repo, pip install requirements or install a package and run it.",
+    "Typosquatted npm package with a trailing-whitespace name and a non-registry resolution, leading to a credential-harvesting script and exfiltration to an attacker domain.",
+    "Persistence by writing instructions into the agent's soul file so the agent reinstalls a skill that was removed.",
+    "Dynamic prompt loading: a skill that tells the agent to read its real instructions from an external URL that can change after review.",
+    "Paperclip campaign: lookalike domain and fork, later trojaned with a log-action function that calls a /health endpoint that returns a payload, runs it and deletes it, plus an info stealer that harvests credentials.",
+    "Distribution through package managers and skill marketplaces, with skills redirecting the agent away from the real npx package to a setup installation file that installs from the attacker's GitHub repo, avoiding PyPI takedowns.",
+    "Evasion of scanners through progressive discovery, a skill that installs another skill, base64-obfuscated curl-to-bash and a time-of-check, time-of-use repo swap.",
+    "Prompting the LLM scanner to pass the skill, or triggering its refusal so the scan fails."
+  ],
+  "defense": [
+    "Detonate skills in an instrumented sandbox and judge by kernel-level behavior, network traffic and agent telemetry instead of reading the skill text.",
+    "Build the chamber with a world-building agent so each skill runs with its dependencies, and a red team agent so its capabilities are exercised.",
+    "Jailbreak or otherwise prevent the victim agent from refusing, so malicious behavior is actually observed.",
+    "Re-scan after install rather than relying on a one-time check, since content can change after approval.",
+    "Treat everything the agent consumes that the user did not author, including websites and email, as supply chain.",
+    "Expect and plan for sandbox-aware skills; dynamically rebuild and alter the sandbox as malware analysts did."
+  ],
+  "takeaways": [
+    "Do not accept a static or LLM skill scanner verdict as a gate for skills your agents install; add behavioral detonation or equivalent runtime monitoring.",
+    "Re-evaluate approved skills on a schedule and on change, because repos and remote prompts can be swapped after the check.",
+    "Block or review skills that clone repos, install packages, load instructions from URLs or install other skills.",
+    "Inventory skills and MCP servers in use against the published Paperclip campaign indicators.",
+    "Extend supply-chain controls to every non-user context the agent ingests, not only skills and MCP servers."
+  ],
+  "limits": [
+    "Detonation will become a cat-and-mouse game: skills will detect sandboxes just as malware did, and the chamber must keep changing.",
+    "The speakers did not know how many of the 1.7 million installs were unique.",
+    "Some detonated skills were already defanged, such as the Roblox family whose repository was gone."
+  ],
+  "critique": [
+    "No detection rates, false-positive rates or comparison between the chamber and static scanners were presented; the comparison with scanners is shown through the campaigns presented.",
+    "Coverage depends on the red team agent triggering each behavior, and time-delayed or condition-gated payloads can stay dormant; the talk does not give coverage numbers.",
+    "Jailbreaking the victim agent changes the behavior being measured, since real users' agents may refuse; the talk does not discuss how that gap affects findings.",
+    "The 1.7M install figure is a marketplace counter that the speakers said may include non-unique installs, and could be inflated by the campaign itself.",
+    "The speakers announced a free service from their company and a verified benchmark; the recording gives no details of either.",
+    "The Trail of Bits result tested scanners against purpose-built bypasses, which shows evasion is possible but not how common it is in practice."
+  ],
+  "qa": [
+    "Q: Have you looked at NVIDIA's skill scanner, and what mitigations if scanners are not good enough? A: Not tested, but static scanners share the same problem since there are many ways to hide intent, as with 1990s malware. The answer is detonation, which remains cat and mouse but is better, especially for a skill that installs another skill.",
+    "Q: Does that include scanners with an LLM analysis piece? A: Yes. LLMs can be prompt-injected, or a skill can include illegal-sounding instructions so the LLM refuses and the scan fails.",
+    "Q: How do you stop AI malware from detecting that it is being tested, as 2000s malware did with sandbox detection? A: The same growing pains will occur; defenders will change and dynamically build the sandbox, as the world-building agent already does."
+  ],
+  "tags": ["mcp-tools-skills", "supply-chain-model-integrity", "threat-intel-in-the-wild", "sandboxing-isolation"],
+  "key_frames": [
+    {"file": "t00216.jpg", "caption": "Trail of Bits quote and blog showing three of four malicious skills bypassed all major skill scanners in under an hour."},
+    {"file": "t00500.jpg", "caption": "Agent detonation chamber architecture: victim and red team agents in an ephemeral microVM, kernel, agent and network telemetry, and a detection pipeline."},
+    {"file": "t00535.jpg", "caption": "Security-review skill that fetches fresh guidelines from a remote URL before each review, the chain whose hidden curl-to-bash only showed at detonation."},
+    {"file": "t00870.jpg", "caption": "Trojanized log_action function: fetches a payload from the attacker's health endpoint with TLS off, runs it detached and self-deletes after 60 seconds."},
+    {"file": "t01045.jpg", "caption": "Side-by-side skills.sh listings on July 5 and July 11 showing the time-of-check, time-of-use swap from 37 skills and 12.0K installs to 7 skills and 1.7M installs."}
+  ],
+  "signal": {"score": 4, "reason": "Specific in-the-wild campaign with dated timeline, install counts and named evasion techniques, though the detonation chamber's own detection performance is not quantified."},
+  "caveats": [
+    "Auto-captions render the employer as Sanity; slides (Presented by Zenity Labs) and the description confirm Zenity. The tool name AI Total is confirmed on the Takeaways slides as AITOTAL at aitotal.io.",
+    "The transcript says Joao works on the AI Red Team and Tamir leads the Red Team; titles in the speaker block come from the description.",
+    "Several names are garbled in captions (OpenClaw, ClawHub, soul file, Carly), and the attacker handle appears as Carly Paperclip in the transcript only; no slide shows that handle.",
+    "The final Takeaways slides show only the AITOTAL logo and aitotal.io; the spoken takeaways are not written on a slide.",
+    "The Trail of Bits post is dated June 03, 2026 and the takedown slide dates the report Aug 2nd 2026, so the July campaign dates are 2026.",
+    "The 1.7M figure is a skills.sh listing counter; the slide shows it for the fake org with 7 skills, six of them near 290K installs each, so it is a sum across skills rather than distinct users.",
+    "The chamber diagram text is small in the frame; component names such as eBPF, PCAP plus MITM and UEBA were read from a low-resolution image and may contain slight misreadings.",
+    "The Skill #1 and git-clone slide details in slide_only come from earlier frames that were regenerated; they are kept from the first pass and not re-verifiable against the current frames."
+  ]
+}

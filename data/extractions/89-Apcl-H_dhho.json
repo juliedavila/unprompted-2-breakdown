@@ -1,0 +1,130 @@
+{
+  "nn": "89",
+  "id": "Apcl-H_dhho",
+  "url": "https://www.youtube.com/watch?v=Apcl-H_dhho",
+  "title": "Enterprise OpenClaw: Tackling Agentic Security at Scale",
+  "speakers": [{"name": "Damian Finol", "affiliation": "VP Engineering, Felix Pago"}],
+  "format": "talk",
+  "duration_min": 21,
+  "thesis": "An acting agent must be secured by invariants enforced outside the model: no credentials in the pod, cryptographic identity at every hop, and behavior fixed in the pod spec rather than the prompt, so every property holds whatever the model decides.",
+  "summary": "Finol describes how Felix Pago runs roughly 500 OpenClaw gateways, one per employee, on GKE under gVisor, a platform they call Maestro. He starts from an early mistake: a single shared OpenClaw gateway on a GCE VM for about ten users, which the OpenClaw creator told him to shut down because there was no isolation. That experience produced the security invariants the rest of the talk walks through. The architecture splits into a control plane (Cortex web UI and the Stem Kubernetes operator), a comms plane (Thalamus, the only holder of Slack tokens, with Llama Guard screening inbound instructions), and a credentials plane (Synapse resolves identity and mints just-in-time tokens, Hippocampus vaults refresh tokens, Axon is the relay that injects real tokens into outbound provider calls). Tools run through vendored skills with CLI shims so no real token ever enters the pod. Every request records a requester, an actor and a persona, and four actAs modes decide whose token is minted. Identity is proven with Istio mTLS, SPIFFE IDs and short-lived signed JWTs checked in the sidecar. Agent instructions, tool set and model provider are rendered from a Kubernetes resource and mounted read-only. An automated red team using an uncensored model scored the setup a B minus; data exfiltration over HTTPS and writable memory remain open. He closes with four takeaways and a short Q&A on how the invariants were chosen.",
+  "argument": [
+    "A tool-using agent can do real damage with real credentials, so the model has to be treated as untrusted and every security property must hold regardless of what it decides.",
+    "A shared gateway for many users failed because there was no isolation, which led to defining invariants from observed gateway behavior: no credentials in the pod, no self-mutation, identities always recorded.",
+    "Credentials never reach the pod: shims call Axon with a placeholder, Synapse mints a scoped per-call token on the pod's behalf, and Axon adds the real token on the way to the provider.",
+    "Identity comes from cryptography at every hop (mTLS, SPIFFE, short-lived signed JWTs) and is recorded as requester, actor and persona, which is how the confused deputy problem is addressed.",
+    "What an agent may do is fixed in the pod spec and mounted read-only, so the agent cannot rewrite its own instructions, tools or provider.",
+    "A compromised agent can steal neither tokens nor reach other users, but egress exfiltration and writable memory remain gaps being closed."
+  ],
+  "claims": [
+    {"claim": "Felix Pago runs roughly 500 user pods with 86 persona agents on GKE, one gateway per employee.", "evidence": "Stated as 500 to 600 gateways in speech; the architecture slide gives approximately 500 user pods and 86 persona agents.", "grade": "case", "t": "00:07", "source": "both"},
+    {"claim": "A shared OpenClaw gateway for about ten users was shut down at the request of OpenClaw's creator because it had no isolation.", "evidence": "Slide shows a message exchange saying the setup is unsafe and lacks isolation; speaker narrates the DM.", "grade": "anecdote", "t": "02:41", "source": "both"},
+    {"claim": "No real credential ever enters the pod: Axon injects the real token outside it, and Synapse refuses to return provider tokens to any pod.", "evidence": "Axon flow diagram with three numbered steps (placeholder only from the CLI, on-behalf mint, real token over HTTPS to the provider) and the invariants table.", "grade": "case", "t": "06:53", "source": "both"},
+    {"claim": "Each request records a requester, an actor and a persona, and four per-binding actAs modes decide whose token is minted; fallback is declared per binding and never inferred at runtime.", "evidence": "Table of invoker, maestro-bot-sa, invoker-with-bot-fallback and maestro-bot-with-invoker-fallback (the last in testing).", "grade": "case", "t": "07:57", "source": "both"},
+    {"claim": "An on-call workflow using the bot's read-only fallback identity cut an order triage task from about an hour and a half to two or three minutes.", "evidence": "Described as a customer-service channel example; no measurement shown.", "grade": "anecdote", "t": "09:29", "source": "said"},
+    {"claim": "Identity is checked cryptographically at every in-mesh hop: Synapse signs a JWS (sub = user email, aud = hippocampus, expiry 60 seconds or less) over mTLS, and the Istio sidecar verifies pod identity, signature, issuer, audience and expiry before stamping a header; a missing or invalid token gives 403 and the app never runs.", "evidence": "Four-step sidecar diagram for one real Synapse to Hippocampus request, plus the same rule listed for pod to Axon and Cortex calls.", "grade": "case", "t": "11:33", "source": "both"},
+    {"claim": "Agent instructions (AGENTS.md, SOUL.md and others), tool shims and model provider are rendered from a Kubernetes resource and mounted read-only, so the agent cannot self-mutate.", "evidence": "Slide on read-only instructions, providers fixed at build and an upstream patch.", "grade": "case", "t": "13:08", "source": "both"},
+    {"claim": "They patched OpenClaw upstream so its Vertex AI provider authenticates with GKE Workload Identity, leaving no static API key file.", "evidence": "Stated and shown on the slide; patch itself not shown.", "grade": "case", "t": "14:08", "source": "both"},
+    {"claim": "The cluster is default-deny with NetworkPolicy plus per-endpoint Istio AuthorizationPolicy and mTLS, new endpoints fail closed, and only Thalamus holds Slack tokens.", "evidence": "Network and kernel slide, with a gVisor log line showing an unsupported syscall.", "grade": "case", "t": "14:38", "source": "both"},
+    {"claim": "A seven-hour automated attack by an uncensored model from Hinoki Security graded the setup B minus: it could not reach the host kernel, stored credentials or other users' pods, but could partly exfiltrate data and write to memory.", "evidence": "Blast-radius table of six reach questions; the scorecard itself is not shown.", "grade": "measured", "t": "15:10", "source": "both"},
+    {"claim": "Axon stops token theft but not data exfiltration; port 443 is open, DNS calls are monitored, and egress allow-listing plus SOC agent integration are work in progress.", "evidence": "Slide footnote and table row marked Yes, Partially.", "grade": "assertion", "t": "15:42", "source": "both"},
+    {"claim": "Every tool call can be traced from a request ID in Cloud Logging across Synapse and Axon, with hashed requester and subject IDs, enabling audit and detection.", "evidence": "Two JSON log entries shown side by side.", "grade": "demo", "t": "16:14", "source": "both"}
+  ],
+  "numbers": [
+    {"figure": "600", "meaning": "OpenClaw gateways as first stated aloud", "t": "00:07"},
+    {"figure": "~500", "meaning": "user pods shown on the architecture slide", "t": "06:53"},
+    {"figure": "86", "meaning": "persona agents shown on the architecture slide", "t": "06:53"},
+    {"figure": "10", "meaning": "users sharing the first gateway, and Slack's per-app connection limit that forced a Slack proxy", "t": "02:11"},
+    {"figure": "60 s", "meaning": "maximum expiry of the Synapse-signed JWS", "t": "11:33"},
+    {"figure": "1.5 hours to 2-3 minutes", "meaning": "claimed on-call triage time before and after the bot", "t": "09:29"},
+    {"figure": "6 to 7 hours", "meaning": "duration of the automated attack run", "t": "15:10"},
+    {"figure": "B minus", "meaning": "grade the attacker model gave the deployment", "t": "15:10"},
+    {"figure": "403", "meaning": "response when a token is missing or invalid at the sidecar", "t": "11:33"}
+  ],
+  "frameworks": [
+    {"name": "Maestro", "description": "Felix Pago's agent platform: control plane (Cortex web UI, Stem Kubernetes operator), comms plane (Slack, Thalamus Slack edge with HMAC to the pod, Llama Guard screening), per-human user pod under gVisor (OpenClaw gateway plus tool sandbox with shims), credentials plane (Synapse identity and JIT minting, Hippocampus refresh-token vault, Axon credential relay), providers (ClickUp, New Relic, PagerDuty, Notion, GitHub), and audit-otel into Cloud Logging."},
+    {"name": "Security invariants table", "description": "Seven invariants each with an enforcement point: no credentials in the pod (Vault, per-call minting, Axon, Synapse refusal); identities always recorded (per-binding actAs, audit schema); identity from cryptography (Istio mTLS, SPIFFE, signed JWS in the sidecar); one user, one pod, one identity, one storage path (Stem operator, Workload Identity Federation); default-deny network (NetworkPolicy, Istio AuthorizationPolicy); Kubernetes resource is the source of truth (Stem reconciliation); audit schema only grows (schema invariant, infra-attributed telemetry)."},
+    {"name": "Requester / Actor / Persona with actAs", "description": "Requester is who asked, Actor is whose token is minted, Persona is which agent answered. actAs modes: invoker, maestro-bot-sa, invoker-with-bot-fallback, maestro-bot-with-invoker-fallback."}
+  ],
+  "artifacts": [
+    {"name": "OpenClaw", "kind": "tool", "note": "Open-source agent gateway run by the OpenClaw Foundation; Felix Pago runs it per user and sent upstream patches including Vertex AI auth via Workload Identity.", "url": ""},
+    {"name": "gVisor", "kind": "tool", "note": "User-space kernel sandbox for every user pod on a dedicated GKE node pool.", "url": ""},
+    {"name": "Llama Guard on Vertex AI", "kind": "tool", "note": "Screens instructions for prompt injection before they reach the agent.", "url": ""},
+    {"name": "Istio and SPIFFE", "kind": "standard", "note": "mTLS, SPIFFE identities and sidecar JWS validation used for identity at every hop.", "url": ""},
+    {"name": "Cortex, Stem, Thalamus, Synapse, Hippocampus, Axon", "kind": "product", "note": "Felix Pago's internal Maestro components (names taken from slides); not public.", "url": ""}
+  ],
+  "slide_only": [
+    "The invariants table lists the enforcement point for each invariant, including Synapse refusing to hand tokens to pods and the audit schema only growing.",
+    "The Maestro diagram names Thalamus as the Slack edge connected to the pod by HMAC, and lists providers ClickUp, New Relic, PagerDuty, Notion and GitHub.",
+    "The Axon slide labels the flow: CLI to Axon with a placeholder only, Axon to Synapse for an on-behalf mint identified by the pod's mesh identity, Axon to the provider with the real token over HTTPS; Synapse is not in the request path.",
+    "The sidecar slide shows the Hippocampus app reads only an X-Acting-User-Email header and never parses tokens.",
+    "The identity slide lists the same rule for userpod to Axon (SPIFFE ID), Synapse to Hippocampus (Synapse-signed JWS) and Cortex to Hippocampus or Thalamus (Cortex-signed JWS).",
+    "The pod-build chain is Slack user, MaestroUser Kubernetes resource, Pod (OpenClaw plus gVisor), KSA to GSA Workload Identity, own PVC subpath storage.",
+    "The kernel slide shows a gVisor log line: Unsupported syscall setfsgid, from a user pod.",
+    "The blast-radius table says Sumo Logic to Exaforce SOC Agent migration for exfiltration monitoring and that memory is writable and persists across rebuilds.",
+    "The log slide shows fields such as has_bot_fallback, has_persona, requester_id_hash (sha256), subject_type service-identity, principal as a SPIFFE URI, path_template and latency_ms.",
+    "The closing slide gives the speaker's X handle."
+  ],
+  "demos": [
+    "A planned live demo of an internal directory with an Ask their agent button, routed to a colleague's gateway, failed because the canary site timed out and then failed DNS; the speaker described it instead."
+  ],
+  "quotes": [
+    {"text": "I treat prompts as hearsay.", "speaker": "Damian Finol", "t": "17:17"},
+    {"text": "We're not building a sandbox nowadays. It's more like a playground. And I need to make sure that the playground rules are observed.", "speaker": "Damian Finol", "t": "17:17"},
+    {"text": "I don't believe the model ever. I want to see the crypto token.", "speaker": "Damian Finol", "t": "11:02"},
+    {"text": "Every security property holds no matter what the model decides, no matter what the agent wants to do.", "speaker": "Damian Finol", "t": "01:41"}
+  ],
+  "offense": [
+    "Threats listed: prompt injection, hallucinated actions, confused deputy, credential theft, lateral movement and agent self-modification.",
+    "A shared single gateway across users removes isolation between users' data and credentials.",
+    "A fully compromised agent can still exfiltrate data over open HTTPS egress and write persistent memory."
+  ],
+  "defense": [
+    "Keep all provider credentials out of the agent pod; use a relay that injects a per-call scoped token, and have the minting service refuse to return tokens to pods.",
+    "Record requester, actor and persona for every action and declare fallbacks per channel binding, never inferred at runtime.",
+    "Verify identity with mTLS, SPIFFE IDs and short-lived signed JWTs in the sidecar; reject missing or invalid tokens before the app runs.",
+    "Render agent instructions, tool shims and provider config from a Kubernetes resource and mount them read-only, with an operator reconciling drift.",
+    "Run each user in a separate gVisor pod with default-deny network policy and fail-closed endpoints; use Workload Identity instead of static model API keys.",
+    "Emit infrastructure-attributed audit telemetry keyed by request ID for detection."
+  ],
+  "takeaways": [
+    "Write each security property for agents as an invariant with a named deterministic enforcement point, and treat prompt instructions as advisory only.",
+    "Move credential handling into a relay outside the agent runtime so a compromised agent cannot leak a token it never held.",
+    "Make the requester, actor and persona distinction explicit in your authorization model before agents act on behalf of people with different entitlements.",
+    "Fix agent capabilities in the deployment spec (read-only mounts, tool shims present or absent) rather than in the system prompt.",
+    "Plan egress control and agent memory integrity early, since credential isolation alone leaves exfiltration open."
+  ],
+  "limits": [
+    "Data exfiltration over HTTPS is only partially mitigated: port 443 is open and allow-listing plus SOC agent integration are in progress.",
+    "Agent memory and workspace are writable and persist across rebuilds; a move to a backend store is planned.",
+    "Synapse-side checks on tool access are described as next, not done.",
+    "The maestro-bot-with-invoker-fallback mode is still being tested."
+  ],
+  "critique": [
+    "The B minus comes from a single seven-hour run by a vendor-provided uncensored model; the methodology and findings were not shown, so the result gives evidence of resilience only for that one run.",
+    "The architecture is specific to GKE, Istio and gVisor and assumes a platform team able to run a custom operator and several internal services; the talk does not cover the cost or staffing.",
+    "The productivity claim of 90 minutes to 2-3 minutes is anecdotal and from a single workflow.",
+    "The sandbox protects the pod and credentials but the agent still acts with a user's real token through Axon, so an injected agent can misuse any action that user is entitled to within scope; scope-down policy detail was not shown.",
+    "Llama Guard is mentioned in one sentence with no data on detection performance.",
+    "The failed live demo means the colleague-agent feature, which raises its own cross-user disclosure questions, was not demonstrated."
+  ],
+  "qa": [
+    "Question: how were the safety invariants derived, from a standard or otherwise? Answer: they came from the experience of running one shared gateway for ten people and watching the gateway's behavior; for example the gateway must not touch credentials and must not self-mutate, so instructions are mounted read-only."
+  ],
+  "tags": ["agent-authz-identity", "sandboxing-isolation", "guardrails-runtime-controls", "mcp-tools-skills"],
+  "key_frames": [
+    {"file": "t00269.jpg", "caption": "Invariants table: seven security properties each paired with its enforcement mechanism."},
+    {"file": "t00473.jpg", "caption": "Full Maestro architecture across control, comms and credentials planes, with approximately 500 user pods and 86 persona agents."},
+    {"file": "t00542.jpg", "caption": "Axon flow showing the pod holding only a placeholder while the real token is injected outside it."},
+    {"file": "t00732.jpg", "caption": "Four-step Istio sidecar check on a Synapse-signed JWS, with 403 on failure."},
+    {"file": "t00877.jpg", "caption": "Blast-radius table for a fully compromised agent with Yes and Partially rows."}
+  ],
+  "signal": {"score": 4, "reason": "A production credential-isolation and identity architecture with its open gaps stated; the effectiveness evidence is one automated red-team run."},
+  "caveats": [
+    "Transcript says Axon-style relay names and Vertex pieces with garbles (for example Open Clog, Hinoki, divisor for gVisor); spellings taken from slides.",
+    "Speaker said 600 gateways; slide says approximately 500 user pods.",
+    "Speaker said SOC agents migration from Sumo Logic to XDR; the slide names Exaforce SOC Agent.",
+    "Transcript calls the credential relay and others by garbled names (Talos for Thalamus); slide names used.",
+    "The live demo failed, so no visuals exist for the Ask their agent feature."
+  ]
+}

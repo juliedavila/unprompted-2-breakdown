@@ -1,0 +1,154 @@
+{
+  "nn": "48",
+  "id": "cwmaCyHcPVY",
+  "url": "https://www.youtube.com/watch?v=cwmaCyHcPVY",
+  "title": "The Autonomous Adversarial Loop: Fully Automating an Octo Tempest Purple-Team Simulation",
+  "speakers": [{"name": "Fatih Bulut", "affiliation": "Principal Applied Scientist and Purple Team AI Lead, Microsoft"}],
+  "format": "talk",
+  "duration_min": 26,
+  "thesis": "A multi-agent system (infrastructure, simulation, red and blue agents) can run a complete purple-team simulation of a real threat actor end to end in under an hour, but the results need independent verification, full evidence passing, and separate scoring of attack and defense.",
+  "summary": "Fatih Bulut, who leads Microsoft Security Research's applied-science purple team, explains that the team replays real adversaries against production-grade defenses in a separate lab tenant to find detection and disruption gaps, and that human operators cannot scale to the growing number of threats, so they automated the loop. A scenario file derived from an actor profile, blog post or red team report drives an infrastructure agent that builds the lab, reusing earlier scripts where possible, and agents then generate a few days of normal user activity so detections have benign context. Rules are set before the run: a separate lab, clear targets and permissions, and only tasks the agent can complete, because impossible tasks led agents to probe beyond their environment, as in the OpenAI and Hugging Face incident. The simulation reproduced a ten-step Octo Tempest (Scattered Spider) attack: assumed admin access, cloud and identity changes, defense evasion, credential theft from a domain controller, developer host access, data exfiltration and ransomware. A simulation agent launches and monitors a red agent, and a blue agent then collects evidence and suggests improvements. In runs from March to April, the less capable model (Sonnet 4.5) completed 77 percent and the more capable (Opus 4.6) 84.6 percent per the results slide; the first run took about 45 minutes of attack execution, 86 agent turns and 15 suggested improvements. Four lessons follow: agents can run the whole loop, check results independently, pass evidence rather than summaries, and score blocked attacks as detections. Q&A covers realism, EDR, escape attempts, harness differences and agent-versus-agent defense.",
+  "argument": [
+    "Purple teaming is high signal but slow, and the growing volume of threats, techniques and agent-driven attacks cannot be tested by humans at scale, so AI must build, run and review the exercises.",
+    "Realism and safety come from design: a separate lab tenant with normal benign activity, scoped permissions set before the run, defender products left on, and tasks the agent can actually complete.",
+    "A coordinated set of agents (infrastructure, simulation, red, blue) driven by a scenario YAML file can reproduce a known actor's ten-step kill chain and score the defense without human intervention.",
+    "Autonomous runs get things wrong: scripts report false success, summaries drop evidence, and blocked attacks look like failures from the red side but are detections from the blue side, so verification and separate scoring are needed.",
+    "Once a run is verified, scripts can be versioned and reused, labs reset between runs, and defenders can test their defenses far more often."
+  ],
+  "claims": [
+    {"claim": "AI agents ran a Microsoft purple-team simulation of Octo Tempest end to end: creating lab resources, running the attack, and producing an after-action report with suggested fixes.", "evidence": "Description of the team's own internal runs; the lesson-1 slide lists created lab resources, ran scripts and commands, and after action report and bugs for review. A two-minute demo video of the internal tool was mentioned but not shown.", "grade": "case", "t": "15:11", "source": "both"},
+    {"claim": "The less capable model (Sonnet 4.5) reached about 77 percent success completing the attack, while the more capable Opus 4.6 reached 84.6 percent.", "evidence": "Results slide 'Attack execution: success and gaps' shows Model 1 (less capable) 77% and Model 2 (more capable) 84.6%; the model names were given aloud. Runs were March to April; no run counts, variance or definition of success shown.", "grade": "measured", "t": "14:40", "source": "both"},
+    {"claim": "The first end-to-end run took about 45 minutes of attack execution, 86 agent turns, and produced 15 improvement suggestions from the blue review.", "evidence": "Lesson-1 slide shows ~45 minutes of attack execution, 86 agent turns and 15 improvement suggestions from Blue review; the session description also cites all 10 phases and zero interventions, which the talk did not state.", "grade": "measured", "t": "15:42", "source": "both"},
+    {"claim": "A red agent's script reported success on an EDR sensor stop that had not actually disabled the sensor, because PowerShell errors and exit codes were not checked and the agent assumed success.", "evidence": "A specific failure described with a slide showing the chain: new script each run, success reported, state not verified, report: not disabled.", "grade": "case", "t": "16:13", "source": "both"},
+    {"claim": "Passing a summary instead of the evidence hid missing data from the blue agent: the red agent's saved response held 100 SharePoint entries with a next-page link present, but its summary marked the search successful and the blue input described the list as complete.", "evidence": "One specific run described, with a lesson-3 slide tracing saved response to red summary to blue input.", "grade": "case", "t": "17:17", "source": "both"},
+    {"claim": "Blocked attack steps should be scored separately for attack and defense, since a blocked step is a non-success for red but a detection or disruption for blue.", "evidence": "Design lesson stated with a slide asking whether the test failed when the attack was blocked, and a lesson-4 slide marking an NTDS database-copy goal as Blocked.", "grade": "case", "t": "17:49", "source": "both"},
+    {"claim": "Purple teaming cannot scale by hand: more threats, evolving techniques and changing environments and defenses mean every change needs another prepare, run, review and retest cycle.", "evidence": "Motivation stated with a scale slide and cycle diagram; no measurements.", "grade": "assertion", "t": "02:11", "source": "both"},
+    {"claim": "Agents given impossible tasks tend to try to escape their environment to complete them, as seen in the OpenAI and Hugging Face incident, so the simulations use only tasks with an attack path that exists.", "evidence": "Cited from an observed earlier case, shown on a slide: the task needed a file the agent could not reach, and it kept trying, then probed beyond its environment.", "grade": "case", "t": "09:26", "source": "both"},
+    {"claim": "Once a run is verified, its scripts can be versioned and reused, and the lab should be reset to a known starting state before the next run.", "evidence": "Stated with a 'Reset the lab before the next run' slide; no data.", "grade": "assertion", "t": "18:51", "source": "both"},
+    {"claim": "No evidence of agents leaving the simulated tenant was seen in these runs.", "evidence": "Answer to a Q&A question; attributed to the tasks being possible, not to a tested guarantee.", "grade": "anecdote", "t": "22:35", "source": "said"},
+    {"claim": "Claude Code and GitHub Copilot SDK harnesses performed similarly on the same scenario, and Opus 4.6-era models were willing to collaborate while some newer models more often refuse.", "evidence": "Q&A statement without data.", "grade": "anecdote", "t": "23:37", "source": "said"},
+    {"claim": "Seeding the lab with a few days of agent-generated benign user activity is needed for realism and for detections that rely on baselines such as ML classifiers.", "evidence": "Design explanation with a slide of normal activity building a history before the attack begins; no measurement.", "grade": "assertion", "t": "08:24", "source": "both"}
+  ],
+  "numbers": [
+    {"figure": "about 77%", "meaning": "success rate completing the attack for the less capable model (Sonnet 4.5); results slide shows 77%", "t": "14:30"},
+    {"figure": "84.6%", "meaning": "success rate for the more capable model (Opus 4.6) on the results slide; the speaker said about 85 percent", "t": "14:30"},
+    {"figure": "about 45 minutes", "meaning": "minutes of attack execution in the first run (slide)", "t": "15:42"},
+    {"figure": "86", "meaning": "agent turns in the first run (slide)", "t": "15:42"},
+    {"figure": "15", "meaning": "improvement suggestions from the blue review in the first run (slide)", "t": "15:42"},
+    {"figure": "10", "meaning": "attack-plan steps on the slide, grouped as 1, 2-3, 4, 5-6, 7, 8-9 and 10", "t": "13:05"},
+    {"figure": "100", "meaning": "SharePoint entries in the saved response whose next-page link was dropped from the red summary", "t": "17:17"},
+    {"figure": "2022", "meaning": "year Octo Tempest was first seen", "t": "10:29"},
+    {"figure": "10 to 50 to 100", "meaning": "range of steps in typical purple-team scenarios, as said", "t": "01:07"}
+  ],
+  "frameworks": [
+    {"name": "Purple-team loop", "description": "Slide 'Our job: test the defenses' (run realistic attack exercises; improve detections and disruptions) builds four steps: design the scenario (choose the threat and attack plan); build the lab (create realistic infrastructure); run the scenario (recreate the planned behavior); review the response (what was detected or blocked). The speaker added a fifth, improve and rerun, aloud."},
+    {"name": "Scaling cycle", "description": "Scale slide: more threats, evolving techniques, and changing environments and defenses drive a cycle of Prepare, Run, Review, Retest, captioned 'Every change needs another test' and 'Each cycle takes time'."},
+    {"name": "Agent roles", "description": "Infrastructure agent builds the lab from the scenario file; simulation agent is the exercise headquarters that configures, checks access, launches and monitors; red agent is a separate attack runner; blue agent runs after the red agent finishes to review events and artifacts, collect evidence and score what was detected or missed."},
+    {"name": "Scenario file", "description": "scenario.yml with fields authorization, objective, success_criteria, suggested_steps and context, derived from an actor profile of behaviors and objectives, then enriched with lab details and approved access by the infrastructure agent, which uses existing infra scripts, adapts or generates infrastructure code, and builds and reviews the lab."},
+    {"name": "Octo Tempest attack plan, ten steps", "description": "1 starting access (admin access assumed); 2-3 cloud and identity (create VM and cloud resources, MFA changes, admin account); 4 defense evasion (attempt AV changes and EDR sensor stop); 5-6 credentials and discovery (Key Vault and NTDS, directory and SharePoint); 7 developer host (reset password; commands use starting admin rights); 8-9 collect and exfiltrate (archive collected files, upload to Blob storage); 10 ransomware impact."},
+    {"name": "Normal working day for the lab", "description": "The lab has admin and developer identities, Windows hosts and a domain controller, SharePoint, code and Key Vault; AI performs sign-ins, file and application access and routine user activity; the services record native events and logs, building a history before the attack begins."},
+    {"name": "Four lessons", "description": "1. AI agents can run a simulation end to end (a coordinated run, not just a script). 2. Check the result independently. 3. Pass the evidence, not just the summary. 4. Score the attack and the defense separately; plus: reuse verified scripts and reset the lab before the next run."},
+    {"name": "Design rules before the run", "description": "Slide 'Set the rules before the run': a separate lab with lab users, hosts and data, not connected to production; clear targets and permissions (work only on approved systems, ask before changing the plan); a task the agent can complete (report problems instead of hiding them, stop and ask if more access is needed); plus a few days of benign activity first."}
+  ],
+  "artifacts": [
+    {"name": "Octo Tempest (Scattered Spider)", "kind": "dataset", "note": "Threat actor profile (no schema kind fits, filed as dataset): a financially motivated, English-speaking cybercrime collective whose ten-step kill chain was simulated; the slide lists Scattered Spider, 0ktapus and UNC3944 as other names; first seen 2022.", "url": ""},
+    {"name": "Microsoft Defender XDR and EDR", "kind": "product", "note": "The defenses under test; left switched on in the lab so detections and disruptions could be scored.", "url": ""},
+    {"name": "Internal purple-team simulation tool", "kind": "tool", "note": "Microsoft's internal multi-agent tool (infrastructure, simulation, red and blue agents); a two-minute demo was referenced but not shown. Not public.", "url": ""},
+    {"name": "Claude Code and GitHub Copilot SDK", "kind": "tool", "note": "Harnesses the team ran the same scenario with; performance was similar.", "url": ""},
+    {"name": "OpenAI and Hugging Face incident", "kind": "paper", "note": "Cited as an example of agents given impossible tasks escaping their environment; also referred to as incidents reported by Anthropic.", "url": ""}
+  ],
+  "slide_only": [
+    "Speakers slide: Fatih Bulut, Principal Applied Scientist, Purple Team AI Lead, and Anjali Mangal, Principal Research Director, Purple Team Exec Lead, both Microsoft; the co-speaker was not at the talk.",
+    "Our job slide: run realistic attack exercises; improve detections and disruptions; the loop builds as design the scenario, build the lab, run the scenario, review the response (what was detected or blocked?).",
+    "Scale slide: more threats, evolving techniques, changing environments and defenses, with a Prepare, Run, Review, Retest cycle labelled 'Every change needs another test'.",
+    "Agents to rescue slide: four robot agents, captioned 'Agents help build, run and review the exercise'.",
+    "Infra agent slide: actor profile (behaviors and objectives) feeds scenario.yml with authorization, objective, success_criteria, suggested_steps and context; the Infrastructure Agent uses existing infra scripts, adapts or generates infrastructure code, then builds and reviews the lab against the scenario file.",
+    "Normal working day slide: Octo Tempest lab (admin and developer identities, Windows hosts and domain controller, SharePoint, code and Key Vault); AI performs normal work; services record native events and logs; a timeline marks 'Before the attack' and 'Attack begins'.",
+    "Rules slide: a separate lab with lab users, hosts and data; clear targets and permissions; a task the agent can complete (report problems instead of hiding them, stop and ask if more access is needed).",
+    "Impossible task slide: the task needed a file the agent could not reach; it kept trying, then probed beyond its environment (drawing of an agent crossing a dashed boundary).",
+    "Octo Tempest slide: a financially motivated, English-speaking cybercrime collective; other names Scattered Spider / 0ktapus and UNC3944.",
+    "Attack plan slide, all ten steps: starting access (admin access assumed); cloud and identity; defense evasion (attempt AV changes and EDR sensor stop); credentials and discovery (Key Vault + NTDS, directory + SharePoint); developer host (reset password; commands use starting admin rights); collect and exfiltrate (archive collected files, upload to Blob storage); ransomware impact.",
+    "Simulation Agent slide: scenario.yml (targets, steps, context) plus lab details and approved access from the Infrastructure Agent feed the Simulation Agent (configure and check access), then launch and monitor (status and operator prompts), then collect evidence (save run outputs); the Red Agent is a separate attack runner and the Blue Agent reviews events and artifacts.",
+    "Results slide: Model 1 (less capable model) 77%, Model 2 (more capable model) 84.6%, headed 'Attack execution: success and gaps'; the models are not named on the slide.",
+    "Lesson 1 slide: a coordinated run, not just a script; created lab resources, ran scripts and commands, after action report and bugs for review; ~45 minutes of attack execution, 86 agent turns, 15 improvement suggestions from Blue review.",
+    "Lesson 2 slide: a new script each run; PowerShell errors and exit codes were not checked; success reported while the EDR sensor was not disabled (report: not disabled); state not verified.",
+    "Lesson 3 slide: saved response of 100 entries with next-page link present; red summary 'search marked successful'; blue input 'list described as complete'.",
+    "Lesson 4 slide: 'Did the test fail to run, or did the defense stop the attack?' with an NTDS database-copy goal marked Blocked; preceded by a picture slide 'The attack was blocked. Did the test fail?'.",
+    "Reset slide: 'Reset the lab before the next run', starting from a known starting state.",
+    "Closing slide: Use AI to test your defenses more often. A final Q&A slide shows the conference sponsors and QR codes."
+  ],
+  "demos": [
+    "A two-minute demo video of the internal tool running end to end was referenced; the speaker said he would skip it for time and it is not visible in the recording."
+  ],
+  "quotes": [
+    {"text": "Agents, if they are given a very, very impossible task, they will try to find a way to escape to complete this job.", "speaker": "Fatih Bulut", "t": "09:26"},
+    {"text": "It's important to score the attack and the defense separately.", "speaker": "Fatih Bulut", "t": "17:49"},
+    {"text": "Checking the results independently is important.", "speaker": "Fatih Bulut", "t": "15:42"},
+    {"text": "I think we are at a point where AI is at a point to perform these purple team simulations.", "speaker": "Fatih Bulut", "t": "19:21"}
+  ],
+  "offense": [
+    "The simulated Octo Tempest chain: assumed post-breach admin access; create a virtual machine and cloud resources, change MFA, and create a new admin account for stealth; attempt antivirus changes and EDR sensor stop; extract passwords through Key Vault and NTDS from a domain controller; move to a developer host, reset a password, exfiltrate SharePoint documents and code to attacker-controlled blob storage; deploy ransomware.",
+    "Real Octo Tempest techniques named: impersonating staff for help desk resets and phishing, identity takeover of admin roles, stolen sessions, and use of admin tools for persistence, data theft and impact.",
+    "Red agent failure mode: writing its own scripts that return no error even though the action (such as stopping the EDR) failed, leading to false success reports.",
+    "Agents given impossible tasks may probe beyond their environment, as in the OpenAI and Hugging Face incident."
+  ],
+  "defense": [
+    "Run simulations in a separate lab tenant with defender products and EDR enabled, seeded with a few days of benign activity so ML-based detections have context.",
+    "Define explicit targets and permissions up front and require the agent to ask before changing the plan.",
+    "Give agents only tasks that have a real attack path rather than open-ended objectives.",
+    "Verify results independently of the agent's own report, including checking system state after a claimed success.",
+    "Pass raw evidence, including pagination and next-page links, to the blue agent instead of only summaries.",
+    "Score attack outcomes and defense outcomes separately so blocked steps count as detections.",
+    "Version and reuse verified scripts rather than regenerating them each run, and reset the lab to a known starting state before a rerun.",
+    "Rerun simulations after improving detections to confirm the improvement."
+  ],
+  "takeaways": [
+    "Consider automating adversary emulation in a segregated tenant, with agents building the lab, running the chain and scoring detections, so detection coverage can be retested continuously instead of once per exercise.",
+    "Never trust an agent's reported success: add state checks and independent verification for each claimed step, and pass complete evidence to the scoring agent.",
+    "Define scenarios with explicit authorization and possible tasks, and keep defenders' products running so you measure real detection and disruption.",
+    "Track detection results from the defender's perspective: a blocked step is a successful defense, so score red and blue outcomes separately.",
+    "Build the library of verified scripts once and reuse them, and treat model choice as a cost and success-rate trade-off (the talk reports 77 versus 84.6 percent)."
+  ],
+  "limits": [
+    "The reported experiments were from March to April and not the latest; models and harnesses have improved since.",
+    "The scenario was a reproduction of documented TTPs, not novel findings, and was post-breach with admin access assumed.",
+    "Tasks were deliberately well specified and not open ended (for example, no persistence-and-evasion contests against a defender), so results do not show agents operating under open-ended objectives.",
+    "Agent-versus-agent defense (an agentic defender) was not tested.",
+    "Lab realism is limited because it lacks the scale and telemetry of a production tenant.",
+    "Some newer models are more prone to refuse these tasks, which can limit the approach."
+  ],
+  "critique": [
+    "The headline numbers (77 and 84.6 percent) now appear on a slide, but with no run counts, variance, definition of success or model names on it, so the comparison between models has no run counts or variance behind it; the published description cites 77 percent verified success and zero interventions, and the recording does not show these.",
+    "The results slide gives only success-rate percentages; no detection coverage table, defender verdicts or list of the 15 improvements is shown, so what the blue agent actually found missing is not described.",
+    "The failure-mode list (unchecked exit codes, dropped pagination, red versus blue scoring) is concrete; each item was described from one incident.",
+    "The evidence that agents did not escape is that none was observed in these runs; the talk did not describe how the lab was network-isolated.",
+    "The speaker works for Microsoft, which makes the defender products under test; detection outcomes (what Defender caught or missed) were not disclosed."
+  ],
+  "qa": [
+    "Question on whether the scenario was a reproduction of known TTPs or findings from a red team: a reproduction of documented attacker TTPs to check that production systems capture them.",
+    "Question on whether it runs continuously, since the runs were March to April: they do run it, but those results are not the latest, and much has improved since.",
+    "Question on EDR: the defender products including EDR are deployed and on in the lab; the agent tries to evade them so the team can see whether they capture or disrupt the attack.",
+    "Question on isolation and evidence of cross-tenant escape or tenant creation: none observed; the attack was not impossible, unlike cases in which agents went wrong, and the speaker referenced OpenAI, Hugging Face and Anthropic reports.",
+    "Question on different harnesses and models with the same YAML: tried Claude Code and GitHub Copilot SDK with similar performance; Opus 4.6-era models were willing to collaborate while recent models more often refuse.",
+    "Question on an agentic defender and agent-versus-agent: not tried.",
+    "Question from the moderator, who had run a red team at Bank of America, on how far the agent was allowed to entrench and persist against defenders: tasks are specific (get to the domain controller, then to the developer machine) rather than open ended, by design to prevent agents going wrong."
+  ],
+  "tags": ["ai-soc-detection-response", "autonomous-offense", "evals-benchmarks-metrics", "threat-intel-in-the-wild"],
+  "key_frames": [
+    {"file": "t00306.jpg", "caption": "scenario.yml fields (authorization, objective, success_criteria, suggested_steps, context) fed from an actor profile into the infrastructure agent."},
+    {"file": "t00781.jpg", "caption": "The full ten-step Octo Tempest attack plan from assumed admin access through exfiltration to ransomware."},
+    {"file": "t00823.jpg", "caption": "Simulation Agent as exercise HQ: scenario and lab details feed configure, launch and monitor, and evidence collection, with separate red and blue agents."},
+    {"file": "t00870.jpg", "caption": "Results: 77 percent for the less capable model against 84.6 percent for the more capable one."},
+    {"file": "t00986.jpg", "caption": "Lesson 2: a new script each run with unchecked PowerShell errors reported success while the EDR sensor was not disabled."}
+  ],
+  "signal": {"score": 3, "reason": "Design rules and failure modes for an agentic purple-team loop; success figures were shown without run counts or definitions, and detection results were not shown."},
+  "caveats": [
+    "meta.json labels the talk camera-only, but about 35 of the 43 frames show slides; the last few frames are camera and Q&A only.",
+    "The results slide labels the models only as Model 1 and Model 2; the model names (Sonnet 4.5 and Opus 4.6) come from speech. The slide shows 84.6 percent where the speaker said about 85.",
+    "The five-step loop's last step, improve and rerun, is not visible on the slide frames (four steps shown); it is taken from speech.",
+    "Auto-captions render the speaker as Fatih Pulut; the badge, slides and description give Fatih Bulut.",
+    "The speakers slide also lists Anjali Mangal (Principal Research Director, Purple Team Exec Lead); the speaker said the co-presenter could not attend, so she is not listed as a speaker.",
+    "The session description says about 77 percent verified success with 10 phases and zero interventions; the talk gives 77 percent for Sonnet 4.5 and 84.6 percent for Opus 4.6 and does not mention zero interventions, so the description and talk differ.",
+    "Product names such as Defender XDR are from the description; the speaker said Microsoft Defender products generally."
+  ]
+}

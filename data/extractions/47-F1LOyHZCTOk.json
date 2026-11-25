@@ -1,0 +1,137 @@
+{
+  "nn": "47",
+  "id": "F1LOyHZCTOk",
+  "url": "https://www.youtube.com/watch?v=F1LOyHZCTOk",
+  "title": "Secure Product Development With Mantis",
+  "speakers": [
+    {"name": "Nick Galloway", "affiliation": "Senior Staff Security Developer, Google Cloud"},
+    {"name": "Ruchi Shah", "affiliation": "Senior Director, Cloud CISO Security Engineering, Google Cloud"}
+  ],
+  "format": "talk",
+  "duration_min": 24,
+  "thesis": "AI vulnerability scanning is now only the baseline; Google Cloud pairs it with pre-submit scanning, root-cause work (safe-by-construction rewrites, formal verification, extracted specifications) and a spec-driven SDLC in which security engineers become co-architects and code is continuously checked against a written security spec.",
+  "summary": "Nick Galloway opens by saying AI scanners are table stakes and describes a three-pronged approach: find and patch vulnerabilities, fix root causes, and update the security model across the SDLC. For the first prong he describes Mantis, Google Cloud's internal AI scanner, with planner, researcher, critic and calibrator agents, a find, validate, patch workflow, tuning via per-team threat models, and an open-source blueprint released first as markdown skills and later as an ADK version on GitHub. Because deep scans only catch up, Mantis also runs as a pre-submit check on every change in a few minutes, and Google says it has stopped a big number of bugs before they entered the codebase, though no figure was given. For the second prong he covers rewriting small critical components in memory-safe languages such as Rust, using agents to do the tedious bookkeeping of formal verification on existing code, and using agents to build deterministic extraction code that turns a sprawling real system into an actual specification. That extracted specification is compared with an intended specification built from design docs, RFCs, meeting notes, threat models and comments, and mismatches have already revealed surprising bugs. Ruchi Shah then argues the most impactful flaws are design flaws, that point-in-time reviews cannot keep pace with machine-speed development, and shows a spec-driven flow from ideation through rollout with the security bar enforced continuously. Nick closes with caveats: threat models can suppress real findings, humans dismiss real vulnerabilities as AI slop, extracted specs must be sound, and formal proofs can be tautological. A short Q&A follows.",
+  "argument": [
+    "AI vulnerability scanners are now the baseline, so Google Cloud runs deep periodic scans and also scans every change pre-submit to stop vulnerabilities before they enter the codebase.",
+    "Finding bugs is playing catch-up, so root causes should be removed by rewriting critical components in memory-safe languages, using agents for formal verification bookkeeping, and extracting accurate specifications of complex systems.",
+    "Comparing an intended specification (from design docs and threat models) with an actual specification extracted from code and configuration surfaces mismatches that humans would miss.",
+    "The most impactful vulnerabilities are design flaws, and point-in-time reviews built for human-speed engineering cannot keep up with machine-speed development.",
+    "Security should move into the development workflow as living specs and invariants checked continuously, with security engineers acting as co-architects and humans approving intent."
+  ],
+  "claims": [
+    {"claim": "Pre-submit Mantis scanning has stopped a big number of vulnerabilities from ever entering Google Cloud's systems.", "evidence": "Stated on a slide and aloud; the speaker said he had no number to share.", "grade": "assertion", "t": "04:47", "source": "both"},
+    {"claim": "Pre-submit scanning must be fast, finishing in a couple of minutes, and developers or agents usually act on findings posted as review comments.", "evidence": "Design constraint and observation stated without data.", "grade": "assertion", "t": "04:15", "source": "both"},
+    {"claim": "Mantis uses a multi-agent architecture with planner, researcher, critics and calibrators, and teams tune output with threat models that modify the scoring rubric.", "evidence": "Architecture description; no diagram or evaluation shown.", "grade": "case", "t": "01:41", "source": "both"},
+    {"claim": "Mantis was open sourced as a markdown skills version and an ADK version, with the intent of providing a blueprint rather than a complete product, while Google Cloud uses both.", "evidence": "Slide naming github.com/google/mantis and the speaker's description.", "grade": "case", "t": "03:13", "source": "both"},
+    {"claim": "Formal verification of memory management properties is mostly tedious bookkeeping, which AI can take on because it does not get tired; initial results are promising.", "evidence": "Stated on a slide; no results shown.", "grade": "assertion", "t": "06:18", "source": "both"},
+    {"claim": "Agents can build deterministic extraction code that turns a complex system into an accurate specification, and initial human sampling shows this can be done quite accurately.", "evidence": "Informal human sampling mentioned; no figures or methodology; the diagrams shown were AI-generated illustrations.", "grade": "anecdote", "t": "08:54", "source": "both"},
+    {"claim": "Diffing an intended specification against the extracted actual specification has already found surprising mismatches at Google Cloud, not always vulnerabilities.", "evidence": "Stated without examples or counts.", "grade": "anecdote", "t": "10:56", "source": "both"},
+    {"claim": "The most impactful vulnerabilities are design decisions such as a trust boundary in the wrong place or an identity assumed instead of checked, so a scanner can say a function is wrong but not that the system is wrong.", "evidence": "Argument from experience on a slide; no data.", "grade": "assertion", "t": "13:01", "source": "both"},
+    {"claim": "Consolidating security requirements in one place and applying an agentic skills approach to security control assessments moved Google Cloud from human-dependent remediation to agentic bug filing and fixing across production services.", "evidence": "Stated outcome on a slide and aloud; no metrics.", "grade": "assertion", "t": "15:35", "source": "both"},
+    {"claim": "Human-written threat models can discourage the scanner: a scanner dismissed a real sandbox escape because the threat model said the system operates in a sandbox.", "evidence": "Specific incident described that Google had to fix recently.", "grade": "case", "t": "19:15", "source": "both"},
+    {"claim": "Humans dismiss real vulnerabilities as AI slop, so findings must be treated as ground truth to improve the scanner later.", "evidence": "Stated as an observed failure mode.", "grade": "anecdote", "t": "19:45", "source": "both"},
+    {"claim": "Formal proofs created by vibe coding with SMT or Lean can be tautological, proving something like 2 equals 2.", "evidence": "Caveat on a slide; no instance shown.", "grade": "assertion", "t": "20:48", "source": "both"}
+  ],
+  "numbers": [
+    {"figure": "3", "meaning": "prongs: find and patch vulns, fix root causes, update security model throughout the SDLC", "t": "00:07"},
+    {"figure": "a couple of minutes", "meaning": "target latency for pre-submit security scanning", "t": "04:47"},
+    {"figure": "1 year", "meaning": "approximately how long ago it became obvious AI was very good at vulnerability discovery", "t": "01:10"}
+  ],
+  "frameworks": [
+    {"name": "Three-pronged approach", "description": "One: find and patch vulns (Mantis, deep scans, pre-submit). Two: fix root causes (software rewriting, formal verification, systems understanding, safe coding with security advice in every prompt). Three: update the security model throughout the SDLC."},
+    {"name": "Fix root causes in three parts", "description": "Part 1 moving to safe software construction (rewrite in memory-safe languages or prove properties of unsafe code on the side); part 2 understandable systems (specification extraction, intended specification, diff); part 3 a security engineer reviewing every prompt (security requirements inside the coding agent's context or a parallel security agent, a security spec next to the code, humans decide what is acceptable)."},
+    {"name": "Intended versus extracted specification", "description": "Intended spec is built from design docs, RFCs, meeting notes, human threat models and code comments. Actual spec is extracted by deterministic code, built with agents, from ground truth such as code, configuration and deployment. Disagreements are examined with citations; either the intent is updated or the problem is fixed."},
+    {"name": "One spec, carried from ideation to rollout", "description": "Five stages: ideation and design (design docs, RFCs, threat models become the intended side of the spec); obligations (spec checked against the organization's catalogue of security requirements); implementation (coding agents get the spec as context: what must be true, not just what to build); presubmit (checks for changes that weaken security, prototype today); rollout and attestation (humans sign off on what code cannot prove; deviations are fixed or the spec changed on purpose)."},
+    {"name": "Security bar enforced continuously", "description": "Distributed security requirements are consolidated in one place; an agentic skills approach automates control assessment pre-launch with deterministic measurement post-launch, for full continuous coverage that identifies, remediates and verifies posture violations across production services."}
+  ],
+  "artifacts": [
+    {"name": "Mantis", "kind": "tool", "note": "Google Cloud's internal AI vulnerability scanner with multiple scanners, find, validate and patch workflow, and per-team threat model tuning; also deployed as pre-submit scanning.", "url": "github.com/google/mantis"},
+    {"name": "Mantis OSS skills version", "kind": "repo", "note": "Pure markdown skills showing the method, released first as a spec-based distribution method.", "url": "github.com/google/mantis"},
+    {"name": "Mantis OSS ADK version", "kind": "repo", "note": "Version with a more efficient and reliable harness, closer to the internal one but not the same codebase.", "url": "github.com/google/mantis"},
+    {"name": "Code Mender in Anti-Gravity", "kind": "product", "note": "Named by the speaker as an example of putting agentic patching and security checks into the developer environment before a commit; the exact product name is garbled in the transcript.", "url": ""},
+    {"name": "Internal specification-extraction tooling", "kind": "tool", "note": "Not open source; may or may not land in Mantis OSS per the speaker in Q&A.", "url": ""}
+  ],
+  "slide_only": [
+    "Three-pronged approach table: Find and Patch Vulns (Mantis is our AI system for finding vulns in Google Cloud itself; also now deployed as presubmit across the code base, has prevented huge number of bugs so far pre-launch); Fix Root Causes (can AI enable software rewriting, formal verification, systems understanding, and safe coding with security advice in every prompt?); Update Security Model throughout SDLC.",
+    "Mantis slide: multiple scanners depending on use case; typical workflow is find, validate, patch; two components to the hard work, infrastructure to run the scanners and LLM integration (prompts, tools, agent hierarchy); tune with threat models.",
+    "Open Source slide: a security review toolkit for replicating the workflow, intended as a blueprint or sketch for a shop jig rather than a complete product; skills version as one spec-based distribution method; ADK version for a more efficient and reliable harness; internally the same approach runs across Google Cloud's systems.",
+    "Stop the bleeding slide: deep scan the entire Google Cloud codebase but this is playing catch up; scan changes before they merge, with vulnerabilities as review comments on the change; developers or agents do usually act on findings; make agentic patching easily available in tooling developers already use.",
+    "Part 1 slide: one path is rewriting key security boundaries and low-level libraries in Rust; another is proving things about unsafe languages on the side, with the key insight that formal verification of memory management properties is just a tremendous amount of tedious bookkeeping.",
+    "Part 2 and visualization slides: a dense architecture diagram contrasted with a simplified GCP secure deployment high-level architecture (abstractions and boundaries); both captioned AI generated for illustrative purposes only.",
+    "Specification extraction slide: deterministic code does the heavy lifting; agents build and update deterministic inspection and convert specifications into summaries.",
+    "Part 3 slide: put security requirements inside the agent's context, not after it, and/or a parallel security agent; a security spec next to the code, updated as the agent works; humans still decide what is acceptable.",
+    "Four-box slide on the how-to-build-a-secure-product model: design reviews, implementation reviews, vulnerability research and red teaming, with what would go wrong: code drifts from design, threat models go stale, nobody owns interfaces between systems, point-in-time security reviews lack continuity.",
+    "The security review model is antiquated: built for a slower world; machine-speed development overwhelms point-in-time human review; failure modes persist (broken trust boundaries, assumed identities, stale threat models); paradigm shift to co-architects, not gatekeepers, embedding living security specifications into developer and agent workflows.",
+    "Embed Security into SDLC via Spec: establish specs as executable contracts (structured Markdown specifications defining security invariants and component contracts before coding); enable early architectural review (security teams as co-architects for critical workstreams); automate security gates with Mantis (presubmit scanning to verify and enforce code against spec invariants).",
+    "Where We Go From Here slide: move security engineers from launch reviewers to co-architects; humans write intent, agents convert it into intended spec; machines check code and configuration against intended spec continuously; benefit is fewer late surprises and better coverage.",
+    "Caveats slide: human-written threat models may discourage the scanner; humans might dismiss real vulnerabilities (AI slop); low precision with high recall may be desirable (usually not), so measure precision of the system, not of stages; extracted spec must be sound with a deterministic oracle for reachability questions being gold; beware conflicting or vague security requirements; beware tautologies (proving 2 == 2).",
+    "Thanks slide names Nick Galloway, Senior Staff Security Developer, and Ruchi Shah, Sr. Director, Cloud CISO Security Engineering, with LinkedIn profiles and thanks to Mantis contributors."
+  ],
+  "demos": [],
+  "quotes": [
+    {"text": "AI vulnerability scanners are not all you need. They are now the baseline.", "speaker": "Nick Galloway", "t": "00:07"},
+    {"text": "I'm going to make the bold claim that none of us understand our systems.", "speaker": "Nick Galloway", "t": "07:21"},
+    {"text": "A scanner can tell you that the function is wrong, but it doesn't usually tell you that the system is faulty.", "speaker": "Ruchi Shah", "t": "13:01"},
+    {"text": "We go from becoming these late stage gatekeepers to co-architects.", "speaker": "Ruchi Shah", "t": "16:40"},
+    {"text": "If you can check something statically without AI, that's even better. Runs faster. You don't need the complex harnesses and evals and all that.", "speaker": "Nick Galloway", "t": "21:50"}
+  ],
+  "offense": [
+    "A scanner given a threat model that says a component runs in a sandbox can dismiss a real sandbox escape as impossible, so a stale or over-trusting threat model suppresses real findings.",
+    "Failure modes the speakers see in product security: code drifts from design, threat models go stale, nobody owns interfaces between systems, point-in-time reviews lack continuity, and attackers move at machine speed."
+  ],
+  "defense": [
+    "Scan every change pre-submit within a few minutes and post findings as review comments before the code merges; put agentic patching in tools developers already use, ahead of the pull request if possible.",
+    "Tune scanners per team with threat-model modifications to the rubric, but check that threat models do not suppress real findings.",
+    "Rewrite small, critical components (boot loaders, kernel drivers, security boundaries, low-level libraries) in memory-safe languages, or use agents to formally verify existing unsafe code.",
+    "Have agents build deterministic code that extracts a system's actual specification, then diff it against an intended specification derived from design docs, RFCs and threat models.",
+    "Put security requirements inside the coding agent's context or run a parallel security agent, require agents to state assumptions, and keep a security spec next to the code, updated as the agent works.",
+    "Consolidate all security requirements in one place (the security bar), automate control assessments with skills, and measure post-launch deterministically.",
+    "Treat specs as executable contracts with security invariants, review specs separately from derived code, and gate merges on spec invariants; generate specs for brownfield code by reverse engineering.",
+    "Prefer static or deterministic checks where possible and use AI only where non-determinism is needed.",
+    "Measure precision of the whole system rather than of stages, and watch for tautological proofs when using SMT or Lean."
+  ],
+  "takeaways": [
+    "Treat AI scanning as baseline and move it to pre-submit with a latency budget of a few minutes so vulnerabilities are review comments rather than tickets.",
+    "Build a security spec per product that records intended invariants, extract an actual spec from code and configuration, and review mismatches continuously instead of at launch gates.",
+    "Re-audit your scanner's inputs: threat models and prior human decisions can teach the scanner to ignore real issues, and human dismissal of findings as slop should feed back as ground truth for tuning.",
+    "Reposition product security engineers as co-architects embedded early, with agents carrying the security bar into the developer's context.",
+    "When using formal methods with AI, check that proofs are not tautological and that extracted specs are sound before relying on them."
+  ],
+  "limits": [
+    "Speaker had no number to share for how many bugs pre-submit scanning has stopped.",
+    "Mantis is not bug free and the open source version is a blueprint rather than a complete product.",
+    "Formal verification and rewriting results are described as promising but not detailed.",
+    "Extracted specifications may lose some information, and they must be mostly deterministic and sound.",
+    "Internal specification tooling is custom to Google and may not be open sourced.",
+    "Pre-submit checks for spec weakening are a prototype today."
+  ],
+  "critique": [
+    "The talk is largely a description of an internal approach with almost no quantitative evidence: no bug counts, no false positive rates, no latency distributions, no comparison of agent architectures, so the claims about effectiveness rest on assertion.",
+    "The specification extraction and diff approach was validated only by informal human sampling, and the diagrams shown were labeled AI generated for illustrative purposes.",
+    "Shifting to specs as executable contracts and security co-architects is plausible and consistent with spec-driven development, but the cost of keeping specs accurate and of ownership across teams was not addressed.",
+    "The speakers work for Google Cloud, which released Mantis as open source and describes it as a blueprint; the internal tooling for the second and third prongs is not available.",
+    "The caveat that threat models can suppress real findings is specific, and the talk also advises tuning scanners with threat models; no resolution beyond fixing individual cases was given."
+  ],
+  "qa": [
+    "Question on whether the generated system diagram came from Mantis and whether it is cloud agnostic: the two diagrams shown were AI-generated illustrations; the internal tooling is not open source and is custom to Google, and whether it lands in Mantis OSS is unknown.",
+    "Question on incorporating security misconfiguration or standards into Mantis and generating threat models from them: Nick said probably, but use AI only where non-determinism is needed, because anything checkable statically is faster and does not need complex harnesses and evals.",
+    "Question from the moderator on whether the system works at very high velocity if code moves away from the Git model (referring to an Anthropic revision-system change the questioner called Scion): Nick said it will work better because agents are ready to review everything, and they aim to move even earlier than pre-submit, such as in Code Mender in Anti-Gravity before a pull request is sent."
+  ],
+  "tags": ["appsec-secure-development", "cryptography-formal-methods", "vuln-discovery-exploit", "coding-agent-security"],
+  "key_frames": [
+    {"file": "t00130.jpg", "caption": "Mantis architecture summary: multiple scanners, find, validate, patch workflow, infrastructure plus LLM integration, tuned with threat models."},
+    {"file": "t00858.jpg", "caption": "One Spec, Carried From Ideation to Rollout: the five-stage spec-driven flow from design docs through obligations, implementation, presubmit and attestation."},
+    {"file": "t00974.jpg", "caption": "Caveats slide: threat models that discourage the scanner, human dismissal as AI slop, precision of the system, sound extracted specs and tautological proofs."},
+    {"file": "t00258.jpg", "caption": "Part 1 slide on safe software construction: rewrite in memory-safe languages or use AI for tedious formal-verification bookkeeping."},
+    {"file": "t00686.jpg", "caption": "Part 3 slide: put security requirements in the coding agent's context, keep a living security spec, and keep humans deciding what is acceptable."}
+  ],
+  "signal": {"score": 3, "reason": "An architecture for specification-driven product security with listed caveats; no measured results were shown and much of the tooling is internal."},
+  "caveats": [
+    "Auto-captions render Galloway as alloway and Rishi for Ruchi in Q&A; names taken from slides and the description.",
+    "The speaker said Code Mentor in Anti-Gravity; the product name is not shown on a slide and is likely garbled, so it is recorded as heard.",
+    "The questioner referred to something called Scion for Anthropic's revision system; not verified.",
+    "The final frame is a camera shot of the Q&A with no slide.",
+    "The description gives Nick Galloway's affiliation as AI for security and security for AI, Google Cloud; the slide reads Senior Staff Security Developer.",
+    "Slide URLs for Mantis appear only as github.com/google/mantis."
+  ]
+}

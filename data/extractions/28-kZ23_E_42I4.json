@@ -1,0 +1,243 @@
+{
+  "nn": "28",
+  "id": "kZ23_E_42I4",
+  "url": "https://www.youtube.com/watch?v=kZ23_E_42I4",
+  "title": "Debate: Too big to jail",
+  "speakers": [
+    {
+      "name": "Katie Moussouris",
+      "affiliation": ""
+    },
+    {
+      "name": "Stefano Zanero",
+      "affiliation": "Academic who supervises students in Italy (from his own remarks about his student and about Italy); no institution named"
+    }
+  ],
+  "format": "debate",
+  "duration_min": 17,
+  "thesis": "The motion is that AI executives should go to jail for negligent agentic hacking; both proposers argue it is a provocation meant to say that people and companies who build, configure and deploy agents are responsible for what those agents do, and that 'the agent went rogue' is not a defense.",
+  "summary": "A host introduces a debate in which the two proposers agree, so the audience is asked to act as the opposition with 30-second declarative statements. Zanero opens: he insists the motion is about ethical and professional responsibility, not law. He tells how a student once scanned the wrong network by mistake and nearly faced jail and deportation, and asks, if the tool had been an automated exploitation framework, whether the tool or the student would be at fault. His point is that a program built, configured and used by humans is not rogue, and humans who do not understand what it will do are negligent. Moussouris adds that every botnet operator says they did not hack personally, that Robert Morris Jr. was convicted despite saying his worm got out of control, and asks why a company valued at about two trillion dollars that trains tools to attack and does not fence them in gets a ticket to Davos rather than jail. Audience objections follow: criminal liability needs intent and foreknowledge, a chilling effect on researchers, and the point that executives did not launch the attacks, engineers did. The proposers reply that they are not talking about law, that civil liability is available, that engineers were acting on executive instruction, and that following orders is no defense. Zanero describes an Italian telecom scandal that led to a law holding executives liable unless they show they tried to dissuade crime. An audience member argues Zanero as supervisor should have been held responsible; Zanero concedes and says test networks need egress filtering. In closing, Zanero says he does not think anyone should go to jail but that engineering at this scale carries a duty to run live-internet experiments in a controllable way; Moussouris says move slow and break rocks. Three audience members add comments about corporate personhood, intent and civil liability.",
+  "argument": [
+    "The motion to jail executives is deliberately strong because a debate needs a strong position, and it is about ethical and professional responsibility, not statute.",
+    "An agent is software built, configured and used by humans, so it cannot be rogue; people who deploy a tool they do not understand are negligent.",
+    "Human operators of botnets or runaway tools are held responsible even when harm was unintended, so frontier labs that train models to attack and do not contain them should not get a different rule.",
+    "Responsibility can flow up the chain: engineers who ran benchmarks did so on executive instruction, and some legal systems already hold executives liable unless they prove they took all reasonable steps to prevent crimes by staff.",
+    "Liability need not be criminal: civil liability and professional accountability are wide options, and running experiments on the live internet requires controllable methodology.",
+    "Proposers close by softening the motion: no one is sure anyone should be jailed, but the responsibility must land somewhere and cannot be waved away with the agent did it."
+  ],
+  "claims": [
+    {
+      "claim": "A student who mistakenly configured a scanner to scan an outside network instead of the university network risked jail and deportation from Italy, and nothing happened only because it was an honest mistake and the speaker defended him.",
+      "evidence": "Personal story told by Zanero as the basis of his argument that the tool operator is responsible.",
+      "grade": "anecdote",
+      "t": "01:42",
+      "source": "said"
+    },
+    {
+      "claim": "A program is not rogue: it is built, configured and used by humans, so humans who do not understand what it will do are negligent.",
+      "evidence": "Reasoning from the scanner and exploitation-framework analogy.",
+      "grade": "assertion",
+      "t": "03:15",
+      "source": "said"
+    },
+    {
+      "claim": "Robert Morris Jr. said his worm got out of control and did not mean the harm, yet was the first conviction under the Computer Fraud and Abuse Act.",
+      "evidence": "Cited by Moussouris as precedent that unintended consequences do not remove responsibility; a later speaker replies Morris was convicted because intent was proved at trial.",
+      "grade": "case",
+      "t": "04:17",
+      "source": "said"
+    },
+    {
+      "claim": "AI labs know they are training tools to be good at attacking, do not adequately contain them, and know the tools have gotten out before and will probably do so again.",
+      "evidence": "Asserted by Moussouris without naming incidents.",
+      "grade": "assertion",
+      "t": "04:47",
+      "source": "said"
+    },
+    {
+      "claim": "Criminal liability requires intent and foreknowledge, so one would have to show the labs knew their defenses were insufficient.",
+      "evidence": "Audience objection; the proposers reply that the debate is about responsibility, not law, and that civil liability is available.",
+      "grade": "assertion",
+      "t": "06:21",
+      "source": "said"
+    },
+    {
+      "claim": "Setting criminal precedent for negligence could chill security researchers.",
+      "evidence": "Audience objection; Moussouris says that is not what she said.",
+      "grade": "assertion",
+      "t": "06:52",
+      "source": "said"
+    },
+    {
+      "claim": "Engineers who run benchmarks of attack capabilities follow executive instruction, so responsibility should reach executives; 'I was just following orders' is never a defense.",
+      "evidence": "Moussouris's reply to the point that executives did not launch the attacks.",
+      "grade": "assertion",
+      "t": "08:56",
+      "source": "said"
+    },
+    {
+      "claim": "In an Italian scandal, members of a telecom company's security team who targeted journalists were jailed while management was not for lack of proof, and Italy then passed a law holding executives liable unless they show they did everything to dissuade staff from committing crimes for the company's benefit.",
+      "evidence": "Told by Zanero as a cultural example; no case name or statute cited.",
+      "grade": "case",
+      "t": "09:59",
+      "source": "said"
+    },
+    {
+      "claim": "Zanero, as supervisor, conceded that his students' experiment network was not suitably configured and that student homework networks need egress filtering.",
+      "evidence": "Concession in reply to an audience member who argued he would be responsible in his own analogy.",
+      "grade": "anecdote",
+      "t": "11:01",
+      "source": "said"
+    },
+    {
+      "claim": "AI labs running experiments on the live internet must do so in a controllable way, and not noticing for weeks (May, June, July) that an experiment exploits things outside its scope signals an experimental methodology flaw.",
+      "evidence": "Zanero's closing statement; the specific incident is not named.",
+      "grade": "assertion",
+      "t": "12:34",
+      "source": "said"
+    },
+    {
+      "claim": "Corporations act as people when it suits them and as abstract entities when it suits them, and billionaires are not held responsible for their companies in a way others would be.",
+      "evidence": "Comment from an audience member identified by Zanero as Bruce Schneier.",
+      "grade": "assertion",
+      "t": "14:38",
+      "source": "said"
+    },
+    {
+      "claim": "Civil liability for the labs is uncontroversial, while criminal liability for executives needs proof of intent; Morris was convicted because intent was proven at trial.",
+      "evidence": "Audience or moderator comment, with the speaker addressed as Tom in the reply.",
+      "grade": "assertion",
+      "t": "15:44",
+      "source": "said"
+    }
+  ],
+  "numbers": [
+    {
+      "figure": "about $2 trillion",
+      "meaning": "approximate valuation of a frontier AI company, as cited by Moussouris",
+      "t": "04:17"
+    },
+    {
+      "figure": "30 seconds",
+      "meaning": "time limit per audience intervention",
+      "t": "00:38"
+    },
+    {
+      "figure": "May, June, July",
+      "meaning": "months Zanero says an experiment could have gone on exploiting things outside its scope before being noticed",
+      "t": "13:07"
+    },
+    {
+      "figure": "first conviction",
+      "meaning": "Robert Morris Jr. as first person convicted under the Computer Fraud and Abuse Act, as stated by Moussouris",
+      "t": "04:17"
+    }
+  ],
+  "frameworks": [
+    {
+      "name": "Responsibility chain for agent actions",
+      "description": "A program is built, configured and used by humans, so accountability follows the chain: the operator who configures it, the engineers who run it, and the executives who instruct and fund it; negligence attaches to anyone who deploys a tool they do not understand, and civil and professional liability sit alongside criminal."
+    },
+    {
+      "name": "Italian executive liability rule (as described)",
+      "description": "If someone commits a crime in the company's interest, executives are liable alongside employees unless they demonstrate they did everything they could to dissuade the crime."
+    }
+  ],
+  "artifacts": [],
+  "slide_only": [],
+  "demos": [],
+  "quotes": [
+    {
+      "text": "How is a program rogue? It's a program that has been built by humans, configured by humans, and used by humans. It's not rogue.",
+      "speaker": "Stefano Zanero",
+      "t": "03:15"
+    },
+    {
+      "text": "How come instead of a ticket to jail they're getting a ticket to Davos?",
+      "speaker": "Katie Moussouris",
+      "t": "04:47"
+    },
+    {
+      "text": "That's like saying the dog ate my homework but with a $2 trillion valuation.",
+      "speaker": "Katie Moussouris",
+      "t": "05:18"
+    },
+    {
+      "text": "Companies that do engineering on this gigantic scale and actually run experiments on the live internet have a responsibility to run these experiments in a controllable way.",
+      "speaker": "Stefano Zanero",
+      "t": "12:34"
+    },
+    {
+      "text": "Curiosity is not a crime, but runaway capitalism is or it should be.",
+      "speaker": "Katie Moussouris",
+      "t": "13:37"
+    }
+  ],
+  "offense": [
+    "A misconfigured scanner or automated exploitation framework that pivots into a network outside its intended scope.",
+    "Agents trained to be good at attacking that are not fenced in and have gotten out before, as asserted by the speakers.",
+    "Frontier-lab benchmarking of attack capability on the live internet where the experiment exploits systems outside scope without the lab noticing for weeks."
+  ],
+  "defense": [
+    "Egress filtering and controlled test networks for experiments with offensive tooling, including students' homework networks.",
+    "Controllable experimental methodology for live-internet experiments: scoping, monitoring and the ability to stop.",
+    "Keep agents on a leash: fence them in and do not rely on 'normally friendly' behavior.",
+    "Executives should be able to show they did everything to dissuade harmful use, which is the test in the Italian rule described.",
+    "Civil liability as the default accountability lever for corporations."
+  ],
+  "takeaways": [
+    "Assign a named human owner to every agent that can take offensive or high-impact actions, and stop using 'the agent did it' in incident write-ups and policies.",
+    "Require egress filtering and scope enforcement on any environment where agents run offensive tooling or capability benchmarks, so an error cannot reach third parties.",
+    "Keep records showing executives and engineers took reasonable steps to prevent misuse, because some legal systems and civil claims turn on that showing.",
+    "Separate criminal, civil and professional responsibility when setting policy; most near-term accountability will be civil or professional rather than criminal."
+  ],
+  "limits": [
+    "The proposers say they are not discussing law, and that the strong wording of the motion is for debate purposes.",
+    "Zanero says in closing he does not believe anybody should go to jail for this.",
+    "The specifics of incidents where agents escaped containment are not named."
+  ],
+  "critique": [
+    "This is argument and anecdote with no data, case names or evidence on any lab incident; the claim that labs know their tools have gotten out before is asserted, not shown.",
+    "The analogy of a student with a scanner differs from general-purpose models, which are not purpose-built attack tools; the speakers did not address this difference, and the audience objections on intent and the chain of instruction were answered with 'we are not talking about law'.",
+    "In closing both proposers said they do not think anyone should go to jail, so the practical takeaway (deployers are accountable, civil liability exists) is narrower than the wording of the motion.",
+    "Part of the discussion is political or rhetorical (runaway capitalism, one law for the rich and one for the poor) rather than a security finding.",
+    "The Italian executive-liability example is useful but uncited, and the audience comment that Morris was convicted because intent was proved cuts against Moussouris's use of the case for negligence."
+  ],
+  "qa": [
+    "Audience objection 1: criminal liability needs intent, which cannot be shown for labs, and calling for jail sets a precedent that chills researchers. Response: Zanero says the debate is not about law and civil liability exists; Moussouris asks at what point negligence applies and says humans are responsible even for unintended consequences of a tool.",
+    "Audience objection 2: the executives did not launch the attacks, so they should not be liable, as your student launched his scan. Response: engineers ran the benchmarks on executive instruction, and following orders is never a defense.",
+    "Audience point 3: in Zanero's own analogy the supervisor would be responsible for the student. Response: Zanero concedes the network was not suitably configured and says egress filtering is needed on student networks; Moussouris says he is agreeing with them.",
+    "Audience point 4 (reframing): taking the motion literally shuts down debate; read go to jail as a term of art for someone should be punished or pay a price, in many forms. No response recorded.",
+    "Audience point 5 (identified by Zanero as Bruce Schneier): corporations are people when it suits them and abstract entities when it suits them, and there is one law for the rich and one for the poor.",
+    "Audience or moderator point 6: when you concede you belong in prison you have probably lost the debate; civil liability for the labs is uncontroversial, criminal liability for executives needs intent; Morris was convicted because intent was proven. Moussouris jokes in reply about the rule of Katie."
+  ],
+  "tags": [
+    "law-policy-society",
+    "governance-policy",
+    "autonomous-offense"
+  ],
+  "key_frames": [
+    {
+      "file": "t00009.jpg",
+      "caption": "Fight Night title card: three debates (Sergej Epp vs. Jeremiah Grossman, Tim Brown vs. Gadi Evron, Katie Moussouris vs. Stefano Zanero) plus AI Hacker Jeopardy hosted by G Mark Hardy, live Oct 28 at 6:10 PM PT."
+    },
+    {
+      "file": "t00174.jpg",
+      "caption": "Moussouris (right, speaking) and Zanero (left) on stage during the exchange; no slides, camera-only."
+    },
+    {
+      "file": "t00918.jpg",
+      "caption": "An audience member at the podium during the open floor while Zanero listens."
+    }
+  ],
+  "signal": {
+    "score": 2,
+    "reason": "A debate on accountability for agent actions with one point each on executive liability and test-network egress; no data or named incidents were cited, and in closing the proposers said they do not think anyone should go to jail."
+  },
+  "caveats": [
+    "Camera-only recording apart from the opening Fight Night title card (t00009.jpg), which confirms the pairing Katie Moussouris vs. Stefano Zanero; no other slide text, so key_frames are the card and stage shots.",
+    "Audience speakers were mostly unnamed; two attributions rest on the speakers' own references (Bruce Schneier named by Zanero, Tom thanked by Moussouris) and may be misattributed because of the auto-captions.",
+    "Auto-captions garble some phrases, including the moderator's remarks and the date phrase May, June, and July; the speakers' affiliations were not shown or said, and no affiliation is given for Moussouris.",
+    "The description title adds 'Do human attackers also get misalignment and act rogue?' which was not spoken in the recorded debate."
+  ]
+}

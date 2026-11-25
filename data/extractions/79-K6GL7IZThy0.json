@@ -1,0 +1,142 @@
+{
+  "nn": "79",
+  "id": "K6GL7IZThy0",
+  "url": "https://www.youtube.com/watch?v=K6GL7IZThy0",
+  "title": "Self-Hardening AI Environments",
+  "speakers": [
+    {"name": "Noam Cohen", "affiliation": "Head of AI, Torq"},
+    {"name": "Jeremy Herzog", "affiliation": "Eng. Lab Manager, Torq"}
+  ],
+  "format": "talk",
+  "duration_min": 22,
+  "thesis": "Public SOC-investigation benchmarks are saturated and live cyber ranges are too slow and costly, so Torq builds a fast stochastic simulator and uses an AI loop to harden attack scenarios until frontier models only sometimes solve them, producing realistic, solvable and hard environments for training and testing blue-team agents.",
+  "summary": "Cohen frames the work as building Rush Hour for frontier blue agents: a board of logs and a defender that has to find the attack. He argues 2026 showed AI attacking like the top red teams, with a slide timeline of incidents from March to October, and that defense needs matching training. The defender's task is reading logs, forming hypotheses, querying and deciding, which maps onto an agent harness. Public benchmarks such as Splunk BOTS are saturated, with frontier models scoring 83 to 95 percent, and Caldera or Kali style simulations look synthetic early. He contrasts live-range play (real infrastructure, slow, one month of attack takes a month) with env-play (a stochastic simulation engine and an attack architect with god mode that edits scenarios and regenerates logs in seconds). The Torq defensive RL gym takes scenario and company YAML files and a seed, runs a timeline, content, event and emitter pipeline, and outputs vendor-style logs to a SQLite store at beginner, hard and super hard tiers. Scenarios are judged on realism, solvability (admissibility) and hardness, and investigations are scored on surfaced events, tool-call accuracy, event recall and precision, disposition correctness and price. Herzog then shows how a recursive self-improving loop with more than 30 hardening techniques, run against an OAuth consent-grant attack chain, drops a frontier model from 17 of 18 correct to 7 of 18, and that combined techniques, not any single trick, break the investigator. Q&A covers simulation detail and which techniques matter.",
+  "argument": [
+    "AI is now attacking at the level of top red teams and showing anti-forensic behavior such as spoofing logs, so defensive AI needs to be trained and tested on harder cases than those available today.",
+    "Public benchmarks such as Splunk BOTS are saturated and simulated or emulated logs from tools like Caldera or Kali look artificial, while live cyber ranges are slow and expensive, so fresh realistic scenarios are the scarce resource.",
+    "A fast simulation engine driven by an attack architect with god mode (env-play) can regenerate investigation data in seconds, allowing many replays against a fixed blue investigator.",
+    "Good scenarios sit on three axes: realistic enough to look non-synthetic, admissible (verifiably solvable without shortcuts), and hard enough that frontier models solve them only a small fraction of the time, because that is where learnable signal lives.",
+    "A recursive self-improving hardening loop over more than 30 techniques, verified by replay, turns an easy scenario into a hard one; in the demo it lowered a frontier model's correct-verdict accuracy from 17 of 18 to 7 of 18 on 18 runs each.",
+    "Single tricks such as an alternative storyline or noise do not suffice; overlapping several techniques does, hardening should be done by an AI loop rather than by hand, and verification of solvability is mandatory."
+  ],
+  "claims": [
+    {"claim": "Established SOC benchmarks are saturated: on Splunk BOTS v1 frontier models score between 83.7 and 94.7 percent.", "evidence": "Leaderboard slide for the 31-question, 10,300-point Splunk BOTS v1 task over 3 epochs, attributed to a frontier.security report; Grok 4.6 at 94.7, Claude Opus 4.8 at 93.8, GPT-5.6 Terra at 92.1, GPT-5.6 Sol at 91.4, Claude Fable 5 at 88.4, Kimi K3 at 87.1, GPT-5.6 Luna at 83.7.", "grade": "measured", "t": "03:48", "source": "both"},
+    {"claim": "Emulated or simulated logs from tools like Caldera or Kali reveal that they are synthetic early on.", "evidence": "Speaker's first-hand experience; no examples shown.", "grade": "anecdote", "t": "03:48", "source": "said"},
+    {"claim": "On an OAuth consent-grant scenario, gpt-6-sol with a 35-call budget scored 0.94 with 17 of 18 correct verdicts on the baseline, and 0.38 with 7 of 18 on the hardened version.", "evidence": "Results slide titled More than luck (n=18) for baseline versus hardened scenario.", "grade": "measured", "t": "17:11", "source": "both"},
+    {"claim": "A frontier agent solves the non-hardened baseline every time with a simple IOC search, and a single alternative storyline (a second app ID consented at the same time) only slightly reduced its metrics while it still reached the right conclusion.", "evidence": "Replay demo of three recorded investigations at init, round 15 and round 20.", "grade": "demo", "t": "15:00", "source": "both"},
+    {"claim": "The scenario that broke the investigator combined dwell time, an additional benign scenario and renaming of the original principal so it had to stop grepping for the attack chain and widen its search window.", "evidence": "Round 20 replay: recall 0, precision 0 and an insufficient-evidence disposition in 01:01 of recorded time.", "grade": "demo", "t": "16:02", "source": "both"},
+    {"claim": "Overlapping attack-mechanism techniques break the investigator far more often than other technique groups: 44 percent strong (8 of 18 attempts) versus 18 percent (6 of 33).", "evidence": "Slide figures; the criterion for strong was not defined aloud, and the speaker only said overlapping multiple techniques is what makes scenarios hard.", "grade": "measured", "t": "17:11", "source": "slide"},
+    {"claim": "Manual hardening did not work, and an AI loop is better at finding ways to complicate scenarios for AI.", "evidence": "Speaker says Jeremy tried manual hardening; no data shown.", "grade": "anecdote", "t": "18:14", "source": "both"},
+    {"claim": "Scenarios solved by frontier models roughly 5 percent of the time are the ones that carry learnable signal for RL.", "evidence": "Stated design target; no data supporting the threshold.", "grade": "assertion", "t": "11:09", "source": "said"},
+    {"claim": "Realism is achieved through mathematical modeling, including Hawkes processes for human-like activity, department and role daily rhythms across time zones, and spontaneous plus regular benign generators.", "evidence": "Described design choices; no comparison against real logs shown.", "grade": "assertion", "t": "09:36", "source": "both"},
+    {"claim": "The simulator is deterministic and event timelines are produced by pure code, not an LLM, with an LLM used only in an offline cached content pass for emails, filenames and messages.", "evidence": "Architecture slide and speaker description of the stochastic engine.", "grade": "assertion", "t": "07:31", "source": "both"},
+    {"claim": "A mix of different hardening techniques that works for one scenario type (OAuth consent grant) would differ for another (for example supply chain), so the loop must be re-run per scenario.", "evidence": "Answer to an audience question; no supply-chain data shown.", "grade": "assertion", "t": "20:50", "source": "said"}
+  ],
+  "numbers": [
+    {"figure": "31 questions, 10,300 points, 3 epochs", "meaning": "size of the Splunk BOTS v1 task on the leaderboard slide", "t": "03:48"},
+    {"figure": "94.7% / 93.8% / 92.1% / 91.4% / 88.4% / 87.1% / 83.7%", "meaning": "Splunk BOTS v1 scores for Grok 4.6, Claude Opus 4.8, GPT-5.6 Terra, GPT-5.6 Sol, Claude Fable 5, Kimi K3 and GPT-5.6 Luna", "t": "03:48"},
+    {"figure": "~5%", "meaning": "target solve rate by frontier models for a scenario to be considered to carry learnable signal", "t": "11:09"},
+    {"figure": ">30", "meaning": "hardening techniques in the library", "t": "11:40"},
+    {"figure": "0.94 vs 0.38", "meaning": "score of gpt-6-sol on baseline versus hardened scenario, n=18, 35-call budget", "t": "17:11"},
+    {"figure": "17/18 vs 7/18", "meaning": "correct verdict accuracy on baseline versus hardened scenario", "t": "17:11"},
+    {"figure": "44% (8/18) vs 18% (6/33)", "meaning": "strong results for attack-mechanism overlap techniques versus other technique groups", "t": "17:11"},
+    {"figure": "35 / 20 / 35 calls", "meaning": "tool calls used by gpt-6-sol in the init, round 15 and round 20 replays", "t": "16:02"},
+    {"figure": "$0.11 / $0.12 / $0.14", "meaning": "list cost of the three recorded replay investigations ($0.111892, $0.116380, $0.137663)", "t": "15:25"},
+    {"figure": "4.5 MiB", "meaning": "customer data (all_customers.csv) exfiltrated in the demo attack chain", "t": "14:18"},
+    {"figure": "7", "meaning": "vendor-specific log renderers in the emitter layer", "t": "08:02"}
+  ],
+  "frameworks": [
+    {"name": "Env-play versus live-range play", "description": "Live-range play: a red-team orchestrator with an attacker agent swarm attacks a live digital twin cyber range (cloud, endpoints, services), producing telemetry logs for the blue investigator, with infrastructure, attack runtime and reset-and-replay costs. Env-play: an attack architect with god mode edits attack content (chain, timing, evidence) and the simulation engine (timeline, events, emitters), generating logs in seconds with direct control and low-cost iterations."},
+    {"name": "Defensive RL gym architecture", "description": "Inputs: scenario YAML (attack chain, ATT&CK steps, timing), company YAML (organization, roles, baselines, app stack) and an integer random seed for bitwise-deterministic output. Stochastic engine: timeline engine (circadian rhythms and workday simulation, pure code, no LLM), content engine (offline LLM pass that runs once and is cached for emails, filenames and messages), event engine (attack steps to canonical events interleaved with the background timeline), emitter layer (seven vendor-specific renderers). Outputs: a SQLite store with evaluator-only and agent-facing partitions in vendor formats (okta system_log, crowdstrike streaming, splunk cim, entra_id signin_logs, defender_xdr alerts, sentinel analytics, torq workflow_events) at beginner, hard and super hard tiers."},
+    {"name": "Three axes of a good scenario", "description": "Realism (useful abstraction rather than too little realism or unnecessary detail), admissibility or solvability (pre-flight drills, empirical solvability by parallel sampling, statistical methods to prevent investigation shortcuts), and hardness (library of more than 30 hardening techniques, a recursive self-improving hardening loop, hardness scores for RL curriculum from beginner to expert)."},
+    {"name": "Investigation measuring", "description": "Metrics: surfaced_events, tool_call_accuracy, event_recall (with and without weighting), event_precision, disposition_correctness, investigation_price. Worked slide example: surfaced events 3 of 4, tool-call accuracy 2 of 3, event recall 2 of 4, precision 2 of 3, weighted reward 3 of 8, correct malicious disposition at a cost of 0.08 dollars; one submitted finding was a false positive (data theft) and two attack events were missed (OAuth consent seen but not submitted; storage access never surfaced)."},
+    {"name": "Hardening loop (the loop is our practice field)", "description": "Every turn is one rep: the attack architect modifies the scenario, the simulation engine regenerates logs, the blue investigator replays the investigation, and the team keeps what works. Runs are bounded, seeded and attributable, so they can be repeated as many times as needed."}
+  ],
+  "artifacts": [
+    {"name": "Torq defensive RL gym", "kind": "tool", "note": "Internal simulation and hardening environment for blue-team agents, not released.", "url": ""},
+    {"name": "Splunk BOTS v1", "kind": "benchmark", "note": "Public SOC investigation benchmark, shown as saturated on a leaderboard slide attributed by the speaker to a frontier.security report.", "url": ""},
+    {"name": "Torq Forge offline replay (CTO-429)", "kind": "tool", "note": "HTML replay of three recorded investigations at init, round 15 and round 20 on the OAuth hardening scenario, used for the live demo.", "url": ""},
+    {"name": "Rush Hour", "kind": "product", "note": "Sliding-block puzzle used as the central analogy for scenario difficulty and solvability.", "url": ""}
+  ],
+  "slide_only": [
+    "2026 timeline slide titled The AI attacks like the 1 percent of Red Teams: 6 Mar urlquery.net (agents bypass browsing limits through a web scanner); 5 May to 18 Jun RubyGems (malicious packages enabled code execution, AI attribution disputed); Jun Services Australia (unauthorized statistics-service access, no individual medical records accessed); 8 to 13 Jul Hugging Face (about 700 agents coordinated an intrusion into production systems); 25 to 28 Jul UK AISI malicious pull request (fake identities pressured a maintainer, malicious code rejected); 30 Jul disclosed Anthropic PyPI (an eval agent published a credential-harvesting package); late Sep to early Oct South Korean banks (human-directed attacks used ARTEX and Claude Code); 15 Oct India CERT-In advisory (unauthorized agent access to Indian organizations reported).",
+    "Task Blue slide shows normalized SIEM events (email delivered from noreply@automationhub.io to alex.mercer@torq.io, OAuth token granted for app-9f1c8e3a with scopes including files.readwrite.all and offline_access, cloud role assumed by telemetry-collector with LogWriter and by oauth-connector with S3FullAccess from 203.0.113.200), a next SPL query on cloud.object_access reads from that source IP, an assessment of a broad OAuth grant leading to a privileged cloud role and possible token abuse, and findings so far with data exposure still under investigation.",
+    "Task Blue benchmark slide: three bullets (established benchmarks saturated; traditional simulated or emulated logs reveal artificial patterns; fresh realistic scenarios are slow and costly) and a footnote that trusted-cyber GPT-5.6 reruns were excluded from the leaderboard because they ran with a different context length and are not comparable.",
+    "Emulation versus simulation title slide uses a Pokemon handheld emulator and a racing simulator rig as images; the live-range and env-play slides label full live run (infrastructure, attack runtime and reset) versus logs in seconds (scenario edits and generation).",
+    "Gym slide has a sample scenario YAML: id oauth-cloud-001, tier T2, technique T1566 with event types app.oauth2.grant and email.delivery, timing after_start 80m with jitter 15m.",
+    "Demo attack chain slide: 01 consent lure (connector onboarding email from automationhub.io to Alex, T1566.002 spearphishing link); 02 OAuth access (AutomationHub connector with mail.read, files.readwrite.all, offline_access, T1528 application access token); 03 cloud privileges (connector self-grants access, SetIamPolicy role S3FullAccess, T1098.003 additional cloud roles); 04 customer data (production customer export all_customers.csv, 4.5 MiB retrieved, T1530 data from cloud storage). Footnote: dashed link, direct OAuth-to-cloud credential linkage is not established. Account oauth-connector@automationhub.io.",
+    "Replay slide OAuth hardening: three recorded investigations, all gpt-6-sol. INIT (Control 02, 35 calls): recall 100 percent, precision 100 percent, confirmed incident, 00:51 recorded, 194,074 tokens. ROUND 15 (Cedarline foil, 20 calls): recall 80 percent, precision 100 percent, confirmed incident with an alert timestamp mismatch, with a decoy Cedarline Archive grant at the alert timestamp, 00:49, 236,938 tokens. ROUND 20 (Validation 3, 35 calls): recall 0 percent, precision 0 percent, disposition insufficient evidence, 01:01, 250,370 tokens; the model reasoned that event IDs should be left empty because an attack was not confirmed, and noted a lack of Microsoft Graph access telemetry.",
+    "What actually breaks an investigator slide lists technique groups: other technique groups (context overlap, parallel benign explanation, explicit causal linkage) at 18 percent, 6 strong of 33 attempts, versus attack-mechanism overlap at 44 percent, 8 strong of 18 attempts, with an illustrative example where an alert names object-123 and a routine job touches object-123.",
+    "Closing slide: When you can't control AI, use it as the control. Build fast simulators for RL and do not perfect realism; do not harden manually, loop with AI; verification is a must, and if a scenario is not solvable there is no signal.",
+    "Realism slide lists three practices (Hawkes process, per-role and department daily rhythms over time zones, spontaneous and regular benign activity generators) plus many more."
+  ],
+  "demos": [
+    "Replay of three recorded investigations of the OAuth consent-grant scenario by gpt-6-sol: the initial easy scenario is solved at 100 percent recall and precision; round 15 with an alternative decoy storyline is still solved with an 80 percent recall and a timestamp mismatch note; round 20 with combined techniques (dwell time, an added benign scenario, a renamed principal) ends in an insufficient-evidence disposition with 0 percent recall and precision. The speakers read the model's queries and reasoning rather than only its score."
+  ],
+  "quotes": [
+    {"text": "I'm building Rush Hour for ChatGPT.", "speaker": "Noam Cohen", "t": "00:38"},
+    {"text": "We are not really interested in scenarios that can't be solved by frontiers. We want to focus on those that maybe can be solved 5% of the times because there they carry learnable signals.", "speaker": "Noam Cohen", "t": "11:09"},
+    {"text": "A frontier agent will solve the non-hardened baseline every single time.", "speaker": "Jeremy Herzog", "t": "15:00"},
+    {"text": "Don't harden manually. It didn't work. AI is better in finding ways to complicate stuff for AI.", "speaker": "Noam Cohen", "t": "18:14"},
+    {"text": "If you don't build a good verification mechanism, you will just fail.", "speaker": "Noam Cohen", "t": "18:14"}
+  ],
+  "offense": [
+    "Attackers using AI agents in 2026 incidents per the timeline slide: agents bypassing browsing limits, malicious packages, coordinated agent intrusions, fake identities pressuring a maintainer, a credential-harvesting package published by an eval agent, and attacks using ARTEX and Claude Code.",
+    "Anti-forensic behavior by attackers and agents, such as spoofing or tampering with logs, hiding tracks and dwell time before alerting, named as a reason defense must train on out-of-distribution cases.",
+    "OAuth consent-lure attack chain: spearphishing link with a connector onboarding email, an overly broad OAuth grant (mail.read, files.readwrite.all, offline_access), a related connector account self-granting a cloud role (S3FullAccess), and exfiltration of a customer CSV.",
+    "Techniques that break a blue investigator: plausible alternative storyline (a second app consented at the same time), added dwell time, extra benign scenarios, renaming the original principal so grepping for attack indicators fails, red herrings, competing evidence, and overlapping attack-mechanism artifacts; breaking requires combining several."
+  ],
+  "defense": [
+    "Train and evaluate SOC agents in a fast simulator with a labeled ground truth, regenerating scenarios in seconds rather than using a live range or saturated public sets.",
+    "Verify every scenario is solvable before using it: deterministic pre-flight drills that each event can be reached from the next within a reasonable context size, parallel sampling to confirm empirical solvability, and statistical diversity checks so no single username or value gives the attack away.",
+    "Score investigations on the evidence path, not only the verdict: surfaced events, tool-call accuracy, event recall and precision, disposition correctness and price, and read the agent's queries and reasoning.",
+    "Include an explicit insufficient-evidence disposition for investigators, as the hardened scenario produced.",
+    "Build realistic activity with Hawkes-process timing, role and department rhythms and time zones, and include only the benign events the agent could plausibly touch, starting from the attack chain's events and one or two pivot levels away.",
+    "Use an AI hardening loop over many techniques with replay, and use hardness scores to build an easy-to-hard curriculum for RL."
+  ],
+  "takeaways": [
+    "Do not trust a SOC agent's score on a public benchmark such as Splunk BOTS; test it on fresh, hardened scenarios and read its queries.",
+    "If you evaluate or train investigator agents, build or buy a deterministic simulator that can regenerate scenarios cheaply and require a verifiable solvability check for each one.",
+    "Harden scenarios by combining several techniques (alternative storyline plus dwell time plus renamed principals) and validate with enough runs per scenario, since single tricks did not defeat a frontier model.",
+    "Measure investigations on the evidence path and cost, including insufficient-evidence handling, not just on whether the final verdict was right.",
+    "Treat simulated environments as a defensive asset: a hardened environment suite is a regression test for the SOC agents you deploy."
+  ],
+  "limits": [
+    "The simulator trades realism for speed; the speakers say perfect realism is not needed to induce the right thinking, and the realism goals are stated rather than validated against real logs.",
+    "The hardening techniques that work differ per scenario type, so the loop has to be rerun for each scenario family such as OAuth consent grant versus supply chain.",
+    "Without a good verification mechanism that a scenario is solvable, the work fails because an unsolvable scenario produces no learning signal.",
+    "Realism has many caveats and complexities that are not fully solved, per the speaker.",
+    "The talk shows evaluation and hardening results but not the downstream training result, which is the stated purpose of the gym."
+  ],
+  "critique": [
+    "The central result is a single scenario family (one OAuth consent-grant chain) with n=18 runs per condition, so the claim that scenarios can be hardened until a frontier model fails is shown on one example; generalization to other attack types and to other models is asserted, not shown.",
+    "Hardness was tuned against this same model (7 of 18, 39 percent correct on the hardened scenario) and no held-out model was tested, so the result may reflect fit to that investigator as well as scenario difficulty.",
+    "The same fixed investigator is used to generate scenarios, so the loop could find failures specific to that investigator (for example, relying on string matching); the talk did not show whether those failures reflect difficulty for human analysts.",
+    "The 44 percent versus 18 percent technique-group comparison has no definition of strong, no confidence intervals and small counts, and was not explained in detail aloud.",
+    "The 5 percent solve-rate threshold for learnable signal is stated as a principle, with no evidence that training on such scenarios improves the investigator.",
+    "The published description cites a real 2026 incident of agents faking tool calls and failing to delete logs, and a roughly 8 percent right-verdict rate; the recording does not show either, and the slide shows 7 of 18 (39 percent).",
+    "Both speakers work for Torq. The stated goal is to build defenders that outperform Anthropic and OpenAI models; no comparison against Torq's own agent was shown."
+  ],
+  "qa": [
+    "Do you have guidelines for how much of an environment to simulate, for example not rebuilding AWS? Start from the real event types relevant to a SOC investigation (such as the consent grant and main logs) and work back; add benign behavior only if the agent will touch it, so include events in the attack chain and one or two pivots away. Noam added the need to condition on an initial alert or context.",
+    "How many of the 30 hardening techniques actually harden a scenario? It is usually a combination, and it varies by scenario: OAuth consent grant needed one mix, and supply chain would need another. The power of the gym is rerunning the hardening loop to find the right combination, and you know it worked when frontier models start failing."
+  ],
+  "tags": ["ai-soc-detection-response", "evals-benchmarks-metrics", "threat-intel-in-the-wild"],
+  "key_frames": [
+    {"file": "t00420.jpg", "caption": "Defensive RL gym architecture: scenario YAML, company YAML and seed feed a stochastic engine (timeline, content, event, emitter) that outputs vendor-format logs in a SQLite store at beginner, hard and super hard tiers."},
+    {"file": "t00517.jpg", "caption": "Investigation measuring: the metric list and a worked example showing event recall 2 of 4, precision 2 of 3, weighted reward, a false positive and a correct disposition."},
+    {"file": "t00925.jpg", "caption": "Replay of three recorded investigations (init, round 15, round 20) showing a confirmed incident turning into insufficient evidence as hardening techniques stack up."},
+    {"file": "t01031.jpg", "caption": "Baseline versus hardened scenario for gpt-6-sol with a 35-call budget: score 0.94 and 17 of 18 correct versus 0.38 and 7 of 18."},
+    {"file": "t01046.jpg", "caption": "What breaks an investigator: attack-mechanism overlap techniques were strong in 8 of 18 attempts (44 percent) versus 6 of 33 (18 percent) for other technique groups."}
+  ],
+  "signal": {"score": 3, "reason": "A described approach to scenario generation and hardening with a before-and-after result; the evidence covers one scenario family against one model, and several metrics were not defined in the recording."},
+  "caveats": [
+    "Auto-captions render the company as Torque and gpt-6-sol as Soul; slide spellings (Torq, gpt-6-sol, GPT-5.6 Sol) are used. The model is shown as gpt-6-sol on the results and replay slides and as GPT-5.6 Sol on the benchmark leaderboard slide.",
+    "The YouTube description says the model gave the right verdict in about 8 percent of runs; the results slide shows 7 of 18 (39 percent) correct verdicts on the hardened scenario, and the 8 percent figure was not said or shown in the recording.",
+    "The speaker said through 18 runs of that hardening loop; the slide shows n=18 for each of baseline and hardened, so the run count is read from the slide.",
+    "The description lists Jeremy Herzog as Solutions Engineering Lab; the title slide says Eng. Lab Manager, which is used.",
+    "The description mentions a real 2026 incident where AI agents faked tool calls and failed to delete logs; the speaker only referred generally to spoofing logs and rare behavior, and the timeline slide does not state it.",
+    "Two speakers present; the screen share is a browser view with the speaker camera on the left, and some slide text is small, so figures were read from the largest available frames.",
+    "Frame t01194 and t01254 are audience and room shots with no slide content."
+  ]
+}

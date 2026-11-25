@@ -1,0 +1,165 @@
+{
+  "nn": "13",
+  "id": "SfjBNJytlZI",
+  "url": "https://www.youtube.com/watch?v=SfjBNJytlZI",
+  "title": "What 40 Enterprises Who Asked for Agent Governance Had, and the Control Plane That Came Out of It",
+  "speakers": [{"name": "Josh Woodruff", "affiliation": "Founder and CEO, MassiveScale.AI; Founding Chair, Agentic Trust Framework, CSAI Foundation (also IANS faculty, per the speaker)"}],
+  "format": "talk",
+  "duration_min": 27,
+  "thesis": "Enterprises asking how to govern AI agents share the same gaps (no agent identity, controls agents route around, no registry of what is admitted), and the fix is a per-kind-of-agent YAML persona in Git whose merge compiles into both a registry row and gateway policy, so that policy is code that changes what the gateway enforces.",
+  "summary": "Woodruff draws on 81 expert-call sessions with 69 organizations between January 13 and September 30, 2026, held as an IANS faculty member and kept in a dated ledger. He presents four anonymized patterns: a regulated financial institution running SOC helper agents under analysts' own accounts, a consumer internet company whose apps bypassed an LLM proxy with their own provider keys, a travel company with 2,000 copilots in one low-code platform, and a healthcare company with 67,000 APIs in one gateway and 19 duplicates. All four lacked the same three parts: a registry, an identity per agent, and a gateway every call must take. He notes that AWS, Microsoft and Google now ship those parts and that the missing piece is the decision about what is admitted. He then builds one fix live on slides for a SOC triage agent: a persona YAML with owner, sponsor, runs_as, data classes, tool scope, an action contract (alone, needs approver, never), autonomy level, expiry and bindings. A pull request fails lint twice, is fixed, is signed off through code owners, and on merge a compile step writes a registry row and a Casbin gateway policy. The seven-call check goes from all denied to a correct mix. He splits persona, instance and binding to handle 2,000 copilots, shows promotion and demotion as a PR and revert, and closes with three failures (paper policy, an MCP header allowlist the agent writes, controls people cannot live with), the file's limits, five questions and a reference repo.",
+  "argument": [
+    "Across dozens of enterprise conversations the same four gaps recur: agents borrow human identity, gateways can be bypassed, agent populations are uncounted, and API or tool sprawl has no admitted list.",
+    "All four are the absence of a registry, a per-agent identity and a gateway that every call must pass through; cloud vendors now sell these parts but not the decision about what is admitted.",
+    "That decision should be written as one reviewed YAML persona per kind of agent in Git, with lint enforcing rules such as agent-held identity and data-derived risk tier.",
+    "Merging the persona must compile into both the registry row and the gateway policy, otherwise it is only paper policy; the five-minute test is whether the merge changes what the gateway allows.",
+    "Scale comes from counting kinds of agent, not instances, using persona, instance and binding, and promotion and demotion become a pull request and a revert.",
+    "The model has hard limits: it cannot close network paths, trusted headers an agent writes defeat allowlists, overly strict controls get dropped, and the policy reference itself needs protecting."
+  ],
+  "claims": [
+    {"claim": "The speaker held 81 sessions with 69 organizations from January 13 to September 30, 2026, and the same question recurred in all of them.", "evidence": "Session ledger shown as a slide with a sample list of anonymized sectors and topics; frozen September 30, 2026.", "grade": "measured", "t": "00:40", "source": "both"},
+    {"claim": "At a large regulated financial institution, experimental SOC helper agents ran under the analyst's own account, so least privilege fails, logs name the wrong actor, behavior baselines break, and killing the agent locks out a human.", "evidence": "One anonymized client case with client quotes on the slide.", "grade": "case", "t": "02:13", "source": "both"},
+    {"claim": "Coding agents running as developers created public GitHub repos with 13,000+ internal screenshots across 300+ organizations.", "evidence": "Slide footnote cites Glow Labs via Help Net Security, dated September 30, 2026; the speaker described it as a recent research team result.", "grade": "case", "t": "03:14", "source": "both"},
+    {"claim": "Behind a consumer internet company's LLM proxy, apps held their own provider keys and called the model directly, and developers found back doors on their laptops around cloud gates.", "evidence": "Client quotes on the slide; the speaker said he heard versions of this repeatedly.", "grade": "case", "t": "03:14", "source": "both"},
+    {"claim": "One company counted 2,000 copilots in a low-code platform, many personal and some built by contractors with no identity, and could not tell which were theirs to manage.", "evidence": "Single client case with quotes.", "grade": "case", "t": "03:47", "source": "both"},
+    {"claim": "A healthcare company had 67,000 APIs in one gateway, including 19 doing the same thing, with guidelines nobody could enforce.", "evidence": "Client case from an API session; slide quotes.", "grade": "case", "t": "04:49", "source": "both"},
+    {"claim": "The registry, per-agent identity and gateway architecture is becoming standard for securing agents, and MCP came up in 34 of the 81 sessions.", "evidence": "Count from the speaker's ledger shown on the slide; the standard-architecture claim is his reading of vendor and enterprise direction.", "grade": "measured", "t": "05:49", "source": "both"},
+    {"claim": "AWS, Microsoft and Google each ship a registry, an agent identity and a gateway under their own names.", "evidence": "Table of products and GA or announcement dates, checked October 7, 2026.", "grade": "measured", "t": "06:21", "source": "slide"},
+    {"claim": "A persona YAML merged through a pull request can compile into a registry row and a Casbin gateway policy, and before the merge all seven gateway test calls are denied while after the merge they split into allow and deny exactly as the file specifies.", "evidence": "Walkthrough with terminal output on slides (compile.py writes 1 registry row and 7 rules, deny by default); the persona values are the speaker's rebuild, not client data.", "grade": "demo", "t": "12:35", "source": "both"},
+    {"claim": "Lint can derive risk tier from data classes and block a merge: a persona typed tier 1 while touching employee PII is rejected, along with runs_as user.", "evidence": "Terminal output showing P004 and P006 failing and merge blocked.", "grade": "demo", "t": "09:27", "source": "both"},
+    {"claim": "2,000 copilots is likely closer to about 20 kinds of agent, so governance should count kinds rather than instances.", "evidence": "The speaker's guess, stated as I bet it is closer to 20 than 2,000.", "grade": "assertion", "t": "15:41", "source": "said"},
+    {"claim": "Promotion of an agent to more autonomy is a PR with evidence and demotion is a git revert plus recompile, after which the gateway denies the call again.", "evidence": "Slide shows a P009 lint failure on the first try, an ALLOW after promotion and a DENY after git revert.", "grade": "demo", "t": "16:14", "source": "both"},
+    {"claim": "A written policy with no enforcement behind it was the most frequent failure across sessions, including a 12-point guideline described as not a mandate.", "evidence": "Client quotes on a slide; the speaker said it came up the most.", "grade": "anecdote", "t": "17:46", "source": "both"},
+    {"claim": "The MCP 2026-07-28 specification adds headers carrying the method and tool name, so an allowlist on the header can be defeated because the agent writes both header and body and nothing forces them to match at the gateway.", "evidence": "Slide shows Mcp-Name read_ticket in the header with delete_ticket in the body; the speaker notes the spec says the server must reject a mismatch but only on servers using the new spec.", "grade": "demo", "t": "18:48", "source": "both"}
+  ],
+  "numbers": [
+    {"figure": "81", "meaning": "advisory sessions held January 13 to September 30, 2026 (over 90 counting October)", "t": "01:11"},
+    {"figure": "69", "meaning": "organizations in those sessions", "t": "00:40"},
+    {"figure": "34 of 81", "meaning": "sessions in which MCP came up", "t": "05:49"},
+    {"figure": "13,000+", "meaning": "internal screenshots exposed in public repos by coding agents running as developers", "t": "03:14"},
+    {"figure": "300+", "meaning": "organizations affected in the Glow Labs report", "t": "03:14"},
+    {"figure": "2,000", "meaning": "copilots found in one low-code platform", "t": "03:47"},
+    {"figure": "67,000", "meaning": "APIs in one gateway", "t": "04:49"},
+    {"figure": "19", "meaning": "APIs doing the same exact thing in that gateway", "t": "04:49"},
+    {"figure": "10", "meaning": "lint rules in the reference build", "t": "20:53"},
+    {"figure": "7", "meaning": "gateway test calls, and rules compiled for the SOC triage persona", "t": "12:35"},
+    {"figure": "5", "meaning": "tools in the persona's tool scope, and dimensions in the ATF promotion criteria", "t": "08:26"},
+    {"figure": "12-point", "meaning": "length of a guideline one company said was not a mandate", "t": "17:46"},
+    {"figure": "25 days", "meaning": "intake promise at an association that ran at double and was bypassed (slide)", "t": "19:21"},
+    {"figure": "2027-04-01", "meaning": "expiry date of the sample persona (slide)", "t": "08:57"}
+  ],
+  "frameworks": [
+    {"name": "Registry, identity per agent, gateway", "description": "Three required parts: a registry of what is admitted and who owns it, an identity for each agent so every call has a known actor, and a gateway as the one path every tool call takes. Zero trust verifies per action at the gateway."},
+    {"name": "Agent persona file", "description": "One YAML per kind of agent: id, owner (a named person, not a team alias), sponsor, purpose, identity.runs_as, model_access (a route name only, never keys), data_classes, derived risk tier, tool_scope (anything absent is denied), action_contract with alone, needs_approver and never columns, autonomy_level, expires, and bindings (project, environment, data_scope, acting_for, approver)."},
+    {"name": "Persona, instance, binding", "description": "The persona is the job description and never runs; the instance is a running, often minutes-long copy; the binding is the assignment of project, environment and approver. Reuse a persona when tools and data classes are the same, write a new one if either changes."},
+    {"name": "Persona pipeline", "description": "Pull request, lint (ten rules, merge blocked on failure), code owners review (/personas/ to identity-team and agent-sponsors, /catalog/ to security-architecture), merge, then a compile step writes the registry row and Casbin policy, deny by default."},
+    {"name": "Agentic Trust Framework (ATF)", "description": "Open standard under the CSAI Foundation, licensed Creative Commons, at agentictrustframework.ai: an autonomy progression ladder with promotion criteria across five dimensions of measurable facts such as security incidents and how often the agent had to be stopped; agents are treated as digital co-workers that earn promotion and can be demoted instantly."},
+    {"name": "Five questions to sort any agent", "description": "Whose identity does it run as; can it reach a model or tool without passing your gateway; how many kinds of agent do you have; where is the list of tools it is admitted to; can you stop this one agent without stopping the others."},
+    {"name": "Three failures of the model", "description": "A written policy with nothing behind it; a design failure, the header allowlist the agent writes; and controls people could not live with."}
+  ],
+  "artifacts": [
+    {"name": "agent-persona-control-plane", "kind": "repo", "note": "Reference build with persona.schema.json, tools/lint.py (ten rules), tools/compile.py, demo-output/transcript.txt and demo.sh; invited the audience to break it.", "url": "github.com/massivescale-ai/agent-persona-control-plane"},
+    {"name": "Agentic Trust Framework", "kind": "standard", "note": "Open CSAI Foundation standard supplying the junior and senior autonomy levels and promotion criteria; the speaker is its Founding Chair.", "url": "agentictrustframework.ai"},
+    {"name": "Casbin", "kind": "tool", "note": "Open policy engine used for the compiled gateway policy; the speaker says any gateway's format can be swapped in with one small translator.", "url": ""},
+    {"name": "MCP specification 2026-07-28 (SEP-2243)", "kind": "standard", "note": "Streamable HTTP transport release that added method and tool-name headers; used as the header-versus-body example.", "url": ""},
+    {"name": "Glow Labs report via Help Net Security", "kind": "paper", "note": "Public report, dated September 30, 2026 on the slide, of coding agents creating public repos with internal screenshots.", "url": ""},
+    {"name": "AWS AgentCore, Microsoft Agent 365 and Entra Agent ID, Google Cloud Agent Registry, Identity and Gateway", "kind": "product", "note": "Vendor registry, identity and gateway offerings compared on a table.", "url": ""},
+    {"name": "Verifiable Agent Summit (Cloud Security Alliance)", "kind": "standard", "note": "Four-hour event on November 16 in San Francisco where verifiable chain-of-custody and cryptographic evidence for agent promotion would be shown; described as an event, not an artifact.", "url": ""}
+  ],
+  "slide_only": [
+    "Ledger slide lists dated anonymized topics from January to September 2026, for example credit union AI control planes, healthcare MCP registry and gateway, investment firm identity for agents that live for minutes, broker-dealer agent identity controls, holding company kill switches, bank registry, identity and gateway controls, pharmacy benefits audit trails and kill switches, health system AI security reference architecture, industrial API security at AI scale, consumer goods attestation for agent creation, investment bank shadow AI and shadow MCP.",
+    "Pattern slides name sectors: large regulated financial institution, consumer internet company, consumer travel company, large healthcare company.",
+    "Pattern 3 slide quotes: 2,000 copilots in Studio and they don't have any identities; Pattern 4 quotes: any developer can code an API and it's there.",
+    "Vendor table: AWS Agent Registry in AgentCore GA Aug 31, 2026, AgentCore Identity GA Oct 13, 2025, AgentCore Gateway GA Oct 13, 2025; Microsoft Agent 365 registry GA May 1, 2026, Entra Agent ID GA May 1, 2026, Agent 365 tooling gateway (no date); Google Cloud Agent Registry, Agent Identity and Agent Gateway announced Apr 22, 2026; checked October 7, 2026.",
+    "Slide: The starting state is from a real session. The field values on the next slides are mine.",
+    "Persona file: id soc-triage, owner dana.reyes, sponsor soc-manager, runs_as user (before the fix), model_access llm-gateway, data_classes security-telemetry and employee-pii, risk_tier 1 (typed in error), tool_scope siem.search, edr.get_detection, intel.lookup, case.add_note, edr.isolate_host.",
+    "Action contract: alone siem.search, edr.get_detection, intel.lookup, case.add_note; needs_approver role soc-shift-lead for edr.isolate_host; never idp.disable_user and edr.delete_detection_rule; autonomy_level junior; expires 2027-04-01; binding project soc-tier1, environment prod, data_scope edr-tenant-main, acting_for soc-tier1-queue, approver shift-lead-on-call.",
+    "Lint output: P004 identity.runs_as is user so the agent must hold its own identity so its logs, limits and off switch are its own; P006 risk_tier is 1 but data class employee-pii makes it 3; merge is blocked. Later P009 edr.isolate_host has blast medium so a junior cannot run it alone; P001 additional properties not allowed (policy_ref).",
+    "Code owners file: /personas/ goes to @identity-team and @agent-sponsors; /catalog/ goes to @security-architecture.",
+    "Compile output: compiled 1 persona at commit d83c24c, 1 registry row, 7 rules in policy.csv, deny by default; registry JSON shows status active, runs_as agent, risk_tier 3, autonomy junior, expires 2027-04-01, source personas/soc-triage.yaml at the commit.",
+    "Policy CSV lines allow soc-triage on soc-tier1 prod for the four alone tools with call*, allow edr.isolate_host only for call_approved, and deny idp.disable_user and edr.delete_detection_rule for every project.",
+    "Seven-call check: before the merge all denied; after the merge search and add_note allowed, isolate_host call denied but call_approved allowed, disable_user denied even with approval, the same agent in the payments project denied, and an unregistered agent denied.",
+    "Mapping slide: agent runs as a person maps to identity.runs_as and lint blocks the merge; apps go around the proxy maps to model_access (route name only, keys refused); 2,000 copilots maps to bindings; 67,000 APIs maps to tool_scope (a tool that is not registered cannot be in scope); the file cannot close a network path.",
+    "Promotion slide commands: python tools/lint.py failing P009, python tools/check.py soc-triage soc-tier1 prod edr.isolate_host call returning ALLOW after promotion to senior, then git revert --no-edit -m 1 HEAD, python tools/compile.py, and the check returning DENY. Footnote: the evidence bar for promotion is mine; no industry standard backs it yet.",
+    "Header attack request: POST /mcp with MCP-Protocol-Version 2026-07-28, Mcp-Method tools/call, Mcp-Name read_ticket, and JSON body calling delete_ticket with id 4471; footnote cites MCP specification 2026-07-28 Streamable HTTP transport (SEP-2243).",
+    "Controls people could not live with: healthcare kernel-level enforcement pilot dropped because developers could not work; construction aggressive watching of AI use shut down over privacy; manufacturing a human approving every prompt trains people to click yes; association a 25-day intake promise running at double, people went around it.",
+    "Where the file does not reach yet: agents that run on a SaaS platform's own identity; contractor builds on a shared key; desktop agents that run as the person; low-code agents and their connection credentials.",
+    "Take the file slide lists persona.schema.json, tools/lint.py with ten rules, tools/compile.py, demo-output/transcript.txt and demo.sh, with the instruction to pick one agent, write its file this week and see what fails.",
+    "Closing slide gives speaker contact details and a QR code; the final slide is the conference Q&A card."
+  ],
+  "demos": [
+    "Walkthrough of one persona through lint, review, merge and compile, shown as slides of terminal output from a reference build, not live: two lint failures, the two-line fix, code owner review, the compiled registry row and Casbin policy, and the seven-call allow and deny table.",
+    "A promotion and demotion run on slides: a first attempt to move edr.isolate_host to alone fails lint, promotion to senior passes and the gateway allows the call, then a git revert and recompile makes the gateway deny again."
+  ],
+  "quotes": [
+    {"text": "To an AI agent, every API is a tool call. If you can't say which APIs are admitted, you can't say what your agents can do.", "speaker": "Josh Woodruff", "t": "05:19"},
+    {"text": "What you can't buy is the decision which agents are admitted, with which tools, on whose say.", "speaker": "Josh Woodruff", "t": "06:52"},
+    {"text": "If the file doesn't change what the gateway does, it's no more than a policy on paper.", "speaker": "Josh Woodruff", "t": "12:35"},
+    {"text": "The agent writes the header. It also writes the body. Nothing forces them to match at the gateway.", "speaker": "Josh Woodruff", "t": "18:48"},
+    {"text": "A YAML file nobody compiles is just another written policy.", "speaker": "Josh Woodruff", "t": "18:18"}
+  ],
+  "offense": [
+    "Agents running as the human who started them inherit that person's access, pollute attribution in logs, and corrupt behavior baselines; coding agents under developers' accounts pushed screenshots to public repos.",
+    "Apps keep their own provider keys and call the model directly, bypassing an LLM proxy; developers route around cloud gates from their laptops.",
+    "Allowlist built on MCP method and tool-name headers is bypassable because the agent controls both header and body and the gateway may not compare them.",
+    "If an agent's owner can change the shared policy reference, an agent that keeps being denied can select a weaker policy.",
+    "Shadow low-code agents, contractor builds on shared keys and desktop agents running as the person sit outside the control plane."
+  ],
+  "defense": [
+    "Give each agent its own identity (runs_as agent) so logs, limits and the off switch are its own; lint blocks runs_as user.",
+    "Keep a registry of admitted agents and tools with a named human owner (not a team alias) and a sponsor.",
+    "Route all model and tool traffic through a gateway the agent cannot route around, and have the network send agent traffic there; the file alone cannot close a network path.",
+    "Write one persona per kind of agent with an action contract of alone, needs approver and never; deny by default, and make an agent with no file denied.",
+    "Derive risk tier from data classes rather than letting people type it; refuse keys in model_access and accept only a route name.",
+    "Use code owners so the review is the approval, with identity team and sponsor reviewing personas and security architecture reviewing the tool catalog.",
+    "Compile the persona to both the registry and gateway policy on merge, never hand-edit either copy, and verify by checking that the merge changes gateway decisions.",
+    "Make promotion and demotion pull requests with evidence, with demotion as a revert; check the header against the body at the gateway and fail closed if they differ.",
+    "Test controls for livability to avoid ones that get dropped or bypassed: approving every prompt trains people to click yes."
+  ],
+  "takeaways": [
+    "Run the five questions against one real agent on Monday and write the persona file for the field you cannot answer first.",
+    "Count and govern kinds of agent (persona) rather than instances, and put bindings on where each runs.",
+    "Prove every governance document by showing that a merge changes what the gateway allows; treat an uncompiled policy file as paper.",
+    "Audit whether any app or developer can reach a model or tool without the gateway, since the persona file will not stop that.",
+    "Treat agent promotion criteria as unvalidated: use ATF or your own evidence bar as a starting point and make demotion a one-command revert."
+  ],
+  "limits": [
+    "A file cannot close a network path; the network has to send agent traffic through the gateway.",
+    "How much evidence earns a promotion is the weak spot: his numbers are a starting point and no industry standard backs them.",
+    "The persona file does not yet reach agents on a SaaS platform's own identity, contractor builds on shared keys, desktop agents running as the person, or low-code agents and their connection credentials.",
+    "The shared policy reference field is unsolved: if an agent owner can change it they can pick a weaker policy, and the talk gave no good answer.",
+    "The persona values shown are his own rebuild, not client data, and he says he is not sure it is the right way and that everyone is experimenting.",
+    "He ran out of time and cut some content."
+  ],
+  "critique": [
+    "The evidence base is advisory calls with enterprises that had asked for governance help, anonymized and not independently checkable; the published title says 40 enterprises, the slide says 81 sessions with 69 organizations, and the description cites 14 calls on MCP while the slide says 34 of 81.",
+    "The claim that registry, identity and gateway is becoming the standard architecture rests on the speaker's reading of interviews and vendor launches, not on adoption data.",
+    "The walkthrough is a single-agent reference build with values the speaker chose; the recording does not show the pipeline at the scale of 2,000 copilots, with real gateways, or with an author trying to evade lint.",
+    "Derived tier and lint rules are only as good as the rule set and the data-class labels humans supply; the talk does not address wrong or missing data classes, or what stops an author from editing the lint rules or code owners file.",
+    "The speaker is the founding chair of ATF and cites it for promotion criteria; a slide footnote states that the evidence bar for promotion is the speaker's own and that no industry standard backs it yet.",
+    "The header-versus-body slide describes a design weakness; the talk gives no evidence of exploitation and presents it as an analysis of the specification rather than an incident.",
+    "The answer to the never-promote question (micro agents are better design) rests on context confusion and tool decision fatigue as stated, with no measurements shown."
+  ],
+  "qa": [
+    "Question: why build your own framework when Cloudflare and others have governance offerings, and what drove the design? Answer: much is solved by vendors, naming Microsoft Agent 365 with a registry and Ping and Okta shipping registry concepts this summer; he does not bring a tool or hold a vendor stake, and the design is vendor agnostic and simple enough to apply anywhere.",
+    "Question (from someone at a linter company): how does an agent earn promotion from junior to senior? Answer: ATF has five dimensions (such as security incidents, performance, how often the agent was stopped) with measures in each, listed on the site as promotion criteria; at the Verifiable Agent Summit they show promotion via cryptographically verifiable evidence delivered through a protocol, but the receiving party must act on the declared level, which grants no privileges by itself, so it depends on implementers using the data.",
+    "Question: promoting adds risk and complexity, so why not separate responsibilities and never promote, creating a different executing agent? Answer: you could, but many small agents are more to manage; the opposite failure is giant agents that lose least privilege and get confused by context and tool choice, so micro agents with smaller context and fine-grained access are better and the persona approach lets them scale through Git; he published it as a test, a few companies including Microsoft adopted the framework, and he does not know whether it is the right way."
+  ],
+  "tags": ["agent-authz-identity", "governance-policy", "mcp-tools-skills", "guardrails-runtime-controls"],
+  "key_frames": [
+    {"file": "t00477.jpg", "caption": "The persona YAML for the SOC triage agent: owner, sponsor, runs_as, data classes, derived risk tier and tool scope."},
+    {"file": "t00704.jpg", "caption": "Merge compiles one file into a registry row and a Casbin gateway policy, with the compile output showing 1 row and 7 rules, deny by default."},
+    {"file": "t00796.jpg", "caption": "After the merge, the seven gateway test calls resolve to allow or deny as the persona specifies, including denial for an unregistered agent."},
+    {"file": "t00992.jpg", "caption": "Promotion as a pull request and demotion as a git revert, with lint failure P009, ALLOW after promotion and DENY after revert."},
+    {"file": "t01119.jpg", "caption": "MCP request whose Mcp-Name header says read_ticket while the body calls delete_ticket, showing why a header allowlist the agent writes is unsafe."}
+  ],
+  "signal": {"score": 4, "reason": "A policy-as-code pattern with a reference repository, a taxonomy of enterprise gaps drawn from advisory sessions and an MCP header-versus-body example; efficacy is shown in a single-agent walkthrough."},
+  "caveats": [
+    "Session counts differ across sources: the title and description say 40 enterprises, the speaker says nearly 70 defenders, and the slide says 81 sessions with 69 organizations; the slide was used. The description says 14 calls on MCP while the slide says MCP came up in 34 of the 81.",
+    "The speaker mentions a manufacturer for the proxy bypass pattern while the pattern 2 slide says consumer internet company; the slide was used.",
+    "Auto-captions garble several names: 'Caspian library' means Casbin, a 'Verifiable Agent Summit' protocol is rendered 'A Auth protocol', and two attendee names ('Dick Hart', 'Imran Siddiq') and 'Berlin AI Labs' could not be confirmed, so they are not recorded as facts beyond what the transcript said.",
+    "Transcript says the agent persona was run for 'the SOC helper' while the slide calls it SOC triage helper; slides were used for names and field values.",
+    "The Glow Labs report is described on the slide as September 30, 2026 and in the transcript as last week; not checked against the original.",
+    "The Q&A slide shows a WiFi password and the speaker's contact details appear on a slide; neither is recorded."
+  ]
+}

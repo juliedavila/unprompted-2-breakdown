@@ -1,0 +1,176 @@
+{
+  "nn": "15",
+  "id": "0cbjp_vPYGc",
+  "url": "https://www.youtube.com/watch?v=0cbjp_vPYGc",
+  "title": "Quantizing AI Reasoning for the Endpoint",
+  "speakers": [
+    {"name": "Ajaya Neupane", "affiliation": "AI & Security, Ent AI"},
+    {"name": "Brandon Dixon", "affiliation": "CTO and Co-Founder, Ent AI"}
+  ],
+  "format": "talk",
+  "duration_min": 28,
+  "thesis": "A small open-weight reasoning model can run on an employee endpoint for data classification if you quantize the right half of it: in Gemma 4 E2B the per-layer embedding (PLE) lookup table can drop to 2 bits with almost no loss, while squeezing the compute layers cannot, which takes the model from about 8.7 GiB to about 2 GiB.",
+  "summary": "Brandon Dixon opens with why endpoint security lacks context: analysts see log lines, not what the user was doing, and identical action sequences can be benign or risky depending on role and approvals. Data classification is the entry problem, because sensitive files sit among clutter in places like a Downloads folder and shipping everything to the cloud does not scale or protect privacy. The target was to shrink Gemma 4 E2B from an 8 GB footprint to 2 GB. Ajaya Neupane explains that the model's roughly five billion parameters split into a compute half that touches every token and a PLE lookup table that adds hints to each layer. They evaluated builds on three axes: decision agreement with the full-precision model, next-token distribution agreement, and general ability. On 40 curated pastes (30 sensitive, 10 safe), quantizing compute to 3 bits raised false positives from 1 to 6 regardless of table precision, while quantizing the table to 2 bits matched full precision. Larger disagreement counts on Nemotron-PII and CredData agree. Because the model still misses things, they wrap it in a harness: regex first, then the classifier, then a verifier that can only clear a flag, with the prompt tuned using the GEPA optimizer in DSPy. Dixon then shows a live endpoint demo of file classification and a policy blocking a labeled document from removable media, and the Q&A covers vision stripping, model choice, queueing and importance matrices, ending on a backup slide showing 0.29 GiB more buys back most of the lost quality.",
+  "argument": [
+    "Endpoint security tools see actions without context, and risk judgments need content plus user role and intent, so a reasoning model needs to run where the work happens.",
+    "Sending all data to the cloud or a frontier provider does not scale and exposes the very content being classified, so a small open-weight model on the endpoint is the alternative, if it fits in a roughly 2 GB budget.",
+    "Standard quantization recipes start with compute layers, but in Gemma 4 E2B the compute path is sensitive (3-bit compute adds false positives) while the PLE table, which is added into layers rather than multiplied through them, tolerates 2 bits.",
+    "Quantizing the table instead of the compute takes the model from 8.67 GiB to 2.06 GiB with the same 40-sample results, and broader datasets and general benchmarks show only small gaps.",
+    "Residual detection gaps are closed by a layered harness of regex, classifier and verifier with a GEPA-tuned prompt, which sharply cuts false positives and improves recall.",
+    "The classification labels feed policy enforcement on the endpoint, such as blocking labeled files from removable media."
+  ],
+  "claims": [
+    {"claim": "Quantizing the Gemma 4 E2B compute layers to 3 bits increases false positives from 1 to 6 on 40 test pastes, and the same 6 false positives appear whether the PLE table is at 16, 8, 6 or 2 bits.", "evidence": "40 pastes (30 sensitive, 10 safe); full precision 28 caught and 1 false positive, 4-bit compute 27 and 1, 3-bit compute 30 and 6; classifier with reasoning off, run on a laptop.", "grade": "measured", "t": "08:21", "source": "both"},
+    {"claim": "Quantizing the PLE table to 2 bits with 4-bit compute matches full-precision results on the 40 pastes (28 caught, 1 false positive) at 2.06 GiB.", "evidence": "Same 40 pastes: full precision 28/1 at 8.67 GiB, 6-bit table 27/1 at 3.13 GiB, 2-bit table 28/1 at 2.06 GiB. The one-sample difference at 6 bits was treated as noise.", "grade": "measured", "t": "09:22", "source": "both"},
+    {"claim": "On larger datasets the 2-bit table shifts only a small share of verdicts relative to full precision, while 3-bit compute shifts more.", "evidence": "Disagreements with full precision: Nemotron-PII twins (2,232 answers) 135 for the 6-bit table, 149 for 2-bit table, 164 for 3-bit compute; CredData (798 answers) 75, 90 and 175.", "grade": "measured", "t": "10:57", "source": "both"},
+    {"claim": "The PLE table tolerates 2-bit quantization because it is only read, never used to score the answer: its 256 values per block are added into each of the 35 decoder blocks, while the 6-bit main embedding goes in and the output head scores every next word.", "evidence": "Slide 'PLE table never scores the answer' diagram (llama.cpp 9910, Gemma 4 E2B architecture) plus a hedged spoken explanation ('maybe that was what was helping us'); no ablation of the mechanism across layers or models shown.", "grade": "assertion", "t": "09:53", "source": "both"},
+    {"claim": "Gemma 4 E2B is split almost evenly between compute and a single lookup table: 2.30B compute parameters that touch every token and 2.35B per-layer-embedding parameters (262,144 rows x 35 blocks x 256 values, one row read per token).", "evidence": "Slide 'Half the model is a single look-up table' gives 2,298,639,907 compute and 2,348,810,240 per-layer table parameters next to the decoder diagram.", "grade": "measured", "t": "03:51", "source": "slide"},
+    {"claim": "The 2-bit-table model keeps math and cyber reasoning close to full precision but shows a real drop on broad knowledge, which they judged irrelevant to the DLP task; 3-bit compute drops far more.", "evidence": "Slide, reasoning on, GB10 GPU, 2,048-token budget: GSM8K right answers of 300 are 264 full, 264 for 6-bit table, 259 for the 2-bit table (within noise) and 202 for 3-bit compute (real drop); MMLU-Pro of 1,000 are 600 full, 587, 572 (real drop, p<0.05) and 262; CyberMetric 1,690 versus 1,717 full (within noise); CyberSecEval 251 prompt-injection attacks, 54 got through the 2-bit build versus 55 at full precision.", "grade": "measured", "t": "11:30", "source": "both"},
+    {"claim": "Adding back 0.29 GiB in targeted places recovers most of the 2-bit-table build's loss and beats a stock tuned 4-bit quant that is larger: at 2.34 GiB, KL divergence falls from 0.228 to 0.049 and next-word agreement rises from 84.5% to 92.8%, against 0.059 and 91.9% for Unsloth's 2.97 GiB UD-Q4_K_XL.", "evidence": "Backup slide ladder, each row added on the one above with the table kept 2-bit at 735 MiB: gate tensors at 16 bits (+0.04 GiB), an importance matrix (+0 bytes), attention K and V at 6 bits (+0.01), feed-forward down at 6 bits (+0.12), feed-forward up and gate at 5 bits (+0.12). MMLU-Pro with reasoning on goes from 572 to 595, within noise of full precision 600 and of Unsloth's 595. Divergence and next-word measured on the laptop, MMLU-Pro on GB10.", "grade": "measured", "t": "26:18", "source": "slide"},
+    {"claim": "A harness of pattern matching first, then the quantized classifier, then a verifier that can only clear a flag, with a GEPA-optimized prompt, raises recall and sharply cuts false positives.", "evidence": "Slide numbers: 40 pastes recall 30 of 30 and 0 false alarms (model alone 28 and 1); Nemotron-PII twins recall 1,042 of 1,116 (0.934) with 16 false alarms (model alone 1,025 and 884); CredData unseen recall 384 of 400 (0.960) with 82 false alarms (model alone 311 caught and 131 false alarms).", "grade": "measured", "t": "13:04", "source": "both"},
+    {"claim": "The memory footprint falls from 8 GB at full precision to about 2 GB, and a stripped text-only build is 2.06 GB, with vision adding about 400 MB.", "evidence": "Slides give 8.67 GiB and 2.06 GiB; the vision size was stated in Q&A.", "grade": "measured", "t": "20:47", "source": "both"},
+    {"claim": "On a macOS laptop the 2 GB model consumes only about 505 MB of active memory because the OS pages models efficiently.", "evidence": "Activity Monitor view during the live demo.", "grade": "demo", "t": "16:10", "source": "said"},
+    {"claim": "The endpoint classifier labels a fictitious merger and acquisition follow-up document as confidential with PII even though regexes would not flag it, and the label then drives a policy that governs writing the file to removable media.", "evidence": "Live demo: the console lists three thursday-followup.docx items as Confidential and PII classified by Model L3b with no regex detector; dragging the document to a removable volume raised a dialog 'File not written to removable media. That file contains sensitive content and was not written to the drive.', while a screenshot dragged to the same drive was written.", "grade": "demo", "t": "17:12", "source": "both"},
+    {"claim": "Quantizing the PLE layer of Gemma-family models has not been published by others.", "evidence": "Brandon Dixon says they have not seen anyone else put it out.", "grade": "assertion", "t": "26:42", "source": "said"},
+    {"claim": "Contextual risk scoring combines device activity, the file and the user's role and peer baseline with the sensitive data estate.", "evidence": "Layers-of-analysis slide with a worked example (screenshot of a compensation CSV pasted into personal webmail by a software engineer); no results shown.", "grade": "assertion", "t": "14:09", "source": "slide"}
+  ],
+  "numbers": [
+    {"figure": "8.67 GiB", "meaning": "full-precision (16-bit) Gemma 4 E2B size on the slides; about 8 GB said aloud", "t": "04:14"},
+    {"figure": "2.06 GiB", "meaning": "size of the 2-bit-table, 4-bit-compute build (text only)", "t": "10:25"},
+    {"figure": "3.13 GiB", "meaning": "size with 6-bit table and 4-bit compute", "t": "08:21"},
+    {"figure": "2.90 GiB", "meaning": "size with 6-bit table and 3-bit compute", "t": "08:21"},
+    {"figure": "28 of 30, 1 of 10", "meaning": "full-precision sensitive caught and safe falsely flagged on the 40 pastes", "t": "08:21"},
+    {"figure": "30 caught, 6 false positives", "meaning": "3-bit compute result on the 40 pastes", "t": "08:52"},
+    {"figure": "135, 149, 164", "meaning": "disagreements with full precision on Nemotron-PII twins (2,232 answers) for 6-bit table, 2-bit table and 3-bit compute", "t": "10:57"},
+    {"figure": "75, 90, 175", "meaning": "disagreements with full precision on CredData (798 answers) for 6-bit table, 2-bit table and 3-bit compute", "t": "10:57"},
+    {"figure": "54 vs 55", "meaning": "prompt injections that got through the quantized model versus full precision on the cyber security evaluation", "t": "11:30"},
+    {"figure": "1,025 to 1,042 of 1,116", "meaning": "Nemotron-PII recall, model alone versus with harness (the transcript garbles this)", "t": "13:04"},
+    {"figure": "884 to 16", "meaning": "Nemotron-PII false alarms, model alone versus with harness", "t": "13:04"},
+    {"figure": "384 of 400, 82", "meaning": "CredData unseen recall and false alarms with the harness; model alone 311 caught and 131 false alarms", "t": "13:04"},
+    {"figure": "505 MB", "meaning": "active memory of the inference host in the live demo", "t": "16:10"},
+    {"figure": "400 MB", "meaning": "extra memory for the vision tower", "t": "20:47"},
+    {"figure": "2.30B and 2.35B", "meaning": "compute parameters versus per-layer-embedding table parameters in Gemma 4 E2B (2,298,639,907 and 2,348,810,240)", "t": "03:51"},
+    {"figure": "1,838 MiB to 735 MiB", "meaning": "per-layer table size at 6 bits versus 2 bits; whole builds 3.19 GiB (stock Q4_K_M), 3.13 GiB (Q4_K_S) and 2.06 GiB (2-bit table)", "t": "10:25"},
+    {"figure": "264 / 259 / 202 of 300", "meaning": "GSM8K right answers for full precision, 2-bit table and 3-bit compute (6-bit table 264)", "t": "11:30"},
+    {"figure": "600 / 572 / 262 of 1,000", "meaning": "MMLU-Pro right answers for full precision, 2-bit table and 3-bit compute (6-bit table 587); the 2-bit drop is marked real", "t": "11:30"},
+    {"figure": "1,690 vs 1,717 of 2,000", "meaning": "CyberMetric right answers, 2-bit-table build versus full precision, within noise", "t": "11:30"},
+    {"figure": "0.228 to 0.049", "meaning": "KL divergence from full precision's reasoning as the 0.29 GiB recovery ladder is added; next-word agreement 84.5% to 92.8%; Unsloth 4-bit 0.059 and 91.9%", "t": "26:18"},
+    {"figure": "572 to 595", "meaning": "MMLU-Pro right answers after adding 0.29 GiB (2.34 GiB build); full precision 600, Unsloth 595", "t": "26:18"},
+    {"figure": "128 GB, 784 MB, 438 MB", "meaning": "demo laptop memory, and the Entd daemon and EntCIHost content inspection host footprints in Activity Monitor (inference host 505.7 MB)", "t": "16:10"},
+    {"figure": "10,240 and 16,384", "meaning": "tokens used for the distribution comparison on Nemotron-PII documents and full-precision reasoning on the 40 pastes", "t": "07:20"}
+  ],
+  "frameworks": [
+    {"name": "Three-axis evaluation of a quantized model", "description": "Decisions (same answer as full precision on 40 curated pastes, CredData with 400 real secrets and 398 look-alikes, and 1,116 Nemotron-PII twin pairs); distribution (same next word, measured with KL divergence on Nemotron-PII documents and on the full-precision model's reasoning); general ability with reasoning on (CyberMetric 2,000, GSM8K 300, MMLU-Pro 1,000, CyberSecEval 251)."},
+    {"name": "Compute half versus PLE half of Gemma 4 E2B", "description": "Compute layers act on every token and are sensitive to quantization; the per-layer embedding table provides extra per-layer hints that are added in, behind a gate, and tolerates 2-bit precision. Spend bits where they multiply."},
+    {"name": "Cheapest-first harness", "description": "Pattern matching rules, then the content classifier (quantized SLM), then a verifier question that can only clear a flag; classifier prompt tuned with GEPA (genetic-Pareto optimizer in DSPy)."},
+    {"name": "Layers of analysis", "description": "Real-time device context (what, where, file, earlier actions, role and peers), then risk score (should we act, explain why), then intervene (surface to user), above a sensitive data estate built from regular expressions, a logit classifier and the small language model (grouped as Ent LM), over filesystem, removable media and network share."},
+    {"name": "Quality recovery ladder for a 2-bit-table build", "description": "Starting from the 2.06 GiB build, add in order: gate tensors at 16 bits, an importance matrix chosen on your own data (costs no bytes), attention K and V at 6 bits, feed-forward down at 6 bits, feed-forward up and gate at 5 bits. Total 2.34 GiB, with the table held at 2 bits throughout."},
+    {"name": "Is this normal risk? context test", "description": "One four-step AI-assistant workflow (ask for an update, gather internal documents, save the report, share with a partner) judged three ways: the bare actions, the same actions with context that makes them legitimate (project owner, approved for external sharing, assigned partner team), and with a few changed details (pricing discussions, personal drive, new contact during contract negotiation)."}
+  ],
+  "artifacts": [
+    {"name": "Gemma 4 E2B", "kind": "product", "note": "Open-weight Google model whose PLE table was quantized to 2 bits; speaker also referred to it as E4B and 2E2B, the slide says E2B.", "url": ""},
+    {"name": "GEPA (genetic Pareto) prompt optimizer in DSPy", "kind": "tool", "note": "Used to tune the classifier prompt.", "url": ""},
+    {"name": "Nemotron-PII test split (NVIDIA)", "kind": "dataset", "note": "Documents with PII; twins are the same document with values redacted. 1,116 pairs.", "url": ""},
+    {"name": "CredData (Samsung)", "kind": "dataset", "note": "400 real secrets and 398 look-alikes.", "url": ""},
+    {"name": "CyberMetric, GSM8K, MMLU-Pro, CyberSecEval", "kind": "benchmark", "note": "General and cyber ability checks with reasoning on, run with 2,000, 300, 1,000 and 251 items.", "url": ""},
+    {"name": "llama.cpp (build 9910)", "kind": "tool", "note": "Quantization tooling cited on the slides for the Gemma 4 E2B architecture and the stock recipes Q4_K_M and Q4_K_S, plus the flag used to quantize the per-layer table.", "url": ""},
+    {"name": "Unsloth UD-Q4_K_XL", "kind": "product", "note": "Third-party tuned 4-bit build of the model (2.97 GiB) used as the comparison point on the backup slide.", "url": ""},
+    {"name": "Ent endpoint console", "kind": "product", "note": "Vendor product used in the live demo: data inventory by endpoint with classification, classifier and detectors, plus policy enforcement on removable media.", "url": ""}
+  ],
+  "slide_only": [
+    "Opening slide asks Is this normal risk? with four steps: an employee asks an AI assistant for a project update, the assistant gathers context from internal documents, the employee saves the generated report, they share it with a partner.",
+    "Traditional security lacks context slide contrasts the screen where work happens with the log lines analysts review (process_start chrome.exe, process_start WINWORD.EXE, file_open proposal.docx, file_read 32768 bytes, file_write 8192 bytes, file_create proposal.pdf, network_connect :443, network_send 248192 bytes).",
+    "Data classification slide: data accumulates, meaning matters (models interpret content and context beyond patterns, keywords and labels), and local context helps prioritize; shown beside a Downloads folder with 24 mixed items.",
+    "Performance budget on the Gemma slide: Gemma 4 E2B 8GB memory footprint versus a 2GB target; reasons for open models: keep sensitive data local, reduce data movement and cloud, a range of size options.",
+    "Evaluation slide sources: the team's 40 are internal pastes with synthetic values; CredData (Samsung); Nemotron-PII test split (NVIDIA); CyberMetric; GSM8K (OpenAI); MMLU-Pro (TIGER-Lab); CyberSecEval (Meta); this laptop; paired test (exact McNemar); reasoning on: GB10.",
+    "Squeeze-the-computer slide: full precision 16-bit 8.67 GiB (28 caught, 1 false positive); 4-bit compute with 6-bit table 3.13 GiB (27, 1); 3-bit compute with 6-bit table 2.90 GiB (30, 6); the same 6 false positives with the table at 16, 8, 6 or 2 bits.",
+    "Squeeze-the-table slide: full precision 28/1; 6-bit table with 4-bit compute 27/1 at 3.13 GiB; 2-bit table (ours) with 4-bit compute 28/1 at 2.06 GiB.",
+    "Squeezing the table > compute slide: bar chart of disagreements with full precision, increments of +14 and +29 on Nemotron-PII twins and +15 and +100 on CredData relative to the 6-bit-table starting build; disagreement means a different sensitive-or-safe verdict, model alone, reasoning off.",
+    "Harness slide includes flag-everything baselines of 0.75 precision on the 40 pastes and 0.50 on the other two sets, and precision figures of 1.000 (40 pastes), 0.985 (Nemotron-PII twins) and 0.824 (CredData unseen) for the harness; the classifier prompt was tuned with GEPA.",
+    "Layers-of-analysis example: pasted a screenshot of the file into personal webmail and sent it; mail.google.com (personal Gmail); file comp_adjustments_q4.csv (scanned, sensitive); earlier copied the pay sheet from Excel with Snipping Tool and opened Gmail; role software engineer whose peers do code review, documentation edits and chat.",
+    "Demo slide lists three steps: classify content (scan the system for data, apply labels), score context (evaluate surrounding details), intervene (block documents from going out per policy).",
+    "Console screenshot shows an endpoint named giskard with 300 data items, classified by Model L3b, category rules (for example Category:suspicious and Marker:restricted), detectors such as Gcp API key and Clickfix, and labels like Credential or secret, Restricted, Confidential and Internal sensitive.",
+    "Deck title slide reads Half the Model Never Multiplies: Quantizing a Reasoner for the Endpoint, Ajaya Neupane and Brandon Dixon of Ent AI, with Kurtis Shelton and Ruslan Vaulin.",
+    "Normal-risk slides: the bare workflow, then a version with the project owner, a weekly update, documents approved for external sharing, owner review and an assigned partner team before a scheduled review ('with the right context, this makes sense'), then a version where a detailed update pulls in pricing discussions, is saved to a personal drive and goes to a new partner contact before contract negotiation ('a few details change the judgment').",
+    "Half-the-model slide: 2.30B compute weights (every weight, every token) and 2.35B embeddings (one row per token), 2,298,639,907 plus 2,348,810,240, table 262,144 rows by 35 blocks by 256 values, beside a decoder diagram of 35 blocks with local and global attention, feed-forward, and the per-layer embeddings feeding each block.",
+    "PLE-never-scores-the-answer slide: main embedding 6-bit in, output scores every next word, 35 blocks, per-layer table 2-bit giving 256 values into each block; source llama.cpp 9910, Gemma 4 E2B architecture.",
+    "Quantize-the-PLE slide: 6-bit table with stock 4-bit compute 3.19 GiB (table 1,838 MiB), 6-bit table with 4-bit compute 3.13 GiB, 2-bit table (ours) with 4-bit compute 2.06 GiB (table 735 MiB); colors separate the per-layer table, which is only read, from everything that multiplies; recipes top to bottom Q4_K_M, Q4_K_S, Q4_K_S plus the flag.",
+    "Reasoning slide titled Reasoning holds on math; drops on MMLU: GSM8K right answers of 300 (full 264; 6-bit table 264 within noise; 2-bit table 259 within noise; 3-bit compute 202 real drop) and MMLU-Pro of 1,000 (full 600; 587 within noise; 572 real drop; 3-bit compute 262 real drop); footer CyberMetric 1,690 ours versus 1,717 full, CyberSecEval 54 versus 55; GB10 GPU, reasoning on, 2,048-token budget; within noise means p >= 0.05, real drop p < 0.05.",
+    "Squeeze-the-computer slide per-paste squares show the 3-bit build's six extra false positives falling on the safe pastes; the Squeeze-the-table slide is titled Better results and the 3-bit slide is titled Increased FP.",
+    "Demo console details: endpoint giskard at beta.operator.ent.ai, data-tracking tab, 1 to 50 of 300 items, rows include a Gcp API key detector hit on a shell history file, a Slack clipboard item, Clickfix hits on README and subject files, and a document classified Internal sensitive by a watermark marker; the thursday-followup.docx search shows three items, all Confidential and PII by Model L3b.",
+    "Demo document: a Pages file titled Thursday follow up, a meeting report dated October 15, 2026 about buying Northstar Analytics for $42 million subject to financing and board approvals, about 18 overlapping roles in an integration plan, a Project Harbor calendar cover name, and a next-step with a bank contact, phone number and escrow account number for verifying wire instructions.",
+    "Backup slide 0.29 GiB buys the loss back: table of KL divergence on full precision's reasoning, on documents, and same-next-word share for Ours 2.06 GiB (0.228, 0.393, 84.5%), plus gate tensors at 16 bits +0.04 (0.172, 0.315, 86.4%), plus importance matrix +0 bytes (0.099, 0.178, 89.7%), plus attention K and V at 6 bits +0.01 (0.091, 0.156, 90.3%), plus feed-forward down at 6 bits +0.12 (0.070, 0.126, 91.2%), plus feed-forward up and gate at 5 bits +0.12 = 2.34 GiB (0.049, 0.089, 92.8%), and Unsloth's tuned 4-bit 2.97 GiB (0.059, 0.099, 91.9%); MMLU-Pro 572 becomes 595 with 0.29 GiB more, full precision 600, Unsloth 595; table stays 2-bit at 735 MiB in every row; Unsloth build UD-Q4_K_XL.",
+    "Takeaways slide: open-weight models are increasingly more capable; quantizing methods bring AI closer to where work is happening; tuning for specific use cases can yield positive results; data classification is just one use case, there is more to explore."
+  ],
+  "demos": [
+    "Live on a laptop: Activity Monitor with a core daemon (includes an embedding model), an inference host running the quantized model at about 505 MB, and a content inspection host combining regex and the logic classifier.",
+    "Console data inventory for the laptop showing 300 classified items, then a document called Thursday follow-up (a fictitious acquisition with transcript) labeled confidential with PII by the layer-three model, then a drag of a screenshot and of the document to a removable volume: the screenshot copied (366 KB) and the document was refused with the dialog 'File not written to removable media'. The Activity Monitor view shows Entd 784 MB, EntInferenceHost 505.7 MB, EntCIHost 438.3 MB and Ent Security 40.7 MB on a 128 GB machine."
+  ],
+  "quotes": [
+    {"text": "Two gig from eight gig, that's like one fourth of the size, and we still have to make the model work. The standard recipes were not going to take us there.", "speaker": "Ajaya Neupane", "t": "05:16"},
+    {"text": "You don't necessarily need full precision to be successful.", "speaker": "Brandon Dixon", "t": "19:14"},
+    {"text": "The novel technique was more of the quantization of the PLE layer, which is intrinsic in part of the Gemma model family.", "speaker": "Brandon Dixon", "t": "26:42"}
+  ],
+  "offense": [
+    "Subtle context changes (role, approval, destination) make identical action sequences look benign or risky, so action logs alone let data exfiltration hide in normal-looking behavior.",
+    "Misclassification risk: aggressive compute quantization raised false positives to six of ten safe pastes, so an over-compressed model could flood users with false alarms or, in other settings, miss true leaks.",
+    "Prompt injection exposure was measured only as a benchmark parity point (54 versus 55 passing through)."
+  ],
+  "defense": [
+    "Run classification on the endpoint with a small open-weight model so sensitive content never leaves the device just to be classified.",
+    "Layer the checks by cost: regex first, then a logit classifier, then the small language model only when ambiguous, with a queue to absorb bursts of file activity.",
+    "Add a verifier step that can only clear a flag and tune the classifier prompt with an optimizer such as GEPA to cut false positives.",
+    "Attach classification labels to files and enforce policy on them (for example block writes to removable media) rather than only reporting findings.",
+    "Evaluate any quantized model against the full-precision model on decisions, token distribution and general ability, with held-out data, before shipping."
+  ],
+  "takeaways": [
+    "If you plan to run a small model on endpoints, test quantization per component rather than uniformly; here the lookup table was far more compressible than the compute path.",
+    "Build a small held-out evaluation (decision agreement, distribution agreement, general ability) before choosing a quantization recipe, and track disagreement with the full-precision model, not just accuracy.",
+    "Design endpoint classification as a cheapest-first pipeline with a clear-only verifier, and measure precision and recall of the whole harness, not the bare model.",
+    "Treat model labels as inputs to policy (block, warn, explain) and decide which actions need an explanation, since the generative model was chosen partly to explain why.",
+    "Treat the Gemma PLE finding as a hypothesis to reproduce on your own data before relying on it, since the speakers report it is not published elsewhere."
+  ],
+  "limits": [
+    "The model on its own still misses sensitive items and produces false positives, hence the harness.",
+    "There was a small gap on general knowledge benchmarks that they judged irrelevant to the DLP task.",
+    "Real throughput varies: modifying thousands of files can consume more resources, so the harness queues work and uses layers.",
+    "Doing the same work needs expertise to build evaluations and data, and training a custom small model may not be worth the people cost.",
+    "Dixon acknowledged the demo is product-based and not an eval-set result."
+  ],
+  "critique": [
+    "The key experiment rests on 40 curated pastes (30 sensitive, 10 safe) with synthetic values, and the 2-bit versus 6-bit difference is one sample; the larger datasets help, but disagreement with full precision rises from 135 to 149 and 75 to 90, so a meaningful number of verdicts still changes.",
+    "The explanation (PLE output is added rather than multiplied) is offered as a hypothesis; no ablation across layers or other models is shown, and generality beyond Gemma 4 E2B is untested.",
+    "Harness gains are large (884 to 16 false alarms on Nemotron-PII); they come from the harness (regex, verifier, prompt tuning) rather than from quantization, and the CredData result still has 82 false alarms at 0.824 precision, which the recording does not discuss at scale.",
+    "Datasets and tuning data overlap risk is unclear; only CredData is labeled unseen, and Nemotron-PII was used for both evaluation and possibly prompt tuning.",
+    "Latency and throughput are not given in the talk body, so the feasibility claim for busy developer machines rests on a queueing answer given without figures.",
+    "The speakers work for Ent AI, a company that sells endpoint data-loss and insider-risk products, and the demo used that product; the risk scoring layers (peer baselines, intent) were shown as a diagram without results.",
+    "The only comparison with another open quantized build is the backup slide (Unsloth UD-Q4_K_XL); it shows the recovered 2.34 GiB build slightly ahead on divergence and equal on MMLU-Pro, but it is one comparison on one model and was shown only in response to a question.",
+    "On the main slides the 2-bit-table build has a real MMLU-Pro drop (572 against 600, p < 0.05); the speakers described the general-knowledge gap as small and irrelevant to the DLP task, and the backup ladder shows the loss is recoverable at a larger size than the 2 GiB headline."
+  ],
+  "qa": [
+    "Does the model have vision, and could it be smaller without it? Yes, Gemma has separate towers for audio, vision and language; the demoed build is text only at 2.06 GB, and vision would add about 400 MB.",
+    "Why a generative model rather than an encoder-only classifier? The product wants a label plus a generated explanation of why something was labeled, even if the explanation is not used in this case.",
+    "What about developers running parallel agents that create thousands of file operations quickly? The harness has a queue; not all files are equal; use a layered approach with regex first, then a logic or simple ML classifier, and the small model only on ambiguity.",
+    "Did you effectively turn it into a decision model? It works as a decision model (the first output is a label) and the same model can give reasoning.",
+    "Will complex cases go to the cloud while the local model keeps working? The product already supports that; a further question suggested a first-pass small model and a stricter second stage within the organization, which they said you could do.",
+    "How can enterprises start building their own small models, and can you train on your own data? Yes, you can train; they optimized layers rather than training, and an importance matrix chooses which weights to quantize for your dataset; expertise, benchmarks and data are still needed."
+  ],
+  "tags": ["model-internals", "privacy-confidential-compute", "guardrails-runtime-controls", "evals-benchmarks-metrics"],
+  "key_frames": [
+    {"file": "t00314.jpg", "caption": "Half the model is a single look-up table: 2.30B compute weights versus a 2.35B-parameter per-layer table, with the decoder diagram."},
+    {"file": "t00469.jpg", "caption": "Squeezing compute: 3-bit compute raises false positives from 1 to 6 on the 40 pastes whatever the table precision."},
+    {"file": "t00555.jpg", "caption": "Squeezing the table: the 2-bit table matches full precision at 2.06 GiB versus 8.67 GiB."},
+    {"file": "t00756.jpg", "caption": "Harness results: recall and precision per dataset, model alone versus the cheapest-first harness."},
+    {"file": "t01578.jpg", "caption": "Backup ladder: 0.29 GiB of targeted extra precision recovers the loss and beats Unsloth's tuned 4-bit on divergence."}
+  ],
+  "signal": {"score": 4, "reason": "Measured quantization results (2-bit PLE table with near-parity at 2 GiB) with comparisons against compute squeezing and a measured harness across several datasets; the core test set is 40 samples and the speakers work for the company whose product was demonstrated."},
+  "caveats": [
+    "The video shows the speakers with slides picture-in-picture; slide frames were readable, including the backup slide shown during Q&A.",
+    "Auto-captions garble numbers and names: the company appears as End or Ent, Nemotron appears as Nemon, Gemma 2E2B and E4B appear for Gemma 4 E2B, and the transcript's recall line (1020, 1042 to 1116) reads as 1,025 and 1,042 of 1,116 on the slide; slide numbers were used.",
+    "The video description cites figures not stated in the talk body (34 of 40 for builds with the table at F16, Q8_0 and Q3_K_S, 39 of 40 falling to 34 between Q4 and Q3 compute, memory 1,137 MiB to 125 MiB at 9.1x, 51 ms per call, and a compaction and risk scoring pipeline); the in-talk slides show 3-bit compute at 30 caught with 6 false positives, which is consistent with 34 of 40, but the others could not be checked and are not recorded as claims.",
+    "The percentage of disagreement in the larger datasets is derived by dividing counts by the answers count on the slide; the transcript says 'share of answers' on the bars.",
+    "The removable-media block was not narrated but is visible in the frames as a dialog.",
+    "Q&A frames are camera-only except the backup slide; one Q&A questioner's name badge is unreadable and was not recorded.",
+    "The demo document contains a bank contact, phone number and account number; these appear fictitious and were not recorded."
+  ]
+}

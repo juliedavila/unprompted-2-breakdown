@@ -1,0 +1,135 @@
+{
+  "nn": "07",
+  "id": "HbOD4_sXQk8",
+  "url": "https://www.youtube.com/watch?v=HbOD4_sXQk8",
+  "title": "Hacking Lean Proofs",
+  "speakers": [
+    {"name": "Jonathan Brossard", "affiliation": "PSIRT.COM"},
+    {"name": "Jean-Philippe Aumasson", "affiliation": "Cloudflare (Cryptography Team Lead)"}
+  ],
+  "format": "talk",
+  "duration_min": 23,
+  "thesis": "As LLMs generate code and proofs that are accepted on the strength of a machine checker alone, soundness bugs in proof assistants and solvers (Lean, Rocq, Z3 and others) are security vulnerabilities and need security policies, disclosure processes and higher-assurance development.",
+  "summary": "The speakers open with the claim that AI-generated mathematics and vericoding (an LLM writes the code and the proof that it is correct) put heavy trust on verifiers such as Lean and Rocq. They cite OpenAI's release of 722 math papers, a Navier-Stokes formalization of 707 Lean files and over 412,000 lines, Anthropic's framing of the proof checker as part of the trusted base, and a Lean kernel soundness bug (issue 14576) that was exploited in a public AI-assisted attempt to disprove the Collatz conjecture, and which an independent Rust checker also accepted because of a separate, unrelated bug. They then show that Lean and Rocq repositories have no security policy and carry roughly 1,100 and 2,400 open issues. The core results are seven known soundness bugs for which they obtained seven CVEs (two Lean, five Rocq), four fixed and three unpatched at filing in September 2026, plus proof-of-concept soundness failures in Agda, F*, Dafny, Isabelle, Z3 and cvc5. On top of these they built forged certificates for P=NP, P not equal NP, the Riemann Hypothesis and other Millennium problems, a sabotaged Fiat-Crypto field multiplier whose correctness theorem still checks, and a forged CompCert result. They also show a memory-safety bug in the Lean runtime that gives code execution from a malicious Lean file. They close with a call for a higher-assurance development lifecycle for verification tools, asking frontier labs to fund it, and note that Aumasson's agents found hidden assumptions in most Eurocrypt proofs they reviewed. Q&A covers TLA+ (not studied) and whether to rewrite Lean.",
+  "argument": [
+    "Machine-checked proofs and formally verified code are increasingly produced by LLMs and accepted on the checker's say-so, so the checker is now a security boundary.",
+    "Verifiers are large, young, complex programs with open soundness bugs, and independent re-implementations can share the same flaw, so a second checker is not a guarantee.",
+    "The affected projects have no documented security disclosure policy and large issue backlogs, so these bugs have been treated as ordinary defects rather than vulnerabilities.",
+    "Exploiting such bugs lets an attacker forge proofs, sabotage formally verified cryptographic or compiler code while the original correctness theorem still passes, and in one case run code on a build or CI machine.",
+    "A real attack would be subtler than the demos: it would use unpatched bugs, bury the flaw in layered dependencies, and be written to fool agent and human reviewers for days or weeks.",
+    "Verification tools therefore need a higher-assurance secure development lifecycle and funding from the frontier labs that depend on them, even though machine proofs may still be more reliable than human ones."
+  ],
+  "claims": [
+    {"claim": "Seven previously known soundness bugs in Lean and Rocq were assigned seven CVEs (two Lean, five Rocq); four were fixed and three unpatched at filing in September 2026.", "evidence": "Slide summary and per-tool tables listing issue numbers, CVE ids and fix status.", "grade": "measured", "t": "05:55", "source": "both"},
+    {"claim": "Lean 4 kernel issue 14576 (CVE-2026-72844) is a nested inductive projection type confusion; the speakers describe it as the first CVE for a proof-assistant kernel and it is patched.", "evidence": "Lean 4 table slide; the Lean maintainers' postmortem shows a fix pushed one hour after the report.", "grade": "case", "t": "02:53", "source": "both"},
+    {"claim": "The original AI-assisted Collatz repository also passed an independent Rust Lean checker (nanoda) through a separate, unrelated bug, so two independent checkers failed on the same artifact.", "evidence": "Quoted from the Lean postmortem slide, which notes the nanoda bug had been fixed a week before the Lean bug was reported.", "grade": "case", "t": "03:46", "source": "both"},
+    {"claim": "Forged Lean certificates of both P=NP and P not equal NP pass the standalone leanchecker on a vulnerable Lean version.", "evidence": "Recorded terminal demos on slides showing the checker passing both certificates and printing 'forgery confirmed'; Docker proof-of-concepts with pinned versions.", "grade": "demo", "t": "09:26", "source": "both"},
+    {"claim": "Millennium-problem forgeries (Riemann Hypothesis, Navier-Stokes, BSD, Hodge) were built on an unpatched Rocq kernel bug (CVE-2026-72714, issue 22287), as was a forged CompCert semantic-preservation proof.", "evidence": "Derived-exploits table with status 'Confirmed'; the Riemann statement itself is a correct, known equivalent inequality.", "grade": "demo", "t": "07:55", "source": "slide"},
+    {"claim": "A sabotaged Fiat-Crypto field multiplication that always returns zero still carries an accepted correctness property (Rocq issue 21683, CVE-2026-72705, fixed). Fiat-Crypto output is used in BoringSSL and other projects.", "evidence": "Terminal demo showing the sabotaged function with the original theorem closed under the global context; Brossard says Aumasson built it in about two hours with an agent.", "grade": "demo", "t": "13:01", "source": "both"},
+    {"claim": "A memory-safety bug in the Lean runtime (issue 15241) yields code execution from a malicious Lean file, relevant to malicious dependencies, hosted Lean services and hosted CI.", "evidence": "Recorded demo in a locked-down container showing a payload executing; the slide table lists it as a runtime bug fixed in v4.34.1 with no CVE.", "grade": "demo", "t": "17:08", "source": "both"},
+    {"claim": "Soundness bugs in Z3 caused the downstream code verifiers Verus and Frama-C to accept false claims; Z3 and cvc5 have further soundness bugs, with no CVEs requested yet.", "evidence": "CVE summary slide and SMT solver table slide.", "grade": "measured", "t": "06:23", "source": "slide"},
+    {"claim": "Lean and Rocq GitHub repositories had no security policy at the time shown, with about 1.1k and 2.4k open issues respectively.", "evidence": "Screenshots of both repositories' Security tabs.", "grade": "measured", "t": "04:17", "source": "both"},
+    {"claim": "Roughly 95 percent of the proofs Aumasson's agents checked in a recent Eurocrypt paper set were found incorrect through hidden assumptions or gaps in reasoning, but no incorrect results were found.", "evidence": "Aumasson's own account of an April run; no data shown.", "grade": "anecdote", "t": "20:16", "source": "said"},
+    {"claim": "Hiding a forgery inside a long chain of imported library theorems could fool reviewers for days or weeks.", "evidence": "Reasoning with an analogy to software supply chain; a diagram slide, no test against reviewers.", "grade": "assertion", "t": "11:28", "source": "both"}
+  ],
+  "numbers": [
+    {"figure": "722", "meaning": "math papers OpenAI released at once, per the news headline on the opening slide", "t": "00:36"},
+    {"figure": "707 files, 412,645 lines", "meaning": "size of the Lean formalization cited for the Navier-Stokes result", "t": "00:56"},
+    {"figure": "7 CVEs (2 Lean, 5 Rocq)", "meaning": "CVEs obtained for previously known soundness bugs; 4 fixed and 3 unpatched at filing in September 2026", "t": "05:55"},
+    {"figure": "1.1k issues, 719 pull requests", "meaning": "open counts on the Lean 4 repository slide", "t": "04:17"},
+    {"figure": "2.4k issues, 88 pull requests", "meaning": "open counts on the Rocq repository slide", "t": "04:47"},
+    {"figure": "1 hour", "meaning": "time from report to a pushed fix for Lean issue 14576, per the postmortem slide", "t": "02:53"},
+    {"figure": "about 2 hours", "meaning": "time Brossard says it took Aumasson, using an agent, to sabotage Fiat-Crypto", "t": "13:01"},
+    {"figure": "about 6 years", "meaning": "age of an open Rocq bug the speakers used, said aloud; the slide table lists an unfixed bug from 2020", "t": "07:55"},
+    {"figure": "about 95 percent", "meaning": "share of Eurocrypt-paper proofs Aumasson's agents judged incorrect, without incorrect results", "t": "20:47"},
+    {"figure": "1911 lines", "meaning": "size of a new Rocq formalization of a reduction to Rice's theorem, from the session description", "t": ""}
+  ],
+  "frameworks": [
+    {"name": "Trust stack for machine-checked proofs", "description": "Parts a developer must trust beyond the proof: the formal models used, the exact theorem statements, and the proof checker itself. The talk adds runtime, kernel implementation and dependency chain."},
+    {"name": "Verifier assurance levels", "description": "Bugs sit at the kernel level (Lean, Rocq, Agda), the runtime level (Lean runtime), the oracle level (SMT solvers, Isabelle), or the derived-tool level (Verus, Frama-C, CompCert, Fiat-Crypto)."},
+    {"name": "Realistic attacker properties", "description": "Subtle, uses unpatched bugs, fools agent code review, passes unit tests like a bug attack, stays plausibly deniable, and ends up in critical systems."}
+  ],
+  "artifacts": [
+    {"name": "owning-the-truth", "kind": "repo", "note": "Docker proof-of-concept repository for the forgeries and sabotage, listed as 'soon'.", "url": "https://github.com/endrazine/owning-the-truth"},
+    {"name": "Phrack article", "kind": "paper", "note": "Full write-up that this talk teases.", "url": ""},
+    {"name": "Lean 4 issue 14576 / CVE-2026-72844", "kind": "cve", "note": "Nested inductive projection type confusion in the kernel; patched.", "url": ""},
+    {"name": "Lean 4 issue 14484 / CVE-2026-72711", "kind": "cve", "note": "Kernel accepts an opaque declaration with an unbound free variable; fixed before 4.32.2.", "url": ""},
+    {"name": "Lean 4 issue 15241", "kind": "cve", "note": "Runtime use-after-free leading to code execution; no CVE listed; fixed in v4.34.1 per slide.", "url": "https://github.com/leanprover/lean4/pull/15241"},
+    {"name": "Rocq kernel CVEs", "kind": "cve", "note": "CVE-2020-37268 (issue 12155, unfixed since 2020), CVE-2026-72703 (21682), CVE-2026-72704 (22024), CVE-2026-72705 (21683, fixed), CVE-2026-72714 (22287, unpatched).", "url": ""},
+    {"name": "Nobody Will Read the Lean", "kind": "paper", "note": "Kobeissi paper arguing Lean cannot check that a theorem states what you think it states.", "url": "https://eprint.iacr.org/2026/2441.pdf"},
+    {"name": "Postmortem for Kernel Soundness Bug 14576", "kind": "paper", "note": "Lean maintainers' account of the Collatz case and the nanoda checker bug.", "url": "https://leodemoura.github.io/blog/2026-8-1-postmortem-for-kernel-soundness-bug-14576/"},
+    {"name": "Anthropic on formal verification", "kind": "paper", "note": "Quoted for the claim that the proof code needs no manual review and the trusted artifacts are models, theorem statements and the Rocq checker.", "url": "https://www.anthropic.com/research/formal-verification"},
+    {"name": "Fiat-Crypto, CompCert, Verus, Frama-C, Z3, cvc5, Agda, F*, Dafny, Isabelle/HOL", "kind": "tool", "note": "Other verification tools and downstream users named in the results tables.", "url": ""}
+  ],
+  "slide_only": [
+    "Results tables: Lean 4 (14576, 14484, 15241), Rocq (12155, 21682, 22024, 21683, 22287), Z3 7842 and a refutation regression on nonlinear real arithmetic, cvc5 13012, Isabelle normalization-by-evaluation bug (fixed Isabelle2025-1), Agda 7668 (fixed 2.8.0), Dafny 4053 and 6158, F* 4480.",
+    "Notes in the Rocq table mark issues 21682 and 21683 as 'Found by Opus' and 22024 and 22287 as 0-days; 22287 is marked as the source of the Millennium forgeries.",
+    "Derived exploits table: P=NP forgery on Lean, P=NP forgery on Rocq built by Aumasson, and Riemann Hypothesis, Navier-Stokes (both regularity and its negation), BSD and Hodge forgeries on the Rocq kernel bug; CompCert backdoor via a forged semantic-preservation proof for a malicious optimization pass.",
+    "Terminal output shows Lean 4.34.0 nightly of 2026-07-27, with the two certificates described as axiom-free, both passing leanchecker, and noting that a sound kernel would reject at least one.",
+    "The runtime-bug slide states no unsafe, FFI or metaprogramming features were needed.",
+    "A risky-take slide shows a September 2026 exchange in which Aumasson conjectures no LLM can find an efficient attack on AES, BLAKE3, ChaCha or SHA3 and offers a SHA3-over-BLAKE3 tattoo as the stake.",
+    "Contact slide lists securityfocus.com addresses, moabi.com, bugtraq.io and aumasson.jp."
+  ],
+  "demos": [
+    "Recorded terminal runs of Lean forged certificates for P=NP and P not equal NP, each ending with the checker passing and 'forgery confirmed'.",
+    "Terminal run of the sabotaged Fiat-Crypto multiplier with its original property still accepted.",
+    "Recorded terminal run in a restricted container of code execution from a pure Lean file, ending with a payload marker present."
+  ],
+  "quotes": [
+    {"text": "Soundness bugs must be treated as security issues, not just annoyances that mathematicians should worry about.", "speaker": "Jean-Philippe Aumasson", "t": "05:20"},
+    {"text": "It's either that or garbage LLM software forever.", "speaker": "Jonathan Brossard", "t": "18:43"},
+    {"text": "We found it more difficult to write a correct statement of P equal NP than writing the actual exploit.", "speaker": "Jean-Philippe Aumasson", "t": "10:28"}
+  ],
+  "offense": [
+    "Kernel soundness bugs in Lean 4 and Rocq let a checker accept a proof of a false statement, from which any claim can be derived; the speakers built forged certificates on them.",
+    "A memory-safety bug in the Lean runtime allowed code execution from a malicious Lean file, relevant to dependencies, hosted services and CI; fixed in v4.34.1 per the slide.",
+    "Soundness bugs in Z3 led downstream verifiers Verus and Frama-C to accept false claims.",
+    "A sabotaged Fiat-Crypto multiplier and a forged CompCert result show formally verified artifacts can be undermined while their stated guarantees still check."
+  ],
+  "defense": [
+    "Publish a security policy (disclosure terms, contact, encrypted reporting) for proof assistants and solvers, and treat soundness bugs as vulnerabilities with CVEs.",
+    "Apply a higher-assurance secure development lifecycle to verification tools, including having Lean prove parts of Lean itself, as suggested in Q&A.",
+    "Do not rely on a second independent checker alone, since independent implementations can fail on the same artifact; review theorem statements and definitions as well as proofs.",
+    "Treat Lean dependencies, hosted Lean services and CI jobs that run verification as untrusted-code surfaces and sandbox them.",
+    "Have frontier AI labs that depend on these tools fund fixes for the long backlog of open bugs."
+  ],
+  "takeaways": [
+    "If your pipeline accepts AI-generated proofs or verified code, add the proof checker, solver and their dependencies to the threat model and the patch process.",
+    "Run any verification step on untrusted input in an isolated build environment, because the checker itself can be a code-execution target.",
+    "Ask suppliers of formally verified code (for example Fiat-Crypto-derived libraries) what version of the prover and which independent checks stand behind a 'verified' claim.",
+    "Insist that theorem statements get human review, since the checker cannot confirm a theorem says what you think it says.",
+    "Press the prover projects you depend on to publish security policies, and consider funding them."
+  ],
+  "limits": [
+    "The forged proofs shown are short and deliberately simple; the speakers describe more convincing forgeries as possible but did not build them.",
+    "The speakers did not find most of the underlying bugs; they used public and open bugs and some found by an AI model.",
+    "TLA+ and other modeling-based verification methods were not studied, and neither speaker specializes in the proof-assistant field.",
+    "Some results are unpatched, so details are held back until the Phrack article."
+  ],
+  "critique": [
+    "Several demos use a single known class of failure (the checker accepting a false statement); the new content is the CVE filings and the policy and process gap rather than a new technique.",
+    "The claim that a forgery could stay hidden for weeks in nested dependencies is argued from reasoning; it was not tested against reviewers or against tooling that reports the axioms a theorem depends on.",
+    "The 95 percent Eurocrypt figure is Aumasson's account of an April run; no data was shown and the recording does not define what counted as incorrect. The Phrack article may hold the detail.",
+    "The talk combines research results with a policy recommendation; the call for lab funding is a recommendation, and the impact on real deployments of Fiat-Crypto code is argued by analogy to supply-chain compromise and was not demonstrated.",
+    "Slide and speech differ on the status of the runtime bug (said to be fixed in the next version, shown as fixed in v4.34.1), so status details need checking against advisories."
+  ],
+  "qa": [
+    "Have they looked at TLA+ or similar modeling tools? No; they focused on the main frameworks and neither specializes in the field.",
+    "Should Lean be rewritten from scratch given its code quality? The speakers note this would be the fourth rewrite and suggest instead using Lean to prove parts of Lean itself, and invite expert volunteers to contact the maintainers."
+  ],
+  "tags": ["cryptography-formal-methods", "supply-chain-model-integrity", "vuln-discovery-exploit", "governance-policy"],
+  "key_frames": [
+    {"file": "t00373.jpg", "caption": "Summary of 7 CVEs (2 Lean, 5 Rocq), fix status at filing, other tools with proof-of-concepts, and downstream Verus and Frama-C impact."},
+    {"file": "t01039.jpg", "caption": "Lean 4 results table with issue ids, CVEs, level and fix status."},
+    {"file": "t01061.jpg", "caption": "Rocq results table showing the five CVEs, one unfixed since 2020, two noted as found by an AI model, and two zero-days."},
+    {"file": "t01101.jpg", "caption": "Derived exploits table: forgeries of famous conjectures and the CompCert backdoor, with base bug and status."},
+    {"file": "t00173.jpg", "caption": "Lean maintainers' postmortem on the Collatz case, an AI-assisted exploit of a kernel bug fixed within an hour."}
+  ],
+  "signal": {"score": 4, "reason": "CVE-referenced results shown with recorded demos and tables; the claims about future subtler attacks are argued without demonstration."},
+  "caveats": [
+    "Summary-level record: exploit mechanics deliberately not recorded.",
+    "Auto-captions garble names: 'Frac' is Phrack, 'Roc' is Rocq, 'Entropic' is Anthropic, 'Blake' is BLAKE3; slides were used for spellings.",
+    "The transcript says the Lean runtime bug will be fixed in the next version, while the slide lists it as fixed in v4.34.1.",
+    "The 1911-line figure comes from the session description, not the talk."
+  ]
+}

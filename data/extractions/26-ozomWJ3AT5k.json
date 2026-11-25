@@ -1,0 +1,156 @@
+{
+  "nn": "26",
+  "id": "ozomWJ3AT5k",
+  "url": "https://www.youtube.com/watch?v=ozomWJ3AT5k",
+  "title": "Math Ability has Consequences -- AI Cryptanalysis",
+  "speakers": [{"name": "Markku-Juhani O. Saarinen", "affiliation": "Cryptographer, Hardware Architect, Professor of Practice (as given in the talk description; no organization named)"}],
+  "format": "talk",
+  "duration_min": 25,
+  "thesis": "Frontier coding agents have reached a Lee Sedol moment in cryptanalysis: in summer 2026 they helped break key-recovery assumptions that had held for 48 years in Classic McEliece, and in one month a single cryptographer with a typical developer subscription compressed roughly six months to a year of review of China's 119 new post-quantum and hash candidates.",
+  "summary": "Saarinen opens with Classic McEliece, a 1978 code-based cryptosystem that stayed in textbooks for decades because of large public keys, was modernized by Bernstein, Lange and coauthors for the NIST PQC competition, recommended by Germany's BSI from 2020, and made an ISO standard in June 2026. For 48 years the cost of recovering its secret key was estimated as a brute-force search, and the TII challenge series (2023-24, prizes of $10,000 from TII-70 up) is the benchmark. In July 2026 he used a frontier-model optimization loop to find a shortcut, which he calls HOVER, in Hemmert's high-order vanishing key recovery, solving TII-252 in about six minutes on a laptop. In August a holdout attack paper (with an AI disclosure that admits heavy AI use) and then Steve Weis, with Claude, completed a key-recovery step. Saarinen ran an eight-day human-directed AI loop to break TII-254. Every published estimate for the ISO parameter sets now sits below the claimed security level, and BSI withdrew its recommendation for new designs on September 29, 2026. The second half covers ngcc.dev: from September 21 he ran Codex and Claude Code, on about $75 a week, against 119 Chinese NGCC candidates, with a source-only harness, spec digests, briefs and a severity policy. After a week there were 191 findings, 110 of them from his project; after a month 409 active findings, 160 critical, with nearly every candidate affected. He closes on design breaks, Chinese models, AI report volume, and Q&A.",
+  "argument": [
+    "Cryptanalysis is a domain where frontier agents now produce results that experts accept, and summer 2026 is the Lee Sedol moment.",
+    "Classic McEliece key recovery had been assumed to cost brute-force search for 48 years; an AI-found shortcut, a holdout attack and a Claude-assisted completion pushed every published estimate for the ISO parameter sets below the claimed level.",
+    "A regulator reacted quickly: BSI, whose own staff authored the underlying attack, told implementers on September 29, 2026 not to use Classic McEliece in new developments, and cited his work.",
+    "The same approach scales to a whole standardization competition: one cryptographer and commodity coding-agent subscriptions covered 119 candidates and 87,514 files in a week, because the harness gives the agents coverage, consistency and a measurable definition of success rather than a single open prompt.",
+    "The first month yielded 409 active findings and 160 critical ones, mostly implementation bugs at first and then more design attacks; this compresses six months to a year of normal review rather than finding problems that were not there.",
+    "Human judgment remains the bottleneck: large batches of AI-generated reports from Chinese tooling crowded the mailing list, and Saarinen's advice to practitioners is still not to roll your own crypto."
+  ],
+  "claims": [
+    {"claim": "A shortcut found with frontier-model optimization (HOVER) turns one step of Hemmert's high-order vanishing key recovery from exhaustive search into linear algebra and solves TII-252 in 6 min 15 s on a 12-core laptop with 2.7 GiB.", "evidence": "Results table on slide for TII-252, 246, 240 (laptop, about 3 to 6 minutes), TII-213 (6 h 45 min, 28-vCPU server) and TII-129 (4 h 30 min).", "grade": "measured", "t": "04:14", "source": "both"},
+    {"claim": "Under the old brute-force-style estimates, solving TII-70 and above earned $10,000 each, so the same shortcut would have been worth substantial prize money two years ago.", "evidence": "Slide: the TII challenge ran 2023-24 with $10,000 rewards from TII-70 up; speaker says he could have made hundreds of thousands of dollars.", "grade": "assertion", "t": "05:16", "source": "both"},
+    {"claim": "The August 2026 holdout attack paper discloses that AI was instrumental in most aspects of the work even though the main idea came from human trial and error, including an audit that found a dimension gap which broke the first algorithm for binary Goppa codes.", "evidence": "Screenshot of the paper's AI disclosure: OpenAI Codex (ChatGPT-5.6 Sol) verified results, drafted proofs and ran experiments; the authors then sent the algorithm to Steve Weis at Anthropic, who ran it with Claude on small binary Goppa instances.", "grade": "case", "t": "05:46", "source": "both"},
+    {"claim": "Published cost estimates for key recovery against the four ISO-standardized Classic McEliece parameter sets fall below the NIST requirement and the ISD baseline.", "evidence": "Estimate table: for mceliece348864 NIST requirement 143, ISD 151, holdout (GIJS) 114.2, Weis 94.3, Saarinen 126.8; for the 6688128 and 8192128 sets NIST 272 against 124.0 holdout, 102.4 Weis, 137.5 Saarinen. Speaker says it is basically broken but also that it is far from practical.", "grade": "measured", "t": "06:16", "source": "both"},
+    {"claim": "Saarinen solved TII-254, the hardest solved McEliece challenge, with an eight-day human-directed, AI-operated algorithm improvement loop, running a challenge-specific 13-step process.", "evidence": "Slide: parameters (m,t,n) = (8,12,223); per-anchor stages are block Wiedemann 13.6 h on one GH200, polynomial-matrix basis 0.8 to 5.1 h on 12 to 64 CPU threads, kernel reconstruction about 2 h on 8 GH200. TII-255 is still unsolved.", "grade": "measured", "t": "07:19", "source": "both"},
+    {"claim": "On September 29, 2026 BSI changed its guidance to say Classic McEliece should currently no longer be used in new developments, and its advisory cites the same 2026 works, including Saarinen's.", "evidence": "Slide quotes the January 2026 TR-02102-1 text calling the scheme conservative and thoroughly analysed, then the September 29 revision, with the advisory's references.", "grade": "case", "t": "08:23", "source": "both"},
+    {"claim": "NGCC, run by China's Institute of Commercial Cryptography Standards, received 119 first-round candidates (34 signatures, 41 KEMs, 9 KEX, 35 hash/symmetric), more than NIST PQC's 69 in 2017.", "evidence": "Slide table by family and category; the 119 candidates were public September 20, 2026.", "grade": "measured", "t": "09:24", "source": "both"},
+    {"claim": "A single cryptographer ran Codex and Claude Code on a 28-core cloud server for about $75 a week and used about 2.01 billion tokens from September 21 to 27.", "evidence": "Slide: Codex about $200 a month plus Claude Code about $100 a month, isolated Linux accounts, no sudo, no git write access.", "grade": "measured", "t": "10:41", "source": "both"},
+    {"claim": "The source-only harness handled 87,514 submitted files including 471 prebuilt executables, and on day one 545 of 577 built instances (94.5%) from 117 candidates reproduced their known-answer tests byte for byte.", "evidence": "Slide numbers; rule is that nothing shipped in a submission is ever executed. Speaker said testing took under 6 hours.", "grade": "measured", "t": "11:31", "source": "both"},
+    {"claim": "The first week produced 191 findings (78 critical) covering 55 candidates with a critical finding; 110 came from his project plus AI, 20 from others plus AI, 61 from humans or unknown.", "evidence": "Slide: stacked bar chart of cumulative findings September 21 to 27, and a table by scope (design, implementation, side-channel) and category; status 167 confirmed, 10 probable, 10 leads, 4 proof gaps.", "grade": "measured", "t": "15:41", "source": "both"},
+    {"claim": "By October 20, 2026 there were 409 active findings, 160 critical, with findings in 110 candidates; growth flattened as attacks became more design-oriented.", "evidence": "Slide: line chart September 21 to October 20 with the three totals.", "grade": "measured", "t": "16:44", "source": "both"},
+    {"claim": "AI did not find problems that were not there: the same criteria used in classic review were applied, and the agents compressed roughly six months to a year of cryptanalysis into one month.", "evidence": "Speaker's own estimate; the criteria are public on ngcc.dev but not all the flows.", "grade": "assertion", "t": "17:17", "source": "said"},
+    {"claim": "A simple brute-force bit-flip test run by an AI-written harness showed that a handful of signature schemes are not strongly unforgeable, because signature encoders and decoders accept non-canonical encodings.", "evidence": "Described as a non-AI brute-force loop that AI implemented; no per-scheme data shown beyond the bug-zoo slide.", "grade": "case", "t": "13:37", "source": "said"},
+    {"claim": "Unfiltered output from Chinese AI tooling is already diluting the signal: the October 13 batch had 11 reports with 162 observations and produced only 5 new IDs (3 findings, 2 info).", "evidence": "Slide: cumulative findings with named model assistance reached 67 by October 20 (credited to Doubao, Xuanzhi, GLM 5.3, kimi-k3).", "grade": "measured", "t": "19:55", "source": "both"}
+  ],
+  "numbers": [
+    {"figure": "48 years", "meaning": "age of McEliece key-recovery assumptions treated as brute-force search before 2025-26", "t": "02:10"},
+    {"figure": "$10,000", "meaning": "TII prize for each challenge from TII-70 up, 2023-24", "t": "03:14"},
+    {"figure": "6 min 15 s", "meaning": "wall time for HOVER to solve TII-252 on a 12-core laptop (2.7 GiB)", "t": "04:45"},
+    {"figure": "94.3 to 137.5", "meaning": "bit-security estimates for mceliece348864 from Weis (94.3) up to Saarinen (126.8) against NIST requirement 143", "t": "06:16"},
+    {"figure": "8 days / about 2 hours", "meaning": "length of the human-directed AI loop for TII-254, and kernel reconstruction time on 8 GH200 GPUs", "t": "07:19"},
+    {"figure": "TII-254, TII-255", "meaning": "hardest solved challenge (m,t,n = 8,12,223) and the one still unsolved", "t": "07:51"},
+    {"figure": "2026-09-29", "meaning": "date BSI withdrew its Classic McEliece recommendation for new developments", "t": "08:23"},
+    {"figure": "119", "meaning": "NGCC first-round candidates, against 69 for NIST PQC (2017) and 51 for SHA-3 (2008)", "t": "09:57"},
+    {"figure": "$75 per week", "meaning": "stated budget for the NGCC analysis; slide shows about $200 a month Codex plus $100 a month Claude Code", "t": "10:59"},
+    {"figure": "2.01 billion", "meaning": "tokens used September 21 to 27", "t": "10:59"},
+    {"figure": "87,514 / 471", "meaning": "submitted files and prebuilt executables handled by the source-only harness", "t": "11:31"},
+    {"figure": "545 of 577 (94.5%)", "meaning": "day-one builds across 117 candidates that matched KATs byte for byte", "t": "11:31"},
+    {"figure": "191 / 110", "meaning": "first-week findings and the number attributed to his project plus AI", "t": "15:41"},
+    {"figure": "409 / 160 / 110", "meaning": "active findings, critical findings and candidates with findings as of October 20", "t": "16:44"},
+    {"figure": "14", "meaning": "schemes that reset the DRBG and use it as an XOF or KDF (randomness misuse class)", "t": "17:49"},
+    {"figure": "162 to 5", "meaning": "observations in the October 13 batch from Chinese tooling versus new IDs it produced", "t": "19:55"},
+    {"figure": "more than 15", "meaning": "new hard problems invented across the candidates, mostly LWE variants", "t": "22:31"}
+  ],
+  "frameworks": [
+    {"name": "TII lambda estimate", "description": "log2 of I(t,2^m) times binomial(2^m, n) times n cubed: the brute-force cost model over Goppa polynomial search, support-set search and trial cost, used to label TII challenges and treated until 2025-26 as the cost of secret-key recovery."},
+    {"name": "NGCC.dev audit items", "description": "Agent checklist for coverage and consistency: safety (static-check submissions, never execute shipped binaries, build with own Makefiles, isolate and time-limit tests), evidence (cite claim and source, reproduce a witness with a control, tag leads and proof gaps separately), spec-to-code comparison (parameters, API headers, KATs), entropy audit and sensitivity analysis (trace DRBG use, classify internal variables as public, secret or in between)."},
+    {"name": "Per-primitive briefs", "description": "Key encapsulation: mutate ciphertexts, check full re-encryption, rejection masks and fallback binding to (pk,ct), probe Fujisaki-Okamoto failure and plaintext oracles. Signatures: mutate message, signature and length, check verifier bypass, non-canonical encodings and nonce or challenge entropy. Hashes: padding, zero extension, cross-digest relations, long-message bounds, structural limits. Timing side channels: secret variables must not drive branches, table lookups or non-constant-time instructions."},
+    {"name": "NGCC.dev severity policy", "description": "Critical is a violation of a primary NGCC security requirement (EUF-CMA for signatures, IND-CCA2 for KEMs, collisions, preimages), possibly just a few bits short of the claimed level; High is a serious failure or well-supported attack path short of a complete primary break; Medium is a security-relevant defect or leak without demonstrated recovery or forgery; Low is narrow robustness, availability or API impact with no cryptographic break; Info is a tracking or out-of-model observation. Timing attacks were rated High, not Critical, because they were not a technical requirement."},
+    {"name": "Critical bug zoo (recurring implementation defect classes)", "description": "Verifier bypass, broken Fujisaki-Okamoto check, randomness misuse, missing challenge binding, index bugs, bits versus bytes confusion, hash padding, ciphertext aliases; examples named per scheme."}
+  ],
+  "artifacts": [
+    {"name": "TII Classic McEliece decoding challenge", "kind": "benchmark", "note": "UAE Technology Innovation Institute challenge series (2023-24) numbered by estimated brute-force bits, used as the benchmark for key-recovery attacks.", "url": "https://github.com/ElenaKirshanova/tii_decoding_challenge"},
+    {"name": "ngcc.dev", "kind": "dataset", "note": "Public site with the findings, criteria and results for the NGCC candidates; the criteria are public but not all the agent flows.", "url": ""},
+    {"name": "Classic McEliece", "kind": "standard", "note": "Code-based KEM, ISO standard since June 2026, subject of the first half of the talk.", "url": ""},
+    {"name": "BSI TR-02102-1", "kind": "standard", "note": "German BSI technical guideline that recommended Classic McEliece from 2020 and was revised on September 29, 2026.", "url": ""},
+    {"name": "Hemmert high-order vanishing (HOV) key recovery and HOVER shortcut", "kind": "paper", "note": "The 2025-26 structural key-recovery attack and Saarinen's AI-discovered optimization of it.", "url": ""},
+    {"name": "Holdout / GIJS attack paper", "kind": "paper", "note": "August 2026 paper whose AI disclosure was shown; claimed heuristic estimates below the NIST requirement.", "url": ""},
+    {"name": "Slides and write-up", "kind": "paper", "note": "Slide deck PDF linked from the closing slide.", "url": "https://mjos.fi/doc/20261028-unp2-math-consequences.pdf"}
+  ],
+  "slide_only": [
+    "Classic McEliece timeline: 1978 McEliece 3-page report; 1980s-2010s textbook use, large public keys, many broken optimized variants; 2017 Bernstein, Lange and coauthors submit to NIST PQC; 2020 BSI recommends; 2025 NIST says it will not standardize it; June 2026 ISO standard.",
+    "TII challenge results table: TII-252 (m=10, r=11, n=1008) 6 min 15 s, 2.7 GiB, 12-core laptop; TII-246 (n=1009) 3 min 11 s; TII-240 (n=1010) 3 min 06 s; TII-213 (m=9, r=10, n=496) 6 h 45 min, 144 GiB, 28-vCPU server; TII-129 (m=9, r=9, n=509) 4 h 30 min, 80 GiB.",
+    "Holdout paper AI disclosure names OpenAI Codex (ChatGPT-5.6 Sol), Amazon Quick and a Google AI harness for sanity checks, says the authors verified correctness and originality of all content.",
+    "Weis and Claude, August 2026: interpolation relations also encode the hidden support; after removing local jet relations the top-order blocks satisfy V2,j = alpha_j^(s'-1) V1,j; TII-253 (m=8, t=9, n=214) solved with two sparse kernels at about 700 core-hours each.",
+    "Estimate table for ISO parameter sets (NIST requirement / ISD / GIJS / Weis / Saarinen): 348864: 143 / 151 / 114.2 / 94.3 / 126.8; 460896: 207 / 191 / 120.3 / 99.3 / 145.2; 6688128: 272 / 257 / 124.0 / 102.4 / 137.5; 8192128: 272 / 287 / 124.0 / 102.4 / 137.5.",
+    "TII-254 process details: degree-6 holdout system, remove 4.8M provable nuisance directions (20.3M to 15.5M), solve at two anchor columns giving two 121-dimensional kernels, pair core splits 80 = 64 + 16 with the common 64 as noise.",
+    "Scatter chart of McEliece key recoveries by extension degree m and Goppa degree t, marking HOV, Pfaffian, rank-two, HOV/HOVER, GIJS-based and Classic reference points, with TII-213, TII-129, TII-240/246/252, TII-253, TII-254 and CFS labeled.",
+    "BSI quote of January 2026 (mechanism as old as RSA, conservative and very thoroughly analysed) versus September 29, 2026 (should no longer be used in new developments); the advisory cites references 2, 4, 8-10 and 18 plus the speaker's 16 and 17.",
+    "NGCC submission table by family: lattice 43 (11 sign, 25 KEM, 7 KEX), code 21, multivariate 6, isogeny 5, hash-based sig 4, VOLE-in-the-head 4, group action 1, symmetric 35 hash; totals 34 sign, 41 KEM, 9 KEX, 35 hash. Timeline: announced Feb 2025, calls Oct 2025, submissions June 30, 2026.",
+    "Setup slide: tools used by the agents include Python, SageMath, Rust, C, Lean, SAT solvers and a lattice estimator; reference literature from IACR ePrint, arXiv and proceedings; cross-vendor review ping-pong with Claude reviewing Codex and vice versa.",
+    "First-week breakdown table: critical 32 design / 46 implementation / 0 side-channel; 35 signature / 24 KEM / 5 KEX / 14 hash; totals 76 design, 86 implementation, 29 side-channel; 69 signature, 67 KEM, 13 KEX, 42 hash; 55 candidates with a critical finding.",
+    "Bug zoo specifics: UVW returns success on failed signatures; Amoeba compares only every fourth ciphertext byte so tampering leaks the secret key; Galas and VDOO skip the RNG and repeat keys; Chinith omits a value from the challenge so anyone can sign under any public key; CEDRUS+C uses only tree 0; MORNING-ATLAS repeats masks exposing the key after two signatures; CreTAKE 512-bit secret has only 64 bits of entropy; mixed bit ordering makes the empty string collide with seven zero bits; OAEP-NTRU accepts alternate ciphertext bytes giving a one-query IND-CCA break.",
+    "Design-break slide: through day four most design attacks came from human researchers (Tins witness by F2 elimination, Facto-DSA-128 forgery in 6.4 s, full-round MoFang hash collisions from Tsinghua); from day five Codex-assisted signature breaks by Martin Feussner (Bergen) on Shuttle, Sigurd, ATLAS-128, Lynxer and SQIsignTriangle; of 81 findings by others, 20 disclosed AI use: OpenAI models 10, Doubao and Xuanzhi CryptoLLM 2, unnamed 8, later a lot of GLM 5.3.",
+    "Chinese-model chart: cumulative findings with named model assistance, 2 on September 27, 60 by October 5, 67 by October 20; October 13 batch was 11 .md reports with 162 observations yielding 5 new IDs."
+  ],
+  "demos": [],
+  "quotes": [
+    {"text": "I could have made hundreds of thousands of bucks if it was two years ago, if we had this AI stuff and I could have found this particular shortcut in 24.", "speaker": "Markku-Juhani O. Saarinen", "t": "05:16"},
+    {"text": "It's very important to have a way of measuring success, rather than a single prompt like go and find something.", "speaker": "Markku-Juhani O. Saarinen", "t": "10:59"},
+    {"text": "AI doesn't find problems that are not there. We simply compressed about six months, or could be a year, of cryptanalysis into one month.", "speaker": "Markku-Juhani O. Saarinen", "t": "17:17"},
+    {"text": "Don't roll your own crypto, please, even if AI lets you.", "speaker": "Markku-Juhani O. Saarinen", "t": "24:06"}
+  ],
+  "offense": [
+    "Using a frontier model to optimize a published attack: HOVER converts one exhaustive-search step of Hemmert's high-order vanishing key recovery into linear algebra.",
+    "AI-operated algorithm improvement loops over eight days to solve a specific hard McEliece challenge, TII-254, with challenge-specific 13-step processes.",
+    "Interpolation relations leak the hidden support, letting an attacker read off multipliers and obtain an equivalent decoding key (Weis and Claude).",
+    "Bulk implementation bugs across NGCC candidates: verifier bypass, partial Fujisaki-Okamoto check, randomness reuse or DRBG used as XOF/KDF, missing challenge binding, index and mask reuse, bit/byte entropy confusion, hash padding collisions and ciphertext aliasing.",
+    "Strong-unforgeability test: flipping a single bit in a signature and checking whether it still verifies exposed several schemes with buggy compression encoders and decoders.",
+    "Codex-assisted design-level signature breaks (key recovery or forgery) on multiple candidates by an individual PhD student."
+  ],
+  "defense": [
+    "Run agents against untrusted submitted code with a source-only harness: never execute shipped binaries, scripts or objects, build with your own Makefiles, then isolate and time-limit tests.",
+    "Run agents in isolated Linux accounts with no sudo and no git write access on a dedicated server.",
+    "Require evidence discipline: every claim cites source, a reproducible witness with a control, and leads and proof gaps tagged separately.",
+    "Give agents expert-written briefs, checklists, a pseudocode and parameter digest of each specification and a measure of success, so coverage is uniform across hundreds of targets.",
+    "Use cross-vendor review, with Claude reviewing Codex output and vice versa.",
+    "Define a written severity policy in the cryptographic requirements of the program so results are comparable and triage can be automated.",
+    "For cryptography users: stop recommending or starting new designs on Classic McEliece, follow regulator updates such as BSI TR-02102-1, and do not roll your own crypto even with AI help."
+  ],
+  "takeaways": [
+    "Treat AI-assisted cryptanalysis as live: audit anything your platform depends on for post-quantum or non-standard primitives, and expect cost estimates for older schemes to be revised downward quickly.",
+    "If you commission AI review of a large codebase or third-party submissions, copy the harness pattern: source-only build, isolation, evidence rules, spec digests, checklists and a severity policy, rather than a generic prompt.",
+    "Budget tracking is cheap: the claim here is that coverage of 119 candidates cost about $75 a week, so the constraint is expert direction and triage capacity, not compute.",
+    "Plan for report triage: automated filtering of AI-generated reports (5 valid of 162 observations) before humans read them.",
+    "Watch standards bodies and regulators for rapid guidance changes after AI-assisted breaks, and keep crypto-agility in your design so you can swap algorithms."
+  ],
+  "limits": [
+    "The Classic McEliece attacks are far from practical against the ISO parameters; the estimates are heuristic and below the NIST requirement, not complete breaks.",
+    "TII-255 remains unsolved.",
+    "Saarinen's own estimates count operations differently from the others, so the columns are not strictly comparable.",
+    "Many NGCC submissions come from PhD students, and the talk does not compare their maturity with professional designs.",
+    "Judgment on criticality and on whether a result is novel is still human, and not all flows are public.",
+    "Design breaks are hard to separate from a design oversight versus a new cryptanalytic attack."
+  ],
+  "critique": [
+    "The talk shows tables of solved challenges, wall times and public counts; the findings database and agent flows are only partly public, so the 191 and 409 counts cannot be independently checked from the talk alone.",
+    "The attribution split (110 from his project plus AI versus 61 human or unknown) relies on self-reported AI disclosure by other researchers, so the AI share is probably understated and cannot be verified.",
+    "Counting findings by candidate mixes very different severities and a Critical label that depends on the competition's own requirements, so the count does not map directly to real-world exploitability, which the speaker partly acknowledged by saying timing attacks were rated High.",
+    "The claim that AI compressed six months to a year into one month is an estimate with no baseline shown, and the effect of the speaker's own domain expertise (checklists, classification) is confounded with the model's.",
+    "The headline that Classic McEliece is basically broken is softened later by far from practical; the practical evidence is BSI's guidance change rather than a deployable attack.",
+    "The cost figure of $75 a week excludes the speaker's own time; the slide shows subscription prices (Codex about $200 a month plus Claude Code about $100 a month), and the talk does not state what 2.01 billion tokens would cost at usage-based rates."
+  ],
+  "qa": [
+    "Question (JP): most submissions look broken, are there enough left unbroken to be worth standardizing? Answer: China needs at most two hash functions and one or two signature schemes, and there are a handful of good ones; at the moment probably the best key establishment method is among these schemes and technically better than ML-KEM.",
+    "Question: will AI be used to create new cryptosystems with custom features, for example a memory-hard function for a specific CPU? Answer: possibly, like a construction set with automated proving; with tools such as Lean elaborate proofs are now feasible, and more than 15 new hard problems were invented in these candidates, so AI might help designers reduce to a real hard problem such as SVP instead.",
+    "Question: will AI find more results in public-key schemes based on hard problems or in heuristic constructions such as hashes and symmetric encryption? Answer: whether hash functions are heuristic is debatable; few of these hashes were broken and mainly through structural flaws or incomplete design thinking.",
+    "Question: do you need to be an academic or nation-state actor to leverage this, or will it show up in day-to-day enterprise life? Answer: do not roll your own crypto, even if AI lets you."
+  ],
+  "tags": ["cryptography-formal-methods", "vuln-discovery-exploit", "autonomous-offense", "evals-benchmarks-metrics"],
+  "key_frames": [
+    {"file": "t00274.jpg", "caption": "TII key recovery records: the HOVER shortcut solves TII-252, 246 and 240 in 3 to 6 minutes on a laptop."},
+    {"file": "t00386.jpg", "caption": "Estimate table for the ISO Classic McEliece parameter sets: every published estimate is below the NIST requirement."},
+    {"file": "t00652.jpg", "caption": "Setup and scale: Codex plus Claude Code, about 2.01 billion tokens in a week, 87,514 files, source-only harness and day-one KAT results."},
+    {"file": "t00946.jpg", "caption": "First-week breakdown: 191 findings by severity, scope and category, 110 from the speaker's project plus AI."},
+    {"file": "t01066.jpg", "caption": "Critical bug zoo: named recurring implementation defect classes with per-scheme examples."}
+  ],
+  "signal": {"score": 5, "reason": "Quantified new results (TII-252 and 254 key recoveries, estimates below the claimed level, 409 findings in a month) from a practitioner running commodity agents, with a regulator reaction that changes guidance."},
+  "caveats": [
+    "Auto-caption garbles names: Lee Sedol appears as Lee settle, Steve Weis as Steve Wise, Martin Feussner as Martin Foisner, ngcc.dev as ngc.dev, and the institute name as commercial crypto standards; slide spellings used.",
+    "Speaker says TII-255 is the one missing, and describes the loop as about two hours on eight GH200 GPUs; the slide shows the two-hour figure only for kernel reconstruction, with 13.6 hours per anchor for the Wiedemann stage.",
+    "The transcript says 100 candidates and about 75 dollars a week; slides say 119 candidates and 117 built on day one.",
+    "The speaker said BSI quoted his work; the slide confirms references 16 and 17 are his.",
+    "Several slides are shown with and without speaker camera, so some frames repeat the same slide in progressive reveal; first frame is a conference welcome slide with no talk content.",
+    "No affiliation was shown or said; the description gives only job descriptions."
+  ]
+}

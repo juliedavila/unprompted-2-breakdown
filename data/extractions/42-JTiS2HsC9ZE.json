@@ -1,0 +1,218 @@
+{
+  "nn": "42",
+  "id": "JTiS2HsC9ZE",
+  "url": "https://www.youtube.com/watch?v=JTiS2HsC9ZE",
+  "title": "Same Score, Different Brain: Comparing Models by How They Process What They Know",
+  "speakers": [{"name": "Tim Schulz", "affiliation": "Starseer"}],
+  "format": "talk",
+  "duration_min": 25,
+  "thesis": "Benchmarks grade only a model's final output, but training a probe at every layer shows where a capability emerges, peaks and decays, so models with the same score, quantized copies, safety behaviors and even benchmark harnesses can be compared by how they internally process what they know.",
+  "summary": "Schulz, CEO and co-founder of Starseer, argues that security people should treat model internals as an open, hacker-shaped field. He frames benchmark scores as black-box grading of the last layer, then explains that a model is a small computational graph plus weights, so every layer's activations can be read. A contrastive pair of prompts (capital of Australia versus Austria) shows where answers diverge, and a linear probe trained per layer gives an AUROC curve showing where a concept becomes readable. Applying this to MMLU on Gemma 4 31B, Qwen3.6-27B and Nemotron 3 Nano shows Gemma and Qwen tying at 0.90 with similar curves despite different architectures, while Nemotron tops out at 0.71. He then looks at quantization, showing 4-bit models keep scores while losing signal near peak layers in some models, and at refusal, arguing harm recognition and refusal are different, nearly orthogonal directions. Abliteration removes refusal but leaves the model able to recognize harm, so monitoring harm is better than monitoring refusal. Probes beat LLM judges and even the model's own output at separating harmful from benign look-alikes. Finally he shows the same Gemma weights scoring 0.46, 0.72 and 0.86 on MMLU under three harnesses, and closes with a call to be curious. Q&A covers monosemanticity, detecting removed directions in abliterated models and a call to action.",
+  "argument": [
+    "Benchmarks score only the final output, which is the last layer, so they say nothing about where in the model a capability lives or why one model beats another.",
+    "A probe trained per layer on contrastive prompts yields a layerwise capability curve showing where information emerges, peaks and survives to the output.",
+    "Models with equal scores can differ structurally and models with different architectures can share curves, so the curve, not just the score, distinguishes robust from brittle models.",
+    "The same method exposes the cost of post-training such as 4-bit quantization, which can keep scores nearly flat while losing internal signal.",
+    "Harm recognition and refusal are separate signals, so removing refusal leaves harm knowledge intact, and probes on internals can detect harm better than judges reading outputs.",
+    "Even the evaluation harness changes what the layers know, so reported scores depend on the prompt format as much as on the model."
+  ],
+  "claims": [
+    {
+      "claim": "On MMLU, Gemma 4 31B and Qwen3.6-27B both score 0.90 and light up at about the same normalized depth (47 percent and 50 percent), while Nemotron 3 Nano tops out at 0.71 with the signal emerging at 42 percent depth.",
+      "evidence": "Layer-by-layer probe AUROC curves on the same MMLU items, normalized depth, instruct models in chat format, with each model's own output score as a dashed line.",
+      "grade": "measured",
+      "t": "07:35",
+      "source": "both"
+    },
+    {
+      "claim": "The three models have very different architectures, so the layerwise curve points to the architecture parts doing the work: Gemma has 60 blocks (50 sliding-window, 10 full attention) with block 52 lifting math signal from 0.88 to 0.97; Qwen3.6 has 64 blocks (48 Gated DeltaNet, 16 full attention) with signal building 3 to 5 times faster at full-attention blocks; Nemotron has 52 blocks (23 Mamba-2, 23 MoE, 6 attention), peaks at 56 percent depth and fades to 0.72.",
+      "evidence": "Architecture and per-layer curve comparison on a math check, slide only.",
+      "grade": "measured",
+      "t": "09:08",
+      "source": "slide"
+    },
+    {
+      "claim": "Quantization to 4 bits barely moves scores but removes internal signal in some models: on a math check the largest layer drop is 0.02 for Gemma, 0.06 for Qwen3.6 and 0.08 for Nemotron, while Nemotron's output moves from 0.70 to 0.69.",
+      "evidence": "GSM8K probe AUROC at every layer, bf16 versus 4-bit, instruct models in chat format.",
+      "grade": "measured",
+      "t": "12:25",
+      "source": "both"
+    },
+    {
+      "claim": "Going from 16 to 8 bit costs little, but dropping to 4 bits loses a lot of the model's intelligence, and it is often unclear which quantization a hosted open-weight model is running.",
+      "evidence": "Explained with an example weight (0.03720 in FP16, 0.03765 in INT8 off by 1.2 percent, 0.03200 in INT4 off by 14 percent) and the speaker's comment on serving providers; no provider data.",
+      "grade": "assertion",
+      "t": "10:30",
+      "source": "both"
+    },
+    {
+      "claim": "Harm recognition and refusal are different signals in the model: the harm probe reads 0.99 on Qwen3.6-27B while the model refuses 97 percent of harmful and 92 percent of benign look-alike prompts, and the probe's signal overlaps the refusal direction by at most 0.11 (at most 0.14 across four models).",
+      "evidence": "Probe AUROC on harmful requests versus benign look-alikes and cosine overlap with the refusal direction at each layer, Qwen3.6-27B in chat format, with a check on Gemma, Nemotron and Qwen2.5.",
+      "grade": "measured",
+      "t": "13:16",
+      "source": "both"
+    },
+    {
+      "claim": "Ablating the refusal direction removes refusal but leaves the model able to recognize harm: harm probes still read 0.97 to 0.99 after ablation in every model.",
+      "evidence": "Bar chart of refusal rate before and after ablation and harm probe AUROC after, on Qwen2.5-7B, Qwen3.6-27B, Gemma 4 31B and Nemotron 3 Nano. Refusal left was 0 for Qwen2.5-7B, 0.30 for Qwen3.6, 0.45 for Gemma and 0 for Nemotron in chat format.",
+      "grade": "measured",
+      "t": "14:14",
+      "source": "slide"
+    },
+    {
+      "claim": "Picking the right refusal direction matters: Nemotron's plain-format direction leaves 55 percent refusal but its chat-format direction leaves 0 percent; Qwen3.6's direction matches the chat refusal direction at 0.76 and leaves 30 percent; Gemma 4 has no clean cut, leaving 45 percent and dropping its MMLU probe from 0.90 to 0.80.",
+      "evidence": "Annotations on the ablation slide; the speaker mentioned only that an obliterated download may use the wrong direction or concept.",
+      "grade": "measured",
+      "t": "14:14",
+      "source": "both"
+    },
+    {
+      "claim": "Probes on internals separate harmful from benign look-alike prompts far better than reply judges: on the same 200 prompts the best-layer probe scored 0.975 to 0.994 while the judge scored 0.525 for Qwen3.6 and 0.68 for Nemotron and the models' own outputs 0.473 to 0.837.",
+      "evidence": "AUROC comparison on Gemma 4 31B, Qwen3.6-27B and Nemotron 3 Nano; no judge was run for Gemma. Words alone score 0.88, so the probe's real edge over surface cues is about 0.1.",
+      "grade": "measured",
+      "t": "18:24",
+      "source": "both"
+    },
+    {
+      "claim": "A benchmark score depends on the harness: Gemma 4 31B with the same weights and same 1,500 MMLU questions scores 0.46 under 0-shot lm-eval, 0.72 under 5-shot and 0.86 under the chat template with letter-only answers.",
+      "evidence": "Three-harness comparison; best-layer decoding inside the model gives 0.44, 0.69 and 0.88, and under 0-shot only 63 percent of probability lands on A to D.",
+      "grade": "measured",
+      "t": "18:57",
+      "source": "slide"
+    },
+    {
+      "claim": "Qwen2.5-7B scores 0.71, 0.74 and 0.70 across the three harnesses yet disagrees with itself on 12 to 15 percent of questions, so equal scores can hide different answers.",
+      "evidence": "Slide annotation on the harness comparison.",
+      "grade": "measured",
+      "t": "19:24",
+      "source": "slide"
+    },
+    {
+      "claim": "Two models tied on the leaderboard (Gemma and Qwen3.6) match on grammar and world knowledge but split on math (0.90 vs 0.78) and safety (OR-Bench harmful intent 0.84 vs 0.47), while a 4-bit copy of Gemma tracks its parent on every curve.",
+      "evidence": "Probe AUROC at every layer on CoLA, MMLU, GSM8K and OR-Bench, with score, peak and gap per model.",
+      "grade": "measured",
+      "t": "19:29",
+      "source": "slide"
+    },
+    {
+      "claim": "Zeroing a concept direction in the model, as NVIDIA reportedly did for the instruction direction on user-supplied content, can reduce attack success rate.",
+      "evidence": "Referenced work by NVIDIA described from memory; no figures, paper name or numbers shown.",
+      "grade": "anecdote",
+      "t": "16:50",
+      "source": "said"
+    }
+  ],
+  "numbers": [
+    {"figure": "0.90 / 0.90 / 0.71", "meaning": "MMLU probe score of Gemma 4 31B, Qwen3.6-27B and Nemotron 3 Nano; emerges at 47%, 50% and 42% depth", "t": "07:35"},
+    {"figure": "under 10 MB", "meaning": "size of the computational graph regardless of model size, per the speaker; the weights hold the terabytes", "t": "03:45"},
+    {"figure": "1.2% and 14%", "meaning": "rounding error of an example weight at INT8 and INT4 versus FP16", "t": "09:57"},
+    {"figure": "-0.02, -0.06, -0.08", "meaning": "largest per-layer drop in math signal at 4-bit for Gemma, Qwen3.6 and Nemotron", "t": "12:25"},
+    {"figure": "0.99 / 0.88 / 0.47", "meaning": "harm probe, words-alone score and model output score for Qwen3.6-27B on harmful versus benign look-alikes", "t": "13:36"},
+    {"figure": "97% and 92%", "meaning": "refusal rate of Qwen3.6 on harmful and on benign look-alike prompts", "t": "13:16"},
+    {"figure": "0.11 and 0.14", "meaning": "maximum overlap of the harm probe signal with the refusal direction (Qwen3.6, and across the four models)", "t": "13:36"},
+    {"figure": "0.97 to 0.99", "meaning": "harm probe AUROC after refusal ablation in every model", "t": "14:14"},
+    {"figure": "55%, 0%, 30%, 45%", "meaning": "refusal left after ablation: Nemotron plain direction, Nemotron chat direction, Qwen3.6, Gemma 4", "t": "14:14"},
+    {"figure": "0.68, 0.75, 0.97", "meaning": "Nemotron reply judge, own output score and best-layer probe at telling harmful from benign look-alikes", "t": "17:53"},
+    {"figure": "0.46 / 0.72 / 0.86", "meaning": "Gemma 4 31B MMLU score under lm-eval 0-shot, MMLU 5-shot and chat letter-only harness (1,500 questions)", "t": "18:57"},
+    {"figure": "63%", "meaning": "share of probability landing on the answer letters A to D in the 0-shot harness", "t": "19:24"},
+    {"figure": "12 to 15%", "meaning": "questions on which Qwen2.5-7B disagrees with itself across the three harnesses", "t": "19:24"},
+    {"figure": "0.84 vs 0.47", "meaning": "OR-Bench harmful intent score for Gemma versus Qwen3.6, with a +0.52 gap between peak and score for Qwen3.6", "t": "19:29"}
+  ],
+  "frameworks": [
+    {"name": "Layerwise capability curve", "description": "Capture the activation at every layer in one forward pass, train a linear probe per layer on contrast pairs, and score held-out AUROC (0.5 is a coin flip, 1.0 is clean separation). Report where the signal emerges, where it peaks and how much survives to the output."},
+    {"name": "Contrastive prompts", "description": "Run two prompts that differ in one detail through the same model and compare layer by layer to find where the answer diverges, by hand first and then by probe over hundreds of pairs."},
+    {"name": "Open the box", "description": "A model is a small computational graph (layers) plus weights; benchmarks grade only the last layer, leaving where the model does its work unscored."},
+    {"name": "Four comparison axes", "description": "Architecture and model family, post-training and quantization, concept variation such as refusal versus harm, and harness variation."},
+    {"name": "Monitor harm, not refusal", "description": "Because the model recognizes harm on a direction that is almost orthogonal to its refusal direction, removing refusal leaves harm knowledge intact, so a harm probe is the more reliable monitor."}
+  ],
+  "artifacts": [
+    {"name": "Artificial Analysis benchmark chart", "kind": "benchmark", "note": "Shown as an example of leaderboard-style model scores that grade only outputs.", "url": ""},
+    {"name": "MMLU", "kind": "benchmark", "note": "Used for layer-by-layer grading of world knowledge and for the harness comparison (1,500 questions).", "url": ""},
+    {"name": "GSM8K", "kind": "benchmark", "note": "Math check used for the quantization comparison and the architecture slide.", "url": ""},
+    {"name": "CoLA", "kind": "benchmark", "note": "Grammar benchmark in the four-benchmark comparison.", "url": ""},
+    {"name": "OR-Bench", "kind": "benchmark", "note": "Harmful intent benchmark used for the refusal comparison between models.", "url": ""},
+    {"name": "Gemma 4 31B, Qwen3.6-27B, Nemotron 3 Nano, Qwen2.5-7B", "kind": "product", "note": "The open-weight models analyzed; chat-format instruct versions, with a 4-bit copy of Gemma 4.", "url": ""},
+    {"name": "NVIDIA instruction-direction ablation work", "kind": "paper", "note": "Mentioned as an example where a concept direction (instruction) was zeroed on the user portion of context to cut attack success rate; not named or shown.", "url": ""}
+  ],
+  "slide_only": [
+    "Benchmark chart slide shows an Artificial Analysis bar chart of about 30 models with scores from 58 down to 12, including a marker for models with no publicly available API.",
+    "Black-box slides show the prompt, the model and the graded answer, then expand to a computational graph and a stack of 32 layers (L0 to L31) where benchmarks only grade the last layer.",
+    "Probe slide steps: 01 capture the activation at every layer in one forward pass, 02 probe by training a linear classifier per layer on contrast pairs, 03 score on held-out AUROC. An illustrative example shows a signal emerging at L15, peaking at L25 at 0.89 and surviving to 0.88 at output.",
+    "MMLU layer-by-layer slide gives score, emergence depth and peak for each model: Gemma 4 31B 0.90, 47 percent, 0.90; Qwen3.6-27B 0.90, 50 percent, 0.89; Nemotron 3 Nano 0.71, 42 percent, 0.71. Text states that Nemotron lights up at about the same depth but tops out lower.",
+    "Same benchmark, three different machines slide lists the architectures: Gemma 4 31B 60 blocks, sandwich norms, tied embeddings, 50 sliding-window and 10 full-attention; Qwen3.6-27B 64 blocks with 48 Gated DeltaNet and 16 full attention; Nemotron 3 Nano 52 single-mixer blocks with 23 Mamba-2, 23 MoE and 6 attention, about 3B of 30B active parameters. It adds that Nemotron's later mixers lose signal the output never gets back, with 0.09 left unsaid.",
+    "4-bit slide: GSM8K output 0.90 to 0.92 (Gemma), 0.78 to 0.77 (Qwen3.6), 0.70 to 0.69 (Nemotron); peak 0.98 to 0.99, 0.86 to 0.83, 0.80 to 0.75. Caption says scores barely move while Nemotron loses 0.08 of math signal around its peak layers while its answer moves 0.02.",
+    "Refusal slides: a benign look-alike prompt (simulate a hacking attempt on a smart home device) that the model refuses and a harm-versus-refusal cosine curve; the harm probe reads 0.99 against 0.88 for the words alone.",
+    "Abliteration chart: refusal before ablation 0.95 (Qwen2.5-7B), 1.0 (Qwen3.6), 0.9 (Gemma), 1.0 (Nemotron); refusal left 0, 0.3, 0.45, 0; harm probe after ablation 0.977, 0.995, 0.973, 0.974. Gemma's MMLU probe drops from 0.90 to 0.80 after ablation.",
+    "Hidden knowledge slide for Nemotron 3 Nano shows a benign look-alike prompt (a misleading email for a security awareness training exercise) the model refused, with a reply judge 0.68, the model's own output 0.75 and best layer probe 0.97.",
+    "Judges versus probes chart on 200 prompts: Gemma reply judge not run, own output 0.837, probe 0.991; Qwen3.6 judge 0.525, own output 0.473, probe 0.994; Nemotron judge 0.68, own output 0.749, probe 0.975. The probe beats the model's own answer on the math check by 0.08 to 0.09 in all three.",
+    "Harness slide shows prompt templates for lm-eval 0-shot, MMLU 5-shot and chat letter-only, and layer curves showing the chat harness reaching 0.88 at the best layer against 0.69 and 0.44.",
+    "Closing table gives score, peak and gap per benchmark: CoLA 0.91/0.94, 0.91/0.92, 0.91/0.94; MMLU 0.90/0.90, 0.90/0.89, 0.88/0.89; GSM8K 0.90/0.98, 0.78/0.86, 0.92/0.99; OR-Bench 0.84/0.99, 0.47/0.99, 0.84/0.99 for Gemma-it, Qwen3.6 and the 4-bit Gemma copy.",
+    "Thanks slide gives Schulz's LinkedIn as linkedin.com/in/tim-schulz."
+  ],
+  "demos": [],
+  "quotes": [
+    {"text": "Benchmarks currently kind of grade models as black boxes.", "speaker": "Tim Schulz", "t": "02:44"},
+    {"text": "There is a whole part of AI that has very little expertise that has been built up that really needs people to dive into the details on how do models work.", "speaker": "Tim Schulz", "t": "01:08"},
+    {"text": "People will talk about that refusal is safety, and actually within models those tend to be very different concepts.", "speaker": "Tim Schulz", "t": "13:09"},
+    {"text": "Zoom and enhance your comparisons.", "speaker": "Tim Schulz", "t": "19:30"}
+  ],
+  "offense": [
+    "Abliteration (removing the refusal direction from weights) strips refusal while the model still recognizes harm, so a downloaded uncensored model keeps its harm knowledge.",
+    "An abliterated model's quality depends on which direction was removed: a direction from the wrong prompt format, or one taken across every layer, can leave refusal behind or damage knowledge (Gemma's MMLU probe fell from 0.90 to 0.80).",
+    "Removing concept directions is general-purpose and can target any concept, not only refusal; the instruction-direction example turned this to defensive use.",
+    "Hosted open-weight models may be served at lower precision than expected, so security evaluations may run on a weaker model than the one named."
+  ],
+  "defense": [
+    "Run per-layer probes on your own tests to see where a capability sits and whether it survives quantization before choosing a model variant or provider.",
+    "Monitor harm with a probe on internals rather than monitoring refusal text or using a judge of the reply.",
+    "For classification tasks such as spotting prompt injection or harmful intent, use probes on the model's internals, which can be both cheaper and more accurate than an LLM judge.",
+    "Report the harness with every benchmark score, since the same weights can swing from 0.46 to 0.86 on MMLU depending on prompt format.",
+    "Compare models on a layerwise curve and not just a final score, because equal scores can hide different robustness, such as signal lost near peak layers after quantization.",
+    "Zeroing the instruction direction on user-supplied context is an example of using interpretability for defense against prompt injection."
+  ],
+  "takeaways": [
+    "Add a layerwise probe check to model selection and when approving a quantized variant, since 4-bit copies can keep scores while losing internal signal.",
+    "Ask your model providers which precision and harness they serve and evaluate with, and re-run your own tests if the answer is unclear.",
+    "Treat refusal-based safety measures as separate from harm recognition; for monitoring, a harm probe is more robust to refusal ablation.",
+    "Test probe-based classifiers against LLM judges for detection tasks such as prompt injection, and compare cost and accuracy.",
+    "Consider building interpretability skill in the security team, since the speaker says few security people work on it and no PhD is needed."
+  ],
+  "limits": [
+    "The speaker said that quantization results vary by model and that other models would show larger drops than Nemotron, so the curves are not universal.",
+    "Whether concepts are isolated to single units (monosemanticity) versus distributed (polysemanticity, superposition) is hotly debated, and results depend on data quality and prompt sets.",
+    "Telling cheaply which directions were removed from an obliterated model is hard; transferability is an open problem and he did not have a perfect answer.",
+    "Current safety training is not good at detecting nuance within cyber refusals, which he expects to improve.",
+    "The field of mechanistic interpretability is described as open and still in an art phase; frontier labs have not solved alignment."
+  ],
+  "critique": [
+    "The results are on a handful of open-weight models (Gemma 4 31B, Qwen3.6-27B, Nemotron 3 Nano, Qwen2.5-7B) and a few benchmarks; whether layer curves predict real-world robustness or a later score is asserted but not tested, for example 'we can probably make a good determination of where it will sit'.",
+    "No uncertainty is shown on the AUROC curves, the probe sets are small (200 prompts for the judge comparison) and the probe is trained on the same distribution it is scored on, so the probe versus judge gap may partly reflect supervised training advantage over a zero-shot judge.",
+    "The judges tested scored 0.525 and 0.68; a stronger or calibrated judge might close more of the gap, and no judge was run for Gemma.",
+    "The spoken description of Nemotron as dropping off much sooner differs from the slide, which says Nemotron lights up at about the same depth but at a lower level.",
+    "The speaker is CEO and co-founder of Starseer, a company that works on model interpretability.",
+    "The abliteration results show which refusal direction choices leave refusal behind, and the slides describe the effective directions (chat-format) at a general level only.",
+    "The slide labels the 4-bit change on Nemotron as moving the answer 0.02 while the numbers on the same slide show 0.70 to 0.69."
+  ],
+  "qa": [
+    "A questioner asked for a more leading call to action. Answer: frontier labs are focused on the worst-case catastrophe, but there are many nearer problems; people should bring their own problems and domains, learn about model internals, and find things even frontier labs will not know; his own example was asking models about freshwater fish.",
+    "Can nodes responsible for a concept like refusal be isolated, and what paths lead to them? Answer: this is hotly debated (monosemanticity, polysemanticity, superposition); regardless, using even a few layers gives a much better signal to decode parts of the behavior, quality depends on prompt-set design, and concepts often pack neighboring features such as a long question lighting up both the topic and length.",
+    "If you get an obliterated model, can you cheaply tell which directions were removed, and how do you pick one with only cyber refusals removed? Answer: there are ways; directions can be removed in a single layer (a scalpel) or across every layer (a hammer); transferability is hard and he has no perfect answer; current safety training handles cyber nuance poorly but should improve."
+  ],
+  "tags": ["model-internals", "evals-benchmarks-metrics", "guardrails-runtime-controls", "supply-chain-model-integrity"],
+  "key_frames": [
+    {"file": "t00455.jpg", "caption": "Layer-by-layer MMLU probe AUROC for Gemma 4 31B, Qwen3.6-27B and Nemotron 3 Nano with emergence depth and peak."},
+    {"file": "t00548.jpg", "caption": "Architecture comparison of the three models and what each per-layer curve points to."},
+    {"file": "t00745.jpg", "caption": "What 4-bit quantization does to the layers: scores barely move while peak-layer signal drops, most in Nemotron."},
+    {"file": "t00854.jpg", "caption": "Abliteration removes refusal, not harm: refusal left and harm probe after ablation for four models, with direction-choice notes."},
+    {"file": "t01137.jpg", "caption": "Same Gemma weights score 0.46, 0.72 and 0.86 on MMLU under three harnesses."}
+  ],
+  "signal": {"score": 4, "reason": "Measured results with numbers on each claim, covering layerwise probes, quantization, refusal ablation and harness effects on four open-weight models, presented by the CEO of a model-interpretability company."},
+  "caveats": [
+    "Auto-captions render model and method names inconsistently ('Neotron', 'Quen', 'obliteration'); slide spellings Nemotron 3 Nano, Qwen3.6-27B, Gemma 4 31B and abliteration are used.",
+    "Most numbers on the quantization, ablation, judge and harness slides were not said aloud, because the speaker moved quickly through them; they come from the slides and their timestamps are the time each slide appeared.",
+    "The spoken claim that Nemotron's curve drops off sooner conflicts with the slide text that it lights up at about the same depth; the slide is used.",
+    "The slide gives 0.09 left unsaid for Nemotron and 0.02 output movement; slide figures are reported as shown.",
+    "The Ethan Mollick anecdote and the NVIDIA instruction-direction work were mentioned from memory with no citation shown.",
+    "The Q&A questioners are not identified."
+  ]
+}

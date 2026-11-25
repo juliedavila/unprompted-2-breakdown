@@ -1,0 +1,131 @@
+{
+  "nn": "06",
+  "id": "uhbvteIC-G0",
+  "url": "https://www.youtube.com/watch?v=uhbvteIC-G0",
+  "title": "Process Integrity with PBOM",
+  "speakers": [
+    {"name": "Aishwarya Athreya", "affiliation": "Cybersecurity Engineer, Application Security Architect, Visa"},
+    {"name": "Kavia Venkatesh", "affiliation": "Director of Product Security, Cigna"}
+  ],
+  "format": "talk",
+  "duration_min": 14,
+  "thesis": "Every LLM call should leave one tamper-evident record, committed before the model answers and hash-chained to the previous record, so that after an AI misbehaves you can prove what it was asked, what it said, and that nobody edited the log.",
+  "summary": "The speakers open with the Silicon Valley episode in which an office AI told to find cheap burgers orders 4,000 pounds of raw beef, and use it to name three questions every team must be able to answer after an AI incident: what was it told, what came back, and has the record been edited since. Their answer is the Prompt Bill of Materials (PBOM), an open JSON-LD specification (v1.0.0, Apache-2.0) with a Python reference implementation installed by pip install pbom. It has three rules: commit the prompt before the model is called, chain each record to the hash of the one before so edits or deletions break the chain, and store hashes rather than raw prompts by default so the log does not become a honeypot of customer data. Athreya demos it on OpenAI's chat quickstart app with a Son of Anton persona: pbom init creates a .pbom directory, a diff of fewer than ten added lines wraps the model call, three calls produce three records, and pbom validate passes. She then plays a polite villain who edits the model identifier in a record from GPT-3.5 to GPT-4 in the JSON file; validation fails because the next record still holds the hash of the original. The speakers state the limits: detecting edits mid-chain works, but a rewritten or truncated chain needs an anchor hash kept outside the folder, and v1 records are unsigned so the chain proves linkage, not authorship. They recommend starting with your riskiest model call, running validate in CI, anchoring one hash elsewhere, and alerting on unknown prompt hashes or provider usage with no matching record, and they ask for input on anchor location, signing model and agent action recording. Q&A covers binding to SBOM or platform roots of trust, a similar spec presented earlier in the week, and tying prompts to risk models.",
+  "argument": [
+    "When an autonomous AI system causes a bad outcome, responders need to know what it was asked, what it answered, and whether the log was altered; without the last guarantee there is no audit trail, only rumor.",
+    "SBOMs describe what is in an artifact but not what an AI was asked or answered, so a per-call record is needed: one LLM call, one verifiable record.",
+    "Three design rules make the record trustworthy and safe to keep: commit the prompt before the model answers, hash-chain records so any edit or deletion shows in the next link, and store fingerprints instead of raw text.",
+    "The chain detects edits and deletions mid-chain on its own, but detecting a fully rewritten or truncated chain requires keeping one record hash outside the PBOM folder as an anchor.",
+    "v1 proves linkage rather than authorship, so signing and identity are the next version's work; teams can adopt it now on their riskiest call, in CI and with alerts for unmatched provider usage."
+  ],
+  "claims": [
+    {"claim": "Editing a PBOM record in place (the demo swaps the model identifier from GPT-3.5 to GPT-4) is caught by pbom validate because the next record still holds the hash of the original.", "evidence": "Live demo on a real OpenAI chat app: validate passed on three intact records, then failed after the JSON edit.", "grade": "demo", "t": "05:51", "source": "both"},
+    {"claim": "Instrumenting an existing LLM app takes under about ten added lines: import the emitter, open a commit with the system and user prompt before the call, and seal the record with the response and model id afterwards.", "evidence": "Git diff shown in the demo; speakers also said 'less than 24 lines' at one point and 'less than 10 lines' later.", "grade": "demo", "t": "03:46", "source": "both"},
+    {"claim": "PBOM stores fingerprints (hashes) by default and not raw prompts, so the log itself does not become a store of sensitive data.", "evidence": "Configuration file shown with default storage mode of fingerprint; spec rule 'hashes, not text'.", "grade": "demo", "t": "03:46", "source": "both"},
+    {"claim": "The chain detects edits and deletions in the middle, but a rewritten or truncated chain or an edited latest record is only caught against a record hash kept outside the PBOM folder.", "evidence": "Spec section 12 security model slide and speaker explanation.", "grade": "assertion", "t": "06:55", "source": "both"},
+    {"claim": "PBOM v1.0.0 records are unsigned, so the chain proves linkage and not who wrote a record; signing and authorization are planned for the next version.", "evidence": "Speaker statement and security-model slide.", "grade": "assertion", "t": "06:55", "source": "both"},
+    {"claim": "In fingerprint mode a validator cannot re-verify the pre-inference commitment without the original prompt text; the demo validation reported commitments as unverifiable (3) and failed (0).", "evidence": "Terminal output in the validate demo and the trade-off row on the security-model slide.", "grade": "demo", "t": "05:20", "source": "slide"},
+    {"claim": "A PBOM record captures identity, prompt and response fingerprints, model and inference parameters, and a pre-inference commitment, and the spec's example record includes fields such as pbom_version, previous_entry_hash, model_id, streaming, temperature and principal.", "evidence": "Spec text on slides and a record excerpt shown in the demo; in the demo many inference fields were null.", "grade": "demo", "t": "05:20", "source": "slide"},
+    {"claim": "The same chain can serve CI and audit: CI fails the build if history is tampered with, and an auditor reads the same evidence the pipeline checked.", "evidence": "Recommended practice; no deployment described.", "grade": "assertion", "t": "07:59", "source": "said"},
+    {"claim": "Operationally, alert on a prompt hash you have never seen and on provider billing that shows calls with no matching PBOM record.", "evidence": "Recommendation on the adoption slide; not tested in the talk.", "grade": "assertion", "t": "07:59", "source": "both"},
+    {"claim": "The project started from the EU AI Act requirement to tie where output was generated, and the speakers see risk, GRC and product security as groups that should share a more automated model.", "evidence": "Stated in Q&A; no mapping shown.", "grade": "assertion", "t": "12:09", "source": "said"}
+  ],
+  "numbers": [
+    {"figure": "3 rules", "meaning": "log it first, chain them together, hashes not text", "t": "02:11"},
+    {"figure": "3 records / 2 of 2 links valid", "meaning": "demo chain after three chat calls; first record has no predecessor", "t": "04:49"},
+    {"figure": "fewer than 10 lines (also said 24)", "meaning": "size of the diff to wrap an existing model call", "t": "03:46"},
+    {"figure": "4,000 lbs", "meaning": "raw beef ordered in the Silicon Valley scene used as the motivating example (the spoken line said thousands of pounds)", "t": "01:08"},
+    {"figure": "100 pounds", "meaning": "order the assistant recommended in the demo for cheapest rate per pound", "t": "04:49"},
+    {"figure": "v1.0.0", "meaning": "PBOM specification version; reference implementation pbom 0.1.4 shown on the demo slide", "t": "02:42"},
+    {"figure": "5 seconds", "meaning": "claimed time to install the tool", "t": "02:42"}
+  ],
+  "frameworks": [
+    {"name": "PBOM (Prompt Bill of Materials)", "description": "Open JSON-LD spec with one record per LLM call. Three properties: pre-inference commitment (the prompt is committed before the model is called), hash-chained history (each record carries previous_entry_hash, any edit to a past record breaks the chain and fails validation), and fingerprint by default (hashes stored, not raw prompts). Spec v1.0.0, open source, Apache-2.0, reference implementation installed with pip install pbom."},
+    {"name": "Three questions after an AI incident", "description": "What was it told, what came back, has anyone edited that record since; a team that cannot answer the third has rumor, not an audit trail."},
+    {"name": "PBOM security model (spec section 12)", "description": "Detects: edits and deletions mid-chain (next record's link breaks). Needs an anchor: a rewritten or truncated chain or an edited latest record, caught only against a record hash kept outside the folder. Does not prove: who wrote a record, because v1.0.0 records are unsigned. Trade-off: fingerprint mode cannot re-verify commitments because the original text is needed. Quoted rule: verifiers that require tamper-evidence against a motivated adversary must anchor."},
+    {"name": "Adoption path: Record, Verify, Watch", "description": "Record: pip install pbom and wrap the highest-risk model call in a commitment. Verify: run pbom validate in CI and keep one hash outside .pbom as anchor. Watch: alert on unexpected prompt hashes and on provider usage with no matching record. Tagline: hashes or it did not happen."}
+  ],
+  "artifacts": [
+    {"name": "PBOM specification", "kind": "standard", "note": "Open Prompt Bill of Materials spec v1.0.0, Apache-2.0, with issues and discussions open for the next version.", "url": "github.com/EqoAI/pbom-spec"},
+    {"name": "pbom (Python package)", "kind": "tool", "note": "Reference implementation, pip install pbom; CLI includes init, validate, status, records and install-skill commands; PBOMEmitter API wraps a model call.", "url": ""},
+    {"name": "OpenAI Python chat quickstart", "kind": "repo", "note": "Demo target app (examples/chat-basic in openai-quickstart-python), instrumented with PBOM.", "url": ""},
+    {"name": "EU AI Act", "kind": "standard", "note": "Cited in Q&A as the original motivation for tying generated output to its origin.", "url": ""}
+  ],
+  "slide_only": [
+    "Silicon Valley slide (S6E6, 'RussFest', 2019): task 'find cheap burgers' with result '4,000 lbs of raw beef', task 'debug these modules' with result 'the modules are deleted', and the three unanswerable questions: what was it told, what came back, has anyone edited that record since.",
+    "PBOM overview slide: record n-1, n and n+1 each carrying prev sha256 of the preceding record; footer PBOM spec v1.0.0, open source, Apache-2.0, reference implementation pip install pbom.",
+    "Demo setup: pbom 0.1.4 with real model calls; pbom init prints 'Initialized PBOM at .pbom' and creates the records folder; CLI help lists init, install-skill, records, status and a validate command.",
+    "Instrumentation diff: from pbom import PBOMEmitter; emitter = PBOMEmitter(application_id='chat-basic', storage_mode='fingerprint'); with emitter.commit(system_prompt=chat_history[0]['content'], user_prompt=chat_history[-1]['content']) as commit before the completion call; after streaming, commit.complete(model_id='openai/gpt-3.5-turbo', response_text=assistant_response_content, streaming=True).",
+    "Demo app: system prompt 'You are Son of Anton, the office AI at Pied Piper. Take every request literally. Keep answers under 40 words.'; user 'find cheap burgers for office lunch'; assistant says burgers are $1 each at a nearby fast food restaurant; user 'cheapest per pound wins. How much should I order?'; assistant 'Order 100 pounds to get the cheapest rate per pound.'; a counter shows records in .pbom/ going from 0 to 2 and then 3.",
+    "Validate output: Validation PASS, directory .pbom, records 3, chain links 2/2 valid (first record has no predecessor), commitments unverifiable=3 failed=0, with a note that unverifiable commitments cannot be recomputed from stored data (expected when storing fingerprints) and do not affect the validation result.",
+    "Record 2 excerpt at line 30: pbom_version 1.0.0, previous_entry_hash f5c2664702e4711747c8a1e272178ca09218fb98844c8086e6c20d5..., inference block with context_utilization_pct, context_window_max, max_tokens, model_family, model_provider and temperature all null, streaming true, and model_id edited from openai/gpt-3.5-turbo to openai/gpt-4o (the slide title still says gpt-3.5-turbo).",
+    "Security-model slide footnote: Source PBOM specification v1.0.0, section 12 Security model, github.com/EqoAI/pbom-spec.",
+    "Open-questions slide: where should the anchor live, what signing model would you trust, how should agent actions be recorded; links to github.com/EqoAI/pbom-spec/discussions and a QR code."
+  ],
+  "demos": [
+    "Live demo on OpenAI's chat quickstart app: pip install pbom, pbom init, a short diff to wrap the model call, three chat turns producing three records in .pbom, a pbom validate pass, then an edit to the model id in a JSON record and a validate FAIL because the following record's stored hash no longer matches. The edit was shown in the editor; the FAIL itself was narrated and not clearly captured in a slide frame."
+  ],
+  "quotes": [
+    {"text": "One AI call is equal to one secure record.", "speaker": "Kavia Venkatesh", "t": "01:39"},
+    {"text": "Log it first. Chain them together. Hashes, not text.", "speaker": "Kavia Venkatesh", "t": "02:11"},
+    {"text": "Today you get a record that you can verify, and next you get a record that you can attribute.", "speaker": "Aishwarya Athreya", "t": "06:55"},
+    {"text": "Verifiers that require tamper-evidence against a motivated adversary MUST anchor.", "speaker": "PBOM specification section 12 (slide)", "t": "06:24"}
+  ],
+  "offense": [
+    "Log tampering by anyone with write access: PBOM records are plain JSON files, so a polite villain can silently change a field such as the model that produced an answer.",
+    "Chain rewrite or truncation: an attacker who regenerates the whole chain, or drops the tail or edits the latest record, is not caught by the chain alone.",
+    "Autonomous agent mishaps (literal instruction following, deleting modules) are framed as the motivating failure; the talk does not describe a specific attack technique."
+  ],
+  "defense": [
+    "Commit the prompt before calling the model and seal the record with the response afterwards, so the question is fixed before the answer exists.",
+    "Hash-chain records and run pbom validate in CI so tampering fails the build.",
+    "Keep one record hash outside the PBOM folder (a transparency log, locked storage or a git commit) as an anchor; today the user computes it themselves.",
+    "Store fingerprints instead of raw prompts to avoid creating a data honeypot.",
+    "Alert on prompt hashes never seen before and on provider usage or bills with no matching PBOM record, to catch unrecorded calls.",
+    "Start with the single riskiest model call rather than instrumenting everything."
+  ],
+  "takeaways": [
+    "Pick the model call that worries you most and wrap it with pre-inference commit plus chained records; the speakers' diff is under about ten lines for a simple app.",
+    "Reconcile provider usage or billing against your own call records; calls with no matching record are a detection signal for unrecorded or unauthorized use.",
+    "Decide where an external anchor hash will live before relying on the chain; without it, the log defeats only careless tampering, not a motivated adversary.",
+    "If you need non-repudiation or attribution, do not rely on v1 records; plan for signing and identity binding.",
+    "Weigh fingerprint-only storage against investigations: you keep privacy but must retain the original prompts elsewhere to re-verify commitments."
+  ],
+  "limits": [
+    "v1.0.0 records are unsigned, so they prove linkage and not authorship.",
+    "A rewritten or truncated chain, or an edited latest record, is caught only against an externally kept anchor hash, and the tool does not yet compute or store that anchor for you.",
+    "Fingerprint mode cannot re-verify commitments without the original text.",
+    "For agents, the calling code reports the actions it took; whether that is enough as agents act more autonomously is an open question.",
+    "The authors said they are two security people working on this alongside their jobs, which limits how fast they can build integrations (shift-left or identity)."
+  ],
+  "critique": [
+    "The demo shows tampering with a record that sits in a local folder next to the code that wrote it; an attacker with write access could recompute the chain, so tamper-evidence depends on the external anchor, which the talk described as manual and not yet specified. The speakers state this limit directly.",
+    "The record is emitted by the application that calls the model, so it attests only to what that code chose to log. It does not show that the logged prompt is what reached the provider, or that unlogged calls did not happen, beyond the suggested billing reconciliation.",
+    "The recording shows no data on adoption, performance cost, record size, behavior with streaming, tool calls or multi-agent flows, or independent review of the spec; the motivating burger example comes from a fictional TV episode.",
+    "The unverifiable-commitments result in the demo (three of three) means the pre-inference commitment, the feature that distinguishes PBOM from an ordinary hash-chained log, was not verified in fingerprint mode.",
+    "The published title and description cite the SBOM analogy and CI-runner supply chain attacks; the recording covers LLM call logging and does not develop the supply-chain process-integrity framing.",
+    "The approach is related to existing ideas (append-only audit logs, transparency logs, in-toto style attestations); a Q&A questioner named a similar specification and the speakers said they had only glanced at it."
+  ],
+  "qa": [
+    "Questioner (name not clear): have you considered binding PBOM to the platform, the SBOM of the software in use, a future AI bill of materials, and identity, and are there root-of-trust anchors on platforms that give domain-specific anchoring? Answer: the roadmap extends it across the lifecycle with integration on the build or shift-left side and an identity piece; they want developer feedback, and the anchor question is still open because they want it accessible end to end; limited time since both work on it alongside their jobs.",
+    "Questioner: did you see Monday's presentation on a similar spec (heard as 'CX-Bomb'), and how does it compare? Answer: only glanced at it, it seemed similar and broader; their focus began with the EU AI Act requirement to tie where code or output is generated; they will reach out, and note different people call this concept AI-BOM or P-BOM.",
+    "Questioner: how does this tie to AI risk and governance, and how would you identify a risky prompt in long-running agents? Answer: the gap they started from is that product security and GRC speak at different layers; they have ideas about tying records to risk models and compliance alerts but are not there yet and have specific user scenarios in mind."
+  ],
+  "tags": ["supply-chain-model-integrity", "governance-policy", "cryptography-formal-methods", "guardrails-runtime-controls"],
+  "key_frames": [
+    {"file": "t00121.jpg", "caption": "PBOM defined: one record per LLM call, with pre-inference commitment, hash-chained history and fingerprint-by-default, and the prev sha256 chain diagram."},
+    {"file": "t00239.jpg", "caption": "The instrumentation diff showing how a model call is wrapped with commit and complete, storage mode fingerprint."},
+    {"file": "t00319.jpg", "caption": "pbom validate passing on three records with 2 of 2 chain links valid, and commitments unverifiable in fingerprint mode."},
+    {"file": "t00392.jpg", "caption": "What a FAIL proves and what it does not: detects mid-chain edits, needs an anchor for rewrite or truncation, does not prove authorship."},
+    {"file": "t00446.jpg", "caption": "Adoption path Record, Verify, Watch with the unmatched-provider-usage alert."}
+  ],
+  "signal": {"score": 3, "reason": "A specification with a live demo and a limits slide; the recording states that tamper-evidence relies on a manual external anchor and shows no adoption or performance data."},
+  "caveats": [
+    "Auto-captions render the tool as P-bomb and the other speaker as Kavya and Gil foil; slides confirm PBOM and Kavia Venkatesh.",
+    "Affiliations come from the video description (Visa, Cigna); the title slide says Product Security Leader and Product Security Architect, and the lower-third is partly cut off. The spec repository path on slides includes the name EqoAI; no affiliation with that organization was stated.",
+    "The transcript says the edit was GPT-3.5 to GPT-4; the excerpt on the slide shows openai/gpt-4o. The spoken line says 'thousands of pounds of raw meat' while the slide says 4,000 lbs.",
+    "'Less than 24 lines' and 'less than 10 lines' are both said for the instrumentation size.",
+    "The similar spec referenced in Q&A (heard as 'CX-Bomb') and the 'shift zero' integration could not be confirmed from the captions.",
+    "The validation FAIL output itself was not captured in a frame; it is taken from narration."
+  ]
+}

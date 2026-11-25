@@ -1,0 +1,144 @@
+{
+  "nn": "20",
+  "id": "wmddZMrFSzA",
+  "url": "https://www.youtube.com/watch?v=wmddZMrFSzA",
+  "title": "Adversarial QC for AI Security Analysts (slide title: Your AI Analyst Is Confidently Wrong)",
+  "speakers": [
+    {"name": "Maxim Kovalsky", "affiliation": "Managing Director, AI Security CoE, Consortium Networks"},
+    {"name": "Ali Arshad", "affiliation": "Senior Security Consultant, Consortium Networks"}
+  ],
+  "format": "talk",
+  "duration_min": 25,
+  "thesis": "Every model has a complexity point where its reliability falls off a cliff, mostly through omissions rather than hallucinations, and you can find that point with a small locked answer key before you trust the model. Error-correction wrappers help weak models but barely help strong ones, and the accuracy they buy comes from forcing the model to read, which is slow and expensive.",
+  "summary": "The speakers' analysts do documentation-heavy security work such as mapping vendor product features to MITRE ATT&CK techniques. Junior analysts fed this to Claude and got polished spreadsheets that were often wrong, which started a benchmark of open-weight models with Claude as reference. They define cognitive complexity as the number of data points that must be synthesized into verifiable atomic claims, and built five nodes from 2 questions over 283 documents to 4,672 questions over 5,676 documents. One locked answer key per node grades every run for precision (wrong yeses) and recall (missed real capabilities). In the naive 'prompt and dump' run, F1 falls as nodes grow, and the failure is overwhelmingly false negatives. Models also read only a small share of the documents. They then tested four correction methods: instructions (a skill-style procedure), code (scripts force reading in small batches), swarm (merge independent runs) and verification (exact quote plus a second verifying call). Instructions bought precision and cost recall; code and swarm raised recall but not precision; verification held precision near 1.0 at small nodes and broke at the item list for node 4. Weak models gained most; strong ones gained little. A case study shows deepseek v4.1 flash scoring best while reading 2 to 6 percent of lines, and a transplant test shows its page selection does not transfer. They close with advice to find each model's cliff, use small models for checkable steps and strong models for judgment, and build a small answer key as a proxy for a full one.",
+  "argument": [
+    "Security analysis work such as framework crosswalks is a natural LLM task, yet agent output on it is often confidently wrong, so reliability must be measured rather than assumed.",
+    "Error in this work is mostly omission: as the number of data points per task grows, recall collapses while hallucinated claims stay a small share.",
+    "Every model has a node at which F1 falls below 0.60, and that cliff can be located before deployment with a locked answer key built per node.",
+    "Correction methods trade precision against recall and cost; those that raise accuracy do it by making the model read more, which is slow and expensive, and they help weak models far more than strong ones.",
+    "Reading and comprehension are separate: the best open model read almost nothing, and giving its chosen pages to another model made that model worse.",
+    "Practical rule: pick the model by the cognitive complexity of the task, use small models for bounded checkable steps and strong models for judgment, and validate against a small trusted answer key."
+  ],
+  "claims": [
+    {"claim": "Errors of omission predominate and grow as complexity grows; hallucination is a tiny share of the total problem.", "evidence": "Speakers' reading of their own benchmark; false-negative rate rises sharply after node 4 across most models, while false-positive rates stay low until node 4 or 5.", "grade": "measured", "t": "02:09", "source": "both"},
+    {"claim": "In the naive prompt-and-dump run, reliability falls off a cliff at a model-specific node; cliff is defined as the first node where F1 drops below 0.60.", "evidence": "Table of F1 per model per node: Gemma 4 31B cliffs at node 2, nemotron 3 super, gpt-oss 120B, GLM 5.3 flash and Sonnet 5.5 at node 4, Opus 5.5 (Claude Code) at node 5, deepseek v4.1 flash holds (0.62 at node 5).", "grade": "measured", "t": "19:25", "source": "both"},
+    {"claim": "High precision can hide low recall: at node 5 Opus 5.5 keeps precision 1.00 while recall falls to 0.26.", "evidence": "Slide text on the prompt-and-dump chart; Sonnet, Haiku and deepseek hold precision 0.83 to 0.90 with recall 0.49 to 0.74.", "grade": "measured", "t": "05:17", "source": "slide"},
+    {"claim": "Models read very little of the documents they are pointed at; even at the best point only about 60 percent of source documents reached the model, and the share of lines read drops as documents grow.", "evidence": "Reading-score chart: share of lines that reached the model, mean of runs, per node; most models fall below 10 percent by node 3, and Opus 5.5 read 16 percent at node 4.", "grade": "measured", "t": "06:50", "source": "both"},
+    {"claim": "The instructions method (skill-style procedure) raises precision but often lowers recall and is unreliable for weak models.", "evidence": "Deepseek wrong yeses at node 4 fell from 9 to 71 per run to 0 to 5; recall dropped (deepseek 0.64 to 0.52, gpt-oss node 3 0.61 to 0.23); nemotron ran the procedure differently each run (recall 0.89, then 0.29 and 0.73).", "grade": "measured", "t": "11:00", "source": "both"},
+    {"claim": "The code method (scripts force every page into the model in 3,000-word batches) raises recall but costs hours and dollars, and precision falls at node 4.", "evidence": "Nemotron node 4 recall 0.09 to 0.44; Gemma node 3 recall 0.19 to 0.67; node 4 precision 0.38 to 0.81 across models; 21 of 22 wrong yeses on a 250-question sample were 'yes (inferred)' from generic statements; nemotron v7.2 took 1 h 43 min and $16.13 against 42 s and $0.04 with no method.", "grade": "measured", "t": "12:00", "source": "both"},
+    {"claim": "Swarm raises recall only where members miss different things; members that miss the same things add nothing and cost multiplies.", "evidence": "Nemotron node 3 recall 0.49 for one run to 0.79 with 7 merged and 0.96 with all 26 runs; precision 0.81 to 0.76; at node 4 four merged runs moved recall only from 0.13 to 0.29.", "grade": "measured", "t": "13:33", "source": "both"},
+    {"claim": "Verification (exact quote checked by code plus a separate verifier call) held precision near 1.0 and lifted recall at small nodes, but broke at node 4 where the list of items to check failed.", "evidence": "Nemotron node 3 recall 0.24 to 0.94; a loosened verifier at node 4 let through 138 wrong yeses for deepseek (precision 0.63); no valid node 4 score for nemotron, gpt-oss or GLM.", "grade": "measured", "t": "14:06", "source": "both"},
+    {"claim": "Weak models improved most from any correction method, while models already strong in the naive run were hard to improve.", "evidence": "Run-level scatter plot (every graded run by node and method); deepseek improved only marginally.", "grade": "measured", "t": "15:09", "source": "both"},
+    {"claim": "Deepseek v4.1 flash scored best of the open models while barely reading: 2 to 6 percent of lines at node 4, best run precision 0.85, recall 0.78, in 4 minutes.", "evidence": "Trace of its runs: it picks pages from the documentation table of contents plus keyword searches and reached 33 to 73 of the 206 pages the key cites, 2.7 to 3.7 times better than random page picking.", "grade": "measured", "t": "17:14", "source": "both"},
+    {"claim": "Deepseek's accuracy is partly parametric: without any documents or web tools it still said yes to 142 of the 207 items it had answered right.", "evidence": "Rerun of the same questions with no documents; about 70 percent of right answers kept. Its closed-book product quiz F1 was only 0.45, mid-table.", "grade": "measured", "t": "18:16", "source": "both"},
+    {"claim": "Deepseek's page selection does not transfer: giving nemotron only the 304 pages deepseek chose made it worse than reading every page.", "evidence": "Transplant test on 250 questions: nemotron with its own full reading precision 0.67 recall 0.59; with deepseek's pages precision 0.47 recall 0.38; deepseek best naive run 0.86 and 0.86; Opus 5.5 0.93 and 0.55.", "grade": "measured", "t": "18:47", "source": "both"},
+    {"claim": "A roughly 100-question verified subset dispersed among thousands is a good proxy for full-key model performance.", "evidence": "Speaker's statement of his own practice; no comparison between subset and full-key scores was shown.", "grade": "assertion", "t": "10:26", "source": "said"}
+  ],
+  "numbers": [
+    {"figure": "2 / 38 / 76 / 1,016 / 4,672", "meaning": "questions at nodes 1 to 5 of the complexity curve", "t": "03:43"},
+    {"figure": "283 to 5,676", "meaning": "documents the models were pointed at, node 1 to node 5 (9.5 MB of text at node 5)", "t": "04:13"},
+    {"figure": "20 / 108 / 189 / 606 / 1,264", "meaning": "data points (distinct document excerpts the locked answer key rests on) at nodes 1 to 5", "t": "03:43"},
+    {"figure": "59 of 61 / 70", "meaning": "Opus 5.5 at node 3: 61 yeses said, 59 right, 70 on the key; precision 97 percent, recall 84 percent", "t": "05:17"},
+    {"figure": "1.00 and 0.26", "meaning": "Opus 5.5 precision and recall at node 5, prompt and dump", "t": "05:17"},
+    {"figure": "60%", "meaning": "highest share of source documents reaching the model, even with few documents", "t": "06:50"},
+    {"figure": "0.62", "meaning": "deepseek v4.1 flash F1 at node 5 with no method, the only model above 0.60 there besides Sonnet 5.5 (0.69)", "t": "19:25"},
+    {"figure": "2% to 6%", "meaning": "share of lines deepseek read at node 4 in its three runs", "t": "17:14"},
+    {"figure": "142 of 207", "meaning": "right answers deepseek reproduced with no documents and no web tools", "t": "18:16"},
+    {"figure": "1 h 43 min, $16.13", "meaning": "time and cost of code-driven nemotron v7.2 at node 4, versus 42 s and $0.04 with no method", "t": "13:03"},
+    {"figure": "614 of 620", "meaning": "Gemma tool calls that failed behind a clean-looking run, because OpenCode marks a failed tool call completed", "t": "20:20"},
+    {"figure": "29 of 40", "meaning": "closed-book product questions Haiku 4.5 answered with 'don't know' rather than guess", "t": "20:20"},
+    {"figure": "691", "meaning": "questions left unanswered in deepseek's weakest run (F1 0.50) because of how it formatted output", "t": "17:14"},
+    {"figure": "92 / 40 / 23 / 59 / 22", "meaning": "graded runs in the all-methods chart: no method, instructions, code, swarm, verification", "t": "15:41"}
+  ],
+  "frameworks": [
+    {"name": "Cognitive complexity (operational definition)", "description": "The number of data points that must be synthesized into verifiable atomic claims. Measured per node by questions, answer-key data points, documents and megabytes of text."},
+    {"name": "Complexity curve, five nodes", "description": "Node 1 USB exfiltration (1 technique x 1 product), node 2 exfiltration tactic (19 x 1), node 3 plus Endpoint Security (19 x 2), node 4 plus Privilege Escalation with 4 products (127 x 4), node 5 six tactics and 8 products (292 x 8). Each node asks everything the previous node asked, and more."},
+    {"name": "Omission and commission failure taxonomy", "description": "False negatives: never found, seen then dropped, seen then denied, denied unseen, scope shrank, over-correction, ran out of room. False positives: stretched, borrowed, from memory, mislabelled, one quote many claims."},
+    {"name": "Four error-correction methods", "description": "Instructions: split documents by product, scope checklist, evidence with verbatim quote, coverage check, collect. Code: model lists dimensions, code forms combinations, 3,000-word reading batches, drop quotes not on the page, one match call per item, gate each yes on its own product's quote. Swarm: three or more runs, a yes from any answer beats silence, majority wins conflicts, ties settled only by a verbatim quote. Verification: scope, form combinations, name bearing sentences, code turns them into exact quotes, second look at items with no quote, separate verifier call, only confirmed is yes."},
+    {"name": "Cliff", "description": "The first node at which a model's no-method F1 on the same questions falls below 0.60."},
+    {"name": "Single locked answer key", "description": "Built per node before any run was scored, by blind readers and two independent answerers, diffed, spot-checked and locked. Precision is wrong yeses, recall is missed real capabilities, F1 is 2PR/(P+R)."}
+  ],
+  "artifacts": [
+    {"name": "OpenCode 2.0.24", "kind": "tool", "note": "Single harness used for all open-weight runs and for Haiku 4.5 and Sonnet 5.5, to normalize results; the slide notes it marks failed tool calls as completed.", "url": ""},
+    {"name": "Claude Code (Opus 5.5)", "kind": "tool", "note": "Reference run of claude-opus-5-5 with its own harness and system prompts, no method.", "url": ""},
+    {"name": "MITRE ATT&CK", "kind": "standard", "note": "Framework the vendor documentation was mapped to, prevention and detection separately, by technique ID.", "url": ""},
+    {"name": "Models tested", "kind": "benchmark", "note": "gpt-oss 120B, deepseek v4.1 flash, GLM 5.3 flash, nemotron 3 super (nvidia-nemotron-3-super-120b-a12b), Gemma 4 31B, Haiku 4.5, Sonnet 5.5, Opus 5.5; served via ollama.com and OpenRouter.", "url": ""}
+  ],
+  "slide_only": [
+    "Slide 3 table: nodes with techniques x products (1x1, 19x1, 19x2, 127x4, 292x8), questions, key data points, documents, distinct lines and MB of text; model IDs including openai/gpt-oss-120b, deepseek/deepseek-v4.1-flash, z-ai/glm-5.3-flash, google/gemma-4-31b-it, claude-haiku-4-5-20251001, claude-sonnet-5-5, claude-opus-5-5.",
+    "The task prompt: based on the documentation, what can the security products actually do to prevent or detect each technique in the ATT&CK tactics, prevention and detection separately, mapped to technique IDs; vendor documentation sits in the working directory and web search is allowed.",
+    "Slide 4 note: the naive run was the prompt plus the documentation folder, OpenCode default tools, every model, every node.",
+    "Instructions slide version history: v1-v3 procedure in the prompt (nemotron node 3 recall 0.49 to 0.87, run to run); v4-v5 pruning old tool output made the model cautious (recall 0.43 to 0.46); v6 saving big tool outputs to a file gave recall 0.99; v8-v10 model-chosen splitting varied each run, from v10 code splits one subagent per product; v13 allowed 'yes (inferred)' for a general capability, deepseek node 4 recall 0.32 to 0.55; v16 confirmed over 3 runs.",
+    "Code slide version history: v1-v2 model listed 6 parent items instead of members; v3-v4 plain-words items in smaller batches, nemotron node 2 recall 0.65 to 0.91; v5 one list for the whole request, node 4 recall 0.27; v6 each product's readers get only its items in 3,000-word batches, replay showed reading is the lever (0.27 to 0.40); v7-v7.2 code forms combinations and rejects malformed lists, node 4 recall 0.44. One model answered in prose and Gemma at node 5 listed six tactics instead of their techniques (recall 0).",
+    "Verification slide version history: v1 strict verifier, nemotron node 3 recall 0.57 with all 30 missed yeses having evidence the verifier rejected; v2a verifier first states what the item involves then judges, recall 0.89; v2c-v2f items read in pairs with sentence ids instead of typed quotes; v2g code forms items from checked members and a second look covers items with no quote, recall 0.94; v2h-v2j node 4 list step kept coming back short or malformed.",
+    "Swarm slide: nemotron node 3 one-run mean over 7 runs recall about 0.49; 26 merged runs precision about 0.95; deepseek node 4 recall 0.55 to 0.85 with 4 merged runs; nemotron node 4 recall 0.13 to 0.29 with 4 merged.",
+    "Slide 12 table, closed-book quiz (40 tactic questions, 40 product yes/no with 20 yes and 20 no): tactics accuracy Gemma 0.70, nemotron 0.82, gpt-oss 0.88, GLM 1.00, deepseek 1.00, Haiku 0.78, Sonnet 1.00, Opus 1.00; products yes-F1 Gemma 0.60, nemotron 0.44, gpt-oss 0.36, GLM 0.61, deepseek 0.45, Haiku 0.17, Sonnet 0.72, Opus 0.74; node 4 no-method F1 with documents Gemma 0.10, nemotron 0.23, gpt-oss 0.22, GLM 0.43, deepseek 0.69, Haiku 0.49, Sonnet 0.50, Opus 0.63.",
+    "Slide 13 detail: deepseek's 207 right naive answers came from the key's page (125), other pages (57) and web search (25); 38 wrong came 25, 13 the same way; with no documents the same 207 became 142 yes, 62 no, 3 don't know, and the same 38 became 28 no and 10 yes. Its weakest run wrote one row per parent technique and left 691 questions unanswered.",
+    "Slide 14 F1 table (no method, nodes 1 to 5): Gemma 0.83, 0.43, 0.48, 0.37, 0.00; nemotron 0.67, 0.71, 0.78, 0.33, 0.35; gpt-oss 0.67, 0.87, 0.72, 0.32, 0.22; GLM 1.00, 0.85, 0.80, 0.55, 0.23; deepseek 1.00, 0.88, 0.79, 0.86, 0.62; Sonnet 1.00, 0.79, 0.86, 0.45, 0.69; Opus 1.00, 0.90, 0.90, 0.83, 0.42.",
+    "Slide 15 outtakes: the cautious model (Haiku said don't know to 29 of 40 rather than guess), the harness hid failures (OpenCode marks a failed tool call completed: Gemma 614 of 620 calls failed behind a clean-looking run), a one-line rule matched the best run (a trivial answer with no documents read scored as well as the best model), formatting is a failure mode (deepseek's weakest run read fine and left 691 cells unanswered). Bullets: small models for bounded checkable steps, strong for judgment; accuracy bought by reading is long and expensive; check your metric against a trivial baseline."
+  ],
+  "demos": [
+    "Interactive result charts shown live on slide 4 and slide 10: toggling F1, precision, recall, false-positive and false-negative series per model per node, and filtering all graded runs by model and method (Gemma, then nemotron, deepseek)."
+  ],
+  "quotes": [
+    {"text": "Every model has a point where it stops being reliable, and you can find it before you deploy.", "speaker": "Ali Arshad", "t": "19:17"},
+    {"text": "Find your model's cliff before you trust it.", "speaker": "Ali Arshad", "t": "19:48"},
+    {"text": "With some models, it felt like trying to teach reading comprehension to a kindergartner using War and Peace.", "speaker": "Maxim Kovalsky", "t": "16:43"},
+    {"text": "From at least the research and benchmarking that we've done, hallucination is a tiny, tiny percentage of the overall problem.", "speaker": "Maxim Kovalsky", "t": "02:41"}
+  ],
+  "offense": [],
+  "defense": [
+    "Locate each model's cliff on a node-scaled benchmark of your own task before deploying it, using the first node where F1 falls below 0.60.",
+    "Grade with a locked answer key; if a full key is too costly, hide roughly 100 carefully verified questions among the many and score only those as a proxy.",
+    "Report precision and recall separately, because a perfect precision score can sit beside 0.26 recall.",
+    "Check any metric against a trivial baseline, since a one-line rule with no documents read matched the best model.",
+    "Use small models for bounded checkable steps and strong models for judgment; do not expect wrappers to lift a model that is already strong.",
+    "Force reading with code (small batches, one question per call, quotes checked by code) when completeness matters, and budget for hours and dollars.",
+    "Require an exact quote from the item's own page for every yes and confirm with a separate verifier call, but treat the list of items to check as a failure point.",
+    "Do not trust harness status codes: log and audit failed tool calls, because a clean-looking run may have had most calls fail."
+  ],
+  "takeaways": [
+    "Before putting an AI analyst on a crosswalk, review or mapping task, measure recall on a locked key at several task sizes, not just accuracy of what it asserts.",
+    "Choose model by task complexity: cheap models for narrow checkable steps, and expect large cost and latency if you force full reading.",
+    "Treat omission as the main risk in agent-produced analysis; add checks that look for what is missing, not only for false claims.",
+    "Build a roughly 100-item verified answer key once and reuse it to compare models and wrappers per task.",
+    "Audit harness telemetry, since failed tool calls can be reported as completed."
+  ],
+  "limits": [
+    "Speakers said the number of correction-method iterations was small for some models, and that some models could not complete verification because of context limits or guardrails.",
+    "Opus 5.5 ran in Claude Code with its own harness and system prompt while all other models ran in OpenCode, so it is not strictly comparable.",
+    "Context overload was something they tried to control for but acknowledged it affected Gemma (confusing tactics with techniques).",
+    "Speakers said they could not get less capable models to apply deepseek's page-selection methodology."
+  ],
+  "critique": [
+    "A single task family (ATT&CK mapping of one vendor's documentation) and one answer key per node; generalization to other analyst tasks is asserted, not shown.",
+    "Many runs per cell are small (a few runs per model, node and method), and the slides show single points and runs; variance is discussed but no intervals are given.",
+    "The claim that a 100-question subset proxies full-key performance was stated from practice and no comparison was displayed.",
+    "Answer-key quality is itself a limit: the key was built from the vendor's own documentation, so it measures documented capabilities, which may differ from the truth about products.",
+    "The 'RAG is broken' remark in Q&A was a brief answer and was not developed; the benchmark tests agents pointed at a folder, not retrieval systems.",
+    "Conclusions about deepseek reading little but scoring well, with 70 percent of answers reproducible from memory, suggest the task partly rewards parametric knowledge of public product facts, which weakens it as a test of document comprehension.",
+    "The published title and description cite an adversarial critic-and-fixer loop and a cost and regression measure; the recording covers a benchmark of four correction methods and does not show the critic-and-fixer harness."
+  ],
+  "qa": [
+    "Q: How sensitive was precision versus recall under swarm deliberation; was it one to one? A: Not one to one. They merged all yeses across runs and models; precision stayed the same and recall rose, because each model only saw a different small subset of documents.",
+    "Q: Is the right answer then to run many questions in parallel with cleared context? A: For all runs they used one scoped question per prompt to avoid context overload.",
+    "Q: Should we go back to caveman-style prompting, and is RAG now useless? A: Models mostly rely on tuning and harness rather than reading what you feed them in line; one speaker said RAG is 'broken at some level', and the moderator cut it off as a longer conversation."
+  ],
+  "tags": ["evals-benchmarks-metrics", "ai-soc-detection-response", "guardrails-runtime-controls"],
+  "key_frames": [
+    {"file": "t00196.jpg", "caption": "Complexity curve table: five nodes from 2 to 4,672 questions, with documents, data points and the model list used."},
+    {"file": "t00533.jpg", "caption": "The four error-correction methods side by side, with each step marked as code or model."},
+    {"file": "t00866.jpg", "caption": "Verification method results: precision near 1.0, recall 0.24 to 0.94 at node 3, and the node 4 list failure."},
+    {"file": "t01097.jpg", "caption": "Deepseek case study and transplant test showing selective reading and that its page choice does not transfer."},
+    {"file": "t01164.jpg", "caption": "No-method F1 table per model per node with the cliff column."}
+  ],
+  "signal": {"score": 4, "reason": "A specific, quantified benchmark of omission-dominated failure and four correction methods with real numbers, though limited to one task family with few runs."},
+  "caveats": [
+    "Auto-captions garbled names: Gamma is Gemma 4 31B, Nemo 3 Super is nemotron 3 super, JLM 53 is GLM 5.3 flash, DeepSeek 41 Flash is deepseek v4.1 flash, per slides; 'Open Opus' is Opus 5.5.",
+    "Transcript says nearly 5,000 questions and 1,000 questions; slide gives 4,672 and 1,016. Transcript says about 300 pages for deepseek; slide says 304 pages. Transcript says 2 to 6 percent of documents; the slide says lines. Slide figures used.",
+    "Transcript attributes parts of the work to 'I built' without naming which speaker built which method; not recorded here.",
+    "Transcript says 'precision stayed the same' for swarm in Q&A; the slide shows nemotron node 3 precision falling 0.81 to 0.76. Slide figure kept in claims.",
+    "Slide timestamps for pages are by frame filename; the swarm version history numbers on slide 8 were partly unreadable at the chart level and are summarized only where legible.",
+    "Description says the talk covers an adversarial critic, fixer and ATT&CK benchmark from two builds; the recorded talk covers only the benchmark."
+  ]
+}

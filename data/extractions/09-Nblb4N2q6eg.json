@@ -1,0 +1,159 @@
+{
+  "nn": "09",
+  "id": "Nblb4N2q6eg",
+  "url": "https://www.youtube.com/watch?v=Nblb4N2q6eg",
+  "title": "Agent Authorization Is Not a Vault Problem",
+  "speakers": [
+    {"name": "Felipe Zimmerle", "affiliation": "CTO, KonaSense"},
+    {"name": "Rodrigo Branco", "affiliation": "Vulnerability Researcher, Anthropic"}
+  ],
+  "format": "talk",
+  "duration_min": 20,
+  "thesis": "Vaults and brokers decide who may see a key, but nothing answers which exact action may happen right now; a split-key hardware co-authorizer that parses and displays the exact bytes to be signed, and gates the signature on a physical button, closes that gap for SSH and FIDO2.",
+  "summary": "The talk presents core-keys, an open-source split-key hardware authenticator for SSH and FIDO2 built on a roughly 20 dollar ESP32-S3 touch-screen board, aimed at agents that already run commands like ssh, git push, terraform apply and kubectl delete under the user's own credentials. The opening frames two questions: vaults and brokers answer who may see the key, while nobody answers which exact action may happen now, and a compromised agent never needs to see the key because it just asks the broker to use it. Typical approval prompts are consent theater because the summary string comes from the thing being authorized; the signature covers bytes, the human reads prose, and nothing binds them. The design splits the key between a desktop daemon, which acts as the ssh-agent and FIDO2 policy engine, and the device, linked by a Noise protocol session over a vendor USB HID channel; the device signs only for an authenticated in-session request over the exact bytes, after the user presses a button having read honest context on its display. A live demo runs Claude Code issuing an SSH df -h and being unable to proceed until the device approves. The device parses SSH bytes itself and accepts three shapes only, and shows three honest display states for destination verification. The speakers then list findings: a 170 pixel approval screen the attacker half-writes, a kept reboot backdoor, threshold crypto that did not fit the microcontroller, a human-time budget set by the browser, and an adversarial review that found a signing oracle design and an unprivileged firmware control channel. They state what is not defended, show a built-versus-not-built table, and ask for a credential proxy for arbitrary agent actions. A short Q&A covers financial transaction signing.",
+  "argument": [
+    "Agents impersonate the user for SSH, git and cloud actions, so handing them a key, or putting that key behind a vault or broker, still lets a compromised agent act with it.",
+    "The missing control is a deterministic, out-of-band check of which exact action may proceed now, which needs something off the agent's machine that can truthfully tell a human what will be signed.",
+    "Approval UIs that show a model- or app-produced summary are consent theater, so the device must itself parse the bytes it signs and derive the display from them, and say so when it cannot verify the destination.",
+    "Splitting the key between a desktop daemon and a hardware device means either half alone signs nothing, and the device signs only on an authenticated in-session request plus a button press.",
+    "Attacking their own protocol before implementing it exposed a signing-oracle design and an unprivileged control channel, so co-authorization must be an in-session message and plaintext frames must never change device state.",
+    "The prototype is incomplete and has real limits, and the speakers ask for a credential proxy that injects secrets after approval so the agent receives results but never the credential."
+  ],
+  "claims": [
+    {"claim": "Vault and broker products answer who may see the key, while a compromised agent just asks the broker to use it; nobody answers which exact action may happen right now.", "evidence": "Framing slide and argument; no measurement.", "grade": "assertion", "t": "01:17", "source": "slide"},
+    {"claim": "Approval dialogs that show a summary produced by the thing being approved are consent theater: the signature covers bytes, the human reads prose, nothing binds the two, and an attacker who controls the summary controls the consent.", "evidence": "Reasoning illustrated with a transfer-5000-dollars prompt versus the device's own df -h display.", "grade": "assertion", "t": "03:04", "source": "slide"},
+    {"claim": "The device signs only when it has an authenticated in-session request from the paired desktop, over the exact bytes to be signed, and the user presses the button after reading honest context on the display.", "evidence": "Stated as the design invariant and demonstrated working on hardware for SSH and FIDO2.", "grade": "demo", "t": "03:55", "source": "both"},
+    {"claim": "A real SSH login by Claude Code of the form ssh localhost df -h could not proceed until the device approved, and the agent could not reach the machine without that approval.", "evidence": "Live demo with Claude Code (Opus 5.5) and the hardware on stage, approval dialog on the device.", "grade": "demo", "t": "06:35", "source": "both"},
+    {"claim": "Co-authorization built as a detached signature over the operation produces a signing oracle: the desktop signs bytes chosen by a remote server, so anyone reaching the daemon gets arbitrary bytes signed by a trusted key; any such design has probably built the same oracle.", "evidence": "Found in their own adversarial review of the frozen protocol, before implementation; fixed by making co-authorization the authenticated in-session message and having the daemon never sign anything.", "grade": "case", "t": "15:29", "source": "slide"},
+    {"claim": "The bring-up firmware shipped a local privilege escalation: the vendor HID channel is unprivileged and the M1 firmware answered plaintext reboot, status and loopback frames, so any local process could reboot the authenticator into ROM download mode.", "evidence": "Reported as a review finding; four critical and seven high findings, all fixed; resulting rule that no plaintext frame may change device state.", "grade": "case", "t": "15:29", "source": "slide"},
+    {"claim": "A four-byte plaintext frame (C0 DE B0 07) that reboots the authenticator was deliberately kept as a documented critical vulnerability for prototype iteration, gated by a dev flag plus a physical button hold, and must not ship.", "evidence": "Disclosed on the slide and in the repository documentation; matched in the USB driver callback so it survives a wedged worker task.", "grade": "case", "t": "10:58", "source": "slide"},
+    {"claim": "The threshold crypto they wanted did not fit the microcontroller: Lindell17 needs Paillier operations that are compute-infeasible on M4 and M33 class parts, DKLs needs 100 to 230 KB of protocol traffic per signature over 64-byte HID reports, and all carry BitForge-class implementation risk.", "evidence": "Costing done before implementation; rejected for FIDO2, kept for SSH where Ed25519 is Schnorr and FROST 2-of-2 is cheap.", "grade": "measured", "t": "11:31", "source": "slide"},
+    {"claim": "WebAuthn steers you to ES256, which silently forecloses split-key on small hardware, so choose the signature scheme that makes the threshold story linear before choosing the protocol.", "evidence": "Design lesson drawn from the costing exercise.", "grade": "assertion", "t": "11:31", "source": "slide"},
+    {"claim": "No open-source project the authors found binds agent approval to hardware; every approval flow found ended in Slack, a push notification or a GUI.", "evidence": "Survey dated 2026-09-01 listing 1Password Secure Agentic Autofill, Yubico plus Delinea RDT, Ledger Agent Stack, and standards work (Auth0 for AI Agents, CB4A draft, CIBA).", "grade": "case", "t": "16:26", "source": "slide"},
+    {"claim": "The browser sets the human time budget: Firefox's WebAuthn default of about 30 seconds covers policy, display, human reading and the press, so SSH at 12 plus 20 seconds fits but the FIDO2 flow tightens.", "evidence": "Observed while running the prototype; slide gives the budget breakdown.", "grade": "measured", "t": "14:28", "source": "both"},
+    {"claim": "The device cannot be rate-limited like a human-operated authenticator because agents drive it at high throughput, so distinguishing the agent from a malicious peer using it is an open problem.", "evidence": "Raised as an open question; no solution given.", "grade": "assertion", "t": "15:40", "source": "said"},
+    {"claim": "The speaker asserts the display is mathematically guaranteed to match what is signed.", "evidence": "Said without proof shown; slides list formal model, fuzzing rig and conformance work as not started.", "grade": "assertion", "t": "06:18", "source": "said"}
+  ],
+  "numbers": [
+    {"figure": "20 dollars", "meaning": "price of the whole board (LilyGO T-Display-S3 Touch: screen, touch, battery, printed case); chip from 2.00 dollars and module 3.40 dollars", "t": "12:19"},
+    {"figure": "170 x 320", "meaning": "display resolution in pixels; the approval screen is 170 px wide", "t": "09:46"},
+    {"figure": "4 critical, 7 high", "meaning": "findings from the adversarial review of the frozen protocol, all fixed", "t": "15:29"},
+    {"figure": "100 to 230 KB", "meaning": "DKLs protocol traffic per signature over 64-byte HID reports", "t": "11:31"},
+    {"figure": "about 30 seconds", "meaning": "Firefox default WebAuthn timeout; SSH path budget 12 s plus 20 s equals 32 s", "t": "14:28"},
+    {"figure": "90 s", "meaning": "validity window shown on the SSH cert approval screen (localhost only for 90s)", "t": "03:04"},
+    {"figure": "49", "meaning": "protocol tests green, per the built-versus-not-built slide", "t": "17:51"},
+    {"figure": "RSA-3072-PSS", "meaning": "secure boot v2 signature scheme on ESP32-S3; prototype runs with secure boot and flash encryption off", "t": "13:15"},
+    {"figure": "0xF1D0 / 0xFF00", "meaning": "HID usage pages for the CTAP channel and the vendor channel", "t": "03:55"},
+    {"figure": "240 MHz, 512 KB SRAM", "meaning": "Xtensa LX7 dual-core part used; Wi-Fi and Bluetooth switched off", "t": "12:19"}
+  ],
+  "frameworks": [
+    {"name": "Two different questions", "description": "Vaults and brokers answer who is allowed to see the key; nobody answers which exact action may happen right now. The second needs something off the agent's machine that can tell a human the truth."},
+    {"name": "The invariant", "description": "The device signs only when it has an authenticated in-session request from the paired desktop, over the exact bytes to be signed, and the user presses the button after reading honest context on the display."},
+    {"name": "The shape (architecture)", "description": "ssh/git/agent via the agent socket and the browser via CTAP HID (usage page 0xF1D0) reach a desktop daemon (ssh-agent front end, FIDO2 policy engine, sole owner of the session), which talks to the device (strict parser, 170 x 320 display, button, keys) over Noise_KK on vendor HID 0xFF00. The vendor channel is open to any unprivileged local process, so no plaintext frame may change device state."},
+    {"name": "Three accepted SSH shapes", "description": "The device parses and accepts only the RFC 4252 section 7 userauth blob, publickey-hostbound-v00 (same plus trailing server host key compared with the daemon-verified one), and SSHSIG (magic SSHSIG, namespace git or ssh, hash sha256 or sha512). Anything else is rejected, blocking cross-protocol abuse of the SSH key; the host's parse is never authoritative."},
+    {"name": "Three destination display states", "description": "publickey-hostbound-v00@openssh.com (OpenSSH 8.9+): host key is inside the signed bytes, extracted and verified; session-bind@openssh.com: the client proved the binding, daemon verifies then attests; neither: DESTINATION UNVERIFIED, say so and do not print the hostname. A design with no 'I do not know' state lies by default."},
+    {"name": "Identity strings never get a right-ellipsis", "description": "On a 170 px screen the fitter keeps a two-character head and spends the remaining width on the tail so the registrable suffix is last to go; pairing machine names are NFC-normalized, ASCII-restricted, homoglyph-stripped, clamped and labeled unverified."},
+    {"name": "Record type, not architecture", "description": "SIGN_REQ today is op ssh-userauth with tbs, verified_hostkey, is_forwarding, username; next op http-call with method, host, path, body_hash, agent_id, expiry. Same session, strict-parser discipline, three display states and button."},
+    {"name": "Design rules from the findings", "description": "No plaintext frame may change device state; exactly one component owns the session, never a second reader; if the design assumes a human has a minute, find what the calling protocol allows; choose the signature scheme that makes threshold linear before the protocol; the mechanism that makes prototype iteration possible must not ship."}
+  ],
+  "artifacts": [
+    {"name": "core-keys", "kind": "repo", "note": "Open-source split-key hardware authenticator for SSH and FIDO2 (spec, protocol, daemon, mule-esp32s3 firmware, mechanical case), MIT OR Apache-2.0; one wire protocol implemented twice in C and Rust.", "url": "https://github.com/core-keys"},
+    {"name": "LilyGO T-Display-S3 Touch", "kind": "product", "note": "Off-the-shelf ESP32-S3 board (ESP32-S3-WROOM-1-N16R8) with touch screen and battery used as the device.", "url": ""},
+    {"name": "Noise_KK", "kind": "standard", "note": "Noise Framework handshake used for the paired desktop-to-device session over vendor HID.", "url": ""},
+    {"name": "FROST", "kind": "standard", "note": "Threshold Schnorr signing planned as 2-of-2 Ed25519 for SSH in version 2.", "url": ""},
+    {"name": "Lindell17 and DKLs", "kind": "paper", "note": "Two-party threshold ECDSA schemes costed and rejected for FIDO2 on this microcontroller.", "url": ""},
+    {"name": "BitForge", "kind": "cve", "note": "Cited as the class of implementation risk in threshold ECDSA libraries.", "url": ""},
+    {"name": "OpenSSH publickey-hostbound-v00 and session-bind extensions", "kind": "standard", "note": "Protocol features the device uses to establish the destination host, with OpenSSH 8.9 or newer.", "url": ""},
+    {"name": "Competing and adjacent efforts", "kind": "product", "note": "1Password Secure Agentic Autofill (closed, uses Noise), Yubico plus Delinea RDT (closed, early access Q2 2026, no display), Ledger Agent Stack (open since July 2026, crypto transactions only), Auth0 for AI Agents (GA Nov 2025), CB4A draft, CIBA (Keycloak and node-oidc-provider only).", "url": ""}
+  ],
+  "slide_only": [
+    "Opening list of agent actions already happening: ssh prod-db, git push, terraform apply, kubectl delete, gh pr merge, aws s3 sync.",
+    "Device hardware: composite USB device with CTAP HID on 0xF1D0 plus vendor channel on 0xFF00, no vendor software on the host; desktop daemon is ssh-agent, session owner and policy engine, pinned to the device at pairing; either half alone signs nothing.",
+    "Hardware spec table: Xtensa LX7 dual core 240 MHz, 512 KB SRAM, 45 GPIO; Wi-Fi 802.11 b/g/n and Bluetooth 5 LE both switched off; native USB OTG; chip from 2 dollars, module 3.40 dollars, whole board 20 dollars; the headline features are the ones switched off because a radio is remote reach into the keys and physical presence is the product.",
+    "Secure boot and flash encryption detail: Secure Boot v2 RSA-3072-PSS, 1216-byte signature block 4 KB aligned, eFuse digest of the 776-byte public key region with three slots, XTS-AES 256 or 512 bit flash encryption armed by SPI_BOOT_CRYPT_CNT; encryption stops reading flash, secure boot stops changing it; the prototype runs with both off.",
+    "eFuse slide: SOC_ECC_SUPPORTED absent and SOC_MPI_SUPPORTED RSA to 4096, so the silicon accelerates RSA for secure boot but nothing for Ed25519 and every credential signature runs in software; release mode burns SECURE_BOOT_EN, DIS_DOWNLOAD_MANUAL_ENCRYPT, DIS_DOWNLOAD_MODE, DIS_USB_JTAG, DIS_DIRECT_BOOT then write-protects SPI_BOOT_CRYPT_CNT, which kills C0 DE B0 07.",
+    "Approval screen mock-ups: benign github.com, hostile github.com.attacker.example with a FORWARDED badge where the tail survives, pairing with a compare code (418 174) and a long-name clamped case labeled unverified.",
+    "Opposite-direction sockets: SSH signs go daemon to device, FIDO2 co-auth goes device to daemon on one session; the daemon blocks on a signature while the human stares at the button and nobody reads the inbound request so both wait forever; exactly one component owns the session.",
+    "Limits slide: desktop malware while the user is present, a compromised host at pairing time (the compare code is drawn by the host), jamming (rate-limited, not won), phishing beyond WebAuthn and SSH, this silicon (no ECC accelerator, weak fault-injection story), and a server accepting a fallback such as passwords.",
+    "Built versus not built: on hardware are composite USB CTAP HID plus vendor HID, CTAP2 getInfo/makeCredential/getAssertion, Noise_KK session, SSH co-auth with real login gated by the button, FIDO2 getAssertion co-auth split key, device UI (PIN, credentials, approval, pairing, touch) and pairing commit-reveal with a 6-digit code (device on hardware); 49 protocol tests green. Not verified: session-bind server signature verification. Not enforced: hostbound key comparison on device. Interface frozen: at-rest store wrapping. Version 2: FROST 2-of-2 Ed25519 for SSH. Not started: formal model, fuzzing rig and conformance, production silicon, credential proxy for arbitrary agent operations.",
+    "Closing line: agents do not need better secret storage, they need a boundary between what they propose and what a human authorized, somewhere the agent cannot reach and cannot narrate.",
+    "The first slide lists a third author, Rafael Silva, and the title slide footer names spec, protocol, daemon, mule-esp32s3 and mechanical as repository parts."
+  ],
+  "demos": [
+    "Claude Code (Opus 5.5, xhigh effort) is asked to SSH to localhost and report free disk space; the device screen shows the approval for df -h as user felipe, and the command cannot proceed until the physical button is pressed. After approval the output shows the data volume at 97 percent capacity. Prior slides show the same approval on the device for FIDO2 sign-in to github.com."
+  ],
+  "quotes": [
+    {"text": "The signature covers bytes. The human reads prose. Nothing binds the two.", "speaker": "Felipe Zimmerle / Rodrigo Branco (slide)", "t": "03:04"},
+    {"text": "A compromised agent does not need to see the key. It just asks the broker to use it.", "speaker": "Felipe Zimmerle / Rodrigo Branco (slide)", "t": "01:17"},
+    {"text": "A design with no 'I do not know' state lies by default.", "speaker": "Felipe Zimmerle / Rodrigo Branco (slide)", "t": "09:46"},
+    {"text": "The mechanism that makes prototype iteration possible is the mechanism that must not ship. Write it in the threat model.", "speaker": "Felipe Zimmerle / Rodrigo Branco (slide)", "t": "10:58"},
+    {"text": "Any co-authorization design that reaches for a detached signature over the operation has probably built the same oracle.", "speaker": "Felipe Zimmerle / Rodrigo Branco (slide)", "t": "15:29"}
+  ],
+  "offense": [
+    "Agent as confused user: a compromised or misbehaving agent uses the user's SSH or FIDO2 credentials via a vault or broker without ever seeing the key.",
+    "Consent theater: an attacker who controls the summary string shown in an approval prompt controls the consent.",
+    "Signing oracle: if the desktop signs bytes chosen by a remote server, anyone who reaches the daemon gets arbitrary bytes signed by a trusted key.",
+    "Cross-protocol abuse of the SSH key through crafted signing payloads, blocked by accepting only three payload shapes.",
+    "Homoglyph and long-name spoofing on a 170 px approval screen where the attacker writes half the text, such as github.com.attacker.example.",
+    "Unprivileged local process sending plaintext vendor-HID frames to reboot the authenticator into ROM download mode.",
+    "Throughput abuse of a signing device by an agent, and fault injection or physical extraction against the commodity microcontroller.",
+    "Server-side fallback such as password authentication bypassing the hardware entirely."
+  ],
+  "defense": [
+    "Have the approval device parse the exact bytes to be signed and derive the display string from them, accepting only a small set of payload shapes and rejecting everything else.",
+    "Use a split-key design where a desktop daemon and a hardware device must both take part, over a paired authenticated session (Noise_KK), so either half alone signs nothing.",
+    "Make co-authorization an authenticated in-session message and keep the daemon from ever signing detached bytes chosen by a remote party.",
+    "Adopt the rule that no plaintext frame may change device state, and use a strict parser on the device.",
+    "Give approval UIs an explicit 'unverified' state, such as DESTINATION UNVERIFIED, and never print the hostname when it cannot be derived from the payload.",
+    "Never truncate identity strings on the right: keep a short head and show the registrable suffix, and label host-supplied names unverified.",
+    "Turn on secure boot and flash encryption and burn the release eFuses before shipping so the reflash and reboot escape hatches are removed.",
+    "Disable the radios on a security device and require physical presence.",
+    "Disable password and other fallbacks on the SSH server so the client always asks the hardware.",
+    "For arbitrary agent actions, build a credential proxy that holds the secret and injects it after approval so the result reaches the agent and the credential does not."
+  ],
+  "takeaways": [
+    "When you evaluate agent-approval or credential-broker products, ask whether the approval display is derived from the bytes that will be signed by something outside the agent's reach, not merely whether the agent sees the key.",
+    "Treat any 'detached signature over the operation' co-authorization design as a suspected signing oracle and review it adversarially before implementing.",
+    "Require an explicit unverified state in approval UIs and disable fallback authentication paths on servers, or the hardware gate can be bypassed.",
+    "Account for human time budgets set by the calling protocol (browser WebAuthn timeouts, about 30 seconds) before designing human-in-the-loop approvals.",
+    "Treat this as a prototype and a design reference rather than a deployable control: threat-model dev backdoors explicitly and plan release fuses, and consider a credential proxy as the next building block for non-SSH agent actions."
+  ],
+  "limits": [
+    "Proof of concept and community project, not production: it keeps a documented reboot backdoor and runs with secure boot and flash encryption off.",
+    "ESP32-S3 has no ECC accelerator and a weak fault-injection story; not a secure element, and a TPM or secure element is a welcome contribution.",
+    "Does not defend against desktop malware while the user is present, a compromised host at pairing time, jamming, or phishing beyond what WebAuthn and SSH already provide.",
+    "Elliptic-curve protocols do not yet fit the microcontroller; FROST 2-of-2 for SSH is planned for version 2.",
+    "Timeouts for browser-driven FIDO2 are set by others and leave little time for a pocket device.",
+    "Open question of how to rate-limit or distinguish an agent from a malicious peer using the signing device.",
+    "Not yet shown for financial transaction authorization; the UI for destination verification is not there yet (Q&A).",
+    "Several design items are listed as not verified, not enforced or not started, including a formal model, fuzzing, conformance and the credential proxy."
+  ],
+  "critique": [
+    "The design lessons (signing oracle in detached co-authorization, unverified display state, plaintext-frame rule) and the built-versus-not-built table are specific; the evidence for them is the authors' own review, with no independent audit and no formal model yet.",
+    "The spoken claim that the display is mathematically guaranteed to match the signature is not shown on the slides, which list formal modeling as not started; the guarantee depends on the on-device parser and the host-supplied fields.",
+    "The limits slide lists desktop malware while the user is present as not defended, and the agent runs on that same desktop; the design relies on the user reading the screen, the talk does not address approval fatigue for high-frequency agent commands, and it mentions an on-device agent or model only briefly as a possible mitigation.",
+    "The spoken description includes hashing long commands with a skill and comparing digits between agent and device; this is not on the slides, it depends on the agent-side skill reporting correctly, which places trust in the agent side the device is meant not to trust, and no analysis of that dependency was shown.",
+    "The slides say threshold ECDSA was rejected for FIDO2 while the built table says a FIDO2 split-key assertion runs on hardware; the scheme actually in use for FIDO2 today is unclear from the talk.",
+    "The competitive survey dated 2026-09-01 lists a small set of products and standards, and the claim that no open-source project binds approval to hardware cannot be checked from the recording.",
+    "The speakers are a company CTO and a vulnerability researcher; the project is open source and its limits are stated on the slides."
+  ],
+  "qa": [
+    "Question: can this protect a financial transaction against a destination account that does not match the intended payee, beyond SSH? Answer: they aim to, but are not there yet; it is more a UI and usability problem than a cryptographic one, and for now the protection equals what WebAuthn and SSH already give."
+  ],
+  "tags": ["agent-authz-identity", "guardrails-runtime-controls", "cryptography-formal-methods", "coding-agent-security"],
+  "key_frames": [
+    {"file": "t00077.jpg", "caption": "Two different questions: vaults and brokers answer who may see the key, nobody answers which exact action may happen now."},
+    {"file": "t00254.jpg", "caption": "The invariant: sign only on an authenticated in-session request over the exact bytes plus a button press after reading honest context."},
+    {"file": "t00306.jpg", "caption": "The architecture: apps and browser to desktop daemon to device over Noise_KK on vendor HID, with the no-plaintext-state-change rule."},
+    {"file": "t00929.jpg", "caption": "What the adversarial review broke: the signing-oracle co-authorization design and the unprivileged firmware control channel."},
+    {"file": "t01071.jpg", "caption": "Built versus not built: status table showing what runs on hardware and what remains unverified or not started."}
+  ],
+  "signal": {"score": 4, "reason": "A working open-source hardware prototype shown live, with design findings (signing oracle, unverified display state, plaintext-frame rule) and a built-versus-not-built table; the review evidence is the authors' own and the prototype is not production hardware."},
+  "caveats": [
+    "Two speakers are on the title slides (Zimmerle, CTO KonaSense; Branco, Vulnerability Researcher, Anthropic, per the lower-third and description) plus a third author Rafael Silva on the slides; one voice is heard and the transcript does not say who speaks which part.",
+    "The auto-captioned transcript diverges heavily from the slides and is garbled: 'Corky's demon' is the core-keys daemon, 'Apple FM' is likely FIDO or WebAuthn, 'PII' is probably PIV, 'Frost' is FROST, 'cloud code' is Claude Code, 'lipid curve' is elliptic curve, 'mule' is the firmware directory name; several spoken points (command hashing with an agent skill, a possible on-device agent) have no matching slide.",
+    "Several slide sections (findings one through six, the review, the survey, limits) are not narrated in the transcript, so claims in those areas are marked source slide.",
+    "Slide text for dollar prices, cert validity and tests was read from the images; small slide text on the Q&A and hardware pages was legible but not verified against the repository.",
+    "The Q&A segment is short; only one question was recorded."
+  ]
+}

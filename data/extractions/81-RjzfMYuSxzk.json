@@ -1,0 +1,121 @@
+{
+  "nn": "81",
+  "id": "RjzfMYuSxzk",
+  "url": "https://www.youtube.com/watch?v=RjzfMYuSxzk",
+  "title": "Not a Boogeyman: The Autonomous Attacker Is Already Here",
+  "speakers": [{"name": "Hari Nagarajan", "affiliation": "Senior Security Engineer, Amazon Leo"}],
+  "format": "lightning",
+  "duration_min": 8,
+  "thesis": "A working autonomous offensive agent needs only a shell, a tool-laden box and a small data store, so every low-skill attacker is now capable; defenders cannot out-investigate it and must detect intent early, map movement paths and pre-build safe automated containment.",
+  "summary": "Nagarajan argues that autonomous threat actors are a present reality, and shows how little it takes to build one: a place to run with offensive tools (he uses Kali), a shell tool, and a data store so the agent remembers what it did, driven by a plain objective with no elaborate system prompt, optionally with a planner and executor split. He says this removes the low-capability attacker and points to his open-source agent, Eugene, on Codeberg. As a field example, he ran it on a Raspberry Pi with a wireless adapter at a robot-dog CTF at DEF CON Singapore, where it cracked the Wi-Fi password and took over controller-to-dog communications within minutes using a model he described as not advanced. He then ran Eugene in a synthetic enterprise network with an identity provider, file sharing, a Git server and developer machines running OpenClaw, with the goal of finding internal IP and exfiltrating it. The run took roughly 20 seconds, with 16 seconds scanning and the data exfiltrated from the Git server and file share in 4 seconds, using an SSO session from a dev machine. He fed the logs to three models for investigation: Claude models refused at first and finished after 13 minutes and then about 5 minutes 45 seconds, and Codex took 2 minutes 18 seconds. His conclusion is that AI SOC investigation is too slow, and he offers three defenses: detect intent before impact, build a movement graph and place containment ahead of the attacker, and pre-build tested containment actions. He ends by urging teams to attack their own environments with a purpose-built harness and benchmark detection and containment speed.",
+  "argument": [
+    "An offensive agent needs only a runtime with security tools, a shell and a data store, so building one is trivial and requires no special skill.",
+    "Therefore every low-skill attacker is as dangerous as an advanced one, and this is already happening.",
+    "In a synthetic enterprise network, such an agent went from scan to exfiltration of Git and file-share data in about 20 seconds using a single SSO session.",
+    "Investigation-based defenses, including AI investigation tools, are too slow because a single log query takes longer than the attack.",
+    "Defenders should detect intent early, predict where an attacker can move from a compromised token, and pre-build scoped, reversible, tested automated containment.",
+    "Teams should attack their own environments with such an agent to benchmark detection and containment speed."
+  ],
+  "claims": [
+    {"claim": "An offensive agent needs only a Kali-style box, a shell tool and a data store, and little prompting beyond the objective because security tools have help commands.", "evidence": "Recipe slide and the roughly dozen lines of code for the shell and SQLite memory tools, plus the open-source repo.", "grade": "demo", "t": "00:38", "source": "both"},
+    {"claim": "Every low-skill attacker is now equally dangerous; there is no low-capability threat actor anymore.", "evidence": "Inference from how simple the agent is to build.", "grade": "assertion", "t": "01:39", "source": "said"},
+    {"claim": "At DEF CON Singapore the agent, on a Raspberry Pi with an Alfa wireless adapter, cracked the Wi-Fi password of a robot-dog CTF network in a few minutes and took over controller-to-dog communications, without an advanced model.", "evidence": "First-person account, with a photo of the device beside a robot dog on a slide.", "grade": "case", "t": "02:12", "source": "both"},
+    {"claim": "In a synthetic enterprise network, the agent found a dev machine running OpenClaw in about 16 seconds and then exfiltrated everything from the Git server and file share in 4 seconds using SSO access from that dev machine.", "evidence": "Recorded run shown as a timeline and telemetry viewer covering 177 bounded log entries over about 20 seconds (16:35:22 to 16:35:42 UTC).", "grade": "demo", "t": "04:17", "source": "both"},
+    {"claim": "Given the logs of that run, Claude Code first refused as a security topic, then after switching model took 13 minutes, a second Claude model refused similarly and finished in 5 minutes 45 seconds, and Codex finished in 2 minutes 18 seconds.", "evidence": "Timings from his own test runs, shown with a Claude Code output screenshot saying brewed for 5m 45s; each model's result was not compared for accuracy.", "grade": "measured", "t": "03:46", "source": "both"},
+    {"claim": "The investigation by one model identified the root cause as authentication treated as authorization across an SSO trust fabric: one login as a user granted access to Gitea and Nextcloud, with Nextcloud provisioning a new account on first login.", "evidence": "Model analysis shown on a slide, listing alternative explanations (session replay, over-provisioned identity, confused deputy through a fetched skill) and the evidence still needed.", "grade": "demo", "t": "04:49", "source": "slide"},
+    {"claim": "AI SOC and investigation tools are too slow against an agentic attacker, because one query into endpoint logs is already too late.", "evidence": "Inference from the 20-second attack timeline.", "grade": "assertion", "t": "04:49", "source": "said"},
+    {"claim": "Detecting intent before impact, such as a new device running a network scan, and containing immediately is the only way to react fast enough.", "evidence": "Reasoning from the timeline; the slide lists discovery, enumeration, credential access and tool chains as signals to correlate.", "grade": "assertion", "t": "05:19", "source": "both"},
+    {"claim": "Attackers move to another node before containment of the first completes, so containment should be placed on the layers the attacker can reach next, using a movement graph of token reuse and reachable objectives.", "evidence": "Reasoning; slide shows entry, hosts, identity, service, data, next hop and objective nodes.", "grade": "assertion", "t": "05:50", "source": "both"},
+    {"claim": "Automated containment actions must be pre-built and pretested so no human approval is waited on.", "evidence": "Reasoning; slide gives predict, verify, contain, check and examples of isolating one host, revoking one session, blocking one path and preserving evidence.", "grade": "assertion", "t": "06:22", "source": "both"}
+  ],
+  "numbers": [
+    {"figure": "16 seconds", "meaning": "time for the agent to scan the network and find the dev machine and applications in the synthetic run", "t": "04:17"},
+    {"figure": "4 seconds", "meaning": "time to exfiltrate everything from Gitea and Nextcloud after obtaining SSO access", "t": "04:49"},
+    {"figure": "177 log entries, 16:35:22 to 16:35:42 UTC", "meaning": "bounded telemetry of the full recorded run, about 20 seconds", "t": "02:44"},
+    {"figure": "13 minutes", "meaning": "time for the first Claude model to analyze the logs after refusing at first", "t": "03:46"},
+    {"figure": "5 minutes 45 seconds", "meaning": "time for the second Claude model analysis, matching the brewed for 5m 45s line on the slide", "t": "03:46"},
+    {"figure": "2 minutes 18 seconds", "meaning": "time for Codex to analyze the same logs", "t": "04:17"},
+    {"figure": "3", "meaning": "required parts of an offensive agent per the slide: a place to run, a way to act, a way to remember", "t": "00:38"},
+    {"figure": "2", "meaning": "tools needed in the agent: a shell and a SQLite-backed memory store", "t": "01:08"}
+  ],
+  "frameworks": [
+    {"name": "Offensive agent minimum recipe", "description": "Three parts: a place to run (Kali with nmap, hydra, sqlmap), a way to act (a shell tool that runs commands), and a way to remember (a SQLite data store for observations, findings and reusable work). Eugene uses Rust, Kali, a command shell and SQLite."},
+    {"name": "Autonomy as trigger and loop", "description": "Trigger, read saved data, choose next action, run through the shell, observe tool output, write new state, repeat; optionally split into a planner that reads state and chooses tasks and an executor that runs them and returns evidence."},
+    {"name": "Speed mismatch", "description": "The agent does probe, enumerate, exploit, move; the defender does query logs, assemble context, decide, contain; by the time the event is understood the state has changed."},
+    {"name": "Three defenses", "description": "1. Detect intent before impact: correlate discovery, enumeration, credential access and tool-chain signals as a sequence. 2. Turn the environment into a movement graph and ask from the current foothold what are the highest-value targets. 3. Pre-build safe containment: predict likely next hop, verify with high-confidence evidence, contain with the smallest reversible action, check if movement stopped."}
+  ],
+  "artifacts": [
+    {"name": "Eugene", "kind": "repo", "note": "Open-source offensive agent written in Rust with Kali, shell and SQLite; the speaker's test harness for the demos.", "url": "codeberg.org/Haaari/eugene"},
+    {"name": "Zeek", "kind": "tool", "note": "Used to collect network traffic from the synthetic network for the telemetry."},
+    {"name": "OpenClaw", "kind": "product", "note": "Agent software running on the simulated developer machines; the agent found it and used the machine's SSO access."}
+  ],
+  "slide_only": [
+    "Footer of the talk slides reads Authorized environments only, and the final slide reads Sanctioned use only.",
+    "The agent code on slides is a short Python-style example with the agent library name redacted: a shell tool running bash -lc with a 60 second timeout, and an fstore tool that reads and writes key-value pairs in agent.db; the line agent = Agent(tools=[shell, fstore]) is annotated now give it a goal. The slide also says Eugene itself uses Rust.",
+    "Slide says Eugene is built with Rust and can run on a Raspberry Pi, with a frontier or open-weight model.",
+    "The demo network diagram shows developer machines running OpenClaw, a Caddy application edge (TLS, routing, access logs), a cluster with Keycloak identity (employees, groups, OIDC), Nextcloud employee files (runbooks, shared folders) and Gitea internal source (private repositories), and an isolated PostgreSQL data layer; it is labeled synthetic, resettable network, internal services only.",
+    "The telemetry viewer lists streams caddy, devbox-zeek, gitea, keycloak, nextcloud and openclaw, and shows repeated Nextcloud file reads from origin 10.130.0.5.",
+    "The model analysis slide names a seeded user sam.chen, a cookies.txt file in a skill workspace, a canary.txt read consistent with a tripwire, a SKILL.md read, Keycloak realm lab, and a Gitea login at 16:35:36.27 preceding the cookies.txt read at 16:35:37.82.",
+    "The analysis slide lists the gaps needed to separate explanations: Keycloak realm config, Gitea and Nextcloud client settings, Nextcloud auto-provisioning settings, Gitea ACLs and whether an access-policy.yaml is enforced, the contents of the agent instructions, SKILL.md and cookies.txt.",
+    "A photo shows the Raspberry Pi with an Alfa wireless adapter next to a robot dog."
+  ],
+  "demos": [
+    "Eugene running on a Raspberry Pi with a wireless adapter at a DEF CON Singapore robot-dog CTF: cracked Wi-Fi password and took over controller-to-dog communications (described and photographed, not shown live).",
+    "A recorded run of Eugene in a synthetic enterprise network: scan, find dev machine, use SSO, exfiltrate Git and file-share data in about 20 seconds, followed by log analysis by three different models."
+  ],
+  "quotes": [
+    {"text": "There is no low capability threat actor anymore.", "speaker": "Hari Nagarajan", "t": "01:39"},
+    {"text": "You could build the fastest agent. You're still too slow, because one query into endpoint logs, you've already lost.", "speaker": "Hari Nagarajan", "t": "04:49"},
+    {"text": "If you're sitting there waiting for a human to approve containment, you're too slow.", "speaker": "Hari Nagarajan", "t": "06:22"},
+    {"text": "Are your detections fast enough? Is your containment fast enough? And you should be able to benchmark that yourself.", "speaker": "Hari Nagarajan", "t": "06:52"}
+  ],
+  "offense": [
+    "A minimal agent of a shell plus a Kali toolbox plus a memory store, given only an objective, scanned a network, found a dev machine and used its SSO access to reach other services.",
+    "On the Raspberry Pi with a wireless adapter, the agent cracked a Wi-Fi password and took over robot-dog communications.",
+    "SSO trust across federated applications let one identity read everything in the Git server and file share, with first-login account provisioning on Nextcloud.",
+    "Developer machines running a local AI agent (OpenClaw) gave the attacker a foothold and tokens."
+  ],
+  "defense": [
+    "Detect intent before impact: alert on a new device joining the network and running a scanner, and contain immediately, rather than waiting for token or data theft; this needs a good asset inventory first.",
+    "Correlate sequences: new sweeps and neighbor mapping, service and version fingerprinting, credential bursts and sprays from unusual sources, and multiple weak signals from one entity.",
+    "Build a movement graph of the environment so that when a token leaves a dev box you know where it can be used and what objectives it reaches, and place containment layers ahead of the attacker.",
+    "Pre-build and pretest automated containment actions that cannot break the business: isolate one host, revoke one session, block one path, preserve evidence, then check whether movement stopped.",
+    "Use your own purpose-built offensive agent against your environment to benchmark detection and containment speed."
+  ],
+  "takeaways": [
+    "Benchmark your time from first scanning activity to containment against an autonomous agent, and treat anything measured in minutes as failing.",
+    "Move containment decisions out of human approval for pre-approved, scoped and reversible actions on high-confidence signals.",
+    "Invest in asset inventory and a movement graph, since early-intent detection depends on knowing what a new device or token can reach.",
+    "Review federated SSO for authentication being treated as authorization, and audit just-in-time account provisioning on apps like file sharing.",
+    "Build or clone an agent as a standing red-team harness in a resettable synthetic network."
+  ],
+  "limits": [
+    "The speaker said building safe containment and the inventory work it needs is a lot of effort.",
+    "He noted the simple setup does not need a complex AI defense system, but did not claim the three ideas are complete."
+  ],
+  "critique": [
+    "The headline claim that every attacker is now equally dangerous rests on one agent, one conference CTF and one synthetic network; no comparison against real-world incident data was shown.",
+    "The 20-second timeline occurred in a small synthetic network where the agent was handed an objective and the network had a broadly trusted SSO; it is not evidence of how fast an agent would move in a real, noisier estate.",
+    "The model-comparison timings come from a single run each with no check of the correctness of the analyses, and model refusals and times are confounded by prompts and models; the claim that AI investigation is too slow does not address real-time or streaming detection.",
+    "The recommendations (early detection, movement graphs, automated containment) match established practice; what the talk adds is the measured speed comparison.",
+    "The open-source offensive agent is presented for defense testing; the talk included a sanctioned-use notice and did not describe controls on misuse.",
+    "The transcript said a Fable model and Opus both refused; the slide only shows Claude Code output, so which model refused cannot be verified."
+  ],
+  "qa": [],
+  "tags": ["autonomous-offense", "ai-soc-detection-response", "guardrails-runtime-controls"],
+  "key_frames": [
+    {"file": "t00134.jpg", "caption": "Synthetic enterprise network for the demo: OpenClaw dev machines, Caddy edge, Keycloak, Nextcloud and Gitea, with a PostgreSQL data layer."},
+    {"file": "t00304.jpg", "caption": "Speed mismatch slide: agent probe, enumerate, exploit, move versus defender query logs, assemble context, decide, contain."},
+    {"file": "t00256.jpg", "caption": "Model log analysis concluding authentication was treated as authorization across SSO, listing alternative explanations and missing evidence."},
+    {"file": "t00396.jpg", "caption": "Pre-build safe containment: predict, verify, contain, check, with scoped and reversible examples."}
+  ],
+  "signal": {"score": 3, "reason": "A lightning talk with a timed recorded run, one CTF account and three defenses; the checkable evidence is one synthetic-network run and one first-person CTF account."},
+  "caveats": [
+    "Transcript is auto-captioned: Codeberg appears as code berg, Claude Code as Cloud Code, and the second model is rendered as Fable; the slide confirms Codeberg and the Eugene repo path.",
+    "Gitea appears as GitTea in the transcript and Open Claw for OpenClaw; slide spellings are used.",
+    "The transcript says identity provider; the slide diagram names Keycloak.",
+    "The speaker's remarks on which models refused cannot be matched to slides beyond the Claude Code brewed for 5m 45s line.",
+    "The log viewer on the telemetry slide shows 300 of 300 logs while its title says 177 bounded log entries; the 177 figure and the time range come from the slide title.",
+    "No Q&A was recorded in this video."
+  ]
+}

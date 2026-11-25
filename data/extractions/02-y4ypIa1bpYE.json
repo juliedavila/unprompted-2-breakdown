@@ -1,0 +1,98 @@
+{
+  "nn": "02",
+  "id": "y4ypIa1bpYE",
+  "url": "https://www.youtube.com/watch?v=y4ypIa1bpYE",
+  "title": "Lightning Talk: Scaling AI Security Guardrails",
+  "speakers": [{"name": "Rhea Tejwani", "affiliation": "Principal Security Architect, Indeed"}],
+  "format": "lightning",
+  "duration_min": 9,
+  "thesis": "AI input screening should be one platform-level control that validates every untrusted input before inference on every AI surface, so every product gets the same verdict and no team builds its own filter.",
+  "summary": "Rhea Tejwani describes how Indeed moved AI input security from per-product checks to a single platform-level guardrail. She starts from the observation that every product is becoming a natural-language surface, which brings prompt injection but also data exfiltration attempts and hidden-character obfuscation. Letting each product team build its own control would give uneven assurance, so the team decided to screen every AI input before it reaches the model. Untrusted content arrives as user prompts, uploaded documents, APIs, retrieved context, tool results and agent-to-agent messages, and the same content can be transformed and reused before reaching a model. The control chain ingests the input, runs a screening gate that combines deterministic rules with an LLM acting as a judge for higher-level filtering, and then a verdict engine returns pass, allow, flag or block, with an audit log that records versioned policy, model ID, prompt and execution phase. Only allowed requests reach the core model. The system handles millions of requests a day, so the code path was optimized for volume with shared configuration, parallel rails, retries, circuit breakers, fallback providers and rail-level telemetry. Cost and latency were the main challenges. The prototype used a small language model as a first layer with a confidence score and an LLM second layer for low-confidence cases, and she says newer, cheaper frontier models made the cost target achievable. In Q&A she says a blocked user gets a generic refusal from the calling agent, with no appeal ticket.",
+  "argument": [
+    "Natural-language interfaces on every product create prompt injection, data exfiltration and obfuscation risks across hundreds of surfaces.",
+    "Product-by-product controls produce uneven assurance, duplicated engineering and blind spots between layers.",
+    "A single platform-level guardrail that validates every input before inference gives the same answer from every surface.",
+    "The guardrail combines deterministic rules with an LLM judge and returns a pass, allow, flag or block verdict with an audit trail.",
+    "At millions of requests per day, latency and cost drive the design, and cheaper newer models made the economics workable."
+  ],
+  "claims": [
+    {"claim": "Every AI surface is an input surface: untrusted content arrives through user prompts, uploaded documents, APIs, retrieved context, tool results and agent-to-agent messages.", "evidence": "Stated and listed on a slide as the threat model for the control.", "grade": "assertion", "t": "02:42", "source": "both"},
+    {"claim": "Implementing checks per product gives uneven assurance, duplicated engineering and blind spots between layers, so the check belongs at the platform layer.", "evidence": "Reasoning given on a slide; no comparison data.", "grade": "assertion", "t": "03:14", "source": "both"},
+    {"claim": "Validating inputs before inference means the model never sees unscreened content that it might treat as trusted.", "evidence": "Architecture diagram showing an untrusted input stream passing a platform-level rail barrier before model surfaces A, B and C.", "grade": "case", "t": "03:45", "source": "both"},
+    {"claim": "The screening gate uses deterministic rules plus an LLM as a judge for higher-level filtering.", "evidence": "Described verbally and shown in the control chain diagram under Malicious Detection and Validation and Classifying.", "grade": "case", "t": "04:16", "source": "both"},
+    {"claim": "The verdict engine returns pass or allow versus flag or block, with an audit log preserving versioned policy, model ID, prompt and execution phase, and non-allow handlers that block and terminate or escalate to high-fidelity SecOps.", "evidence": "Control chain diagram.", "grade": "case", "t": "04:47", "source": "slide"},
+    {"claim": "The deployed control screens millions of requests every day.", "evidence": "Stated by the speaker with no breakdown or latency figures.", "grade": "case", "t": "05:19", "source": "said"},
+    {"claim": "The code path was optimized with centrally managed configs, parallel rails in the same phase, retries, circuit breakers, fallback providers and rail-level telemetry.", "evidence": "Optimization slide.", "grade": "case", "t": "05:19", "source": "slide"},
+    {"claim": "Frontier-model cost is the main obstacle to screening millions of requests with an LLM, and latency matters because blocking must be near real time.", "evidence": "Speaker's account of the design tradeoffs; no figures.", "grade": "anecdote", "t": "05:54", "source": "said"},
+    {"claim": "A two-layer prototype, a small language model with a confidence score followed by an LLM for low-confidence cases, was evaluated, but latency remained a concern.", "evidence": "Prototype described verbally with no results.", "grade": "anecdote", "t": "06:26", "source": "said"},
+    {"claim": "Newer, cheaper frontier model releases made the cost optimization achievable at their scale and the team has found the right balance.", "evidence": "Asserted on a closing slide and verbally; no cost or latency numbers.", "grade": "assertion", "t": "06:57", "source": "both"},
+    {"claim": "When a request is blocked, the calling agent or API returns a generic message asking the user to refine the message or upload a different document, with no appeal path.", "evidence": "Answer to an audience question.", "grade": "case", "t": "07:59", "source": "said"}
+  ],
+  "numbers": [
+    {"figure": "millions", "meaning": "AI requests screened per day by the platform control, unspecified count", "t": "05:19"},
+    {"figure": "two layers", "meaning": "prototype design: small language model first, LLM second for low-confidence cases", "t": "06:26"},
+    {"figure": "hundreds", "meaning": "number of AI surfaces the control must cover, as stated", "t": "01:41"}
+  ],
+  "frameworks": [
+    {"name": "Platform-level guardrail control chain", "description": "Three stages: 01 Ingest of untrusted input (user prompts and external data), 02 Screening gate for malicious detection (prompt injection and leaks, jailbreak and data exfiltration, pattern obfuscation), 03 Verdict engine returning pass or allow and flag or block with an audit log of versioned policy, model ID, prompt and execution phase; non-allow results are blocked with terminate and alert or escalated to high-fidelity SecOps; the core LLM executes isolated from the unscreened payload."},
+    {"name": "Two-layer screening", "description": "A first-layer small language model produces a confidence score; high-confidence verdicts return immediately, low-confidence cases go to a second LLM-based layer for thorough review."}
+  ],
+  "artifacts": [],
+  "slide_only": [
+    "Architecture slide: an Untrusted Input Stream (unfiltered ingress, dashed red) passes a Platform Level Rail barrier (evaluation gate) to Model Surface A, B and C, each labeled Validated Input (secure inference). Subtitle: how security rails evolved from bespoke product integrations into a scalable, evaluation-gated platform control.",
+    "Every AI surface slide: the same content can be transformed, stored, parsed and reused before it reaches a model, and the goal is consistent validation at every boundary where untrusted or mixed-trust content enters AI processing.",
+    "AI Data Screening slide: pre-model threat detection identifies prompt injection, jailbreaking, prompt leaking, data exfiltration and obfuscation; validation and classifying runs deterministic checks and input-class policy verification.",
+    "Optimization slide splits efficiency strategies (centrally managed configurations that reduce per-application setup time and enforce consistent behavior) from runtime performance (parallel phase operations on the critical path, fail-safe architecture with automated retries, circuit breakers and fallback providers, and rail-level telemetry).",
+    "Closing slide: Latency and cost have always been challenges, but we've found the right balance."
+  ],
+  "demos": [],
+  "quotes": [
+    {"text": "We want to have a single control that screens all those user messages and provides the exact same answer every time, no matter which surface that user message is coming from.", "speaker": "Rhea Tejwani", "t": "01:41"}
+  ],
+  "offense": [
+    "Prompt injection through natural-language interfaces.",
+    "Prompts that try to disclose data from internal systems.",
+    "Hidden characters and input obfuscation in prompts.",
+    "Untrusted content arriving through uploaded documents, APIs, retrieved context, tool results and agent-to-agent messages."
+  ],
+  "defense": [
+    "Validate every AI input at a platform layer before inference, not per product.",
+    "Combine deterministic rules with an LLM judge, and verify against input-class policy.",
+    "Return an explicit pass, allow, flag or block verdict and log versioned policy, model ID, prompt and execution phase.",
+    "Run rails in parallel and use retries, circuit breakers and fallback providers so the control fails safe at high volume.",
+    "Use a small model first with a confidence score and escalate only uncertain cases to an LLM to control cost."
+  ],
+  "takeaways": [
+    "Put input screening in a shared platform layer so every AI surface returns the same verdict, and measure its false positives and false negatives centrally.",
+    "Treat tool results, retrieved context and agent-to-agent messages as untrusted inputs on the same footing as user prompts.",
+    "Budget for latency and cost early: a two-tier small-model-then-LLM design is a plausible way to keep an LLM judge affordable at volume.",
+    "Decide the fail-safe behavior and the user-facing refusal and appeal path before launch."
+  ],
+  "limits": [
+    "Latency and cost were described as ongoing challenges.",
+    "Blocked users receive only a generic message from the calling agent, with no appeal path.",
+    "She noted the need for telemetry on false positives and false negatives but gave no results."
+  ],
+  "critique": [
+    "The talk reports no detection rates, false positive or false negative figures, latency or cost numbers, so the claim that the right balance was found cannot be checked.",
+    "The control screens inputs only; the talk does not cover outputs, tool-call authorization or what happens when a screened input is later transformed.",
+    "A pre-inference classifier is a mitigation; the recording does not discuss evasion or adaptive attackers, which a nine-minute lightning talk may leave out.",
+    "The architecture follows a common guardrail gateway pattern; the operating experience at Indeed scale is described in general terms."
+  ],
+  "qa": [
+    "Question: If a user's request is blocked, how does the user say it was a legitimate request, and does it open a ticket? Answer: No. The agent or API between the user and the service gets the risk verdict and generates a generic message asking the user to refine the message or upload a different document."
+  ],
+  "tags": ["guardrails-runtime-controls", "prompt-injection", "appsec-secure-development"],
+  "key_frames": [
+    {"file": "t00280.jpg", "caption": "Control chain: ingest, screening gate for malicious detection, and verdict engine with audit log and block or escalate handlers."},
+    {"file": "t00211.jpg", "caption": "Platform-level rail barrier sitting between the untrusted input stream and model surfaces A, B and C."},
+    {"file": "t00331.jpg", "caption": "Optimization for high-volume protection: shared configs, parallel rails, retries, circuit breakers, fallback providers and telemetry."}
+  ],
+  "signal": {"score": 3, "reason": "A platform-guardrail architecture from a large operator, with no measured results presented in the recording."},
+  "caveats": [
+    "Auto-captions render the model names as GPT 6.0 Luna and GPT 5.6 Luna; no slide shows these names, so they could not be confirmed.",
+    "Captions give the speaker's surname as Tejwani only on the slide and description; one caption line has Rayet Tejwani.",
+    "Transcript says the verdict is passed, allowed or flagged; the slide shows Pass/Allow and Flag/Block.",
+    "The final slide shows event Wi-Fi details; not recorded."
+  ]
+}

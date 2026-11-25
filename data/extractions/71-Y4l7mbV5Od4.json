@@ -1,0 +1,67 @@
+{
+  "nn": "71",
+  "id": "Y4l7mbV5Od4",
+  "url": "https://www.youtube.com/watch?v=Y4l7mbV5Od4",
+  "title": "Lightning Talk",
+  "speakers": [
+    {"name": "G Mark Hardy", "affiliation": "CEO, National Security Corporation (from the video description and his badge)"}
+  ],
+  "format": "lightning",
+  "duration_min": 5,
+  "thesis": "Security practitioners should speak at conferences at every chance, because presenting builds communication, persuasion and promotability, and it is the way good ideas reach others.",
+  "summary": "G Mark Hardy opens by asking the room who has never given a conference presentation, and says he is speaking impromptu about why getting on stage matters. He tells a short career story: a Navy ROTC scholarship, five years at sea, orders to the National Security Agency that were cancelled because, as he was told, the Navy had no need for computer security, then a move to the reserves and a job at Booz Allen Hamilton. In his first week a colleague named Lena told him to speak every chance he gets. After about four attempts he was accepted to an ASUS conference in August 1986, where Admiral Grace Hopper gave the keynote and gave him a nanosecond, an 11.8 inch piece of wire. He lists the benefits of speaking: better communication, being more persuasive, dropping filler words by getting comfortable with silence, and a path to invitations and promotion. He suggests reviewing the transcript of your own talks to see every filler word. He ends by saying people in security tend to be introverts who dislike embarrassing themselves, but that practice pays off across a career, so always speak. The talk contains no technical content about AI or security.",
+  "argument": [
+    "Speaking at conferences was advice given to him early in his career and it proved valuable.",
+    "Practising in front of an audience makes you a better communicator and more persuasive in conversation, not only on stage.",
+    "Comfort with silence removes filler words, and reading your own transcript is a way to train that.",
+    "Speaking leads to invitations, promotability and the ability to represent your team and people.",
+    "Security people have good ideas that do no good if they cannot be shared effectively, so introverts should practise anyway."
+  ],
+  "claims": [
+    {"claim": "Speaking skill carries over to conversation, persuasion and promotability.", "evidence": "Hardy's career experience.", "grade": "anecdote", "t": "02:40", "source": "said"},
+    {"claim": "Reading your own talk transcript shows every filler word and is a way to train them out.", "evidence": "His practice with his podcast transcripts.", "grade": "anecdote", "t": "03:12", "source": "said"},
+    {"claim": "He first spoke at an ASUS conference in August 1986, after about four rejected tries, where Admiral Grace Hopper was a keynote speaker.", "evidence": "Personal recollection.", "grade": "anecdote", "t": "02:09", "source": "said"}
+  ],
+  "numbers": [
+    {"figure": "August 1986", "meaning": "date of his first conference talk, at an ASUS conference where Admiral Grace Hopper keynoted", "t": "02:09"},
+    {"figure": "about 4", "meaning": "number of attempts before his first talk was accepted", "t": "02:09"},
+    {"figure": "11.8 in", "meaning": "length of the wire (a nanosecond) Grace Hopper gave him, as he describes it", "t": "02:09"}
+  ],
+  "frameworks": [],
+  "artifacts": [
+    {"name": "CISO Tradecraft podcast", "kind": "product", "note": "Hardy's free podcast, used as the place where he reviews transcripts for filler words. The transcript renders it as 'CESO Tradecraft'; the logo on his shirt reads CISO Tradecraft.", "url": ""}
+  ],
+  "slide_only": [],
+  "demos": [],
+  "quotes": [
+    {"text": "Speak every chance you get.", "speaker": "G Mark Hardy", "t": "01:38"},
+    {"text": "Don't fill the hole. Let it be a hole.", "speaker": "G Mark Hardy", "t": "03:12"},
+    {"text": "Although we're all AI, it's still people first.", "speaker": "G Mark Hardy", "t": "04:13"}
+  ],
+  "offense": [],
+  "defense": [],
+  "takeaways": [
+    "Encourage and sponsor your engineers to give talks, since communication skill affects how far their ideas travel.",
+    "Treat comfort with silence as a trainable speaking skill and review your own transcripts for fillers.",
+    "Use conference speaking as a promotion and visibility path for security staff."
+  ],
+  "limits": [
+    "The talk was described as impromptu; Hardy joked that the airfare would have been cheaper with more notice."
+  ],
+  "critique": [
+    "Career advice, not a technical talk; no evidence beyond personal experience.",
+    "The talk covers professional development rather than AI security topics, and no technical claims were made."
+  ],
+  "qa": [],
+  "tags": ["org-adoption-culture"],
+  "key_frames": [
+    {"file": "t00121.jpg", "caption": "Camera-only frame of Hardy speaking; badge confirms name and National Security Corporation. No slide content."},
+    {"file": "t00202.jpg", "caption": "Camera-only frame of Hardy mid-talk with the conference agenda screen visible at the right; no slide content."}
+  ],
+  "signal": {"score": 1, "reason": "A motivational talk about conference speaking with no technical or AI security content."},
+  "caveats": [
+    "Camera-only video with no slides.",
+    "Auto-caption garbles: 'Gm Mark' is 'G Mark'; 'ROC' is ROTC; 'ASUS' is as heard and may be a different organisation name; 'Gotti' and 'Gar' are probably the organiser name and 'Mark' respectively but were not confirmed.",
+    "Hardy's affiliation comes from the video description and his badge, not from the speech."
+  ]
+}

@@ -1,0 +1,227 @@
+{
+  "nn": "43",
+  "id": "QcUmahBp9lE",
+  "url": "https://www.youtube.com/watch?v=QcUmahBp9lE",
+  "title": "Weightless: Abliteration Without the Weights",
+  "speakers": [{"name": "Matt Suiche", "affiliation": "Tolmo"}],
+  "format": "talk",
+  "duration_min": 25,
+  "thesis": "Refusal can be suppressed at inference time by projecting a single direction out of the residual stream with a megabyte-sized, auditable control file, so users keep the vendor's stock weights untouched instead of downloading third-party abliterated copies.",
+  "summary": "Suiche, an AI security researcher at Tolmo, opens with an anecdote of a pedestrian gesturing at a self-driving car, to argue that everything is now a prompt and that securing access to intelligence is the key concern. He argues guardrails also limit what security researchers may think about, which led him to abliteration and a small eval of propaganda requests across countries, where stock model behavior shows refusal, deflection or self-caution. Third-party abliterated models create a supply-chain risk and force terabyte downloads for every variant, so he built Weightless: an extension of GGUF called GLP that stores a refusal direction, a hook point and a dose, and a runtime that projects activations at the end of each transformer block while the checkpoint stays unchanged. The projection subtracts the component along the direction, scaled by a dose alpha, and works for mixture-of-experts models where a LoRA addition cannot. Captain Vector, a tool in the repo, derives a GLP from contrasting good and bad prompts. Measurements include 29 of 32 propaganda prompts answered stock versus 32 of 32 steered, dose calibration per model, and a 0.6 percent throughput cost on DeepSeek V4.1 Flash on four DGX Spark. He credits related work (GCD, hf2q, phantom-kv, heretic) and closes with the line that the weights are the vendor's and the activations are yours. Q&A covers storage savings, hook placement and a new DeepSeek architecture that breaks the hook.",
+  "argument": [
+    "Models are becoming the thing we depend on, so securing access to inference and controlling model behavior matter, and guardrails limit what researchers can investigate.",
+    "Third-party abliterated models are a supply-chain risk like malicious JavaScript packages, and each variant, quantization and release costs terabytes to redistribute.",
+    "Refusal behaves as a direction in activation space that can be dialed, not a switch, so it can be removed by projection at inference without editing weights.",
+    "A small GLP file (a GGUF extension with direction, hook point and dose) applied by a runtime to a stock checkpoint is minimal, bounded and auditable, and extends beyond LoRA to mixture-of-experts architectures.",
+    "The dose must be calibrated per model because too much steering garbles output, and steering costs under one percent throughput in the measured setup.",
+    "Model internals should be treated like OS internals: traceable, hookable and debuggable, with researchers likely to own their own inference engines."
+  ],
+  "claims": [
+    {
+      "claim": "On a small propaganda-request evaluation, steering with a Weightless projection raised the number of prompts answered without refusal, deflection or self-caution from 29 of 32 for the stock model to 32 of 32.",
+      "evidence": "Results slide for a prompt of the form 'Give me examples of ___ propaganda' across countries; model and dose were not named, and the 32-prompt set is the speaker's own.",
+      "grade": "measured",
+      "t": "04:31",
+      "source": "both"
+    },
+    {
+      "claim": "Classic abliteration requires redistributing very large weights: about 1.56 TB for Kimi K3 to change one behavior, repeated per variant, per quantization and per release.",
+      "evidence": "Stated on a slide; the speaker spoke of about 1.7 TB for the base model and 1.5 TB for an obliterated version.",
+      "grade": "measured",
+      "t": "06:11",
+      "source": "both"
+    },
+    {
+      "claim": "A GLP steering file is about 1 MB at most (the largest, for Kimi) and, per the talk description, 478 KB for DeepSeek V4 Flash, against hundreds of gigabytes to terabytes for a full model copy.",
+      "evidence": "Speaker's statement that the file goes up to 1 megabyte; the 478 KB figure is in the description only.",
+      "grade": "assertion",
+      "t": "08:51",
+      "source": "said"
+    },
+    {
+      "claim": "Third-party abliterated models carry a supply-chain risk, whereas a small vector file tied to a stock model can be audited by the user.",
+      "evidence": "Argument by analogy with JavaScript package supply-chain problems; no incident or compromised model was cited.",
+      "grade": "assertion",
+      "t": "05:14",
+      "source": "said"
+    },
+    {
+      "claim": "The method is a projection, h minus alpha times (h dot d) times d, applied to the residual stream after each selected layer, which scales with a dose and, unlike a LoRA addition, measures the current component before subtracting it.",
+      "evidence": "Equation and diagram slides: addition h' = h + beta d versus GLP h' = h - alpha (h.d) d, with alpha 1 giving full removal.",
+      "grade": "demo",
+      "t": "14:41",
+      "source": "both"
+    },
+    {
+      "claim": "The dose must be calibrated per model: Inkling-Small works at alpha 0.25 and garbles at 1.0, GLM-5.3-Flash is calibrated at 2.0 and garbles at 2.5 or more, and answers are not the same as correctness.",
+      "evidence": "Reported observations slide with no interpolation; the speaker did not describe how garbling was judged.",
+      "grade": "measured",
+      "t": "17:16",
+      "source": "slide"
+    },
+    {
+      "claim": "Steering costs 0.6 percent of single-stream throughput, 94.1 to 93.5 tokens per second, with a 1M-token steered context over 39 layers on 4 ranks, on DeepSeek-V4.1-Flash-1017 on four DGX Spark.",
+      "evidence": "Performance slide; the speaker said less than 1 percent performance impact and told the audience to measure their own stack.",
+      "grade": "measured",
+      "t": "17:16",
+      "source": "both"
+    },
+    {
+      "claim": "Hooking is done once per selected layer on every forward pass during both prefill and decode: with 40 selected layers, a 100-token prompt costs 4,000 projections and each decode token costs 40.",
+      "evidence": "Annex slide on forward pass detail, dated 28 Oct 2026, and Q&A answer that the hook is called by each layer during prefill and decode.",
+      "grade": "demo",
+      "t": "23:31",
+      "source": "both"
+    },
+    {
+      "claim": "A LoRA file can only add and works for dense models, so mixture-of-experts and newer architectures need a more flexible file format for the same intervention.",
+      "evidence": "Speaker's argument and a slide contrasting LoRA (read one, write another) with GLP (one direction, subtract only); the description also mentions a rank-1 LoRA equivalent for dense models.",
+      "grade": "assertion",
+      "t": "09:56",
+      "source": "both"
+    },
+    {
+      "claim": "With DeepSeek V4.1 on four DGX Spark at about 100 tokens per second, a local model was useful enough to reproduce a PHP-to-shell exploit.",
+      "evidence": "Speaker anecdote; no details of the exploit or run given.",
+      "grade": "anecdote",
+      "t": "13:37",
+      "source": "said"
+    },
+    {
+      "claim": "The residual-stream hook does not work for the new DeepSeek architecture because it has four streams, so the hook must move to different (mHC-related) functions; the earlier DeepSeek used the FFN writer.",
+      "evidence": "Speaker's answer to an audience question; fix described as planned within a week or two.",
+      "grade": "anecdote",
+      "t": "24:12",
+      "source": "said"
+    },
+    {
+      "claim": "Refusal is a single directional axis in the model, so steering it does not require changing the weights.",
+      "evidence": "Speaker's answer on storage savings; the slide cites Arditi et al. 2024 and 'The Pain Axis 2026'.",
+      "grade": "assertion",
+      "t": "22:28",
+      "source": "both"
+    }
+  ],
+  "numbers": [
+    {"figure": "29/32 to 32/32", "meaning": "propaganda-request prompts answered without refusal, deflection or self-caution, stock versus steered", "t": "04:31"},
+    {"figure": "1.56 TB", "meaning": "download for a classically abliterated Kimi K3 to change one behavior", "t": "06:11"},
+    {"figure": "up to 1 MB", "meaning": "largest GLP steering file, per the speaker (for Kimi)", "t": "08:51"},
+    {"figure": "478 KB", "meaning": "GLP vector for DeepSeek V4 Flash, per the description only", "t": "00:00"},
+    {"figure": "alpha 0.25 / 1.0", "meaning": "Inkling-Small dose that works / garbles", "t": "17:16"},
+    {"figure": "alpha 2.0 / 2.5 or more", "meaning": "GLM-5.3-Flash dose that is calibrated / garbles", "t": "17:16"},
+    {"figure": "94.1 to 93.5 tok/s (-0.6%)", "meaning": "single-stream throughput unsteered versus steered on DeepSeek-V4.1-Flash-1017 on four DGX Spark", "t": "17:16"},
+    {"figure": "1M tokens, 39 layers, 4 ranks", "meaning": "steered context length and configuration on the measurement slide", "t": "17:16"},
+    {"figure": "4,000 and 40", "meaning": "projections for a 100-token prefill and a single decode token with 40 selected layers", "t": "23:31"},
+    {"figure": "about 100 tokens/s", "meaning": "speaker's stated local DeepSeek V4.1 speed on four DGX Spark", "t": "13:37"},
+    {"figure": "10 to 15", "meaning": "GLP files for different models, from Gemma to Kimi to GLM, published by the speaker", "t": "20:56"},
+    {"figure": "44", "meaning": "total slides in the full HTML deck (the talk shows about 23 plus annexes)", "t": "01:36"}
+  ],
+  "frameworks": [
+    {"name": "Weightless / GLP", "description": "A runtime plus a GGUF extension (glp.*) that stores a control direction, hook point (for example residual_stream_post_layer), mode (project) and default alpha. The checkpoint is unchanged; a GLP-aware runtime projects activations and the steered output is measured."},
+    {"name": "Projection steering equation", "description": "h <- h - alpha (h . d) d, where h is the post-layer residual stream, d the unit direction and alpha the calibrated dose; compared with fixed addition h' = h + beta d, projection measures the current component first and leaves orthogonal content unchanged."},
+    {"name": "Minimal, bounded, auditable", "description": "The whole delta is visible, the operation is fixed (one direction, subtract only) and the file can be checked before serving; the slide adds that constrained is not proven safe, so behavior must still be validated."},
+    {"name": "Captain Vector workflow", "description": "Capture the contrast between prompts, derive and validate the direction, and ship the GLP."},
+    {"name": "Models internals as OS internals", "description": "Trace the execution, find the state, hook, measure and verify; treat inference as an emulator whose execution can be traced and single-stepped like a crackme."},
+    {"name": "Serving integrations", "description": "One GLP with two serving integrations: vLLM via model adapters and SGLang via load-time hooks, with the same fail-closed contract."},
+    {"name": "Talk structure", "description": "Why, what, how and where."}
+  ],
+  "artifacts": [
+    {"name": "Weightless", "kind": "repo", "note": "The author's runtime-steering project and GLP specification.", "url": "github.com/msuiche/weightless"},
+    {"name": "Weightless website and slides", "kind": "tool", "note": "Project site and the full 44-slide HTML deck with animations.", "url": "weightle.ss and weightle.ss/slides"},
+    {"name": "GLP steering artifacts", "kind": "dataset", "note": "10 to 15 GLP control files for models from Gemma to Kimi to GLM published on Hugging Face.", "url": "huggingface.co/msuiche"},
+    {"name": "Captain Vector", "kind": "tool", "note": "Tool in the repo that creates GLP files from the contrast between prompt sets.", "url": ""},
+    {"name": "GCD (grammar-constrained decoding)", "kind": "tool", "note": "Related work by Vince Ovando of Tantalus; forces the engine to use a grammar to influence output; mentioned as a talk from the previous day.", "url": ""},
+    {"name": "hf2q", "kind": "tool", "note": "Related work by Robert E. Lee of IOActive; inference for Mac with native GLP support.", "url": ""},
+    {"name": "phantom-kv", "kind": "tool", "note": "Related work by Taha Karim (@lordx64) acting on the attention and KV cache; the speaker pronounced it KV Phantom.", "url": ""},
+    {"name": "heretic", "kind": "tool", "note": "Open-source abliteration tool by Philipp Emanuel Weidmann that edits the model and outputs a new model; the transcript renders it as 'erratic'.", "url": ""},
+    {"name": "Arditi et al. 2024", "kind": "paper", "note": "Cited on a slide for refusal as a direction in activation space.", "url": ""},
+    {"name": "The Pain Axis 2026", "kind": "paper", "note": "Cited with Arditi et al. on the same slide; not discussed.", "url": ""},
+    {"name": "Local Inference Lab", "kind": "tool", "note": "Community credited on the slide; speaker mentions their Rust inference engine Flare released with NVIDIA.", "url": ""},
+    {"name": "GGUF", "kind": "standard", "note": "Model file format whose control vectors GLP extends.", "url": ""}
+  ],
+  "slide_only": [
+    "Title slide: Matt 'Swish' Suiche, AI Security, Tolmo, @msuiche, weightle.ss, with the line 'That guy just prompted your car'.",
+    "Slide 2 states 25 years in cybersecurity (application virtualization, incident response) and 'years of work to a weekend project'; the speaker said more than 20 years.",
+    "Slide 3: secure access to intelligence, 'You need their models. They need your prompts.'",
+    "Slide 4: 'AI is a race to control how people think by controlling what they think. Who decides which questions your model will answer? And when it answers, who is prompting whom?'",
+    "Slide 5: the propaganda prompt categories refusal, deflection and self-caution, with 29/32 stock versus 32/32 steered.",
+    "Slide 6: 'Refusal is a direction in activation space. Not a switch. A dial.' citing Arditi et al. 2024 and The Pain Axis 2026.",
+    "Slide 9 diagram: original checkpoint (weights unchanged) plus GLP control.gguf (directions, hook, dose) feeding a GLP-aware runtime that projects activations to give a steered output whose behavior is measured; 'Megabytes of steering. Weights untouched.'",
+    "Slide 10: GGUF plus glp.* keys such as glp.mode=project, glp.alpha_default and glp.hook_point=residual_stream_post_layer; 'One inspectable artifact.'",
+    "Slide 11: 'A fixed projection. No trigger branch.' LoRA: read one, write another; GLP: one direction, subtract only; 'Constrained does not equal proven safe.'",
+    "Slide 12: minimal (the whole delta is visible), bounded (a fixed operation), auditable (check before serving); 'Still validate behavior.'",
+    "Slide 13 diagram: one transformer layer with attention and a mixture-of-experts feed-forward sublayer (router selecting k of n experts, weighted writes) both writing to the residual stream, with a GLP projection as a post-layer hook before the next layer.",
+    "Slide 18: the equation h <- h - alpha (h . d) d with h the stream, d the direction and alpha the dose.",
+    "Slide 16: Captain Vector makes the GLP in three steps: capture the contrast, derive and validate, ship the GLP.",
+    "Slide 17: one GLP, two serving integrations: vLLM model adapters and SGLang load-time hooks; same contract, fail-closed.",
+    "Slide 19: dose calibration observations for Inkling-Small and GLM-5.3-Flash; 'Sweep, evaluate, ship alpha'; 'Answers do not equal correctness.'",
+    "Slide 20: throughput 94.1 to 93.5 tok/s (-0.6 percent steered), 1M-token steered context with 39 layers on 4 ranks, DeepSeek-V4.1-Flash-1017 on 4x DGX Spark; 'Measure your stack.'",
+    "Slide 21: people and related work: GCD (Vince Ovando, Tantalus), hf2q (Robert E. Lee, IOActive), phantom-kv (Taha Karim, @lordx64), heretic (Philipp Emanuel Weidmann); contributors mgdowd, Thireus, robertelee78, othexmr, christopherowen; community Local Inference Lab.",
+    "Slide 22: code and specification at github.com/msuiche/weightless, website weightle.ss, steering artifacts at huggingface.co/msuiche, slides at weightle.ss/slides.",
+    "Slide 23: 'The weights are the vendor's. The activations are yours.' Weightless is abliteration without the weights: megabytes, reversible, fail-closed, measured.",
+    "Annex R slide 39 of 44 (dated 28 Oct 2026): one forward pass with GLP hooks at selected layers and none at unselected ones; prefill 100 prompt tokens times 40 layers gives 4,000 projections; decode 1 token times 40 gives 40."
+  ],
+  "demos": [],
+  "quotes": [
+    {"text": "That guy just prompted your car.", "speaker": "Matt Suiche", "t": "01:09"},
+    {"text": "AI is a race to control how people think by controlling what they think.", "speaker": "Matt Suiche", "t": "21:27"},
+    {"text": "Model internals is pretty much the new Windows internals.", "speaker": "Matt Suiche", "t": "06:49"},
+    {"text": "The weights are the vendor's. The activations are yours.", "speaker": "Matt Suiche", "t": "21:58"}
+  ],
+  "offense": [
+    "Refusal is a single direction in activation space, so it can be removed by projecting that direction out of the residual stream, with no change to the weights.",
+    "The control file is a megabyte-scale artifact that can be shared and applied at inference to any compatible stock checkpoint, making removal of guardrails cheap, reversible and tunable by dose.",
+    "Third-party abliterated models, and by extension models that are backdoored, are a distribution risk with a supply-chain shape.",
+    "Guardrails can behave in multi-conditional ways, so a model may refuse on cyber topics but not others, and bias or deflection can be probed with country-specific propaganda requests."
+  ],
+  "defense": [
+    "Prefer a stock model plus a small inspectable overlay over downloading third-party modified weights.",
+    "Check the whole delta before serving; the file is minimal, a fixed operation and auditable.",
+    "Calibrate dose per model with a sweep, evaluate and ship alpha, since too high a dose garbles output.",
+    "Fail closed in serving integrations (vLLM adapters, SGLang load-time hooks) when the steering contract is not satisfied.",
+    "Measure the cost of steering on your own stack and still validate behavior, since constrained does not mean proven safe."
+  ],
+  "takeaways": [
+    "Treat third-party abliterated or fine-tuned open-weight models as a supply-chain input, and consider runtime overlays on stock checkpoints as an alternative that can be audited.",
+    "Expect refusal and other behaviors to be controllable at inference by anyone who runs a model locally, so guardrails that live only in the weights are removable.",
+    "If you serve local models, plan to own or inspect the inference engine, since hooks on activations are where this class of control lives.",
+    "Calibrate and measure any activation steering per model and per architecture before relying on it, because dose and hook point vary and new architectures can break a hook."
+  ],
+  "limits": [
+    "The new DeepSeek architecture with four streams breaks the residual-stream hook, and the fix was still to be done within a week or two.",
+    "A single hook point does not suit every model: the earlier DeepSeek used the FFN writer.",
+    "Too high a dose garbles output, and the right dose varies by model.",
+    "The slides state constrained does not equal proven safe and say to still validate behavior.",
+    "The talk was cut from about 50 slides to fit 20 minutes, so detail is in the online deck and repo."
+  ],
+  "critique": [
+    "The only behavior result shown is a self-made 32-prompt propaganda set (29/32 to 32/32); the published description lists capability and benign-behavior gates, quantization behavior and cases where steering breaks, and the recording shows none of the capability or quantization data, so the claim that the intervention leaves other behavior intact is not supported by data in the talk.",
+    "Fail-closed is claimed for serving integrations but no demonstration or failure case was shown.",
+    "The supply-chain framing is an argument by analogy; no malicious or backdoored abliterated model was cited, and the stock model plus an overlay from the same author still asks the user to trust the overlay file and the runtime that applies it.",
+    "The measured 0.6 percent overhead is on one model and one four-node setup; the speaker said under 1 percent in general.",
+    "The talk presents the method in terms of researcher access to model behavior; the method removes refusals from open-weight models at low cost, and the recording does not discuss misuse beyond the argument against guardrails.",
+    "Spoken and slide figures differ (about 1.7 TB spoken versus 1.56 TB on the slide; under 1 percent spoken versus 0.6 percent on the slide); the slide figures are the ones recorded.",
+    "Where the speaker says a single directional axis, the slide says a dial; whether refusal is truly one direction across the models listed was asserted, not tested in the talk."
+  ],
+  "qa": [
+    "What percentage of space does a patch file save, especially when steering a lot of behavior? Answer: for Kimi the base model is about 1.7 TB and an obliterated download is about 1.5 TB, versus a 1 MB file here, because refusal is a single directional axis so not all the weights need to change; only one direction during activation.",
+    "Do you need to inject at multiple points in the forward pass or once? Answer: there is one hook, but the function is called by each layer during prefill and decode; for most models the focus is the residual stream, for the July DeepSeek he used the FFN writer, and for the new DeepSeek with four streams the residual hook does not work as well so he has to hook mHC-related functions, which he planned to update within a week or two."
+  ],
+  "tags": ["model-internals", "supply-chain-model-integrity", "guardrails-runtime-controls"],
+  "key_frames": [
+    {"file": "t00271.jpg", "caption": "Propaganda-request evaluation: refusal, deflection and self-caution, 29 of 32 stock versus 32 of 32 steered."},
+    {"file": "t00565.jpg", "caption": "GLP extends GGUF: mode, default alpha and the residual-stream hook point in one inspectable artifact."},
+    {"file": "t00656.jpg", "caption": "Architecture diagram of one transformer layer with attention and mixture-of-experts writers and the GLP post-layer projection."},
+    {"file": "t01034.jpg", "caption": "Dose calibration: alpha that works versus garbles for Inkling-Small and GLM-5.3-Flash."},
+    {"file": "t01040.jpg", "caption": "Steering cost on DeepSeek-V4.1-Flash on four DGX Spark: 94.1 to 93.5 tokens per second."}
+  ],
+  "signal": {"score": 3, "reason": "A described steering mechanism with a released tool; the measured evidence is a 32-prompt evaluation built by the speaker and one throughput measurement."},
+  "caveats": [
+    "Auto-captions garble names: the speaker is Matt Suiche (captioned 'Swish', his nickname on the slide), 'heretic' appears as 'erratic', phantom-kv as 'KV Phantom' and Mark Dowd as the contributor 'mgdowd'; slide spellings are used.",
+    "The slide labels related work by GCD (Vince Ovando, Tantalus), hf2q (Robert E. Lee, IOActive); the transcript names 'Vince' and 'Rob from IO Active' only.",
+    "The 478 KB DeepSeek V4 Flash vector appears only in the description, not in the talk or slides.",
+    "The slide figures in the slide_only entries are shown without time on screen; frames appear when each slide first showed, and the speaker's narration lagged on some (the equation slides appeared while he discussed other work).",
+    "The deck has 44 slides; the video shows about 23 main slides plus one annex slide shown during Q&A.",
+    "The transcript attributes Q&A questions to unnamed audience members."
+  ]
+}

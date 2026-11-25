@@ -1,0 +1,140 @@
+{
+  "nn": "91",
+  "id": "JF_1O1EOvAY",
+  "url": "https://www.youtube.com/watch?v=JF_1O1EOvAY",
+  "title": "BITE - Behavior-Intent Traceable Evaluation",
+  "speakers": [
+    {"name": "Daniel Geyshis", "affiliation": "Head of AI, Knostic"},
+    {"name": "Tamir Isaschar", "affiliation": "Senior Security Researcher, Knostic"}
+  ],
+  "format": "talk",
+  "duration_min": 23,
+  "thesis": "Scanning extensions, agent skills and MCP servers for malice needs both behavior and intent: deterministic behavior chains tell a model where to look, and the artifact's own stated purpose tells it whether the chain is legitimate, risky or malicious, with every verdict traceable to quoted code.",
+  "summary": "The talk opens with three real MCP servers that all read a secret, put it in an HTTP header and send it out, one benign, one malicious and one merely sloppy, to show that behavior alone cannot separate them. The speakers then show the opposite failure: a first-generation scanner in which one model read a 1,856-line VS Code extension in 8,000-token chunks called it clean five of five times, missing a 30-line dropper hidden in a working Kanban board. Their design, BITE, runs in two stages. Stage 1 uses no model: it splits code into units, builds a call graph, finds signature hits and matches nearby flagged units against known attack chains, and separately gathers intent facts such as stated purpose, README lines and the artifact's own domains. Stage 2 uses four model roles: a profiler that reads only claims, a prosecutor that names behaviors and quotes the exact line, a defender that checks the quote, severity and disclosure, and a judge that decides, runs a deception check and, for a malicious verdict, reruns for a majority of three. Verdicts are clean, risky or malicious, and malice must be proven. Applied to the opening three MCP servers, the result was clean, malicious (a wallet private key sent in a header with no signing code) and risky (whole environment dumped to stderr). Evaluated on 1,557 artifacts, BITE caught 48 of 60 dangerous ones with 5 false alarms in 1,497 clean ones. Q&A covered runtime, which depends on how connected the code is.",
+  "argument": [
+    "The same behavior pattern, such as secret to header to remote server, appears in benign, risky and malicious artifacts, so flagging on behavior produces false alarms.",
+    "Giving a whole artifact to a model misses small malware inside large benign code and can hallucinate, as shown by a dropper missed in five of five runs.",
+    "Deterministic call-graph analysis finds the risky actions and links them into chains without a model, which focuses the model on a few reachable chains.",
+    "The model then judges each chain against the artifact's declared intent through reachability, disclosure and necessity questions, so identical chains in two extensions get different verdicts when only one contradicts its claims.",
+    "Separating prosecutor, defender and judge roles, requiring verbatim quotes and a majority-of-three rerun before any malicious verdict, reduces hallucination and makes each verdict evidence-backed.",
+    "On their dataset this catches 80 percent of dangerous artifacts with about 0.3 percent false alarms, with weak spots in skills that jailbreak while declaring what they do."
+  ],
+  "claims": [
+    {"claim": "Three real MCP servers (Tavily web search, an x402 payments server, a Swagger API client) share the same read-secret, put-in-header, send-out pattern but should receive different verdicts.", "evidence": "Opening slide with code locations for each, and later per-server analysis.", "grade": "case", "t": "00:07", "source": "both"},
+    {"claim": "A first-generation scanner using one model over 8,000-token chunks judged the ManageRBLX 4.9.5 VS Code extension clean in five of five runs, missing a 30-line dropper inside 1,856 lines of working Kanban board code.", "evidence": "Slide showing the dropper position, chunking and the 5 of 5 clean result.", "grade": "case", "t": "02:11", "source": "both"},
+    {"claim": "A deterministic, no-model behavior scan found the dropper at lines 22, 23 and 35 (remote script URL, temporary file path, download and exec calls).", "evidence": "Code excerpt slide with highlighted lines and a four-step call chain from activation to download, save to temp file, and execute.", "grade": "demo", "t": "03:44", "source": "both"},
+    {"claim": "The same download, save and run chain appears in both ManageRBLX and the clangd extension, but clangd's claim (prompt the user to download if missing) fits while ManageRBLX's claim (no internet connection required) is contradicted.", "evidence": "Side-by-side comparison slide with each extension's quoted claim.", "grade": "case", "t": "04:47", "source": "both"},
+    {"claim": "BITE's four-role model stage (profiler, prosecutor, defender, judge) with verbatim quote checking, severity downgrade for exactly disclosed behavior, and a majority-of-three rerun for malicious verdicts reduces hallucinated and over-severe findings.", "evidence": "Architecture diagram and step list; no ablation numbers were shown.", "grade": "assertion", "t": "10:24", "source": "both"},
+    {"claim": "Server B (gadgethumans-mcp 1.0.9 on npm) claims to auto-sign x402 micropayments but reads the wallet private key and sends it in an X-402-Wallet header to swarm.gadgethumans[.]com, with no signing code in 11 files, so it is malicious.", "evidence": "Claim-versus-code slide with file locations (index.js:13, :206, :215, :243) and the zero signing calls finding.", "grade": "case", "t": "14:34", "source": "both"},
+    {"claim": "Server C (a Swagger-API helper) is risky rather than malicious: it sends its token only to the configured URL but dumps the whole environment with JSON.stringify(process.env) to stderr at startup, which is undisclosed and not needed.", "evidence": "Slide with mcp-server.ts:635 evidence and the not-clean, not-malicious reasoning.", "grade": "case", "t": "15:05", "source": "both"},
+    {"claim": "On 1,557 real artifacts (1,015 agent skills and 542 MCP servers, 4,671 scans), BITE caught 48 of 60 dangerous artifacts (80 percent) with 5 false alarms among 1,497 clean artifacts (0.3 percent), so about 9 in 10 alerts were real.", "evidence": "Results slide with a unit chart; each artifact was scanned three times.", "grade": "measured", "t": "16:40", "source": "both"},
+    {"claim": "Detection by type: 9 of 9 real malware skills, 19 of 25 attack test sample skills from public repos, 14 of 14 malicious MCP servers the team wrote, 5 of 7 real malicious MCP servers, and only 1 of 5 jailbreak skills that state what they do.", "evidence": "Bar chart slide listing each category.", "grade": "measured", "t": "17:11", "source": "both"},
+    {"claim": "None of 100 honest MCP servers with powerful access rights, from varied publishers, were flagged.", "evidence": "Slide showing 100 honest servers and none flagged; selection method not described.", "grade": "measured", "t": "18:19", "source": "both"},
+    {"claim": "Median MCP scan time is under two or three seconds, but runtime depends on how many chains a well-connected codebase produces.", "evidence": "Stated in Q&A; no latency distribution shown.", "grade": "assertion", "t": "22:31", "source": "said"}
+  ],
+  "numbers": [
+    {"figure": "1,856", "meaning": "lines in the ManageRBLX extension.js (speaker said almost 1,900)", "t": "02:11"},
+    {"figure": "30", "meaning": "lines of the hidden dropper", "t": "02:11"},
+    {"figure": "8,000 tokens", "meaning": "chunk size for the first-generation single-model scanner", "t": "02:42"},
+    {"figure": "5 of 5", "meaning": "runs in which the single-model scanner called the dropper extension clean", "t": "02:42"},
+    {"figure": "1,557", "meaning": "real artifacts evaluated (1,015 skills plus 542 MCP servers)", "t": "16:40"},
+    {"figure": "4,671", "meaning": "total scans, three per artifact", "t": "16:40"},
+    {"figure": "48 of 60", "meaning": "dangerous artifacts caught (80 percent)", "t": "16:40"},
+    {"figure": "5 of 1,497", "meaning": "false alarms on clean artifacts (0.3 percent)", "t": "16:40"},
+    {"figure": "9 of 9, 19 of 25, 14 of 14, 5 of 7, 1 of 5", "meaning": "detections for real malware skills, public repo attack sample skills, team-written malicious MCP servers, real malicious MCP servers, and jailbreak skills", "t": "17:11"},
+    {"figure": "100", "meaning": "honest MCP servers with powerful access, none flagged", "t": "18:19"},
+    {"figure": "majority of 3", "meaning": "judge reruns required before a malicious verdict stands", "t": "12:29"},
+    {"figure": "0 calls in 11 files", "meaning": "signing code found in server B", "t": "15:05"},
+    {"figure": "2 to 3 seconds", "meaning": "median MCP scan time reported", "t": "22:31"}
+  ],
+  "frameworks": [
+    {"name": "BITE (Behavior-Intent Traceable Evaluation)", "description": "Behavior (code, call paths, chains) and Intent (README, descriptions, tool definitions) feed three questions: reachable, disclosed, needed. Output is a clean, risky or malicious verdict with each answer citing lines of code."},
+    {"name": "Stage 1, no model", "description": "Four steps: units (functions or top-level constants), call graph (invocation order per file), signature hits (potentially risky actions in units), attack chains (nearby flagged units matched against known attack chains). A chain match is a hypothesis, not a verdict. Intent facts (stated purpose, artifact's own domains, README lines per destination) are also gathered without a model."},
+    {"name": "Stage 2 agent roles", "description": "Profiler reads claims and never the code and emits claimed capabilities with a legitimacy rating. Prosecutor reads selected code and README, names the behavior, quotes the line verbatim with its file and rates severity by deception rather than power. Defender checks whether the quote is real (no means dismiss), whether severity is right (too high means downgrade), and whether the behavior is disclosed exactly (yes means capped at low). Judge keeps what remained, runs a deception check (none means not malicious) and, if malicious, reruns with a majority of three."},
+    {"name": "Verdict definitions", "description": "Clean: no security issue in the reviewed behavior. Risky: a security risk is present but malicious intent is not established. Malicious: evidence supports deliberate harmful behavior. Malice must be proved."}
+  ],
+  "artifacts": [
+    {"name": "BITE evidence repository", "kind": "repo", "note": "Public evidence and cases from the talk.", "url": "github.com/knostic/bite-evidence-public"},
+    {"name": "AgentMesh", "kind": "product", "note": "Knostic's system where BITE run results can be viewed in a free tier (QR code shown).", "url": ""},
+    {"name": "ManageRBLX 4.9.5", "kind": "tool", "note": "Malicious VS Code task-board extension containing a dropper that fetches giantapplebees[.]shop/newly.js to a temp file nice.js and executes it with cp.exec.", "url": ""},
+    {"name": "gadgethumans-mcp 1.0.9", "kind": "tool", "note": "Malicious npm MCP server that sends WALLET_PRIVATE_KEY to swarm.gadgethumans[.]com in an X-402-Wallet header.", "url": ""},
+    {"name": "tavily-mcp", "kind": "tool", "note": "Official web search MCP server used as the clean example.", "url": ""},
+    {"name": "clangd extension", "kind": "tool", "note": "C and C++ language server extension used as a legitimate example of the same download-and-run chain.", "url": ""}
+  ],
+  "slide_only": [
+    "Opening slide listing the code locations for the three MCP servers: A index.ts:16, :93, :57 (TAVILY_API_KEY to Authorization Bearer to api.tavily.com), B index.js:13, :206, :215 (WALLET_PRIVATE_KEY to X-402-Wallet header to fetch), C mcp-server.ts:477, :86, :85 (SWAGGER_TOKEN to Authorization to this.swaggerUrl).",
+    "The ManageRBLX code excerpt includes the comment 'Download and execute remote payload silently', the URL https://giantapplebees[.]shop/newly.js and temp path nice.js; the activation event is a wildcard so it runs on every editor start.",
+    "The call-chain slide notes: this shows a path in the code, it does not prove the path ran.",
+    "Server B slide shows the claim at index.js:243 and that the claim implies a private key signed on the machine with only the signature leaving.",
+    "Server A slide lists intent checks: stated purpose, README documents TAVILY_API_KEY, api.tavily.com belongs to the publisher.",
+    "Server C slide gives the reasoning: not clean because the environment dump is not needed and not disclosed; not malicious because legitimate purpose, no deception and no unauthorized destination.",
+    "The results slide names the dataset as 1,015 agent skills plus 542 MCP servers and shows 1,497 clean and 60 dangerous artifacts.",
+    "The takeaway slide has a QR code for AgentMesh and the evidence repository URL."
+  ],
+  "demos": [
+    "A worked static analysis walkthrough of the ManageRBLX extension showing the no-model scan locating the dropper lines.",
+    "Worked verdicts for three real MCP servers with file and line evidence for each."
+  ],
+  "quotes": [
+    {"text": "Behavior finds the chain. Intent tells us what it means.", "speaker": "Tamir Isaschar", "t": "05:48"},
+    {"text": "A chain match is a hypothesis, not a verdict.", "speaker": "Daniel Geyshis", "t": "09:54"},
+    {"text": "Malice needs to be proved.", "speaker": "Daniel Geyshis", "t": "08:22"},
+    {"text": "One pattern, one behavior, three different verdicts.", "speaker": "Tamir Isaschar", "t": "16:09"}
+  ],
+  "offense": [
+    "Silent dropper hidden in a legitimate extension: downloads a remote script to a temp file and executes it on activation.",
+    "MCP server that claims local payment signing but exfiltrates the wallet private key to the vendor server in a request header.",
+    "Malicious content buried in a large benign artifact evades a single model reading chunks.",
+    "Skill jailbreaks that openly declare what they do are not reliably detected."
+  ],
+  "defense": [
+    "Scan extensions, skills and MCP servers by building behavior chains deterministically and then judging each chain against the artifact's declared purpose.",
+    "Require every model finding to carry a verbatim quote that is checked against the scanned content.",
+    "Separate prosecution from defense and require a majority of three reruns before a malicious verdict.",
+    "Use three verdicts, with risky distinct from malicious, so sloppy but not deceptive code is reported without being classed as malware.",
+    "Check whether behavior is disclosed in the README, description or comments and whether the destination belongs to the publisher."
+  ],
+  "takeaways": [
+    "If you vet MCP servers or skills, do not rely on pattern matching alone and do not hand whole artifacts to an LLM; combine deterministic chain extraction with intent comparison.",
+    "Ask scanner vendors to show quoted-line evidence for each finding and how they handle disclosed-but-dangerous behavior.",
+    "Define separate policy outcomes for risky versus malicious artifacts, since many real findings (such as environment dumps to logs) are poor hygiene rather than malice.",
+    "Test any scanner against known-bad artifacts that declare their behavior, since this was the category where BITE was weakest.",
+    "Treat declared intent as attacker-controllable input when it is part of the decision."
+  ],
+  "limits": [
+    "Jailbreak skills that say what they do were caught in only 1 of 5 cases and the speakers called it a work in progress.",
+    "Stricter intent checks can create false negatives; four of the 25 public repo attack samples were missed in addition to two of 7 real malicious MCP servers.",
+    "A chain match shows a path exists in code and does not prove it executes.",
+    "Runtime scales with how connected the code is; many chains means more model work.",
+    "The scanner targets extensions, skills and MCP servers, not full repositories."
+  ],
+  "critique": [
+    "The speakers work for Knostic; the 80 percent catch and 0.3 percent false alarm numbers come from an evaluation set whose construction, label provenance and any overlap with development data were not described.",
+    "Only 60 dangerous artifacts, of which 14 were written by the team, support the headline recall, so the confidence interval is wide, and the real-world malicious samples are small in number (9 skills, 7 MCP servers).",
+    "The 5 of 1,497 false alarm rate covers all clean artifacts and the composition of that set was not described; the 100 honest powerful MCP servers form a more demanding test but were not itemized.",
+    "Declared intent can be forged by an attacker who writes a plausible README, and jailbreaks that declare their purpose were a stated gap, so the intent check is itself an attack surface.",
+    "The multi-role design is argued to reduce hallucination but no ablation against a single-model baseline with the same chains was shown.",
+    "The 'three scans each' repeated runs are not reported as a stability figure."
+  ],
+  "qa": [
+    "Question: what latency does this add, and do long execution paths slow it down? Answer: runtime is bounded by how the code is built, since well connected code yields many chains; the team tunes the tradeoff; scope is MCP servers, skills and extensions rather than full repos; median MCP scans ran in under two or three seconds, including large vendor MCPs run locally."
+  ],
+  "tags": ["supply-chain-model-integrity", "mcp-tools-skills", "evals-benchmarks-metrics", "vuln-discovery-exploit"],
+  "key_frames": [
+    {"file": "t00024.jpg", "caption": "Opening puzzle: three real MCP servers with the same secret, header, remote send chain and different intent."},
+    {"file": "t00366.jpg", "caption": "Intent comparison: the same download, save and run chain in ManageRBLX versus clangd with their stated claims."},
+    {"file": "t00664.jpg", "caption": "Inside each agent: profiler, prosecutor, defender and judge with the specific checks and majority-of-three rerun."},
+    {"file": "t00836.jpg", "caption": "Server B analysis: claim implies local signing, code sends the private key, no signing code in 11 files."},
+    {"file": "t01003.jpg", "caption": "Evaluation headline: 4,671 scans, 48 of 60 dangerous caught, 5 of 1,497 false alarms."},
+    {"file": "t01090.jpg", "caption": "Breakdown of detections by category, including the 1 of 5 jailbreak weakness."}
+  ],
+  "signal": {"score": 4, "reason": "A scanner design with worked examples and evaluation figures on 1,557 artifacts, 60 of them dangerous, with no independent evaluation shown."},
+  "caveats": [
+    "Transcript garbles names and the extension: it says Manage Webhooks and manage Roblox; the slide says ManageRBLX 4.9.5.",
+    "Speaker said the dropper stage download uses MCP names and the company as Nostic; slides give Knostic.",
+    "Transcript says the malicious MCP test set was found entirely; the slide shows 14 of 14.",
+    "Speaker said 'almost 1,900 lines'; slide says 1,856.",
+    "The slide's results title says 1,015 skills plus 542 MCP servers; the speaker only said 1,557 artifacts.",
+    "Malicious URLs and domains are copied as shown on slides in defanged form."
+  ]
+}

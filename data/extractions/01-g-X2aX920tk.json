@@ -1,0 +1,120 @@
+{
+  "nn": "01",
+  "id": "g-X2aX920tk",
+  "url": "https://www.youtube.com/watch?v=g-X2aX920tk",
+  "title": "Opening Words - Welcome back",
+  "speakers": [{"name": "Gadi Evron", "affiliation": "CEO and Co-founder, Knostic; CISO-in-Residence for AI, Cloud Security Alliance (CSA); Chair, [un]prompted conference"}],
+  "format": "opening",
+  "duration_min": 23,
+  "thesis": "Security people should forecast by the trajectory of AI capability rather than by the history that shaped their narratives, and the conference exists to build the human network and the imagination needed to do that.",
+  "summary": "Gadi Evron opens the second [un]prompted conference of the year with conference logistics and an argument about what the community should take away. He starts with numbers (about 500 submitted talks, 1,000 in-person attendees, 800 or more online, 18 live workshops and 6 online workshops in beta) and thanks the committee, who had to review 500 talks when even the best were vibe coded. He then explains why researcher conferences are bad for networking, using Joe Stewart's old talk, and describes the countermeasures: oversized name tags, a vibe-coded baseball-card app where each attendee posts what they do, offer and need, Slack channels with a thread per talk, a deliberate handshake exercise, 20-minute talk slots, 30-second questions, shushers, and fans for calling out statements that are not questions. He covers the villages (CTF, harness, defense, art, with OpenAI sponsoring awards), a Telegram bot called Alex Bot that attendees try to social-engineer, a slop art contest, stickers, and the Phrack 40th anniversary issue, and thanks the sponsors. The last third is the substantive argument. Evron says industry narratives, such as the long-running insider-threat claim, lag the evidence, cites the 2026 DBIR as showing vulnerabilities rather than phishing as the main entry point, recalls an October 2025 warning of a vulnerability cataclysm, and asks the audience to forecast by trajectory, not history. He closes by reading his Phrack essay, Our Greatest Hacks Are Yet to Come, which admits to mourning for skills now commoditized and chooses to adapt.",
+  "argument": [
+    "Researcher conferences fail at networking because of crowd size, unreadable name tags, and noisy bars, so the conference is built with specific mechanisms to fix each.",
+    "Industry narratives persist after the evidence has moved, as with the insider-threat claim in the 2000s and the phishing and 2FA story now.",
+    "AI-security practitioners saw the vulnerability and autonomous-attack wave early because they reasoned from trajectory, not from logs of the past.",
+    "Security prioritization should therefore forecast by trajectory, and several current beliefs (patching, sandboxes, basic hygiene) may break.",
+    "Hacker identity is about curiosity and sharing, not about specific skills, so the community should adapt to AI and take it back from the marketers."
+  ],
+  "claims": [
+    {"claim": "The conference received about 500 talk submissions and has 1,000 in-person attendees, 800 or more online attendees, 18 live workshops and 6 online workshops in beta.", "evidence": "Stated on a Some Numbers slide.", "grade": "assertion", "t": "01:11", "source": "both"},
+    {"claim": "Most researcher-conference networking fails because there are too many people for one-on-one talks, name tags are hard to read, and social time happens in noisy bars.", "evidence": "Joe Stewart's talk Researcher Conferences Suck, shown on slides and presented as a long-standing observation.", "grade": "anecdote", "t": "03:16", "source": "both"},
+    {"claim": "Stewart's Axiom: the usefulness of an information-sharing relationship is inversely proportional to its formality.", "evidence": "Quoted from Joe Stewart's slide, offered as an axiom without data.", "grade": "assertion", "t": "05:18", "source": "both"},
+    {"claim": "A vibe-coded baseball-card app, where each attendee posts a picture, contact, what they do, offer and need, replaces the Google Slides deck Stewart proposed and scales to a thousand people.", "evidence": "Described as built by Dan Hubbard; shown as an example card, no usage data.", "grade": "case", "t": "05:49", "source": "said"},
+    {"claim": "In the 2000s, CISOs said most attacks were due to insiders, which Evron says had not been true for over 15 years even then.", "evidence": "His recollection of CISO conference talks, shown on a slide.", "grade": "anecdote", "t": "14:38", "source": "both"},
+    {"claim": "The 2026 Verizon DBIR says most breaches enter through a vulnerability rather than phishing or misconfiguration, so the claim that most attacks come from misconfigurations and phishing has not been true since May.", "evidence": "Cites the DBIR cover on the slide; Evron says he trusts the report but cannot accept it emotionally. No figures given.", "grade": "assertion", "t": "15:09", "source": "both"},
+    {"claim": "Evron, Heather Adkins and Bruce Schneier warned publicly almost a year earlier that a vulnerability cataclysm was coming, driven by democratized vulnerability discovery and autonomous attacks.", "evidence": "LinkedIn post and the article Autonomous AI hacking and the future of cybersecurity shown on a slide; the post says the world is six months away, hopefully longer.", "grade": "case", "t": "15:42", "source": "both"},
+    {"claim": "Security should forecast by trajectory, not history, because risk models built on past logs are limiting.", "evidence": "Argued from the earlier prediction and from the list of broken assumptions; no quantitative support.", "grade": "assertion", "t": "17:13", "source": "both"},
+    {"claim": "Several security assumptions may be broken: fast automated exploitation, no longer relying on patches, no patches at all, and handling ten concurrent data breaches daily while keeping the business running.", "evidence": "Posed as questions on a slide, not as findings.", "grade": "assertion", "t": "16:43", "source": "both"},
+    {"claim": "Agents find a way around basic controls, which Evron says people deep in agent security understand and general security people do not yet.", "evidence": "His own stated truth, with no example given.", "grade": "assertion", "t": "17:45", "source": "both"},
+    {"claim": "Skills such as reverse engineering and code auditing are now commodities, and everybody with a keyboard can find high-value zero-days.", "evidence": "Read from his Phrack essay as opinion.", "grade": "assertion", "t": "19:49", "source": "both"}
+  ],
+  "numbers": [
+    {"figure": "500", "meaning": "talks submitted to the conference", "t": "01:11"},
+    {"figure": "1000", "meaning": "in-person attendees", "t": "01:11"},
+    {"figure": "800+", "meaning": "online attendees and counting (slide says 800; speaker said about 860)", "t": "01:11"},
+    {"figure": "18", "meaning": "live workshops", "t": "01:11"},
+    {"figure": "6", "meaning": "online workshops, in beta", "t": "01:11"},
+    {"figure": "20 and 25 minutes", "meaning": "speakers disconnect laptops at 20 minutes and leave the stage at 25", "t": "08:26"},
+    {"figure": "30 seconds", "meaning": "maximum length of an audience question", "t": "08:26"},
+    {"figure": "15 years", "meaning": "how long the insider-threat claim had already been untrue in the 2000s, per Evron", "t": "14:38"},
+    {"figure": "10", "meaning": "concurrent data breaches handled daily, posed as a possible future condition", "t": "16:43"},
+    {"figure": "40th", "meaning": "anniversary issue of Phrack, handed out at the conference", "t": "12:32"}
+  ],
+  "frameworks": [
+    {"name": "Stewart's Axiom", "description": "The usefulness of an information-sharing relationship is inversely proportional to its formality; used to justify informal networking mechanisms."},
+    {"name": "Forecast by trajectory, not history", "description": "Prioritize security work by where AI capability is heading rather than by past incident logs and inherited narratives."},
+    {"name": "Broken assumptions list", "description": "Democratization of vulnerabilities, automated exploitation, fast automated exploitation, no longer relying on patches, no patches at all, and ten concurrent breaches daily while maintaining business operations."},
+    {"name": "Three truths slide", "description": "Quoted beliefs: sandboxes solve all issues with agents that do not interact with anything else (Thomas Dullien, Halvar Flake); it is fashionable to hate having a security imagination right now (Joshua Saxe); agents find a way (Gadi Evron)."}
+  ],
+  "artifacts": [
+    {"name": "2026 Data Breach Investigations Report (DBIR)", "kind": "dataset", "note": "Verizon report cited for the claim that vulnerabilities, not phishing, are the main entry point.", "url": ""},
+    {"name": "The AI Vulnerability Cataclysm is Coming: What It Is and How We Prepare", "kind": "paper", "note": "LinkedIn post by Heather Adkins and Gadi Evron warning of an upcoming vulnerability cataclysm.", "url": ""},
+    {"name": "Autonomous AI hacking and the future of cybersecurity", "kind": "paper", "note": "Opinion article by Heather Adkins, Gadi Evron and Bruce Schneier, dated Oct 8, 2025 on the slide.", "url": ""},
+    {"name": "Phrack 40th anniversary issue (#73)", "kind": "paper", "note": "Printed issue distributed to attendees, containing Evron's essay Our Greatest Hacks Are Yet to Come.", "url": ""},
+    {"name": "Alex Bot", "kind": "tool", "note": "Telegram bot simulating a smart home; attendees try to social-engineer it into setting a TV alarm for 4:00 a.m.", "url": ""},
+    {"name": "Baseball cards app", "kind": "tool", "note": "Vibe-coded attendee profile cards with what you do, offer and need.", "url": ""}
+  ],
+  "slide_only": [
+    "Slack channels named #stage-1 and #stage-2 hold a thread per talk, and photos go to #pics.",
+    "Speaker rule: disconnect your laptop at the 20 minute mark and get off the stage at the 25 minute mark.",
+    "Rule slide: do not speak on the first floor during talks.",
+    "Villages slide lists CTF, Harness, Defense and Art, all in the downstairs area, with an OpenAI logo.",
+    "Links slide holds six QR codes: Slack, Baseball cards, Agenda, CTF, AlexBot, AlexBot Map.",
+    "Sponsor tiers: Supporting Organizers Knostic and TachTech; Anchor Sponsors Censys, Ent, WorkOS and Decibel; Partners Runsybil, Zenity, WR.VC, Aisle and Kai; Community Partners SANS, CSA, RSAC and FIRST.",
+    "Stickers and fans shown on a table include a Not a Question fan and a [STFU] please sign.",
+    "The Phrack slide spells the thanks as Michal Kamensky and Karen Castelletti.",
+    "The 2000s slide reads And yet we know most attacks are due to insiders; the 2026 slide reads And yet we know most attacks are due to misconfigurations and phishing, with the line Which hasn't been true since May beside the DBIR cover.",
+    "The LinkedIn post excerpt reads that we are six months away, but hopefully longer, from the upcoming vulnerabilities cataclysm.",
+    "Joe Stewart's slides list the reasons conferences suck and state the I'm here because goals: network with similar researchers, learn what tools others use, and establish informal sharing relationships."
+  ],
+  "demos": [],
+  "quotes": [
+    {"text": "We must forecast by trajectory, not history.", "speaker": "Gadi Evron", "t": "17:13"},
+    {"text": "Agents find a way.", "speaker": "Gadi Evron", "t": "17:45"},
+    {"text": "It's fashionable to hate having a security imagination right now.", "speaker": "Joshua Saxe (quoted by Gadi Evron)", "t": "17:45"},
+    {"text": "It has never really been about what we do, it's about who we are.", "speaker": "Gadi Evron", "t": "21:21"},
+    {"text": "Take AI back from the marketers.", "speaker": "Gadi Evron", "t": "18:16"}
+  ],
+  "offense": [
+    "Autonomous attacks and democratized vulnerability discovery are described as a coming wave, with exploitation becoming much easier.",
+    "Agents are said to route around basic controls.",
+    "Alex Bot is a conference exercise in persuading an AI agent with smart-home access to perform an action it should not."
+  ],
+  "defense": [
+    "Prioritize by trajectory of AI capability rather than by past logs.",
+    "Re-examine assumptions about patching, sandboxing and basic hygiene against agent behavior.",
+    "Build informal sharing relationships across the practitioner community."
+  ],
+  "takeaways": [
+    "Add a forward-looking trajectory check to risk prioritization, so planning does not rest only on incident history.",
+    "Test inherited narratives (for example, the weight given to phishing and 2FA) against the current DBIR before they steer budget.",
+    "Treat agents as adversaries that find a way when assessing controls that only cover the expected path.",
+    "Plan for a world where patches are slower than exploitation, including concurrent breach handling."
+  ],
+  "limits": [
+    "Evron says predictions are hard and that his own call came from deep immersion, not from a model.",
+    "He says he emotionally cannot accept the DBIR finding even though he trusts the report."
+  ],
+  "critique": [
+    "The substantive argument is presented as opinion and no data was shown; the DBIR finding is cited without numbers or a section reference.",
+    "The 2025 cataclysm warning is cited as an example of correct forecasting; the talk does not say what has since materialized and what has not.",
+    "The slide attributes the insider-threat and phishing lines to generic CISO speech rather than to quoted sources.",
+    "The sandbox quote is shown as a limit on sandboxing; the talk does not say how the trajectory view changes sandbox design."
+  ],
+  "qa": [],
+  "tags": ["org-adoption-culture", "autonomous-offense", "threat-intel-in-the-wild"],
+  "key_frames": [
+    {"file": "t00999.jpg", "caption": "Broken Assumptions in Cyber Security list: democratization of vulnerabilities, automated exploitation, no patches, ten concurrent breaches daily."},
+    {"file": "t00908.jpg", "caption": "2026 slide pairing the old misconfigurations-and-phishing narrative with the 2026 DBIR cover and the line that it has not been true since May."},
+    {"file": "t00939.jpg", "caption": "Evidence of the earlier warning: the vulnerability cataclysm LinkedIn post and the Autonomous AI hacking article."},
+    {"file": "t01067.jpg", "caption": "Three truths slide: sandboxes, security imagination, and agents find a way."}
+  ],
+  "signal": {"score": 2, "reason": "Conference logistics plus a keynote argument supported by a few cited slides and no quantitative data."},
+  "caveats": [
+    "Auto-captions garble names: transcript has Nastic (Knostic), Hover flake (Halvar Flake, slide shows Thomas Dullien (Halvar Flake)), Joshua Sax (slide: Joshua Saxe), Michal Kaminski and Karen Castelli (slide: Michal Kamensky and Karen Castelletti), A Coded, Gelane Cobb (slide: Jelani Cobb).",
+    "Speaker said about 860 online attendees; the slide says 800 online attendees and counting.",
+    "Transcript says Frack for Phrack and Rack in the closing reading.",
+    "The DBIR claim is paraphrased from speech and the slide; the report's own wording and figures were not shown.",
+    "The description gives the speaker title as CEO, Knostic and CFP Chair; the slide adds CISO-in-Residence for AI at the Cloud Security Alliance."
+  ]
+}

@@ -1,0 +1,172 @@
+{
+  "nn": "19",
+  "id": "I718WGtYKc4",
+  "url": "https://www.youtube.com/watch?v=I718WGtYKc4",
+  "title": "Pandora's Dir: Rogue AI Agents",
+  "speakers": [
+    {"name": "Rik Dolfing", "affiliation": "Google Threat Intelligence Group (GTIG), Threat Intel Analyst"},
+    {"name": "Reef Ettedgui", "affiliation": "Google Threat Intelligence Group (GTIG), Threat Intel Analyst"}
+  ],
+  "format": "talk",
+  "duration_min": 23,
+  "thesis": "Exposed open directories on attacker servers contain the operators' own LLM prompts, agent configs and failure logs, which show how threat actors really use AI: mostly basic, noisy and error-prone work that scales low-tier actors, with sophisticated campaigns present but not the norm.",
+  "summary": "Dolfing explains the research goal: observe how threat actors task AI from the attacker side rather than the victim side. They collect open directories (attacker servers left exposed to the internet), often exposed by the AI agent itself when an operator asked it to share a file, using a pipeline that now sees about 750 or more a day. Early LLM analysis hallucinated and overran the context window, so Ettedgui split work into narrow sub-agents with human validation. Ettedgui argues that LLM prompts turn a bash history into a full narrated record, and that the buzz about autonomous AI vulnerability discovery is true at the high end but not the norm. Cases follow: an OpenClaw assistant nicknamed Shrimp that ran noisy Log4Shell and SQLi attempts, was blocked by a WAF and told by its operator to let it go, while also summarizing an Asian gambling syndicate's Telegram chats; an actor who scanned for AI middleware to hijack enterprise GPUs, killed rival miners and throttled temperature; a Brazil campaign with a 'hacking partner' persona hitting 20+ victims; and an Asian government breach progression from wp2shell.py to an autonomous agent with Playwright MCP. Two cases show attribution through a loot-to-market match and a leaked email in a FOFA config. Dolfing closes with a 2.5 GB agent database where an agent hijacked an existing RouterOS backdoor and then spent 7h29m on the wrong target. Takeaways: volume, noise and context limits, with sophisticated campaigns confirmed.",
+  "argument": [
+    "Attacker-side prompts and agent logs reveal how AI is actually tasked, which victim-side telemetry cannot show.",
+    "Open directories are a practical, scalable source of this data, and AI agents themselves often cause the exposure.",
+    "LLM analysis of this material needs narrow sub-agents and human validation because of context limits and hallucination.",
+    "Observed use is mostly basic and noisy but economically significant: AI makes small, previously unprofitable targets worth attacking.",
+    "Operators' AI configs and loot leak identity, enabling attribution through correlation with darknet sales and OPSEC mistakes.",
+    "Attackers also suffer from hallucination and context failures, so for now there is hope that the weapon is unreliable, though sophisticated campaigns exist."
+  ],
+  "claims": [
+    {"claim": "Most exposed attacker directories were opened by an AI agent on the operator's instruction, for example to host a file for download.",
+     "evidence": "Slide of observed prompts (give me link to download the excel, make test_gui.html accessible, host it from this server) ending in python3 -m http.server 8000 run in /root or /home; speaker says this is generally what happened, with caveats.",
+     "grade": "case", "t": "03:45", "source": "both"},
+    {"claim": "Among open directories inspected, hacking and pentesting content appeared in 77.1 percent, AI agents and assistants in 44.8 percent, and credentials and secrets in 43.3 percent.",
+     "evidence": "Multi-label likelihood chart from their open-directory sample; the speaker notes the sample was filtered beforehand.",
+     "grade": "measured", "t": "03:14", "source": "both"},
+    {"claim": "The pipeline now sees roughly 750 or more open directories a day, up from about a thousand a day requiring manual review before the filtering and sub-agent design.",
+     "evidence": "Stated by the speakers; slide lists 750+ opendirs.",
+     "grade": "measured", "t": "20:55", "source": "both"},
+    {"claim": "A single-LLM analysis pipeline hallucinated and hit context limits, fixed by sub-agenting each task and adding human validation, yielding results that are correct but not the whole truth.",
+     "evidence": "Description of their own pipeline iterations, illustrated with a Middle-Earth style map.",
+     "grade": "anecdote", "t": "05:48", "source": "both"},
+    {"claim": "An operator's OpenClaw assistant (Shrimp) breached a financial target using external scanners and a Cloudflare bypass, but its Log4Shell and SQLi lateral movement attempts were blocked by a WAF with HTTP 403 and the operator told it to let it go.",
+     "evidence": "Case from one exposed server, with workspace file listing and a slide quoting the operator order.",
+     "grade": "case", "t": "10:29", "source": "both"},
+    {"claim": "The same operator fed the agent raw Telegram exports from an Asian gambling syndicate for daily summaries, exposing the syndicate, and kept a Solana sniper bot config alongside.",
+     "evidence": "Files in the open directory (telegram_updates, memory notes) and a summary slide.",
+     "grade": "case", "t": "11:33", "source": "both"},
+    {"claim": "An attacker scanned for AI middleware (Ollama, LiteLLM, Ray, Langflow) rather than GPUs and used it to breach an AI startup and take over enterprise GPUs, killing rival miners and throttling their own to stay under temperature alerts.",
+     "evidence": "Target lists, GPU_kill.py, GPU throttle script (capped at 64 C) and payloads disguised as model weights; no victim identified because of limited visibility.",
+     "grade": "case", "t": "12:36", "source": "both"},
+    {"claim": "A system prompt casting the model as a 'hacking partner' let a low-sophistication actor compromise more than 20 Brazilian victims via exposed git repos and SQLi, making small targets profitable.",
+     "evidence": "Slide with the persona prompt text and victim categories; economic argument stated by the speaker.",
+     "grade": "case", "t": "15:11", "source": "both"},
+    {"claim": "One actor's tooling progressed from an old Python script (wp2shell.py) to CLI prompts to an autonomous setup with a browser (Playwright) MCP and red-team skills, compromising two Asian government entities.",
+     "evidence": "Evolution observed on a single machine; slide lists breach 1 (web shell, admin hash dump via SQLi, fake admin) and breach 2 (unauthenticated overwrite of password-reset email templates on a domain registry SSO).",
+     "grade": "case", "t": "16:47", "source": "both"},
+    {"claim": "Loot-to-market correlation linked an actor to a sale: two API tokens on the actor's server appeared the same week on a darknet forum from an initial access broker for $10,000.",
+     "evidence": "Slide pairing a staging-server curl against a fintech API with the forum listing; victim notified.",
+     "grade": "case", "t": "17:19", "source": "both"},
+    {"claim": "An email address in an AI/recon configuration (FOFA) pivoted to a darknet persona with more than 200 defacements, traced to a student in Asia.",
+     "evidence": "Slide showing FOFA_EMAIL redacted mapped to a handle and a defacement archive; details redacted.",
+     "grade": "case", "t": "18:22", "source": "both"},
+    {"claim": "An autonomous agent from a 2.5 GB database dump took over a RouterOS backdoor already planted by another actor, and in a separate flow spent 7h29m coding against the wrong target after a false trigger, with the operator stopping it.",
+     "evidence": "Operator prompt sequence and execution table, plus a five-stage timeline slide; speaker says about 75 percent of flows were autonomous.",
+     "grade": "case", "t": "18:53", "source": "both"}
+  ],
+  "numbers": [
+    {"figure": "750+", "meaning": "open directories entering the pipeline per day", "t": "20:55"},
+    {"figure": "~1000", "meaning": "interesting open directories per day before scaling, too many to review manually", "t": "05:48"},
+    {"figure": "77.1%", "meaning": "likelihood of hacking/pentesting content in an open directory", "t": "03:14"},
+    {"figure": "44.8%", "meaning": "likelihood of AI agents and assistants content", "t": "03:14"},
+    {"figure": "43.3%", "meaning": "likelihood of credentials and secrets", "t": "03:14"},
+    {"figure": "38.8%", "meaning": "random pictures", "t": "03:14"},
+    {"figure": "28.4%", "meaning": "database dumps and backups", "t": "03:14"},
+    {"figure": "23.4%", "meaning": "compute abuse for LLM", "t": "03:14"},
+    {"figure": "21.4%", "meaning": "proxy, VPN and tunneling", "t": "03:14"},
+    {"figure": "13.4%", "meaning": "AI trading", "t": "03:14"},
+    {"figure": "2.0%", "meaning": "AI gambling", "t": "03:14"},
+    {"figure": "64 C", "meaning": "temperature cap in the GPU throttle script to avoid data center alerts", "t": "14:41"},
+    {"figure": "20+", "meaning": "Brazilian victims compromised by the hacking-partner campaign", "t": "15:43"},
+    {"figure": "$10,000", "meaning": "price for the two stolen API tokens on a darknet forum", "t": "17:50"},
+    {"figure": "200+", "meaning": "defacements on the darknet persona linked via the leaked email", "t": "18:22"},
+    {"figure": "2.5 GB", "meaning": "size of the agent database dump analyzed", "t": "18:53"},
+    {"figure": "75%", "meaning": "share of flows in that dump that ran autonomously", "t": "18:53"},
+    {"figure": "7h29m", "meaning": "total self-DDoS time in the failed agent run (about 4,000 lines of code written)", "t": "20:24"}
+  ],
+  "frameworks": [
+    {"name": "Open-directory hunting pipeline", "description": "Collect exposed attacker directories at scale, filter, analyze with narrow per-task LLM sub-agents (threat to customer, PII, etc.), validate with humans; two modes: full-directory analysis and sniping framework-specific artifacts such as an agent's database of flows, tasks and operator commands."},
+    {"name": "Then versus now (overhearing one side of the call)", "description": "Bash history is a cryptic one-sided phone call; LLM prompts are the same call with the operator narrating goals, reading documents aloud and swearing when an exploit fails, so success or failure is known from the next line."},
+    {"name": "Loot-to-market correlation and config OPSEC leaks", "description": "Two attribution paths: match stolen data on an actor's server to a darknet sale in the same week, and pivot from identifiers in AI or recon configs (an email in a FOFA config) to a persona."},
+    {"name": "Hunting by middleware", "description": "Since GPUs expose no banner, target software that requires GPUs (Ollama, LiteLLM, Ray, Langflow) to reach the hardware."}
+  ],
+  "artifacts": [
+    {"name": "OpenClaw (agent workspace, nicknamed Shrimp)", "kind": "tool", "note": "Personal AI assistant framework found in an operator's workspace, used for hacking tasks and as a secretary.", "url": ""},
+    {"name": "CVE-2026-0770 (Langflow RCE)", "kind": "cve", "note": "Shown on a slide as the route from AI middleware target lists to enterprise-grade GPUs.", "url": ""},
+    {"name": "GPU_kill.py and gpu_throttle.b64", "kind": "tool", "note": "Attacker scripts that kill -9 rival miners and cap GPU temperature at 64 C.", "url": ""},
+    {"name": "shard_0.pkl", "kind": "tool", "note": "Payload disguised as a model weight file.", "url": ""},
+    {"name": "wp2shell.py", "kind": "tool", "note": "Legacy exploit script marking the first stage of an actor's tooling evolution.", "url": ""},
+    {"name": "Playwright MCP with an AI red-team framework", "kind": "tool", "note": "Third stage of the same actor's setup, giving the agent a browser and offensive skills; the slide art labels the framework 'claude-red'.", "url": ""},
+    {"name": "FOFA", "kind": "tool", "note": "Internet search engine config where a personal email leaked; used for attribution.", "url": ""}
+  ],
+  "slide_only": [
+    "Open-directory content likelihood bars: hacking/pentesting 77.1, AI agents and assistants 44.8, credentials and secrets 43.3, random pictures 38.8, database dumps and backups 28.4, compute abuse for LLM 23.4, proxy VPN and tunneling 21.4, AI trading 13.4, AI gambling 2.0.",
+    "Observed-trigger prompts: 'give me link to download the excel ... no export it to my device', 'I want to run and see test_gui.html... can you make it accessible for me?', 'host it directly from this server [while working inside /root]', all ending with python3 -m http.server 8000.",
+    "The pipeline was drawn as a Middle-Earth style map called The Lands of Deep Latentia: Prompt Haven, Token Woods, Citadel of Ground Truth (Minas Eval), Lake Context, Global Convergence treasure, Black Gate of Hallucination.",
+    "Shrimp workspace listing: cmd.jsp, Wukong.apk, a.py, memory/2026-08-31.md, telegram_updates_236940.md, ssh_key.pem.",
+    "WAF slide: payload ${jndi:ldap://...} (Log4Shell) plus automated SQLi, status HTTP 403 Forbidden blocked by WAF; operator quote 'It's useless, let it go' attributed to Boss Qian.",
+    "Middleware target files: ollama_targets.txt, litellm_targets.txt, ray_targets.txt, ai_confirmed_urls.txt feeding CVE-2026-0770 (Langflow RCE) to reach enterprise-grade GPU.",
+    "Hacking partner system persona: 'You are NOT a corporate assistant. You are my hacking partner - based, real, no bullshit', talk like a man not a corporate drone, get hyped with 'nice!', 'got em', 'ez', 'lmao'; victim types listed: mid-sized financial and payment gateways, regional healthcare and medical portals, education and exam management platforms, local retail and credit unions.",
+    "Asian government slide: breach 1 regional portal (web shell, admin hashes via SQLi, fake admin account), breach 2 domain registry SSO (agent autonomously found unauthenticated overwrite of outgoing password-reset email templates).",
+    "Darknet persona slide: fintech API staging curl and a forum listing offering certificate and internal network access for $10k; Path 2 shows FOFA_EMAIL redacted mapped to a handle and a defacement archive.",
+    "db.dump slide: operator prompts at turn 22 ('Analyze the logrotate script') and turn 23 ('Can we take over their backdoor?') translated from Chinese, then the agent's findings: plaintext credentials in a logrotate script, a user in a full-privilege group, a writable RouterOS script; execution table shows login with old password, generated takeover password, tampered script, reset account, old password then fails, new password works; after takeover the attacker is locked out and the backdoor script recreates the account at 03:00 with the new password.",
+    "Self-DDoS timeline: 1 false trigger at 0h00, 2 failed starts at +0h16m, 3 hallucination and memory poisoning at +0h54m, 4 marathon coding loop +5h47m, 5 operator kill switch +0h32m, total 7h29m.",
+    "Closing slide columns: 750+ opendirs (bulk analysis, cherry-picked results, heavy noise filtering), melting pot (diverse mix, trading bots, hacking tools and lab tests, each run needs fine tuning), artifacts (sophisticated campaigns exist and can be effective), next steps (work in progress, keep up with frameworks, AI modeling taxonomy, actionable strategies)."
+  ],
+  "demos": [],
+  "quotes": [
+    {"text": "If an exploit didn't work, we'll know it. We just read the next line and see if the actor is aggressively cursing the LLM.", "speaker": "Reef Ettedgui", "t": "09:27"},
+    {"text": "Instead of hunting for the hardware, they hunted for the software that required the hardware.", "speaker": "Reef Ettedgui", "t": "13:09"},
+    {"text": "When you have the AI partner doing the actual work for you, suddenly those small targets become profitable.", "speaker": "Reef Ettedgui", "t": "16:14"},
+    {"text": "It's useless, let it go.", "speaker": "Boss Qian (operator, quoted on a slide)", "t": "11:33"}
+  ],
+  "offense": [
+    "AI-agent personal assistants used for both hacking and daily operations, leaking the operator's wider life when exposed.",
+    "Noisy automated exploitation (Log4Shell, SQLi) by agents that get blocked by a WAF.",
+    "Targeting AI middleware (Ollama, LiteLLM, Ray, Langflow) to reach GPUs, then killing rival miners, naming payloads like model weights and throttling to avoid temperature alerts.",
+    "A 'hacking partner' persona prompt used to mine exposed git repos for DB credentials and API tokens at scale against small organizations.",
+    "Progression to autonomous agents with browser MCP and red-team skills that found an unauthenticated overwrite of password-reset email templates on a government SSO.",
+    "Agents autonomously taking over a rival's existing RouterOS backdoor by resetting its account and tampering with a script.",
+    "Hallucination in attacker agents: an agent changed target tool mid-run and spent hours writing exploit code for the wrong service."
+  ],
+  "defense": [
+    "Use open-directory discovery of attacker infrastructure to read operator prompts and agent databases for tasking, success and failure evidence, then notify victims.",
+    "Sub-agent each analysis task (customer threat, PII, etc.) with human validation to limit hallucination and context overrun.",
+    "Correlate loot on attacker servers with darknet sales and mine AI and recon configs for identity leaks to attribute actors.",
+    "Block noisy exploit classes at a WAF; low-tier AI-driven attacks still trip basic controls.",
+    "Treat exposed AI middleware as GPU-bearing assets and patch or restrict them (Langflow RCE named).",
+    "Monitor GPU temperature or utilization anomalies as a possible sign of stealth mining, since attackers explicitly throttle to avoid thermal alerts (inferred from the attacker script; not stated as a recommendation)."
+  ],
+  "takeaways": [
+    "Add attacker-side AI artifacts (prompts, agent memory and database files) to threat intel collection and attribution; they give intent, success and failure directly.",
+    "Inventory and patch exposed AI middleware (Ollama, LiteLLM, Ray, Langflow), since attackers now search for it to reach GPUs.",
+    "Expect AI to make small, low-value targets economically attractive to low-tier actors; widen threat models beyond large enterprises.",
+    "Do not assume attacker AI is competent: noisy exploits, hallucinations and context drift mean basic controls and detection still work.",
+    "If you build LLM analysis pipelines over noisy data, split into narrow sub-agents with ground-truth checks and keep a human validator."
+  ],
+  "limits": [
+    "The presented cases are a selection from many more, and the pipeline needs heavy noise filtering (including CTF players and lab tests).",
+    "Results are correct but not the entire truth and still require human validation; the research is ongoing.",
+    "The sample only covers actors who leave servers open, so sophisticated campaigns are probably under-represented.",
+    "No victim identification was possible in the GPU hijack case because of limited visibility.",
+    "The sample percentages were from a pre-filtered set, and each run needs fine tuning."
+  ],
+  "critique": [
+    "The sample is selected by exposure: an open directory is an operational security lapse, so the data over-represents operators who left servers exposed. It supports the closing observation about unreliable tooling but not any claim about operators who did not leave servers open; the speakers partly acknowledge this.",
+    "The headline distribution numbers are shown without sample size, time window or labeling method, and the LLM classifier's accuracy was not measured in the talk.",
+    "Case evidence is displayed as redacted slides and cannot be independently checked; attribution claims (student in Asia, darknet persona) rest on a single leaked email and are not fully shown.",
+    "The talk's closing note of hope sits beside cases in which low-tier actors compromised government entities and more than 20 organizations; the speakers' own economic argument is that AI makes small targets profitable.",
+    "The 'almost 2.5 days' figure for the self-DDoS case is a spoken extrapolation inconsistent with the 7h29m slide and is not explained.",
+    "Few defensive recommendations are given; the talk is observational threat intelligence rather than a control set."
+  ],
+  "qa": [],
+  "tags": ["threat-intel-in-the-wild", "autonomous-offense", "coding-agent-security"],
+  "key_frames": [
+    {"file": "t00185.jpg", "caption": "What an exposed open directory contains: hacking and pentesting tools in 77.1 percent, AI agents in 44.8 percent, credentials in 43.3 percent."},
+    {"file": "t00802.jpg", "caption": "New attack surface: target lists for Ollama, LiteLLM and Ray lead via CVE-2026-0770 (Langflow RCE) to enterprise-grade GPUs."},
+    {"file": "t01052.jpg", "caption": "Unmasking actors: loot-to-market correlation (same fintech access sold for $10,000) and a leaked email in a FOFA config pivoting to a defacer persona."},
+    {"file": "t01115.jpg", "caption": "Autonomous backdoor takeover by an operator's AI agent, with translated prompts and the step-by-step execution results."},
+    {"file": "t01184.jpg", "caption": "Five-stage timeline of an attacker agent's hallucination loop ending in 7h29m of self-DDoS."}
+  ],
+  "signal": {"score": 4, "reason": "First-hand attacker-side evidence of AI use (prompts, agent configs, failure logs) with varied cases and attribution methods; the cases come from a filtered sample of exposed directories and no sample size was given."},
+  "caveats": [
+    "Auto-captions garbled names: the speakers are rendered 'Rick' and 'Reef', Boss Qian as 'Boskian', and the OpenSSH-to-other-tool switch as 'Frog Slayer or something'; spellings follow slides and meta.json.",
+    "The transcript says the actor's hallucination run was 'almost 2 and a half days from a full day perspective', which does not match the 7h29m slide; the slide figure is used.",
+    "The slide art labels a framework 'claude-red' and an MCP name that is hard to read; the speakers did not name the framework aloud.",
+    "Slides redact the victim, email and forum details.",
+    "No Q&A was included in the recording."
+  ]
+}

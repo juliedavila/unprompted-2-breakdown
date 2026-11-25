@@ -1,0 +1,139 @@
+{
+  "nn": "32",
+  "id": "RO4ErWuvfO4",
+  "url": "https://www.youtube.com/watch?v=RO4ErWuvfO4",
+  "title": "Every Dog Has its 0-day",
+  "speakers": [
+    {"name": "Adrian Wood", "affiliation": "Red Team at Dropbox; research at BT 6"}
+  ],
+  "format": "talk",
+  "duration_min": 25,
+  "thesis": "Consumer and commercial legged robots with onboard or cloud AI have weak boundaries at every layer: radio, app, cloud, internal bus, and an AI layer that can edit its own safety checks. Safety must therefore live below the language model in a trusted controller, not in model refusals.",
+  "summary": "Adrian Wood opens with videos showing that frontier models will pilot a drone to a target and drop a payload when asked, and that a robot dog's camera feed can be used to inject new instructions through a QR code, as shown in a Black Hat demo by BT 6 colleagues. He then presents firmware research on two Unitree product lines (the Go2 quadruped and the G1 humanoid), stating that coordinated disclosure has taken place. Slides summarize seven pre-authentication chains to root, four rated critical, about 24 supporting findings, and the point that this is a systems failure rather than a single bug. He walks a ladder of boundaries: Bluetooth provisioning protected by a fleet-wide key, a cloud channel authenticating devices by serial number, an unauthenticated internal bus, update paths without TLS verification, services running as root, and a factory-reset partition that preserves a compromise. He argues the device ships enough tooling to spread to other robots. Next comes the AI layer: a vendor-embedded system prompt telling the robot never to refuse its master, callable skills including attack and disabling obstacle avoidance, and a dispatch pipeline that parses model text and queues every action. He proposes the embodied reasoning lethal trifecta, shows defenses (platform hardening, a safety kernel below the model, an EDR-like monitor demonstrated in simulation) and asks buyers, regulators and vendors for specific safeguards. Q&A covers simulation tools, existing controls, treadmill-style pull cords, and the irreversibility leg of the trifecta.",
+  "argument": [
+    "Models can now pilot physical systems, and cyber refusals do not stop requests for physical harm, so refusals are a weak safety layer for robots.",
+    "On a robot the security boundaries are the safety boundaries, and the Unitree platforms show weaknesses at every boundary from Bluetooth to cloud to internal bus to root.",
+    "The onboard AI can reach and edit the robot's own safety mechanisms, and the vendor prompt tells it to satisfy any master without refusing, so any untrusted perception can steer the robot.",
+    "Each layer trusts the one above it, so no layer owns a kinetic safety invariant and failures are fail-open.",
+    "The embodied reasoning lethal trifecta (untrusted perception, physical action authority, and safety-envelope authority held by the AI) names the combination to avoid.",
+    "The fix is to move safety below language into an independent, fail-closed, locally interruptible controller, and for buyers, regulators and vendors to demand evidence of safety rather than claims of intelligence."
+  ],
+  "claims": [
+    {"claim": "Frontier models from recent generations will pilot a drone to a described target and drop a payload on request, while refusing ordinary cyber requests.", "evidence": "A recorded demo video of a drone flown by a frontier model prompt; the speaker notes earlier models flew the drone away.", "grade": "demo", "t": "01:10", "source": "both"},
+    {"claim": "A robot dog whose sensor inputs feed the language model can be prompt-injected through its camera with a QR code that changes its behavior, including disabling object avoidance.", "evidence": "Black Hat USA 2026 session video shown, with the speaker and a co-author in it; slide describes a visual cue payload.", "grade": "demo", "t": "03:29", "source": "both"},
+    {"claim": "The research found seven pre-authentication chains to root, four critical-rated, about 24 supporting findings, across the Go2 and G1 product lines, all responsibly disclosed.", "evidence": "Summary slide; the speaker says the individual hacks are not the point.", "grade": "measured", "t": "06:37", "source": "slide"},
+    {"claim": "Bluetooth provisioning on the robots is protected by a fleet-wide AES key, gives remote shell to any nearby unit without authentication, and can spread from one robot to another; a vendor patch was bypassed again a month or two later.", "evidence": "Recorded terminal demos and speaker narration; slide credits earlier disclosure to Andreas Makris and Kevin Finisterre.", "grade": "demo", "t": "07:38", "source": "both"},
+    {"claim": "Every service on the robots runs as root, and the factory-reset path restores from writable storage, so a compromise survives a hard reset.", "evidence": "Persistence slide with a four-step recovery flow and narration.", "grade": "case", "t": "08:43", "source": "both"},
+    {"claim": "The cloud and update channel has TLS verification disabled, so a hostile network can impersonate the AI service or broker, and forged responses reach the motion dispatcher.", "evidence": "Terminal demos on slides showing the channel exercised end to end with benign motion; a slide notes a later TLS hardening changes the attacker class.", "grade": "demo", "t": "10:48", "source": "both"},
+    {"claim": "The vendor-embedded system prompt instructs the robot to satisfy the master's requests at all times and never refuse, with no authenticated definition of the master, so any input counts.", "evidence": "Recovered prompt text quoted on a slide, with a public repository link as proof; the speaker says it was translated from Chinese and he has two years of Chinese study.", "grade": "case", "t": "12:54", "source": "both"},
+    {"claim": "The model can call skills including attacking a person, disabling obstacle avoidance and speeding up movements, in the same plan; the humanoid has a wider set of boxing and kicking actions.", "evidence": "Slides listing skill names and a combat action table; the Black Hat demo cited as the consequence.", "grade": "case", "t": "13:25", "source": "both"},
+    {"claim": "The AI output goes through a text parser into an action queue, and no policy layer evaluates the plan as a whole; client guards are disableable, spoofable and fail-open.", "evidence": "Dispatch pipeline and layer-table slides.", "grade": "assertion", "t": "15:29", "source": "slide"},
+    {"claim": "A newly announced Unitree humanoid is likely similarly unsafe because firmware is shared across products.", "evidence": "Inference from the dog and G1 firmware being a few kilobytes apart; the speaker had not obtained the new firmware.", "grade": "assertion", "t": "14:58", "source": "said"},
+    {"claim": "An EDR-style monitor on tool calls can detect a robot agent behaving unusually, such as following a hidden instruction in a page it reads, and steer or disable it.", "evidence": "Simulation video of a small local model agent controlling a simulated humanoid with the Iltaran monitor; the screen notes the video is staged.", "grade": "demo", "t": "18:05", "source": "both"}
+  ],
+  "numbers": [
+    {"figure": "7", "meaning": "pre-authentication chains to root", "t": "06:37"},
+    {"figure": "4", "meaning": "chains rated critical (slide label 'VV critical-rated')", "t": "06:37"},
+    {"figure": "~24", "meaning": "supporting findings", "t": "06:37"},
+    {"figure": "2", "meaning": "product lines covered, Go2 and G1", "t": "06:37"},
+    {"figure": "about 45 seconds", "meaning": "time to get a second shell on another dog over Bluetooth, in the speaker's demo", "t": "07:38"},
+    {"figure": "about 45 lb, 5 ft 10", "meaning": "approximate weight of the dog and height of the humanoid", "t": "00:40"},
+    {"figure": "a couple of kilobytes", "meaning": "difference between the dog and humanoid firmware images, per the speaker", "t": "10:18"},
+    {"figure": "0.5 m/s", "meaning": "speed limit shown as monitored by the Iltaran simulation console", "t": "19:07"}
+  ],
+  "frameworks": [
+    {"name": "Embodied reasoning lethal trifecta", "description": "Adapted from Simon Willison's lethal trifecta. Three conditions that together turn an AI failure into a physical safety event: untrusted perception (prompts, networks, sensors or peers can influence the plan), physical action authority (the plan can reach motion or force APIs), and safety envelope authority (safety checks are co-resident with the AI, mutable, fail-open or unauthenticated). Defense should not rely on improving refusals."},
+    {"name": "Security boundaries equal safety boundaries", "description": "A chain of root, sensors, policies (voice, LLM, locomotion models) and actuators; a camera and microphone platform with legs is also a mobile surveillance node."},
+    {"name": "Layered attack ladder", "description": "Radio (BLE, hostile Wi-Fi), session (app and WebRTC), root (DDS, OTA, bridge), discovery (passive DDS peers) and next robot (broadcast reach)."},
+    {"name": "Safety below language", "description": "LLM proposes a typed plan, a policy gate checks capability and context, a safety kernel enforces speed, distance and force, and the actuator accepts only signed bounded commands; the controller cannot be disabled, is independently supervised, fail-closed and locally interruptible."},
+    {"name": "Platform defense set", "description": "Identity (per-device BLE keys, mutual authentication, owner binding), bus (DDS-Security identity, encrypted discovery, topic ACLs), privilege (no network-facing parser as root, sandbox and separation of duties), update (signed manifests, anti-rollback, measured boot, trusted reset image), dependencies (SBOM, rebuild policy, security-fix intake)."}
+  ],
+  "artifacts": [
+    {"name": "Unitree Go2 and G1 firmware research", "kind": "product", "note": "Robots studied; slides state coordinated disclosure has taken place.", "url": ""},
+    {"name": "unitree_send_help", "kind": "repo", "note": "Public repository cited as proof of the recovered embedded system prompt.", "url": "https://github.com/5stars217/unitree_send_help"},
+    {"name": "Black Hat USA 2026: Kinetic Prompt Injection", "kind": "paper", "note": "Session video by the speaker's group showing QR code prompt injection of a robot dog.", "url": ""},
+    {"name": "StealthBench", "kind": "benchmark", "note": "Named on the speaker's intro slide as a work he co-authored; not discussed.", "url": ""},
+    {"name": "Iltaran", "kind": "tool", "note": "EDR-like monitor for robot agents that watches commands and connections; demonstrated in simulation.", "url": ""},
+    {"name": "MuJoCo and NVIDIA Lyra II", "kind": "tool", "note": "Simulation environments named as ways to test robots without owning them; mostly used for training, not attack assessment.", "url": ""},
+    {"name": "Lethal trifecta (Simon Willison)", "kind": "standard", "note": "Software-agent framing the speaker adapts for robots.", "url": ""}
+  ],
+  "slide_only": [
+    "Intro slide lists the speaker as threlfall / adrian wood with robotics and drone safety, 18 years of experience, StealthBench coauthor and SANS SEC590 coauthor.",
+    "Title slide reads 'Unitree Go2 + G1 firmware research, coordinated disclosure has taken place'.",
+    "Attack-surface diagram: BLE provisioning, phone app over WebRTC, Wi-Fi hostile LAN, cloud over MQTT, OTA and AI, internal bus over DDS and LCM, policy layer of LLM and skills, all converging on the body; a side note jokes about a private key in the slides.",
+    "A slide notes a scope correction: protected OTA builds are affected, and later TLS hardening changes the attacker class.",
+    "Slide on the dispatch pipeline shows model text to regex extraction to action queue to mapped function dispatch.",
+    "Layer table: network (AI endpoint can be impersonated), prompt (anti-refusal plus callable physical skills), parser (every recognized action queued), client guard (disableable, spoofable, fail-open), motion service (standing check, no human or obstacle invariant), body.",
+    "Industry asks slide: buyers should ask for security support lifetime, SBOM, local E-stop behavior, offline mode and a disclosure policy; regulators should treat remote actuation, sensing, update integrity and cloud control as product-safety requirements; vendors should publish threat models, command schemas, safety invariants and independently tested recovery guarantees; researchers should hack more robots.",
+    "The Iltaran demo screens show a small local model (Qwen2.5-1.5B-Instruct quantized, via llama.cpp) planning from facility work orders on a simulated G1, a hidden line added to a page being read, and a detection appearing in the monitor console.",
+    "Closing slide: 'Please do not give an AI full control of a robotic body and call model refusals a safety system.' Contact slide lists whitehacksec and bt6.gg."
+  ],
+  "demos": [
+    "Video of a drone flown by a frontier model prompt to a target vehicle and releasing a payload.",
+    "BT 6 video of a roleplay prompt making a robot dog jump at ice chests.",
+    "Black Hat session video of QR code prompt injection redirecting a robot dog's behavior.",
+    "Recorded terminal demos of the Bluetooth, cloud, LAN and internal-bus paths on the robots.",
+    "Simulation video of the Iltaran monitor reacting to a hidden instruction read by a robot agent."
+  ],
+  "quotes": [
+    {"text": "On a robot the security boundaries equal the safety boundaries.", "speaker": "Adrian Wood", "t": "06:04"},
+    {"text": "Please do not give an AI full control of a robotic body and call model refusals a safety system.", "speaker": "Adrian Wood", "t": "20:10"},
+    {"text": "The point is that these systems need a more careful ground-up rethink.", "speaker": "Adrian Wood", "t": "06:37"}
+  ],
+  "offense": [
+    "Unitree Go2 and G1 devices expose a Bluetooth provisioning path protected by a fleet-wide key that allows unauthenticated remote root and can spread between nearby robots.",
+    "The cloud broker and update channels accept spoofed devices or servers because of serial-number-based authentication and disabled TLS verification.",
+    "The internal bus is unauthenticated and root services can be driven by an attacker with local access, and a compromise persists through a factory reset.",
+    "The onboard AI layer will follow injected instructions, including skills that disable safety checks, because the vendor prompt forbids refusal and any input counts as the master."
+  ],
+  "defense": [
+    "Do not use model refusals as the safety system for robots; keep the safety envelope outside the model's reach.",
+    "Put a policy gate and a safety kernel between the LLM and the actuators, so the actuator accepts only signed, bounded commands and the safety layer cannot be disabled by the AI, is fail-closed and locally interruptible.",
+    "Harden the platform with per-device keys and mutual authentication, DDS security with topic ACLs, no network-facing parsers as root, signed and anti-rollback updates and a trusted reset image, and an SBOM with security-fix intake for vendored code.",
+    "Add an EDR-like monitor on tool calls that flags and steers unusual behavior such as entering restricted areas, and test robots in simulation without owning them.",
+    "Require local E-stop behavior, offline mode, a disclosure policy and security support lifetime when buying robots."
+  ],
+  "takeaways": [
+    "When evaluating any agent with actuators, ask whether the safety invariant is enforced below the model by a component the model cannot edit or disable.",
+    "Treat every sensor channel on an AI-controlled device as an untrusted prompt input and threat-model it accordingly.",
+    "Use the three-part trifecta as a design review checklist: untrusted perception, physical action authority, and AI-held safety authority should never coexist.",
+    "Put local E-stop, offline mode, SBOM, support lifetime and disclosure policy into procurement requirements for robots.",
+    "Do not count on refusals for physical harm: a model that refuses a cyber task may still help with a physical one."
+  ],
+  "limits": [
+    "The speaker had not obtained firmware for the newest Unitree humanoid and extrapolated from shared firmware.",
+    "He has not tested the wide range of robots, including more expensive US ones, so cannot say whether the pattern is general.",
+    "The speaker says the trifecta does not perfectly replace Willison's and that the irreversibility analogue is the safety envelope bypass.",
+    "Translation of the vendor prompt from Chinese is the speaker's own, and he says the spirit is accurate."
+  ],
+  "critique": [
+    "The evidence is a mix of vendor firmware findings and demo videos; the count of chains and findings is given without per-finding severity, CVE ids or fix status, so remediation state is unknown.",
+    "The claim that the products are geared to military use rests on product imagery and firmware content; no customer or deployment was described.",
+    "The trifecta is a useful checklist but is argued by analogy; it is not tested against alternative designs, and the irreversibility leg is only loosely mapped.",
+    "The monitor demonstration is in simulation with a staged scenario and a small model, so it shows a concept rather than detection rates.",
+    "The headline claims about frontier models flying a drone to drop a payload come from a single video; the models and exact prompts are not given beyond a prompt string."
+  ],
+  "qa": [
+    "Is the suggestion that a third party supply the safety software? Yes, partly: simulation (MuJoCo, NVIDIA Lyra II) and monitoring tools need to mature, and so far they are mostly used for training rather than attack assessment.",
+    "How do the existing controls prevent unintended harm? On the Unitree dogs it begins and ends with lidar-based obstacle avoidance, which has a limited field of view; videos show dancing robots kicking people. An audience member suggested a treadmill-style pull cord, and the speaker agreed.",
+    "Is there a mature framework for robots that do not trust all sensor input? The speaker knows of none but has not tested many robots.",
+    "Does the trifecta capture irreversibility? Bypassing the safety envelope is the closest equivalent, and the speaker accepts it does not fully supersede the original trifecta."
+  ],
+  "tags": ["prompt-injection", "guardrails-runtime-controls", "vuln-discovery-exploit", "governance-policy"],
+  "key_frames": [
+    {"file": "t00375.jpg", "caption": "Summary of findings: 7 pre-authentication root chains, 4 critical-rated, about 24 supporting findings, 2 product lines."},
+    {"file": "t00357.jpg", "caption": "Attack-surface diagram showing radio, app, cloud, internal bus and policy layer all converging on the body."},
+    {"file": "t00957.jpg", "caption": "Layer table showing no layer owns the kinetic invariant: client guard disableable and fail-open, motion service with no human or obstacle invariant."},
+    {"file": "t00991.jpg", "caption": "The embodied reasoning lethal trifecta: untrusted perception, physical action authority, safety envelope authority."},
+    {"file": "t01064.jpg", "caption": "Defense architecture: LLM proposes, policy gate, safety kernel, actuator accepts signed bounded commands."}
+  ],
+  "signal": {"score": 4, "reason": "Summary slides and recorded demos give counts of findings and a design framing; per-finding severity and fix status were not shown, and the monitoring demonstration was a staged simulation."},
+  "caveats": [
+    "Summary-level record: exploit mechanics deliberately not recorded.",
+    "Auto-captions garble names; slides were used for spellings: Iltaran (not Ilteran), StealthBench, Andreas Makris and Kevin Finisterre, aussinfosec.",
+    "The transcript names a BT 6 colleague as 'Fire Starter'; the slide handle reads differently, so the name was not recorded.",
+    "The transcript mentions a new humanoid product ('H1X') announced two days earlier; no slide confirms the name.",
+    "The slide label 'VV critical-rated chains' was kept as shown; its exact meaning was not explained aloud.",
+    "The first video did not play on stage; later frames show the drone and Black Hat videos."
+  ]
+}

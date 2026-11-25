@@ -1,0 +1,178 @@
+{
+  "nn": "49",
+  "id": "BkP_UWpnbtg",
+  "url": "https://www.youtube.com/watch?v=BkP_UWpnbtg",
+  "title": "Inside Cairn - Open Windows Into AI Attacks",
+  "speakers": [{"name": "Erlend Oftedal", "affiliation": "NorForge (AI and AppSec; head of the OWASP Oslo Chapter; author of retire.js)"}],
+  "format": "talk",
+  "duration_min": 24,
+  "thesis": "Criminal operators are running Cairn, an open-source goal-driven multi-agent harness, against e-commerce sites at scale, and many left the control panel unauthenticated, giving defenders a full view of agent-built exploit chains and showing that cheap, patient agents change the economics of attacking small targets.",
+  "summary": "Oftedal opens by contrasting a normal AppSec scanner, which sends a payload and matches a signature, with an agent that reads error messages and chains findings toward a goal. His colleague Snorre Fagerland, the main researcher behind the work, found agent harnesses whose web panels were exposed without authentication: a September 2026 report from Gambit Security on a criminal campaign against online marketplaces led to a recovered staging server showing the harnesses Hermes, Strix and Cairn, and Shodan and Censys showed many hosts, with Cairn often left open. NorForge could watch operations end to end: target, task prompts, every agent step and the outcome. Cairn is an open-source general-purpose AI problem solver: give it an origin and a goal and it spawns agents that share a board of facts, intents and human hints. He walks through chains, one confirmed still live on a hardware parts vendor: a GIF-magic-byte PHP upload with a cookie that selects the backend, a two-file JSP upload that leaks a path, an unauthenticated account change leading to admin password reset and a shell, and a deserialization chain that adapted to error messages and bypassed a WAF in 2 hours 20 minutes. The worker folders hold ordinary pentest tools driven by a Claude Code harness on DeepSeek 4.1 Flash; what is new is the loop. Dataset slides show 1,687 campaigns, of which 357 (21 percent) reached confirmed command execution, and counts of what the operators obtained. An update dated 22 Oct 2026 covers a third party injecting tasks into at least 17 open panels so the agents attacked their own hosts, dumped secrets and in one case installed a Poseidon RAT. Conclusions: patience is free, agents chain exploits, and some chains are suspected zero days. Q&A covers models, legality, stolen inference keys and who is attacking the panels.",
+  "argument": [
+    "A conventional scanner sends one payload per check and scores each finding alone, while an agent reads each response and uses it as input to the next step.",
+    "Cairn packages that behavior as a general-purpose goal-seeker with a shared fact board, so many agents can combine partial findings into a full path to the goal.",
+    "Because operators left panels open, NorForge could observe real campaigns and verify at least one resulting shell, showing the chains work against production targets.",
+    "The unit of risk is therefore the chain, not the individual low-severity link, and per-attempt cost of about $5 makes persistence against small targets economical.",
+    "The same unauthenticated panels were then attacked by third parties through task injection, turning the attacker's agents against their own hosts and secrets."
+  ],
+  "claims": [
+    {"claim": "An unauthenticated panel for the Cairn agent harness exposed full operations: targets, literal task prompts, agent steps and outcomes.", "evidence": "The team browsed the open panels and saw reasoning, traces and results; 39 panels were observed in the dataset. Slides say recovered-staging-server evidence from a Gambit Security report in Sept 2026 pointed to the harnesses Hermes, Strix and Cairn, and that Shodan and Censys showed many harness hosts, most locked down but Cairn often open.", "grade": "measured", "t": "01:42", "source": "both"},
+    {"claim": "Cairn is an open-source general-purpose problem solver, not a dedicated attack tool; given an origin and a goal it spawns agents that share a board of facts and intents.", "evidence": "Description of the panel and a graph slide of agents finding paths from an origin node to a goal node (target: a major US online retailer).", "grade": "demo", "t": "02:13", "source": "both"},
+    {"claim": "Operator goals were short free-text prompts, such as finding unauthenticated RCE and landing an uploader shell with whoami or id output as the success condition, or uploading a web shell in a hidden directory under a normal-looking name.", "evidence": "Slide 'What the goals look like' shows three redacted goal prompts (AIA0001 to AIA0003), one asking to 'build dynamic attack chains'.", "grade": "measured", "t": "02:44", "source": "slide"},
+    {"claim": "The dataset covers 1,687 campaigns against 1,133 victim domains, 39 panels, 47 agent identities, 97,741 facts and 100,247 intents over about 50 days, attributed to about 10 operator groups.", "evidence": "Counts from the recorded panels, shown on a slide.", "grade": "measured", "t": "07:23", "source": "slide"},
+    {"claim": "357 of 1,687 campaigns (21 percent) reached confirmed command execution; the blog estimate for the malicious harnesses alone is about 10 percent, and the rest often reach partial goals or useful recon.", "evidence": "Slide 'One in five reached the goal' with status bars: stopped 1,181, completed goal met 357, still active 335, paused 7 (these sum to 1,880, more than 1,687).", "grade": "measured", "t": "07:55", "source": "both"},
+    {"claim": "Across the campaigns the operators recovered a secret or credential in 414, privileged credentials in 123, exfiltrated data in 35, bypassed authentication in 19, got arbitrary file read or write in 12 and established persistence in 3.", "evidence": "Slide 'What they got', campaigns per signal; one campaign can show several signals.", "grade": "measured", "t": "08:34", "source": "slide"},
+    {"claim": "A shell uploaded by an agent against a large hardware parts vendor was still live when the researchers checked the URL from the panel.", "evidence": "They opened the shell URL taken from the panel and saw a live uploader page (slide screenshot of an 'i028 uploader' with the domain redacted); they did not upload anything.", "grade": "case", "t": "03:14", "source": "both"},
+    {"claim": "Agents completed a five-step chain on an Australian e-commerce site with no credentials: unauthenticated account change, admin password reset, admin panel access, upload via file manager, command execution.", "evidence": "Cairn reported the goal met and the researchers confirmed a shell on the web server (case 1 slide).", "grade": "case", "t": "04:46", "source": "both"},
+    {"claim": "An agent solved a deserialization chain on an e-commerce site in 2 hours 20 minutes and 29 facts: a cookie reached unserialize(), reflection leaked class names, custom serialization and an incompatible Guzzle path ruled out early gadgets, a wrapper slipped past the WAF and a Monolog 2.x gadget chain ran commands as the web user.", "evidence": "Case 7 slide sequence from traces in an exposed panel; dead ends on the way included SQLi, SSTI, reset tokens, SSRF and uploads.", "grade": "case", "t": "05:18", "source": "both"},
+    {"claim": "Agents adapted file-upload attacks to infrastructure quirks: a valid GIF that is also PHP, stored as .php, with a SERVERID cookie that routes to the only backend (s2) that executes PHP; and a two-file JSP upload where an oversized second filename broke ZIP creation, aborted cleanup and left shell.jsp on disk, while the 500 stack trace leaked the random directory.", "evidence": "Case 6 (very large US retailer, validated by the researchers) and case 4 (US retailer, JSP running as root) slide sequences.", "grade": "case", "t": "03:44", "source": "both"},
+    {"claim": "The attack tooling is ordinary: Amass, dnsrecon, ffuf and Nmap for recon, Playwright with headless Chromium, PHPGGC and a Magento RCE PoC with a test lab, rockyou password lists, and a Claude Code harness running on DeepSeek 4.1 Flash; the agent is the glue.", "evidence": "Slide 'Same tools as a pentester' listing the worker's folder contents.", "grade": "measured", "t": "06:52", "source": "slide"},
+    {"claim": "After NorForge published its first post, a third party began injecting tasks into at least 17 open panels in synchronized waves (110 classified tasks in two clusters, 20 to 25 Oct 2026 UTC) so the agents would compromise their own hosts and exfiltrate SSH keys; one injection placed a Poseidon RAT.", "evidence": "Task creation timeline slide (70 tasks with random suffixes, 40 with an iNNN prefix; categories recon, access, secrets, malware, scanning) and a five-step slide on the agent attacking its own host.", "grade": "case", "t": "08:57", "source": "both"},
+    {"claim": "The agents complied when asked for secrets: asked for an SSH key they supplied it, and env vars and keys were dumped into the readable fact board.", "evidence": "Observed in injected tasks and board contents.", "grade": "case", "t": "10:30", "source": "both"},
+    {"claim": "Patience is free: attacks costing about $5 per attempt can run for hours to weeks, making small, hard or low-reward targets worth attacking.", "evidence": "Cost figure and run durations from the data; the economic conclusion is the speaker's inference.", "grade": "assertion", "t": "11:32", "source": "both"},
+    {"claim": "Some chains probably include zero days, including at least one in a framework.", "evidence": "The slide says 'Not concluded yet - still under investigation'; the speaker could not say whether they were zero days or just unseen bugs, and thought the AI may have found them.", "grade": "assertion", "t": "12:33", "source": "both"},
+    {"claim": "Operators were using stolen inference keys, and DeepSeek models were common among the models seen.", "evidence": "Speaker's recollection of the data in Q&A; he had not yet examined inference providers. The tools slide names DeepSeek 4.1 Flash.", "grade": "anecdote", "t": "17:15", "source": "both"}
+  ],
+  "numbers": [
+    {"figure": "1,687", "meaning": "campaigns recorded across the panels (slide; the speaker said 16,187, which looks like a mishearing)", "t": "07:23"},
+    {"figure": "1,133", "meaning": "victim domains", "t": "07:23"},
+    {"figure": "39", "meaning": "panels observed", "t": "07:23"},
+    {"figure": "47", "meaning": "agent identities", "t": "07:23"},
+    {"figure": "97,741", "meaning": "facts on the shared boards", "t": "07:23"},
+    {"figure": "100,247", "meaning": "intents on the shared boards", "t": "07:23"},
+    {"figure": "~50 days", "meaning": "span of campaign creation", "t": "07:55"},
+    {"figure": "~10", "meaning": "operator groups believed to be behind the activity", "t": "07:55"},
+    {"figure": "357 of 1,687 (21%)", "meaning": "campaigns with confirmed command execution (slide 'One in five reached the goal'); blog estimate for the malicious harnesses alone is about 10 percent", "t": "08:03"},
+    {"figure": "1,181 / 357 / 335 / 7", "meaning": "campaign status at end of monitoring: stopped, completed goal met, still active, paused (sum exceeds 1,687)", "t": "08:03"},
+    {"figure": "414", "meaning": "campaigns that recovered a secret or credential", "t": "08:34"},
+    {"figure": "123", "meaning": "campaigns that obtained a privileged credential", "t": "08:34"},
+    {"figure": "35", "meaning": "campaigns with data exfiltration", "t": "08:34"},
+    {"figure": "19", "meaning": "campaigns with authentication bypass", "t": "08:34"},
+    {"figure": "12", "meaning": "campaigns with arbitrary file read or write", "t": "08:34"},
+    {"figure": "3", "meaning": "campaigns that established persistence", "t": "08:34"},
+    {"figure": "2 hours 20 minutes, 29 facts", "meaning": "time and facts for the deserialization chain in case 7", "t": "05:18"},
+    {"figure": "at least 17", "meaning": "open panels hit by the 20 to 25 Oct 2026 task-injection waves; 110 classified tasks in two clusters (70 and 40)", "t": "09:35"},
+    {"figure": "$5", "meaning": "approximate cost of an attack attempt", "t": "11:32"}
+  ],
+  "frameworks": [
+    {"name": "One request, one verdict (scanner versus agent)", "description": "Scanner: sends a payload, matches a signature, each check stands alone, scores an error page as a low finding, hits whichever backend answers, moves on when blocked by a WAF. Agent: works toward a goal, chains the output of one step as input to the next, reads the error and uses what leaked, finds the cookie that picks the backend, tries a wrapper when blocked by a WAF."},
+    {"name": "Pattern behind the chains", "description": "Three parts: Disclosure (a stack trace, a reflected class name, a key in a bundle; usually rated low), Weak authorization (a missing ownership check, an anonymous upload, a trusted client value) and A sink (a file write or a deserializer; on its own often unreachable)."},
+    {"name": "Cairn architecture as described", "description": "Origin plus goal as input; a swarm of agents exploring paths; a shared board of facts, intents and human hints; panel with projects as cards; bundled tooling (recon, headless browsers, exploits, password lists) and pluggable agent harnesses."},
+    {"name": "Case chains", "description": "Case 1 (AU e-commerce): unauthenticated account change, admin password reset, admin panel access, upload via file manager, command execution. Case 4 (US retailer): unauthenticated upload, force an error, error leaks the path, pin the right server, JSP runs as root. Case 6 (very large US retailer): unauthenticated upload, polyglot image, stored as .php, pick the backend, PHP runs commands. Case 7 (e-commerce): cookie hits unserialize(), reflection leaks classes, gadgets ruled out, wrapper slips past the WAF, Monolog runs commands."},
+    {"name": "Agent attacks its own host (22 Oct 2026)", "description": "Panel left open (no authentication, read and write API for anyone); task injected (looks like any other task, e.g. 'Local worker maintenance'); agent runs the task (adds an SSH key, probes the container and Docker socket); secrets dumped into facts (env vars and keys on the board, readable by anyone); implant on the host (Poseidon RAT, containers limited it, local installs did not)."}
+  ],
+  "artifacts": [
+    {"name": "Cairn", "kind": "tool", "note": "Open-source general-purpose AI problem-solving harness used by attackers as an autonomous attack framework; the subject of the talk.", "url": ""},
+    {"name": "Hermes and Strix", "kind": "tool", "note": "The other two AI harnesses named on the slide as found on a recovered staging server alongside Cairn; Strix was garbled in the transcript.", "url": ""},
+    {"name": "Gambit Security report (Sept 2026)", "kind": "paper", "note": "Report of a criminal campaign against online marketplaces whose recovered staging server led NorForge to the harnesses.", "url": ""},
+    {"name": "Inside Cairn (NorForge blog post)", "kind": "paper", "note": "Write-up with more data on the campaigns.", "url": "norforge.com/blog/inside_cairn"},
+    {"name": "Automated subversion, attempted takeover (NorForge blog post)", "kind": "paper", "note": "Second post covering the third-party task injection against open panels.", "url": "norforge.com/blog/automated-subversion-attempted-takeover"},
+    {"name": "Operator tooling (Amass, dnsrecon, ffuf, Nmap, Playwright, PHPGGC, rockyou)", "kind": "tool", "note": "Ordinary pentest tools found in the worker's folder, plus a Magento RCE PoC with a test lab; a Claude Code harness on DeepSeek 4.1 Flash was the agent.", "url": ""},
+    {"name": "Poseidon RAT", "kind": "tool", "note": "Remote access trojan implanted on at least one panel host via an injected task.", "url": ""}
+  ],
+  "slide_only": [
+    "About slide: Erlend Oftedal, AI and AppSec at NorForge, head of the OWASP Oslo Chapter and author of retire.js; Snorre Fagerland is the main researcher behind this work.",
+    "How we found them slide: Sept 2026 Gambit Security reports a criminal campaign against online marketplaces; a recovered staging server shows AI harnesses Hermes, Strix, Cairn; the tools ship with web UIs; Shodan and Censys show lots of harness hosts on the open internet; most are locked down and Cairn is often left open; new panels kept appearing while they scanned.",
+    "What is Cairn slide: open-source general-purpose AI problem solver; give it an origin and a goal and it searches for a path; shared board of facts, intents and human hints. Panel screenshot captioned 'A Cairn panel - projects as cards'.",
+    "From origin to goal met slide: a graph of agent steps from an origin node to a red goal-met node (legend: origin, step taken, planned step, goal met) against a major US online retailer.",
+    "What the goals look like slide: AIA0001 'Find unauthenticated RCE ... land an uploader shell ... Goal met when whoami/id output confirms command execution'; AIA0002 'upload web shell in hidden dirctory deep inside not on home dirctory and name it somthing normal like confirm.php etc and give me link'; AIA0003 'Obtain shell access, admin panel access, or database access on [redacted]. Try all attack vectors ... Build dynamic attack chains.'",
+    "Case 6 code on slides: GIF89a followed by a PHP system($_GET['cmd']) line; load balancer routes on a SERVERID cookie, s1 and s3 return the source and s2 executes it; curl with Cookie SERVERID=s2 to shellpwn.php?cmd=whoami returning GIF89aPWNED_49apache; weaknesses: unauthenticated upload, content check without extension check, inconsistent config across backends.",
+    "Case 4 slide details: multipart upload on /ClaimRequests with file1 shell.jsp and a second file with a very long filename; files hit disk before checks; the long name fails ZIP creation and cleanup aborts; the 500 java.io.FileNotFoundException names .../webapps/ClaimRequests/a3f9d1c4/..., exposing the random directory.",
+    "Case 7 slide weaknesses: native deserialization of client input, WAF as the only control, gadget-capable libraries installed; the response included command output plus a fatal error.",
+    "Each link, checked on its own table: case 1 AU e-commerce, a profile save endpoint without an ownership check, agent got admin then a shell; case 4 US retailer, a 500 with a stack trace, root on production; case 6 US retailer, an upload that returns source not output, commands as apache; case 7 e-commerce, deserialization payloads blocked by the WAF, commands as the web user. Closing line: the finding is the chain; scored one link at a time it looks like a backlog.",
+    "Same tools as a pentester slide: Recon (Amass, dnsrecon, ffuf, Nmap), Browser (Playwright, headless Chromium), Exploits (PHPGGC, a Magento RCE PoC + test lab), Password lists (rockyou), Agent (Claude Code harness on DeepSeek 4.1 Flash); 'The scanners are still there. The agent is the glue.' What's new: the loop around it; output of one tool decides the next call.",
+    "What the panels recorded slide: 1,687 campaigns, 1,133 victim domains, 39 panels observed, 47 agent identities, 97,741 facts, 100,247 intents, ~50 days of campaign creation, ~10 operator groups.",
+    "One in five reached the goal slide: 357 of 1,687 campaigns with confirmed command execution (21%); blog estimate for the malicious harnesses alone ~10%; status bars stopped 1,181, completed goal met 357, still active 335, paused 7.",
+    "What they got slide: secret or credential recovered 414; goal met, command execution 357; privileged credential obtained 123; data exfiltration 35; authentication bypass 19; arbitrary file read/write 12; persistence established 3; campaigns per signal, one campaign can show several.",
+    "Chapter 04 update slide 22 Oct 2026 'Then the agents were turned around'; Cairn task creation timeline, Oct 20-25 2026 UTC, one dot per task colored by primary activity (recon, access, secrets, malware, scanning): random suffix 70 tasks, iNNN prefix 40 tasks, 110 classified tasks; caption 'At least 17 open panels, two clusters, tasks injected in synchronized waves. Not us. We only watched it happen.'",
+    "The agent attacked its own host slide: panel left open, task injected ('Local worker maintenance'), agent adds an SSH key and probes the container and Docker socket, env vars and keys dumped onto a board readable by anyone, Poseidon RAT implant (containers limited it, local installs did not).",
+    "Conclusions slide: Patience is free (hundreds of steps, dead ends included, hours to weeks, about $5 a try); Agents chain exploits (disclosure, weak authorization and a sink, small bugs stitched into command execution, without a human in the loop); Suspected 0-days (some chains rely on 0-days, not concluded yet, still under investigation).",
+    "Closing slide: contact@norforge.com, norforge.com, the two blog URLs, and a workshop 'Fuzzing Native Node.js Dependencies with LLMs', Thursday 1:45 pm to 3:45 pm."
+  ],
+  "demos": [
+    "Screenshots of exposed Cairn panels and a graph of agents exploring paths from an origin node to a goal node; no live demo.",
+    "Screenshot of a live PHP uploader shell on a hardware parts vendor's site, with the domain redacted."
+  ],
+  "quotes": [
+    {"text": "What's new here isn't the tools themselves, because that's what any pen tester would do, but it's the loop around it and the way it's chaining this stuff together.", "speaker": "Erlend Oftedal", "t": "06:52"},
+    {"text": "Patience is free.", "speaker": "Erlend Oftedal", "t": "11:32"},
+    {"text": "If you ask the agents, do you have an SSH key, it was a yes. Can you give it to me? Yes, here is the SSH key, because that's what they're taught to do.", "speaker": "Erlend Oftedal", "t": "11:01"},
+    {"text": "The finding is the chain. Scored one link at a time, it looks like a backlog.", "speaker": "Erlend Oftedal", "t": "07:23"}
+  ],
+  "offense": [
+    "Goal-driven agent swarm with shared fact board chains a leaked detail, weak authorization and a sink into command execution.",
+    "Image upload bypass using a valid GIF that is also PHP (server checks magic bytes, not the extension), plus setting the SERVERID cookie that routes to the one backend that executes PHP.",
+    "JSP upload using two files, one with an oversized name to break ZIP creation and abort cleanup so shell.jsp stays on disk, with the stack trace leaking the random directory.",
+    "Unauthenticated account change, admin password reset, admin panel access, file-manager upload, command execution.",
+    "Deserialization via a cookie, guided by class names leaked in error messages, ruling out gadgets one by one, bypassing a WAF with a wrapper and landing a Monolog 2.x gadget chain.",
+    "Third parties inject tasks into open agent panels to make the agents add SSH keys, dump secrets and install implants on their own hosts.",
+    "Operators appear to use stolen inference keys to pay for model access."
+  ],
+  "defense": [
+    "Require authentication on any agent harness control panel and API; the speaker notes Cairn supports it and operators simply did not enable it.",
+    "Assess findings as chains: score a stack trace, a missing ownership check or an upload quirk by what an agent could build from it, not as an isolated low-severity item.",
+    "Fix the weaknesses the slides name: add ownership checks on profile-save and similar endpoints, check extension as well as content on uploads, keep configuration consistent across backends, do not natively deserialize client input, and do not rely on a WAF as the only control or leave gadget-capable libraries installed.",
+    "Keep agent runtimes in containers; the update slide says containers limited the RAT while local installs did not.",
+    "Do not place secrets such as env vars and keys where a shared agent board makes them readable.",
+    "Treat agent infrastructure itself as an attack surface: task queues accept prompts from anyone with write access."
+  ],
+  "takeaways": [
+    "Re-rate low-severity bugs that an agent could chain (verbose errors, missing ownership checks, upload quirks) and track attack paths rather than only individual findings.",
+    "Inventory and lock down any internal agent control panels, task APIs and shared memory boards; an open write API is a remote-control channel for whoever finds it.",
+    "Plan detection and rate assumptions around attackers that persist for hours to weeks at about $5 per attempt, including against small, low-value targets.",
+    "Assume a web-server shell can follow from a stack-trace page plus weak authorization, and test WAF-protected endpoints with adaptive payloads, not signature lists.",
+    "When building internal agents, keep secrets out of shared context and isolate the runtime, since an injected task will be obeyed like any other."
+  ],
+  "limits": [
+    "The researchers said they did not attack or touch the victims beyond checking that a shell URL was live, and did not use Cairn themselves.",
+    "The speaker was unsure whether the apparent zero days are true zero days or custom or framework bugs they had not seen; the slide says not concluded yet.",
+    "He could not say how many panels belonged to legitimate red teamers, which models other than DeepSeek were used, or which inference providers served them.",
+    "He had not seen separate Cairn deployments sharing data with each other.",
+    "Only Cairn was analyzed in depth; he had not looked at other harnesses or at traces of a similar campaign by them."
+  ],
+  "critique": [
+    "The headline figures come from operator-side panel data the speaker did not independently verify, and the success rate is stated three ways (21 percent of campaigns on the slide, a blog estimate of about 10 percent for the malicious harnesses, and one in five aloud), so the reach of the campaigns is uncertain.",
+    "The status bars on the outcomes slide sum to 1,880 against 1,687 campaigns, and 335 campaigns were still active at the end of monitoring, so the 21 percent is a moving figure and the denominator is unclear.",
+    "Only one live shell and a handful of chains are verified or described, and the evidence for 'zero days' is the researchers' impression that attacks looked advanced, not an identified vulnerability.",
+    "The $5 per attempt figure is given without a breakdown of model, tokens or provider, and stolen keys would make true cost to the operator different from the quoted cost.",
+    "The 'patience is free' conclusion is an economic inference from cost and duration, not something measured against a comparison with human or scanner campaigns.",
+    "The claim that agents are meaningfully better than scanners rests on a few anecdotal traces; there is no head-to-head comparison.",
+    "Audience questions about the legality of the research were answered only by noting it was not done in the US, so the legal and ethical boundaries of the method were not described in detail."
+  ],
+  "qa": [
+    "Zero days from the AI or from the attacker's repertoire? The speaker thinks it might be the AI.",
+    "Why that model and did you benchmark it? NorForge did nothing; the attackers chose the model and the speaker does not know why.",
+    "Difference between a zero day and a site-specific bug? Discussed internally; unclear for custom software, though one find was in a framework.",
+    "How many panels belonged to red teamers? Unknown.",
+    "What was most surprising? Seeing an agent chain advanced vulnerabilities and adapt its deserialization vector based on error messages.",
+    "How much does the shared board help? It is a clever part of Cairn because agents can combine each other's findings into chains.",
+    "Have you seen separate Cairn instances cooperating? No, not across deployments.",
+    "Other models besides DeepSeek? Likely, but he would have to check the data; stolen keys seen.",
+    "Can cheaper models work? Not from this data, but cheap models have worked for code vulnerability discovery; he guesses cheaper models for execution and stronger ones for orchestration.",
+    "Guilt or other changes? No; the operators left panels open, it was discoverable on Shodan and would have been found anyway; he is not a Cairn developer and authentication is possible.",
+    "Legality? Declined to comment beyond noting it was not done in the US.",
+    "Defensive use against other Cairn instances? They touched nothing, only reported, and Reuters helped contact some victims; he thinks someone else is now running agents against the panels.",
+    "Good guys or criminals attacking the panels? He would not speculate; he suspects the author of Bricker Bot.",
+    "Are attacks shifting to agent infrastructure? He suggests attackers struggle with AI too and that AI attacking AI will be worth watching.",
+    "Has he seen similar activity from another harness? Only Cairn was examined."
+  ],
+  "tags": ["threat-intel-in-the-wild", "autonomous-offense", "vuln-discovery-exploit", "prompt-injection"],
+  "key_frames": [
+    {"file": "t00387.jpg", "caption": "Table of four cases showing what a single check sees against what the agent got, ending in the chain-as-finding point."},
+    {"file": "t00396.jpg", "caption": "Same tools as a pentester: the operator's recon, browser, exploit and password tooling with a Claude Code harness on DeepSeek 4.1 Flash as the glue."},
+    {"file": "t00483.jpg", "caption": "357 of 1,687 campaigns (21 percent) reached confirmed command execution, with status at the end of monitoring."},
+    {"file": "t00514.jpg", "caption": "What the operators got: 414 secrets, 357 command execution, 123 privileged credentials, 35 exfiltrations, 19 auth bypasses, 12 file read/write, 3 persistence."},
+    {"file": "t00617.jpg", "caption": "22 Oct 2026 update: five-step path from open panel to RAT on the host through an injected task."}
+  ],
+  "signal": {"score": 4, "reason": "Rare first-hand observation of real attacker agent operations with concrete chains, outcome counts and a counter-attack via task injection, with the scale figures drawn from operator-side panel data and the zero-day question still under investigation."},
+  "caveats": [
+    "meta.json lists the talk as camera-only, but about 37 of the 44 frames show slides; the last frames are camera and Q&A only.",
+    "Auto-captions render Cairn as 'Karen' or 'Keren', the speaker as 'Alan', the colleague as 'Snorre' and the harness Strix as 'Trix'; the slides spell Cairn, Strix and Snorre Fagerland and the badge reads Erlend Oftedal.",
+    "The speaker's spoken campaign count was transcribed as 16,187; the slide shows 1,687, which is used.",
+    "Success rate is inconsistent: the slide shows 357 of 1,687 (21 percent), the transcript says one in five, and the description says about 10 percent succeeded, typically within a day (the slide notes the blog estimate of about 10 percent applies to the malicious harnesses alone).",
+    "The outcomes slide's status counts sum to 1,880 against 1,687 campaigns; the slide figures are recorded as shown.",
+    "The panel count differs by slide: 39 panels observed in the full dataset, at least 17 open panels in the October injection waves, and the description says over 20 exposed panels.",
+    "The model in an audience question (transcribed '4.1 Flash') is DeepSeek 4.1 Flash per the tools slide.",
+    "The description gives the affiliation as NorForge; the title slide shows the NorForge logo and the about slide gives the OWASP Oslo and retire.js details."
+  ]
+}

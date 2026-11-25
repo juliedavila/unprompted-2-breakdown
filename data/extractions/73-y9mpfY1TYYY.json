@@ -1,0 +1,429 @@
+{
+  "nn": "73",
+  "id": "y9mpfY1TYYY",
+  "url": "https://www.youtube.com/watch?v=y9mpfY1TYYY",
+  "title": "We don't need an LLM for That",
+  "speakers": [
+    {
+      "name": "Xenia Mountrouidou",
+      "affiliation": "Principal Applied AI Scientist, AppGate (from the video description; the auto-caption renders it as Upstream, and she says she works on zero trust networking signal)"
+    },
+    {
+      "name": "Casey Wilson",
+      "affiliation": "Principal Software Engineer, BusinessLoans.com (video description and speech)"
+    }
+  ],
+  "format": "talk",
+  "duration_min": 30,
+  "thesis": "For detecting phishing and network attacks, zero-shot frontier LLMs are not the best tool: fine-tuned small encoders win on text, tabular models or XGBoost win on network flows, and LLM-plus-ML ensembles do not pay for their complexity.",
+  "summary": "Mountrouidou and Wilson test whether an LLM can replace a purpose-built detector, answering with measurements instead of impressions. They build the experiment from interchangeable parts: open labelled data (18K phishing emails, a Mirai capture rebuilt as statistics, flows and packets, and CIC-IDS2017), numeric and embedding features, and models ranging from XGBoost and zero-shot LLMs and small models to fine-tuned encoders and decoders, a tabular foundation model (TabPFN-3), two System 1 decision models (Laya, which is open, and Jev), and two ensembles (a router and a stacked meta-learner). They score with area under the precision-recall curve (AUCPR) against the class prior. On phishing, zero-shot Claude Sonnet 4.6 reaches 0.970 and Gemini 3.1 Pro 0.990, but fine-tuned ModernBERT reaches 0.998 and a LoRA-tuned Llama 3.2 3B reaches 0.999, up from 0.780 untuned. On network flows, zero-shot LLMs sit at the class prior, XGBoost is strong, fine-tuning does not beat it, and TabPFN-3 alone is best at 0.856. Ensembles help on email but never beat fine-tuning, and on flows routing makes results worse. Cost and latency strongly favour small and classical models. They close with a decision tree and advice to get a few hundred labels, and take questions on class prior, harnesses, drift and labelling cost.",
+  "argument": [
+    "Stakeholders ask why train models when a zero-shot LLM is easy to deploy, so the question needs a controlled test with hard numbers.",
+    "On text-heavy phishing, zero-shot LLMs do well, but fine-tuned small encoders and decoders do better, at a fraction of the cost and latency.",
+    "On numeric network data, zero-shot LLMs perform at the class prior, and XGBoost or the tabular foundation model TabPFN-3 are the right tools.",
+    "Ensembles of ML and LLMs or decision models add cost and complexity but do not beat the best single tuned model, and routing can hurt.",
+    "So label a few hundred examples, choose the model by data type and labels available, and treat the LLM as a baseline to check against the class prior rather than as the default."
+  ],
+  "claims": [
+    {
+      "claim": "On phishing email, a LoRA fine-tuned Llama 3.2 3B reaches 0.999 AUCPR and fine-tuned ModernBERT reaches 0.998, versus 0.970 for Claude Sonnet 4.6 and 0.990 for Gemini 3.1 Pro zero-shot.",
+      "evidence": "AUCPR chart on 18K phishing emails with class prior 0.374. A footnote on the newer-models slide says the Claude phishing score is on a 22% stratified subset and Claude flows were omitted (5% coverage).",
+      "grade": "measured",
+      "t": "11:36",
+      "source": "both"
+    },
+    {
+      "claim": "Fine-tuning the same 3B Llama raised phishing AUCPR from 0.780 to 0.999 (+0.219 as labelled on the slide).",
+      "evidence": "Chart arrow comparing untuned and fine-tuned Llama 3.2 3B.",
+      "grade": "measured",
+      "t": "12:07",
+      "source": "both"
+    },
+    {
+      "claim": "On network flows, zero-shot LLMs perform at the class prior (best zero-shot 0.41 vs prior 0.40), while XGBoost gets 0.84 and fine-tuned ModernBERT and decoder get 0.83 and 0.85.",
+      "evidence": "Bar chart for Kitsune/Mirai flows with the class prior as a dotted line.",
+      "grade": "measured",
+      "t": "12:37",
+      "source": "both"
+    },
+    {
+      "claim": "TabPFN-3, a tabular foundation model used with no training, alone beat XGBoost and every ensemble or fine-tune on network detection, at 0.856 AUCPR.",
+      "evidence": "Results charts and the decision-card slide.",
+      "grade": "measured",
+      "t": "13:38",
+      "source": "both"
+    },
+    {
+      "claim": "System 1 decision models Laya and Jev reach about 0.95 to 0.96 on phishing out of the box without labels, but do not move past the class prior on network flows.",
+      "evidence": "Laya 0.958 and Jev 0.948 on the ensemble slide (0.959 and 0.949 on the newer-models slide, which also shows TabPFN-3 alone at 0.953); flows standalone 0.421/0.422 and 0.409/0.411.",
+      "grade": "measured",
+      "t": "14:09",
+      "source": "both"
+    },
+    {
+      "claim": "Ensembles beat individual models on email (best stacked 0.987) but not fine-tuning (0.998), and on flows none beats TabPFN-3 alone (0.856); routers with an XGBoost gate scored lower than the stack, for example 0.743 to 0.826 on flows.",
+      "evidence": "Router and meta-learner results for Laya, Jev and Llama on both tasks.",
+      "grade": "measured",
+      "t": "15:10",
+      "source": "both"
+    },
+    {
+      "claim": "Classifying 1 million emails costs about 1,219 dollars with Claude, versus under a cent for XGBoost and about 1 dollar for fine-tuned ModernBERT.",
+      "evidence": "Cost, latency (p50) and VRAM charts for phishing inference.",
+      "grade": "measured",
+      "t": "18:15",
+      "source": "both"
+    },
+    {
+      "claim": "A small language model such as GPT-OSS had higher latency than a frontier model (2,644 ms versus 1,213 ms p50) and did not buy better precision or recall.",
+      "evidence": "Latency and VRAM chart; GPT-OSS needed 12,330 MB VRAM.",
+      "grade": "measured",
+      "t": "18:46",
+      "source": "both"
+    },
+    {
+      "claim": "A learning curve for fine-tuned ModernBERT shows phishing passes hand-crafted XGBoost (0.909) at about 500 labels and reaches roughly 0.98 at 1,000, but network flows stay at the class prior up to about 1,000 labels, reach only 0.54 at about 2,000, and need roughly 30,000 labels to reach 0.82 (still under XGBoost at 0.845).",
+      "evidence": "Log-axis chart 'How much data do you need for training?' with XGBoost reference lines; values read from the plot.",
+      "grade": "measured",
+      "t": "17:26",
+      "source": "slide"
+    },
+    {
+      "claim": "The spoken advice that a few hundred labels suffice for phishing and a couple of thousand for network data is only supported for phishing: the slide shows about 2,000 labels still leave flows near 0.54 AUCPR.",
+      "evidence": "Speaker advice at 17:13 versus the label-efficiency chart.",
+      "grade": "assertion",
+      "t": "17:13",
+      "source": "both"
+    },
+    {
+      "claim": "Labelling cost was low in practice: about 500 labels every two months between two people, around half a day, kept an email model near 98% AUCPR.",
+      "evidence": "Mountrouidou's Q&A account from her own deployment.",
+      "grade": "anecdote",
+      "t": "29:13",
+      "source": "said"
+    },
+    {
+      "claim": "Lowering the class prior to about 17% did not change the pattern of results.",
+      "evidence": "Mountrouidou's answer to a question about realistic benign-heavy ratios; no 1% or 5% experiment was run.",
+      "grade": "assertion",
+      "t": "21:52",
+      "source": "said"
+    },
+    {
+      "claim": "Zero-shot LLMs sit at or near the class prior on every network dataset tested, while XGBoost is far above it: AfterImage statistics 1.00 vs 0.84 (prior 0.84, gpt-oss), CIC-IDS2017 0.99 vs 0.26 (gpt-oss; prior about 0.17), pcap per-packet with flow-aware split 0.70 vs 0.46 (gemma3:12b), pcap flows 0.84 vs 0.41 (gemma3:12b).",
+      "evidence": "Bar chart per dataset with feature counts (115, 78, and 16 stats) and class-prior dashed lines.",
+      "grade": "measured",
+      "t": "12:37",
+      "source": "slide"
+    },
+    {
+      "claim": "TabPFN-3 with BERT embeddings reaches 0.997 on phishing, near fine-tuned ModernBERT (0.998), and 0.798 on flows; System 1 models score Jev precision 0.990 with false-positive rate about 0.004 (Claude 0.992, 0.004).",
+      "evidence": "Newer-models two-panel chart (phishing and Kitsune flows) with annotation.",
+      "grade": "measured",
+      "t": "14:09",
+      "source": "slide"
+    }
+  ],
+  "numbers": [
+    {
+      "figure": "0.970 / 0.990",
+      "meaning": "zero-shot phishing AUCPR for Claude Sonnet 4.6 and Gemini 3.1 Pro",
+      "t": "11:36"
+    },
+    {
+      "figure": "0.998 / 0.999",
+      "meaning": "fine-tuned ModernBERT and LoRA-tuned Llama 3.2 3B phishing AUCPR",
+      "t": "12:07"
+    },
+    {
+      "figure": "0.780",
+      "meaning": "untuned Llama 3.2 3B phishing AUCPR",
+      "t": "12:07"
+    },
+    {
+      "figure": "0.374",
+      "meaning": "phishing class prior (positive-class share) on the AUCPR chart",
+      "t": "03:48"
+    },
+    {
+      "figure": "0.856",
+      "meaning": "TabPFN-3 AUCPR on network flows (decision-card slide)",
+      "t": "13:38"
+    },
+    {
+      "figure": "0.41 vs 0.40",
+      "meaning": "best zero-shot AUCPR versus class prior on Kitsune flows",
+      "t": "12:37"
+    },
+    {
+      "figure": "18K",
+      "meaning": "phishing emails used, from Hugging Face",
+      "t": "03:48"
+    },
+    {
+      "figure": "764,136 rows / 36,611 flows / 764,137 packets",
+      "meaning": "sizes of the Mirai statistics, flows and packets datasets (slide)",
+      "t": "04:50"
+    },
+    {
+      "figure": "84% / 40.3% / 17%",
+      "meaning": "malicious share of Mirai statistics, Mirai flows and packets, and CIC-IDS2017 (slide)",
+      "t": "05:21"
+    },
+    {
+      "figure": "1,219 dollars vs 0.0007 dollars",
+      "meaning": "cost per 1M phishing records for Claude versus XGBoost",
+      "t": "18:15"
+    },
+    {
+      "figure": "11 ms, about 1 dollar per million",
+      "meaning": "fine-tuned ModernBERT latency and cost on the decision card",
+      "t": "19:47"
+    },
+    {
+      "figure": "33 ms",
+      "meaning": "Laya local latency on the no-label card",
+      "t": "19:47"
+    },
+    {
+      "figure": "4 hours",
+      "meaning": "Mountrouidou's estimate for about 200 labels",
+      "t": "29:13"
+    },
+    {
+      "figure": "0.997 / 0.798",
+      "meaning": "TabPFN-3 plus BERT embeddings AUCPR on phishing and on Kitsune flows (newer-models slide)",
+      "t": "14:09"
+    },
+    {
+      "figure": "0.953",
+      "meaning": "TabPFN-3 alone on phishing AUCPR",
+      "t": "14:09"
+    },
+    {
+      "figure": "0.990 precision, FPR about 0.004",
+      "meaning": "Jev on phishing (Claude: 0.992, 0.004), annotation on newer-models slide",
+      "t": "14:09"
+    },
+    {
+      "figure": "22% / 5%",
+      "meaning": "Claude was scored on a 22% stratified subset of phishing and had 5% coverage on flows, so flows were omitted",
+      "t": "14:09"
+    },
+    {
+      "figure": "0.909 / 0.845",
+      "meaning": "XGBoost reference lines on the label-efficiency chart for phishing and flows",
+      "t": "17:26"
+    },
+    {
+      "figure": "about 500 / about 2,000 / about 30,000",
+      "meaning": "labels at which ModernBERT-FT passes XGBoost on phishing (about 500), reaches 0.54 on flows (about 2,000), and reaches 0.82 on flows (about 30,000, read from the log axis)",
+      "t": "17:26"
+    },
+    {
+      "figure": "0.89",
+      "meaning": "AUCPR in the worked example (prior 0.13) with five threshold points from precision 100% recall 20% to precision 20% recall 100%",
+      "t": "08:41"
+    },
+    {
+      "figure": "0.997 / 0.759 / 0.933 / 0.032",
+      "meaning": "gain over chance on the four decision cards: phishing with labels, flows with labels, phishing without labels, flows without labels",
+      "t": "16:14"
+    }
+  ],
+  "frameworks": [
+    {
+      "name": "Experiment as Lego bricks",
+      "description": "Four swappable parts: Data (phishing emails; Mirai as packets, flows and statistics; CIC-IDS2017 flows), Features (numeric counts and timing; embeddings, meaning text as numbers), Model (single: XGBoost, zero-shot LLM or SLM, fine-tuned LMs; combined: router that escalates unsure cases, meta-learner that learns whom to trust), Score (AUCPR, with chance equal to the percent malicious)."
+    },
+    {
+      "name": "Five fundamental questions",
+      "description": "Can a prompted LLM detect attacks; do ensembles beat the single best model; does fine-tuning beat LLMs, traditional ML and ensembles; how much do models cost; do newer models like TabPFN and Jev change the recommendations."
+    },
+    {
+      "name": "Model spectrum",
+      "description": "Frontier LLM via API (Claude Sonnet 4.6, Gemini 3.1 Pro), GPT-OSS, small local LLMs (Mistral 7B, Gemma3 12B, Llama 3.2 3B), ModernBERT fine-tuned as a classifier, System 1 decision models (Laya 421M open, Jev 1.13 proprietary API), tabular foundation model TabPFN-3, and gradient-boosted trees (XGBoost)."
+    },
+    {
+      "name": "Decision tree: do we need an LLM for that? Usually not",
+      "description": "New domain: check Jev, Laya or an LLM AUCPR against class prior first. Phishing: with a training pipeline use ModernBERT fine-tuned, without use zero-shot Jev or Laya. Network intrusion: without training use TabPFN; with training and raw packet fields use XGBoost or TabPFN with a flow-aware split; with training but no raw fields use TabPFN, or XGBoost/TabPFN (about equal to BERT fine-tuned) when labels are abundant. Cost-constrained: decision model or SLM or ModernBERT with an embedding gate."
+    },
+    {
+      "name": "Router versus meta-learner ensembles",
+      "description": "Router: an ML gate model predicts with a confidence; if confident, use its prediction, if not, route to the LLM. Meta-learner: ML models and the LLM run in parallel and a combiner weights each model's output. The results slides test both with XGBoost and TabPFN-3 as gate or combiner."
+    }
+  ],
+  "artifacts": [
+    {
+      "name": "Open-source GitHub repository, 20-page paper and blog",
+      "kind": "repo",
+      "note": "Speakers say the code, a 20-page paper and a blog are available; the agenda slide and the closing slide carry QR codes (the closing slide labels them Blog and Github Repo). No URL was spoken or legible.",
+      "url": ""
+    },
+    {
+      "name": "Phishing email dataset (Hugging Face)",
+      "kind": "dataset",
+      "note": "18K labelled emails, 37.4% phishing.",
+      "url": ""
+    },
+    {
+      "name": "Mirai botnet capture and CIC-IDS2017",
+      "kind": "dataset",
+      "note": "Mirai rebuilt as statistics (AfterImage), flows and packets; CIC-IDS2017 as flows. The results slides label the network flows task Kitsune.",
+      "url": ""
+    },
+    {
+      "name": "TabPFN-3",
+      "kind": "tool",
+      "note": "Tabular foundation model used in context with no training; best single model on network flows.",
+      "url": ""
+    },
+    {
+      "name": "Laya (421M) and Jev 1.13",
+      "kind": "tool",
+      "note": "System 1 decision models that return a calibrated probability without text generation; Laya is open (Apache 2.0, ModernBERT-large backbone), Jev is a proprietary API per the slide footnote.",
+      "url": ""
+    },
+    {
+      "name": "XGBoost",
+      "kind": "tool",
+      "note": "Classic gradient-boosted tree baseline.",
+      "url": ""
+    },
+    {
+      "name": "ModernBERT",
+      "kind": "tool",
+      "note": "Encoder fine-tuned as a classifier, about 30 times smaller than the fine-tuned Llama.",
+      "url": ""
+    }
+  ],
+  "slide_only": [
+    "Agenda: 1 Can an LLM replace your detector; 2 Setting up a fair fight; 3 How we keep score; 4 Phishing emails: who wins; 5 Network traffic: the twist; 6 Newer models; 7 Cost and Monday morning.",
+    "Motivation slide compares four approaches: people (3,508 in the queue, too much data), rules (if urls > 2 alert, attacks too complex), machine learning (needs ML skills) and LLM (ask in plain English, 'does it work?').",
+    "Dataset table: Phishing 18K emails, 37.4% malicious; Mirai statistics 764,136 rows, 84%; Mirai flows 36,611 flows, 40.3%; Mirai packets 764,137 packets, 40.3%; CIC-IDS2017 5-day capture, 17%. Spoken class priors differ (about 40% and 20%).",
+    "Precision and recall illustration: alert only if links >= 5.7 gives precision 100% and recall 60%; alert if links >= 1 gives recall 100% and precision 10% (43 of 48 alerts false); alert if links >= 3.4 and urgency >= 3.4 gives precision 83% and recall 100%.",
+    "Model table with columns for language model, type, large, encoder, decoder and can reason; footnote says Laya is Apache 2.0 on a ModernBERT-large backbone, Jev is TypeSafe's proprietary API, and TabPFN-3 is a transformer over tabular rows used in context and never trained here.",
+    "Phishing scatter ranks: Llama3.2-FT LoRA 0.999, ModernBERT-FT 0.998, XGB plus ModernBERT embeddings 0.991, Gemini 3.1 Pro 0.990, Claude Sonnet 4.6 0.970, XGBoost hand-crafted 0.916, GPT-OSS 0.900, Gemma3 12B 0.803, Llama3.2 3B 0.780, Mistral 0.676; chart title says fine-tuning and good features beat model size.",
+    "Bar chart on Kitsune flows (prior 0.40): best zero-shot 0.41, XGB plus ModernBERT 0.74, ModernBERT-FT 0.83, Decoder-FT 0.85, XGBoost 0.84; phishing bars 0.97, 0.99, 1.00, 1.00, 0.92; title says learned representations close the gap and prompting can't.",
+    "Ensemble chart values: phishing standalone Laya 0.958, Jev 0.948, Llama 0.783; Router XGBoost gate 0.948, 0.932, 0.929; Router TabPFN-3 gate 0.967, 0.960, 0.957; Meta-learner XGBoost plus model 0.984, 0.975, 0.955; Meta-learner TabPFN-3 plus model 0.987, 0.983, 0.973. Flows: standalone 0.421, 0.409, 0.409; router XGBoost 0.826, 0.743, 0.761; router TabPFN-3 0.845, 0.811, 0.782; meta XGBoost 0.845, 0.844, 0.845; meta TabPFN-3 0.856, 0.855, 0.856. Panel headings read phishing 17% / 11% routed and flows 52% / 47% routed. Slide title: stacking beats routing on e-mail; on flows the stack holds the tier-one that routing loses.",
+    "Decision-card slide footnote: AUCPR on the held-out test split, seed 42, the same splits as every other slide. Cards: phishing with labels, fine-tune ModernBERT, 0.998, 11 ms, about 1 dollar per million records, gain over chance 0.997; phishing without labels, Laya locally, 0.958, about 33 ms; flows with labels, TabPFN-3 or XGBoost, 0.856, no training step, gain 0.759; flows without labels, 'Not solved here. Get labels', best zero-shot 0.42 at chance, gain over chance 0.032, versus 0.845 with labels.",
+    "Cost slide (Table 8): VRAM MB XGB n/a, XGB+BERT 606, ModernBERT-FT 604, Llama3.2 2,272, Mistral 4,521, Gemma3 8,386, GPT-OSS 12,330, Claude n/a; p50 latency ms 0.2, 12, 11, 242, 326, 794, 2,644, 1,213; cost per 1M records 0.0007, 2, 1, 32, 48, 88, 364, 1,219.",
+    "Closing slide: 'What about 6 months / 6 years from now?' with caption 'Models change. The statistics of tables don't'.",
+    "Detection slide: 'Classification is what we want', classify(email) returning legitimate or phishing, with a 2-D scatter and a decision boundary.",
+    "Router versus meta-learner diagram: Router is Input to an ML gate model (predicts plus confidence) to a confident? decision, yes to use the ML prediction and no to route to the LLM; Meta-learner is Input to ML models and an LLM in parallel to a Combiner that weights each model to Output.",
+    "AUCPR explainer: a worked precision-recall curve with AUCPR 0.89 and prior 0.13, five labelled thresholds from strict (links plus urgency >= 12.9, precision 100%, recall 20%, 60 of 300 caught) to loose (>= 3.5, precision 20%, recall 100%, 1,164 false alarms).",
+    "Network datasets bar chart: XGBoost vs best zero-shot LLM per dataset, AfterImage (115 stats) 1.00 vs 0.84 gpt-oss, CIC-IDS2017 (78 stats) 0.99 vs 0.26 gpt-oss, pcap per-packet flow-aware 0.70 vs 0.46 gemma3:12b, pcap flows (16 stats) 0.84 vs 0.41 gemma3:12b; title 'every zero-shot LLM sits at the prior' (CIC-IDS2017 and per-packet are modestly above prior).",
+    "Newer-models slide, phishing panel (prior 0.374): ModernBERT-FT 0.998, TabPFN-3 + BERT emb 0.997, Claude Sonnet 4.6 0.970 (22% stratified subset), Laya 0.959, TabPFN-3 0.953, Jev 0.949, XGBoost 0.916, GPT-OSS 0.900, Gemma3 12B 0.803, Llama 3.2 3B 0.780, Mistral 0.676. Flows panel (prior 0.403): ModernBERT-FT 0.825, TabPFN-3 + BERT emb 0.798, Claude n/a, Laya 0.422, TabPFN-3 0.856, Jev 0.411, XGBoost 0.845, GPT-OSS 0.403, Gemma3 0.408, Llama 0.403, Mistral 0.394.",
+    "Label-efficiency chart values (read from plot): phishing ModernBERT-FT about 0.89 at 100 labels, 0.92 at 250, 0.97 at 500, 0.98 at 1,000, 0.985 at 2,000, 0.995 at about 15,000; flows about 0.39, 0.37, 0.39, 0.41, 0.54, then 0.82 at about 30,000; chart title 'Label efficiency tracks representation'.",
+    "Closing slide Q&A: Greek vase image of a seated figure and a standing figure with caption 'Models change. The statistics of tables don't'; final slide has QR codes for Blog and Github Repo."
+  ],
+  "demos": [],
+  "quotes": [
+    {
+      "text": "Don't get bullied that we don't have labels, we can't train models.",
+      "speaker": "Xenia Mountrouidou",
+      "t": "17:13"
+    },
+    {
+      "text": "Models change, but statistics don't.",
+      "speaker": "Xenia Mountrouidou",
+      "t": "20:49"
+    },
+    {
+      "text": "The labeling cost is one time. The inference cost is forever.",
+      "speaker": "Xenia Mountrouidou",
+      "t": "28:41"
+    },
+    {
+      "text": "The tabular transformer models could be the future.",
+      "speaker": "Xenia Mountrouidou",
+      "t": "20:49"
+    }
+  ],
+  "offense": [],
+  "defense": [
+    "For text-based detection with labels, fine-tune a small encoder such as ModernBERT; a few hundred labels are enough.",
+    "For network flows with labels, use TabPFN-3 or XGBoost; with raw packet fields use a flow-aware train and test split.",
+    "Without labels, use a System 1 decision model such as Laya or Jev for phishing, and for network flows get labels first because no prompted model beat chance.",
+    "Always score with AUCPR against the class prior, and treat any model that lands at the prior as useless.",
+    "Capture labels from analyst behaviour, such as analysts overriding model alerts, and use annotation queues to cut the cost.",
+    "Monitor for drift and retrain; for email they retrained about every two months with about 500 new labels.",
+    "Where latency must be under a second or compute is on-premise, deploy small tuned models rather than agents or frontier APIs."
+  ],
+  "takeaways": [
+    "Before funding an LLM-based detector, benchmark it against XGBoost and a fine-tuned small encoder on your own labelled data using AUCPR versus class prior.",
+    "Invest analyst time in a few hundred labelled examples and an annotation workflow, which they report pays back against per-call LLM cost.",
+    "Do not use zero-shot LLMs for numeric network telemetry; try TabPFN-3 or XGBoost.",
+    "Avoid ensemble and router architectures unless you measure a gain; in their tests they added cost and complexity without beating the best single model.",
+    "Account for latency, VRAM and cost per million records when choosing, since the cheapest model was often the best."
+  ],
+  "limits": [
+    "Class priors in the tests were 17% to 84% malicious, far higher than the roughly 1% malicious in production traffic; the speakers acknowledged this and said the pattern did not change below 20%.",
+    "Cost figures do not include analyst labelling time, which they estimate at about 4 hours for 200 labels.",
+    "They compared zero-shot LLMs without an agent harness; an agent with these models as tools could do better but is too slow and costly for real-time detection.",
+    "Open public datasets were used, so drift and deployment behaviour were not tested; they said models should be monitored and retrained.",
+    "Without labels on network flows none of the tested tools worked.",
+    "The speakers did not show a label-efficiency result for flows below about 30,000 labels reaching XGBoost level; the chart shows flows stay at the class prior until about 1,000 labels."
+  ],
+  "critique": [
+    "The experiment reports many numbers on fixed splits, but it uses one seed and shows no confidence intervals, so small gaps such as 0.998 vs 0.999 cannot be distinguished from noise.",
+    "Zero-shot results depend heavily on the prompt and the representation of numeric rows as text, and the talk does not show the prompts; the finding that LLMs sit at the class prior may partly reflect that choice.",
+    "Phishing text is a task where LLMs are strong and the fine-tuned models trained on the same distribution as the test set; real-world phishing has distribution shift that the talk did not test.",
+    "Mirai and CIC-IDS2017 (the Mirai-derived Kitsune data) are old, narrow benchmarks; the findings about TabPFN-3 and XGBoost may not transfer to enterprise traffic with a 99% benign ratio.",
+    "No product was presented in the talk. The Laya and Jev recommendations were given with limited detail on the Jev vendor model.",
+    "Comparing against frontier models ignores tool use and retrieval, a point an audience member raised and the speakers only partly answered.",
+    "The Claude phishing score of 0.970 is on a 22% stratified subset and Claude has no flows result, so the headline comparison against fine-tuned models is not on identical test data.",
+    "The label-efficiency slide differs from the spoken 'a couple thousand labels' for network data: the plot shows about 2,000 labels reach only 0.54 AUCPR and about 30,000 are needed for 0.82, so the labelling needed for flows is higher than the spoken advice states."
+  ],
+  "qa": [
+    "Did you test more realistic benign-heavy class ratios? Mountrouidou: not in this set; the lowest malicious share was 17% and the pattern did not change; precision can be sacrificed for recall in her MDR work.",
+    "How similar is Kitsune to the Mirai data you trained on? Mountrouidou: the same.",
+    "Is comparing against a zero-shot LLM without a harness fair? Mountrouidou: they compared encoders, transformers and decision models, and real-time zero-trust detection needs millisecond latency, not a five-minute agent. Wilson: the best accuracy would probably be an agent using these as tools, and this is one piece of that.",
+    "How do you handle model degradation over time, and activity sequences? Mountrouidou: drift is standard; they monitor and retrain as often as needed. Sequences were not addressed in the answer.",
+    "How do you choose labels? Mountrouidou: it is painful, so use natural labels such as analysts confirming or rejecting model alerts, and annotation queues.",
+    "Does the cost comparison include engineer and analyst time? Mountrouidou: it is a good point; labelling is a one-time cost versus forever inference; about 4 hours for 200 labels, and 500 labels every 2 months for email took about half a day between two people."
+  ],
+  "tags": [
+    "evals-benchmarks-metrics",
+    "ai-soc-detection-response",
+    "fraud-scams-abuse"
+  ],
+  "key_frames": [
+    {
+      "file": "t00703.jpg",
+      "caption": "Phishing AUCPR ranking: LoRA-tuned Llama 3.2 3B 0.999 and ModernBERT-FT 0.998 beat zero-shot Gemini 3.1 Pro 0.990 and Claude Sonnet 4.6 0.970; the arrow shows the same 3B model rising by 0.219 from 0.780."
+    },
+    {
+      "file": "t00760.jpg",
+      "caption": "Network datasets: XGBoost versus the best zero-shot LLM on four datasets with class-prior lines; zero-shot sits at or near the prior."
+    },
+    {
+      "file": "t00832.jpg",
+      "caption": "Newer models on phishing and Kitsune flows: Laya and Jev near Claude on email, TabPFN-3 best single model on flows at 0.856."
+    },
+    {
+      "file": "t00974.jpg",
+      "caption": "Decision cards by data type and label availability, with AUCPR, latency, cost and gain over chance; no-label flows are marked unsolved."
+    },
+    {
+      "file": "t01072.jpg",
+      "caption": "Label-efficiency curves for ModernBERT-FT: phishing saturates by about 500 labels while flows stay at the prior until about 1,000 and need tens of thousands to approach XGBoost."
+    }
+  ],
+  "signal": {
+    "score": 4,
+    "reason": "A controlled, quantitative benchmark with many specific numbers and a usable decision guide that challenges the default of using zero-shot LLMs for detection."
+  },
+  "caveats": [
+    "meta.json lists the frames as camera-only, but the 44 frames in the corpus include many slides; all 44 were read, and the slides are the authority for model names and numbers.",
+    "Auto-caption garbles: 'Upstream' is AppGate per the description; 'Rage System One' is System 1; 'Leia' and 'Lea' are Laya; 'Jev' is as written on the slide; 'TaPFN' and 'Tap FFN' are TabPFN; 'Katsune' is Kitsune; 'Haging Face' is Hugging Face.",
+    "Spoken class priors (about 40%, 20%) differ from the data table slide (37.4%, 84%, 40.3%, 17%); the slide is used.",
+    "The speaker said fine-tuned Llama and ModernBERT 'almost exactly the same score' and listed Gemini and Sonnet at 99 and 97; slide values are 0.990 and 0.970.",
+    "The speaker said 'Llama 3.2' fine-tune and ModernBERT is 'about 30 times smaller'; the slide table lists Llama 3.2 (3B) and the cost slide shows VRAM of 604 MB for ModernBERT-FT versus 2,272 MB for Llama3.2.",
+    "The talk text refers to Mirai-based datasets while results slides label the flows task Kitsune; the Q&A says they are the same.",
+    "The video description mentions that a high class prior or a leaky split can fake an 'LLMs work' result; the audio only touches this through the decision tree note on a flow-aware split.",
+    "The phishing ensemble panel title on the slide shows two percentages (17% / 11% routed) whose exact meaning is not explained in the talk.",
+    "The final camera frames show Q&A with no slides.",
+    "Claude phishing 0.970 is on a 22% stratified subset and Claude flows were omitted (5% coverage), per a slide footnote; Laya and Jev standalone values differ by 0.001 between the ensemble slide (0.958, 0.948) and the newer-models slide (0.959, 0.949). Label-efficiency values were read off a log-axis plot and are approximate."
+  ]
+}

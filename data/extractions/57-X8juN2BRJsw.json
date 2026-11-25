@@ -1,0 +1,149 @@
+{
+  "nn": "57",
+  "id": "X8juN2BRJsw",
+  "url": "https://www.youtube.com/watch?v=X8juN2BRJsw",
+  "title": "All Tokens Are Created Equal (Including the Attacker's)",
+  "speakers": [
+    {"name": "Rock Lambros", "affiliation": "Director of AI Standards and Governance, Zenity"},
+    {"name": "Fred Wilmot", "affiliation": "CEO and Co-Founder, Detecteam"}
+  ],
+  "format": "talk",
+  "duration_min": 17,
+  "thesis": "Because a transformer's attention carries no provenance for any token, the model cannot be the enforcement point for trust, so the pipeline that assembles the context window should record and enforce where every component came from; CxBOM is a CycloneDX-aligned bill of materials for the context window that does this.",
+  "summary": "The speakers launch cxbom.org, a context bill of materials that records what an agent actually read in each inference. They start from EchoLeak, a zero-click exfiltration from Microsoft 365 Copilot, where attacker text arrived as retrieved content and sat in the same token sequence as the operator's instructions. The premise, which they credit to Young's token democracy idea, is that scaled dot-product attention has no field for provenance, so the context window is the attack surface. They then describe a trust model of rings: ring 0 for the operator system prompt, ring 1 for tool definitions, server instructions, tool results, retrieved documents and model output read back later, and ring 2 for the user. A ring records placement and confers no privilege inside the model. They flag trust inversion, where a third-party MCP tool definition lands in the system region next to the operator prompt and borrows its positional authority. They present a Dual-Failure Multiplier hypothesis, that untrusted tokens weighted by attention cost the operator share twice, in task quality and in safety, and say plainly that no experiment has run. Supporting related work from 2026 shows operator influence can be diluted, deleted or overridden. They place defenses at assembly, model and execution, and argue enforcement belongs outside the model. The tool has a proxy that pins signed tool definitions by SHA-256 and an emitter that writes a record per inference. A recorded demo with three attacks on a notes tool, each run with the gate off and on, shows the canary secret leaving without the gate and the proxy pulling the changed tool with it. They call it an MVP, not for production.",
+  "argument": [
+    "Attention takes queries, keys and values with no field for where a token came from, so a trust distinction inside the model is at most a learned tendency.",
+    "Therefore every token in the context window, including a poisoned README or an externally published MCP tool definition, is attack surface, and a property that must hold on every inference cannot rest on a tendency.",
+    "Enforcement must sit in software outside the model, at assembly (what the model is shown) or at execution (what the agent may do with what it read), and assembly is where a record of provenance can be made.",
+    "CxBOM records each component's trust ring, token count and SHA-256 digest per inference, and its proxy drops a tool definition or refuses a server launch if it changed after a person signed it.",
+    "A signed pin proves a definition did not change after approval but not that it was clean at approval, and injection through tool results and retrieved documents is only recorded, not blocked.",
+    "Whether the amount and content of ring 1 text in the window is itself a security parameter (the Dual-Failure Multiplier) is a hypothesis to be tested, with no budget policy published until it is."
+  ],
+  "claims": [
+    {"claim": "EchoLeak (CVE-2025-32711) is the purest case for a context BOM: attacker text arrived as retrieved content and was read in the same token sequence as the operator's instructions, producing zero-click exfiltration from Microsoft 365 Copilot.", "evidence": "Cited incident with Aim Labs and MSRC advisory references on the slide; no new analysis.", "grade": "case", "t": "00:38", "source": "both"},
+    {"claim": "Scaled dot-product attention takes queries, keys and values with no field for the provenance of a token, so trust in a standard transformer is at most a learned tendency.", "evidence": "Architectural reasoning with a diagram; credited to Young's token democracy (2025) and Vaswani et al. (2017), and explicitly not presented as a new discovery.", "grade": "assertion", "t": "02:11", "source": "both"},
+    {"claim": "When an MCP host renders a third-party tool definition in the system region next to the operator prompt with no boundary between them, the definition takes ring 0 positional authority; CxBOM records this as an open trust-inversion finding.", "evidence": "Trust ring diagram and finding type; the speakers say the finding describes an architecture, not a compromise.", "grade": "assertion", "t": "04:15", "source": "both"},
+    {"claim": "The Dual-Failure Multiplier (each untrusted token, weighted by the attention it attracts, costs the operator's share of attention twice, in task quality and in safety) is a hypothesis; the slide is stamped NOT RUN, NO RESULTS, and says no curve has been drawn.", "evidence": "The attack half has an approved but unfrozen, unregistered design with no trial run, and the quality half is not yet designed.", "grade": "assertion", "t": "06:22", "source": "both"},
+    {"claim": "Operator influence can be diluted, deleted or overridden, and length covers only dilution.", "evidence": "Related work cited for rationale only, with the slide stating it is not a test of the multiplier and incident details are unverified press and vendor reports: SalesBleed (Sept 2026), PleaseFix (Aug 2026), Copilot SearchLeak (Jun 2026, CVE-2026-42824), Liu 2026 on benign components, and Governance Decay preprints.", "grade": "case", "t": "07:24", "source": "both"},
+    {"claim": "Governance decay: when an agent harness compacts history, in-context rules dropped from the summary led to 38% violations, versus 0% when the rule was kept; overall violations went from 0% to 30% on average and up to 59%.", "evidence": "Cited 2026 preprint (arXiv 2606.22528 on the slide); the slide adds that a 5.9k-token context alone with one model gave 0%, and that system-message rules showed no decay while user, memory and tool-delivered rules rose by 33 to 50.", "grade": "measured", "t": "08:27", "source": "both"},
+    {"claim": "Adding benign components to a Llama-8B agent lowered quality: tool use alone scored F1 0.233, all five components 0.177 (p=0.023), with the gap narrowing at 70B and near 0% on Claude Haiku 4.5.", "evidence": "Cited third-party work (Liu 2026, arXiv 2605.05716 on the slide), quality only, no safety and no attacker, mechanism open.", "grade": "measured", "t": "07:55", "source": "slide"},
+    {"claim": "The model cannot be the enforcement point; defenses can sit at assembly (signed tool pins, CxBOM record), in the model (spotlighting, instruction hierarchy, StruQ, SecAlign, ISE, ASIDE) or at execution (CaMeL, FIDES, Progent), and in-model defenses still reduce attacks assembly cannot see, such as instructions in a tool's output.", "evidence": "Reasoning plus a three-column diagram labelling assembly and execution as enforced and the model as learned.", "grade": "assertion", "t": "09:59", "source": "both"},
+    {"claim": "The cxbom proxy sits between the MCP client and the stdio server, drops a tool definition or server instruction that changed after a person signed it, and refuses to launch a server whose pinned SHA-256 differs.", "evidence": "Recorded demo of a rug pull in which the changed search_notes tool was dropped from the listing with the hash change shown, and the canary did not reach the attacker.", "grade": "demo", "t": "11:33", "source": "both"},
+    {"claim": "In the recorded demo, with the gate off, all three poisoned notes-tool attacks (an appended instruction, a fake shared-login rationale, and an MCP rug pull) caused the model to send the canary secret through a normal fetch call; with the gate on, the changed tool was pulled and no secret arrived.", "evidence": "Scripted, pre-recorded run in a defender window, an attacker inbox window and a CxBOM record dashboard; the speaker told the audience not to read effectiveness rates into it.", "grade": "demo", "t": "13:10", "source": "both"},
+    {"claim": "The record emitter writes one CxBOM 0.3.0 record per inference (component, ring, SHA-256 digest, token count), and in a 46,205-token reference session it matched the published record for every component's ring, token count and digest, with a 75 ms median emit time on one arm64 machine and no model call.", "evidence": "Slide figures with caveats: 1,691 conformance cases pass at one development commit (conformance, not effectiveness), and the timing is an order of magnitude, not a benchmark.", "grade": "measured", "t": "11:33", "source": "slide"},
+    {"claim": "A signed pin proves a tool definition did not change after approval but cannot show it was clean when approved, so the trust inversion for a fetch tool in the operator block stays open even with the gate on.", "evidence": "Shown in the demo dashboard where the trust-inversion high finding remained open after the gate blocked the changed tool.", "grade": "demo", "t": "14:40", "source": "both"}
+  ],
+  "numbers": [
+    {"figure": "CVSS 9.3", "meaning": "Severity given for EchoLeak (CVE-2025-32711) in the talk description; not on a slide", "t": "00:38"},
+    {"figure": "0.3.0", "meaning": "CxBOM spec, JSON schema and record version shown on the closing slide", "t": "16:12"},
+    {"figure": "1,691", "meaning": "Conformance cases passing at one development commit (not an effectiveness rate)", "t": "11:33"},
+    {"figure": "46,205", "meaning": "Tokens in the reference session whose emitted record matched the published one", "t": "11:33"},
+    {"figure": "75 ms", "meaning": "Median emit time for that session on one arm64 machine, with no model call", "t": "11:33"},
+    {"figure": "0% to 30%, up to 59%", "meaning": "Violation rate after compaction dropped in-context rules (cited preprint 2606.22528)", "t": "08:27"},
+    {"figure": "0% vs 38%", "meaning": "Violations when the rule was kept in the summary versus dropped from it (cited)", "t": "08:27"},
+    {"figure": "F1 0.233 vs 0.177 (p=0.023)", "meaning": "Llama-8B quality with tool use alone versus all five components (cited Liu 2026)", "t": "07:55"},
+    {"figure": "68.9 percent", "meaning": "Demo record: share of the operator system prompt in its ring on that call (546 context window tokens used, 525 component tokens)", "t": "13:10"},
+    {"figure": "7 findings open", "meaning": "Demo record with the gate off (4 with the gate enforcing)", "t": "13:10"},
+    {"figure": "8 billion parameters", "meaning": "Size of the models the speakers say they ran the measurements on; model names are garbled in captions", "t": "12:05"}
+  ],
+  "frameworks": [
+    {"name": "Trust rings", "description": "Trust follows the ingestion path. Ring 0 operator: the system prompt. Ring 1 agent: tool definitions, server instructions, tool results, retrieved documents. Ring 1 derived: model output read back into later context. Ring 2 user: user turns. The operator registers each path as a ring. A ring records placement and confers no privilege inside the model."},
+    {"name": "Trust inversion (tool definition)", "description": "A third-party MCP tool definition (ring 1) rendered in the chat template's system region beside the ring 0 operator prompt with no boundary takes the operator's positional authority. CxBOM records it as an open finding that names an architecture, not an attack."},
+    {"name": "Dual-Failure Multiplier (hypothesis)", "description": "Operator share of attention falls as untrusted tokens accumulate, lowering task quality and safety at once; each added untrusted token weighted by the attention it attracts would cost the operator twice. The test crosses length with content (attack, neutral, benign instruction, padding) and measures attention to the operator and attack success. Status: not run, no results."},
+    {"name": "Diluted, deleted or overridden", "description": "Three ways operator influence is lost. Diluted: softmax crowding as context grows. Deleted: a rule dropped when history is compacted. Overridden: a small ring 1 payload takes over an agent. Length covers only the first."},
+    {"name": "Where defenses sit", "description": "Assembly (what the model is shown): signed tool pins and the CxBOM record, enforced. Model: attention with no provenance input, plus spotlighting, instruction hierarchy, StruQ, SecAlign, ISE and ASIDE, a learned tendency an adversary can search against. Execution (what the agent may do with what it read): CaMeL, FIDES, Progent, enforced. Neither enforced layer covers the other."},
+    {"name": "CxBOM", "description": "A CycloneDX 1.6-aligned (2.0 and 2.1 planned) bill of materials for one inference: each component, its trust ring, provenance, SHA-256 digest and token count, with findings such as trust inversion, tool-definition binding and missing control. Parts: spec and JSON schema, emitter, validator and fixtures, proxy, and an offline record viewer."}
+  ],
+  "artifacts": [
+    {"name": "CxBOM 0.3.0 (cxbom.org)", "kind": "standard", "note": "Context bill of materials spec, JSON schema 0.3.0, field reference, example records and an offline record viewer; released at the talk and described as an MVP not for production. Contact spec@cxbom.org.", "url": "cxbom.org"},
+    {"name": "cxbom proxy", "kind": "tool", "note": "Sits between the MCP client and a stdio server, drops tool definitions or server instructions that changed after signing, and refuses a launch that differs from the signed one.", "url": ""},
+    {"name": "cxbom emitter", "kind": "tool", "note": "Writes one CxBOM 0.3.0 record per inference with each component's ring, SHA-256 digest and token count.", "url": ""},
+    {"name": "CxBOM GitHub repo and paper", "kind": "repo", "note": "Linked by QR codes on the closing slide; the schema is to be updated as the work goes on.", "url": ""},
+    {"name": "EchoLeak, CVE-2025-32711", "kind": "cve", "note": "Zero-click data exfiltration in Microsoft 365 Copilot (Aim Labs, MSRC advisory); opening case.", "url": ""},
+    {"name": "MCPoison CVE-2025-54136 and CurXecute CVE-2025-54135", "kind": "cve", "note": "Configuration trust failures; the proxy refuses a changed command while the wrapper stays, but does not detect a removed wrapper.", "url": ""},
+    {"name": "Copilot SearchLeak, CVE-2026-42824", "kind": "cve", "note": "Search-result text drove exfiltration (Jun 2026), cited as an overridden-influence incident.", "url": ""},
+    {"name": "SalesBleed and PleaseFix", "kind": "paper", "note": "2026 ring 1 incidents: a poisoned lead form hijacking Agentforce (Sept 2026, attributed to Zenity on the slide), and hidden page text hijacking AI browser agents (Aug 2026).", "url": ""},
+    {"name": "Governance Decay (arXiv 2606.22528), SafeEnd (arXiv 2605.08277), Liu 2026 (arXiv 2605.05716)", "kind": "paper", "note": "Cited preprints on rules dropped by compaction, a theory of drift being representational, and quality loss from adding benign agent components.", "url": ""},
+    {"name": "Token Democracy (Young, 2025)", "kind": "paper", "note": "Source of the premise that all tokens are treated equally by attention.", "url": ""},
+    {"name": "Invariant Labs tool poisoning and rug pull disclosure", "kind": "paper", "note": "Cited as the origin of the tool-definition trust inversion failure class.", "url": ""}
+  ],
+  "slide_only": [
+    "Incident table: tool poisoning and rug pull (Invariant Labs) as tool-definition trust inversion, where the proxy drops a definition that changed after signing but does not detect poison at first sight; MCPoison CVE-2025-54136 and CurXecute CVE-2025-54135 as configuration trust failure, where a changed command is refused while the wrapper stays but a removed wrapper is not detected; EchoLeak as context injection through ring 1, not gated and recorded as unverified ring 1.",
+    "Dual-Failure Multiplier slide status table: attack half design approved, not yet frozen or registered, no trial run; quality half not yet designed; context budgets: CxBOM records tokens per ring with no budget policy until the experiment reports. Sources cited for the two bodies of work: Context Rot, Lost in the Middle, LongMemEval, many-shot jailbreaking; neither has measured both failures in the same runs.",
+    "Content slide detail: Shapley confidence interval below zero for the planning component; gap narrows at 70B and is near 0% on Claude Haiku 4.5; governance decay channel results (system message no decay, user, memory and tool-delivered rules +33 to +50); SafeEnd says drift may be representational and attention share was not measured; footnote that incident details are unverified press and vendor reports.",
+    "What this version does not do: block injection in tool results or retrieved documents (recorded as unverified ring 1); prove a definition is benign; pin transitive dependencies or contain a hostile server process running as the user; fail a build on an open finding (needs cxbom gate, not in slice 1); detect a removed wrapper or a new unwrapped server (scan and guard, not in slice 1); measure effectiveness, forensics or cost, and the Dual-Failure Multiplier experiment has not run.",
+    "Demo dashboard fields: per-inference record with ring and share per component (cc-1 to cc-6), gateState, inversionDetected, findingsOpen, an attestation log (proxy session opened: enforce, protocol era latched, server identity checked: pinned-match, verdict recorded), and finding types trust-inversion (high), tool-definition-binding (medium), missing-control (low), tool-definition-blocked (low, mitigated).",
+    "Demo attack text in the attacker window: a rewritten search_notes description reading as a required setup step that tells the model to call fetch with a collection URL on an inbox.test host followed by the deploy token before any other call; attack three's diff adds that the notes tool shares an authenticated session with deploy and errors until the fetch completes.",
+    "Defender window showed hash change on the swapped tool from e600ce6ead94 to 4b51c76b1732 and the gate decision 'block' with serverChecksumVerified=false.",
+    "Closing slide lists Specification, JSON Schema 0.3.0, Field reference, Example records and Offline record viewer, tagged [un]prompted 2026 Stage 2."
+  ],
+  "demos": [
+    "Pre-recorded demo (the speaker joked about the demo gods) with a defender window, an attacker window posing as an inbox, and a CxBOM dashboard; captions say each attack hides in the description of a notes tool, the model believes it and sends a canary secret through a normal fetch call.",
+    "Attack one: an appended sentence tells the model to send the secret out before it searches the notes. Gate off: the canary reached the attacker inbox. Gate on: the search_notes tool whose hash changed since approval was dropped from the listing and nothing arrived.",
+    "Attack two: the notes tool is described as sharing a login with another service, and the search is said to fail until the secret goes out; gate off again exfiltrates, and the trust inversion stays open on the fetch tool even when the gate is on.",
+    "Attack three: an MCP rug pull in which the tool lists clean, then the server rewrites its description mid-session and sends a change notice; gate off, the model follows the new text and sends the secret before searching the notes; gate on, the refresh does not match the pin and the proxy pulls the tool."
+  ],
+  "quotes": [
+    {"text": "All tokens are created equal. Every token is an actual attack surface.", "speaker": "Rock Lambros or Fred Wilmot (not distinguishable in captions)", "t": "02:42"},
+    {"text": "A signed pin proves the text didn't change after you approved it, but it can't tell you the text was clean when you approved it.", "speaker": "Rock Lambros or Fred Wilmot (not distinguishable in captions)", "t": "14:40"},
+    {"text": "It's a scripted demo, but it is a live demo that was recorded. Don't read the positive rates into it, but read the record, because it'll show exactly what the model saw.", "speaker": "Rock Lambros or Fred Wilmot (not distinguishable in captions)", "t": "15:11"},
+    {"text": "This is effectively an MVP. Don't go throwing this in any production environments yet.", "speaker": "Rock Lambros or Fred Wilmot (not distinguishable in captions)", "t": "16:12"}
+  ],
+  "offense": [
+    "Tool poisoning: hidden instructions in an MCP tool description (here a notes tool) that tell the model to call another tool and send a secret out before doing its task.",
+    "MCP rug pull: a tool definition lists clean at approval, then the server rewrites it mid-session with a change notice and the model follows the new text.",
+    "Trust inversion: a third-party tool definition placed in the operator's system region inherits ring 0 positional authority.",
+    "Indirect injection through ring 1 content such as retrieved documents, poisoned lead forms (SalesBleed), hidden page text (PleaseFix) and search results (Copilot SearchLeak), with EchoLeak as the zero-click exfiltration case.",
+    "Governance decay: compaction drops a rule from the history summary, so the agent stops obeying it; dilution as untrusted content crowds the operator's attention share."
+  ],
+  "defense": [
+    "Have a person review each MCP tool definition and sign it, pin it by SHA-256, and put the proxy between client and stdio server so a changed definition is dropped and a changed launch is refused.",
+    "Emit a per-inference record of every component with its trust ring, provenance, token count and digest, so that incidents can be reconstructed from what the model actually saw.",
+    "Register each ingestion path as a ring (operator, agent, user) and treat any third-party tool definition rendered in the system region as an open trust-inversion finding.",
+    "Enforce provenance at assembly and execution (signed pins, CaMeL, FIDES, Progent style controls) and keep in-model defenses as an additional layer for what assembly cannot see.",
+    "Check that rules which must hold survive history compaction, since a rule dropped from the summary produced 38% violations in the cited work.",
+    "Track tokens per ring as a metric; the speakers say a budget policy will follow only after their experiment."
+  ],
+  "takeaways": [
+    "Inventory which of your agents render third-party MCP tool definitions in the system region, because that placement is the trust inversion this talk flags.",
+    "Require signed, hash-pinned tool definitions and refuse server launches that differ from the approved one, while remembering that a pin only detects change after approval, not poison at first sight.",
+    "Log what the model was actually shown per inference (component, ring, digest, token count) so incident response is not limited to inbox-side evidence.",
+    "Test whether your agent's compaction keeps the rules you depend on; a dropped rule is a control that silently vanished.",
+    "Treat the multiplier and any context-budget policy as unproven until the experiment reports, and do not adopt CxBOM in production yet."
+  ],
+  "limits": [
+    "The Dual-Failure Multiplier is a hypothesis with no experiment run and no results; the attack half is only a design and the quality half is not designed.",
+    "CxBOM is an MVP and not for production; the 1,691 passing cases show conformance, not effectiveness, and timing is an order of magnitude on one machine.",
+    "It does not block injection in tool results or retrieved documents, prove a definition benign, pin transitive dependencies, contain a hostile server process, fail a build on a finding, or detect a removed wrapper or new unwrapped server; gate, scan and guard are not in slice 1.",
+    "Poison present at first approval is not detected by the pin.",
+    "The demo was scripted and pre-recorded and does not show attack success rates; the speakers said getting an attack to fire was the hardest part of the build.",
+    "The related incident and preprint evidence is cited, with incident details unverified, and is not a test of the multiplier."
+  ],
+  "critique": [
+    "The published description cites attention-mass plots collapsing as an attacker floods the window and a gate that fails the session on trust inversion; the slides state the attention experiment was not run and that failing on a finding is not in slice 1.",
+    "The central framing, that attention has no provenance field, is correct as architecture but does not by itself show that models fail to track provenance in practice; instruction-hierarchy training is acknowledged but not evaluated here.",
+    "The enforcement shown has a limited scope: the proxy catches change after signing, which addresses rug pulls and tampered definitions but not the harder first-sight poisoning or ring 1 injection like EchoLeak, which is only recorded.",
+    "The demo uses a scripted, fixed attack against small 8B models with a canary; it shows the gate working for those three cases, and no robustness, evasion or false-positive results were shown.",
+    "Related-work numbers are third-party preprints presented to motivate a hypothesis; the Governance Decay figures in particular depend on that setup and should not be read as general rates.",
+    "The slide credits one speaker's employer with the SalesBleed finding, and the other speaker runs a company in this space; the talk launches a specification and invites contributions, and some of the incident evidence cited comes from the speakers' own organizations.",
+    "Value of the record for forensics is argued but not shown, with the slide itself saying forensics and cost have not been measured."
+  ],
+  "qa": [],
+  "tags": ["mcp-tools-skills", "agent-memory-context", "supply-chain-model-integrity", "prompt-injection"],
+  "key_frames": [
+    {"file": "t00247.jpg", "caption": "Trust rings (ring 0 operator, ring 1 agent and derived, ring 2 user), the trust inversion in the system region, and a table mapping Invariant Labs, MCPoison and CurXecute CVEs and EchoLeak to what this version does and does not do."},
+    {"file": "t00401.jpg", "caption": "Dual-Failure Multiplier slide stamped NOT RUN, NO RESULTS, with the confound that softmax lowers any fixed span's share as length grows; shows how much of the talk is hypothesis."},
+    {"file": "t00537.jpg", "caption": "Related evidence that operator influence can be diluted, deleted or overridden: 2026 incidents, Llama-8B quality loss figures and Governance Decay results (0% to 30% violations, 0% versus 38% when the rule is dropped)."},
+    {"file": "t00673.jpg", "caption": "What the proxy and emitter do, the three measured figures (1,691 cases, 46,205-token session, 75 ms) with their caveats, and an explicit list of what the tool does not do."},
+    {"file": "t00815.jpg", "caption": "Demo with the gate enforcing: search_notes changed since approval, hash mismatch, gate_decision block, tool dropped from the listing, and the record dashboard showing 4 findings open with the fetch trust inversion still open."}
+  ],
+  "signal": {"score": 3, "reason": "A concrete spec and proxy for recording and pinning what enters the context window, with the speakers' own stated caveats; the headline hypothesis is untested and the demo is scripted."},
+  "caveats": [
+    "Names from captions are garbled: the models measured are given as Microsoft 535 and Quinn 35 8 billion, probably two 8B-parameter models, which could not be confirmed from slides or the demo; the speaker also named a model as helping build the demo (spoken as Crock 47) which is unconfirmed.",
+    "The captions do not mark who is speaking, so quotes are not attributed to a single speaker; the description gives Lambros at Zenity and Wilmot at Detecteam, and the badge on camera reads Rock Lambros.",
+    "Camera and slide views alternate; the demo frames are mostly screen recording with caption lines; QR codes were not decoded and no repo URL beyond cxbom.org was shown.",
+    "The talk description differs from the slides on the gate behaviour and on whether attention plots exist; the slides were used as the authority.",
+    "No audience Q&A was recorded; the video ends as the session is cleared for the next speaker.",
+    "The CVE attribution in the description lists CVE-2025-54135 and CVE-2025-54136 as the tool-definition inversion; the slide classes them as configuration trust failures (CurXecute 54135, MCPoison 54136) and puts tool poisoning and rug pull under Invariant Labs."
+  ]
+}

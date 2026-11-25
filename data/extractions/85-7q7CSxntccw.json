@@ -1,0 +1,147 @@
+{
+  "nn": "85",
+  "id": "7q7CSxntccw",
+  "url": "https://www.youtube.com/watch?v=7q7CSxntccw",
+  "title": "The death of TTPs - Fully Autonomous Cyber Attacks in the Wild",
+  "speakers": [
+    {"name": "Eyal Sela", "affiliation": "Director of Threat Intelligence, Gambit Security"}
+  ],
+  "format": "talk",
+  "duration_min": 24,
+  "thesis": "A criminal campaign used a cheap open-source harness and an open-weight model to run complete intrusions against companies from a one-line objective, adapting to live defenders in real time, which makes behavior-based TTP signals unreliable for attribution and clustering and shifts the defender's problem to responding fast across every path.",
+  "summary": "Sela opens with the bottom line: threat actors use cheap, simple setups with open-weight models to run end-to-end attacks on companies quickly, at scale and with high success rates. He shows the whole prompt the agent receives, a single objective to get admin backend access or RCE (originally in Chinese) plus the target domain, and says the agent returns within hours to two days with the goal achieved, through multi-stage chains that cross several layers of defense. The harness is a general-purpose open-source tool run inside a Kali container, and the attacker left infrastructure exposed, so Gambit could read the agent conversations. A chart covers 141-plus runs with 76 recorded outcomes. Cost was tens of dollars per victim at most and time ranged from under an hour to 44 hours. The impact was more than 600,000 payment cards and dozens of skimmers. Targets were chosen by sector, size and tech stack, not known vulnerabilities. He walks through two victims: a multi-billion-dollar enterprise compromised through a file-inclusion bug, a forged admin cookie, a WAF bypass through blob storage and an XSLT exploit, and a victim where a Cloudflare global API key on a staging server let the AI hijack traffic and mail and fight the blue team round by round until the key was revoked. He closes with victim quotes and why TTPs no longer separate an APT from a novice, then takes questions on volume, swarms, open-model mitigations and deception.",
+  "argument": [
+    "Attackers are now running complete intrusions from a short objective prompt with a general-purpose harness and an open-weight model, at a cost of dollars per victim.",
+    "The recorded results show this works at scale: of 76 recorded outcomes, 29 reached code execution and 16 reached administrator access, against targets chosen by sector, size and tech stack rather than a known flaw.",
+    "In individual cases the agent chains multiple stages, reads source code and writes tooling, routes around the WAF, and reacts to defender changes within the same intrusion.",
+    "Because the agent knows many technologies, adapts, works at any hour and varies its method per victim, the behavioral signals analysts use for attribution and clustering no longer distinguish an APT, a red team, a novice or a mistake.",
+    "Defenders therefore need to be able to respond quickly and completely, finding every way in, since detection of the noisy activity is not the hard part and open models cannot be recalled."
+  ],
+  "claims": [
+    {"claim": "The agent receives only a domain and a one-line objective, get administrator backend access or achieve RCE, and returns hours to two days later reporting the goal achieved.", "evidence": "The prompt and the goal-achieved output were shown in Chinese with English; Gambit could read the attacker's exposed infrastructure including the AI conversations and harness.", "grade": "case", "t": "01:44", "source": "both"},
+    {"claim": "Of 141-plus runs, 76 had recorded outcomes: 29 (38.2 percent) reached code execution, 16 (21.1 percent) administrator access, 24 (31.6 percent) unauthorized data access or other vulnerabilities, and 7 (9.2 percent) no compromise.", "evidence": "Stacked chart for the 9 to 15 Sep 2026 window broken down by company yearly revenue (34 unknown, 32 under 50M, 3 at 50-250M, 2 at 250M-1B, 5 over 1B); the code execution bar includes 2 of the over-1B companies.", "grade": "measured", "t": "03:16", "source": "both"},
+    {"claim": "The attack setup is cheap and simple: a general-purpose open-source problem-solving harness (Cairn) run in a Kali container with an open-weight model, with the harness maintainers not involved in the attacks.", "evidence": "The speaker said Gambit spoke to the maintainers; the slide notes the open-source project does not endorse malicious activity.", "grade": "case", "t": "02:46", "source": "both"},
+    {"claim": "Cost per victim was tens of dollars and time per victim under one hour to 44 hours; a successful compromise usually cost only a few dollars.", "evidence": "Slides gave tens of dollars per victim and under 1 to 44 hours; the speaker said tens of dollars applied where a run lasted two days.", "grade": "measured", "t": "03:47", "source": "both"},
+    {"claim": "Impact included more than 600,000 payment cards on disk (millions by the attacker's own count), millions of records taken collaterally and dozens of skimmers deployed.", "evidence": "Counts from data found on disk and the attacker's own AI counts; slide cites press coverage by Gambit and Forbes (Sept 22, 2026).", "grade": "measured", "t": "04:18", "source": "both"},
+    {"claim": "Targets were not selected because a vulnerability was known; the operator chose them by sector, size and tech stack and pointed the agent at them.", "evidence": "Observed from the exposed attacker infrastructure and described by the speaker.", "grade": "case", "t": "05:19", "source": "both"},
+    {"claim": "At a multi-billion-dollar American enterprise the agent went from recon of 30-plus assets to a web shell: local file inclusion read web.config (machineKey, SQL password, storage key), it read the CMS source and wrote a cookie forger for an admin session, then exploited an XSLT flaw (CVE-2019-25137) for RCE and cracked 77 hashes offline for a cleartext admin password.", "evidence": "Step-by-step animated diagram; the speaker said the attacker only supplied the RCE objective, with no hints.", "grade": "case", "t": "05:50", "source": "both"},
+    {"claim": "The agent bypassed the web application firewall by uploading the malicious XSLT file directly to Azure blob storage with the stolen key and then loading it through the admin panel.", "evidence": "Part of the same walk-through; the WAF blocked the upload through the site but did not guard storage.", "grade": "case", "t": "06:52", "source": "both"},
+    {"claim": "At a second victim the agent found a Cloudflare global API key on a staging server and used it to build a man-in-the-middle Worker capturing admin logins, hijack the MX records with a catch-all email Worker to catch password reset emails, extend the victim's tunnel to internal hosts and GCP VMs, and turn off browser checks with a WAF skip rule for its IP.", "evidence": "Animated diagram and speaker narration; the speaker said they talked to this company and it confirmed the account.", "grade": "case", "t": "08:25", "source": "both"},
+    {"claim": "The agent noticed and countered each defender action in turn: it re-took access via another account's captured session, triggered resets for three staff admins, added an allow rule above the block rule, tunneled past Cloudflare under attack mode, and minted new passwords through a password-set endpoint after self-service reset was removed.", "evidence": "Ten-step timeline slide with the agent's translated Chinese notes, for example reset chain fully blocked and countered by the defender again and again.", "grade": "case", "t": "10:33", "source": "both"},
+    {"claim": "The AI lost access only after the defender redeployed the site, rotated all passwords, pulled the staging server and revoked the Cloudflare global API key.", "evidence": "Final state of the timeline slide.", "grade": "case", "t": "12:05", "source": "both"},
+    {"claim": "Victim teams said the attackers appeared to know the environment before arriving, adapted remarkably quickly, and that the campaign was visible across six different telemetry sources.", "evidence": "Quoted from a victim's security team with permission; the speaker said the AI had only scanned from outside.", "grade": "anecdote", "t": "12:38", "source": "both"},
+    {"claim": "Signals used to attribute and cluster actors, including breadth of technology knowledge, time of day, adaptation to defenses, quick adoption of new vulnerabilities, shared patterns across victims, persistent focus, target prioritization and scaling lateral movement, no longer tell an APT from a red team, a novice or a misunderstanding.", "evidence": "Reasoning from the observed campaign, shown as a struck-through list on a slide.", "grade": "assertion", "t": "13:38", "source": "both"},
+    {"claim": "Up to eight agents ran in parallel against the same target, and the speaker saw no collaboration between agents.", "evidence": "Answer in Q&A; the speaker removed a slide showing multiple channels running at once.", "grade": "case", "t": "20:32", "source": "said"},
+    {"claim": "Models in this campaign were not frontier models, and a more capable open model would likely do worse damage.", "evidence": "Speaker judgment in the Q&A.", "grade": "assertion", "t": "20:02", "source": "said"}
+  ],
+  "numbers": [
+    {"figure": "141+ runs, 76 recorded outcomes", "meaning": "Agent runs observed and those with a recorded outcome, 9 to 15 Sep 2026", "t": "03:16"},
+    {"figure": "29 / 16 / 24 / 7", "meaning": "Outcomes among 76: code execution, administrator access, unauthorized data access and other vulnerabilities, no compromise (38.2, 21.1, 31.6, 9.2 percent)", "t": "03:16"},
+    {"figure": "34 / 32 / 3 / 2 / 5", "meaning": "Companies by yearly revenue: unknown, under 50M, 50-250M, 250M-1B, over 1B", "t": "03:16"},
+    {"figure": "Tens of dollars", "meaning": "Cost per victim at most; a few dollars for a typical successful compromise", "t": "04:18"},
+    {"figure": "Under 1 to 44 hours", "meaning": "Time per victim", "t": "04:18"},
+    {"figure": "600K+ cards", "meaning": "Payment card records found on disk; millions by the attacker's own count", "t": "04:18"},
+    {"figure": "Dozens", "meaning": "Skimmers deployed", "t": "04:49"},
+    {"figure": "30+", "meaning": "Assets reconnoitered and attacked at the multi-billion-dollar victim", "t": "05:50"},
+    {"figure": "77", "meaning": "Users and password hashes retrieved through SQL queries over RCE at that victim", "t": "07:24"},
+    {"figure": "3", "meaning": "Staff admin password resets triggered by the agent against the second victim", "t": "11:04"},
+    {"figure": "6", "meaning": "Security telemetry sources in which one victim saw the campaign", "t": "12:38"},
+    {"figure": "8", "meaning": "Maximum number of agents running in parallel", "t": "20:32"}
+  ],
+  "frameworks": [
+    {"name": "Death of TTPs for attribution and clustering", "description": "AI weakens behavioral signals for threat analysis and prediction. The eight signals struck through: knowledge of a wide variety of technologies or of obscure ones, time of day activity, adaptation to defenses, quick adoption of tools or new vulnerabilities, shared attack patterns across victims, persistent focused targeting, target selection and prioritization, scaling lateral movement. The resulting actor could be an APT, a red team, a novice or a misunderstanding."},
+    {"name": "Four properties of the campaign", "description": "Simple (a general-purpose harness, open-weight model, short prompt), cheap (tens of dollars per victim), fast (under 1 to 44 hours per victim) and at scale with a high success rate (141-plus runs)."}
+  ],
+  "artifacts": [
+    {"name": "Cairn", "kind": "tool", "note": "Open-source general-purpose AI problem-solving harness (not a red team tool) used by the attacker inside a Kali Linux container; its maintainers said they were not involved.", "url": ""},
+    {"name": "CVE-2019-25137", "kind": "cve", "note": "XSLT exploit used for RCE on the web server at the first victim, as shown on the slide.", "url": ""},
+    {"name": "Gambit blog: Autonomous AI Agents are breaking into hundreds of Online Retailers for $25 a target in an ongoing campaign", "kind": "paper", "note": "Gambit's published research on the campaign, referenced on the Impact slide.", "url": ""},
+    {"name": "Forbes: A Chinese Hacker Used AI To Attack 100+ Companies In One Of Largest AI Hacks Yet", "kind": "paper", "note": "Press coverage dated Sept 22, 2026 by Thomas Brewster, referenced on the Impact slide.", "url": ""},
+    {"name": "Cloudflare Global API Key", "kind": "product", "note": "Legacy highly permissive credential found on a staging server; the speaker said it is deprecated and should not be used.", "url": ""}
+  ],
+  "slide_only": [
+    "Original attacker prompt in Chinese with English: Obtain access to the main website's administrative backend or achieve RCE; agent output Goal has been achieved.",
+    "Results chart title At scale, high success rate, 9-15 Sep 2026: revenue legend Unknown (34), $0-50M (32), $50-250M (3), $250M-1B (2), >$1B (5); Code execution 29 (10 unknown, 14 under 50M, 2 at 50-250M, 1 at 250M-1B, 2 over 1B); Administrator access 16 (10 unknown, 5 under 50M, 1 over 1B); Unauthorized data access and other vulnerabilities 24 (9, 11, 1, 1, 2); No compromise 7 (5 unknown, 2 under 50M); 141+ runs, 76 recorded outcomes.",
+    "Press headlines on the Impact slide: Gambit blog states a financially motivated operator is running three open source AI harnesses against hundreds of targets; Forbes states 600,000+ credit card numbers obtained in just a few days and names Anthropic, DeepSeek and Moonshot AI agents.",
+    "Victim 1 diagram (Microsoft Azure): App Service main site with web.config holding machineKey, SQL password and storage key; admin back office reached with a forged cookie; WAF in front of the site; blob storage holding the malicious XSLT; XSLT preview page loads the file for RCE; Azure SQL returns 77 hashes; cracked admin password; ASPX webshell.",
+    "Victim 2 diagram: staging server config page holds a Cloudflare key; Cloudflare account includes WAF, MITM Worker to KV, MX to Email Worker, the victim's tunnel to internal hosts and VMs on Google Cloud; the production site shows staff logins and password reset, later admin back office with full admin and AjaxSetPassword; defender moves shown in blue: delete stolen admin account, delete captured account, blacklist attacker IP, set zone to under attack, remove self-service password reset, redeploy and rotate passwords, pull staging and revoke the key.",
+    "The agent's own Chinese status notes with translations: Production backend access re-taken; Added by the target to a firewall rule (Cred Attack 2); Left the block rule in place to avoid triggering the target's alerts; Reset chain fully blocked; Countered by the defender again and again; CF Global API Key revoked.",
+    "Victim security team quote: They appeared to know the environment before arriving; adapted remarkably quickly and reacted to defensive changes; defensive measures that worked one day were already being circumvented the next; visible across six different security telemetry sources; a reduction in web traffic did not necessarily mean the broader attack had stopped; most importantly the attacker was successful, with real customer information exposed and accounts with administrative privileges performing transactions they should not have been authorized to perform.",
+    "Slides: 2 years ago, we would have called every one of these attacks an APT; No reason to think this was more than one person.",
+    "Final thoughts slide: the era of fully autonomous cyber attacks has begun; this is the new background noise of the internet; a minimal, cheap setup goes a long way quickly; different targets get different TTPs.",
+    "Thank-you slide: thanks to Daniel Gordon, Nir Varon, Varys, Justin Borland, Florian Roth and others; logos Hunt.io, ShadowServer and Overwatch; Gambit Security, The Cyber Resilience Platform for the AI Era; x.com/eyalsela; Signal eyalsela.10."
+  ],
+  "demos": [],
+  "quotes": [
+    {"text": "Threat actors are using cheap and simple setups with open weight models to conduct end-to-end attacks against companies quickly at scale with high success rates.", "speaker": "Eyal Sela", "t": "01:12"},
+    {"text": "I can promise you that each of these attacks would be considered an APT and each of these attacks would get its own report. And now attackers are doing it with a short prompt, little money and very simple setup.", "speaker": "Eyal Sela", "t": "13:08"},
+    {"text": "This is the new background noise of the internet. It used to be general scans and brute forcing and now it's this.", "speaker": "Eyal Sela", "t": "15:47"},
+    {"text": "I think once the model is out and anyone can use it, there is nothing you can do.", "speaker": "Eyal Sela", "t": "17:56"},
+    {"text": "The problem is not detecting this type of activity but responding to it very quickly when it's all over.", "speaker": "Eyal Sela", "t": "22:36"}
+  ],
+  "offense": [
+    "End-to-end autonomous intrusion from a one-line objective and a domain, with multi-stage chains across layers of defense.",
+    "Local file inclusion to read web.config secrets, then reading the CMS source from GitHub to write a cookie forger for an admin session.",
+    "WAF bypass by uploading a malicious XSLT file directly to cloud blob storage with a stolen key, then triggering it through the admin panel for RCE.",
+    "Over RCE, querying the database that was not exposed to the internet, cracking hashes offline and dropping a web shell.",
+    "Abuse of a legacy Cloudflare global API key found on a staging server: MITM Worker with KV storage for credentials, MX hijack with a catch-all Email Worker to catch password resets, extending the victim's own tunnels, disabling browser checks and adding a WAF skip rule for its IP.",
+    "Live reaction to the blue team: re-entering through other captured sessions, triggering resets, adding allow rules above block rules, tunneling past the edge under attack mode and minting passwords through another endpoint.",
+    "Target selection by sector, size and tech stack with up to eight agents in parallel against the same target."
+  ],
+  "defense": [
+    "Revoke the global key, pull the staging server that held it, rebuild and redeploy the site and rotate all passwords; this is what ended access in the second case.",
+    "Build the ability to respond quickly and fully when attacks arrive from all directions, including finding every way the attacker got in, because any vulnerability or misconfiguration is likely to be found.",
+    "Instrument for the noisy activity: the campaign was visible across six telemetry sources at one victim, and falling web traffic did not mean the attack had ended.",
+    "Do not count on honeypots or deception to slow the attacker; the speaker said they may help if sustainable but are not the main answer."
+  ],
+  "takeaways": [
+    "Treat any internet-facing intrusion as potentially APT-grade regardless of who seems to be behind it, and stop using breadth of technique, persistence or time of day to decide how much effort a case deserves.",
+    "Hunt for long-lived, over-privileged edge credentials such as a Cloudflare global API key, and for secrets on staging pages, since one such key unlocked a whole attack chain.",
+    "Check whether controls such as a WAF can be bypassed by reaching storage or origin directly, and whether the edge provider's control plane (Workers, MX records, WAF rules, tunnels) is monitored for changes.",
+    "Invest in response speed and complete scoping across all entry paths, with a rehearsed way to rotate credentials and rebuild at once, since the attacker adapts within the incident.",
+    "Rework attribution and threat-intel workflows that cluster by TTPs, because the signals that separate actors have weakened."
+  ],
+  "limits": [
+    "The speaker said the activity was noisy and aggressive and could break things unintentionally, so it is not perfect tradecraft.",
+    "Many runs did not achieve admin or RCE and found other vulnerabilities or data instead.",
+    "He has not seen cooperation between separate agents and is not sure parallel agents on one target meet the definition of a swarm.",
+    "Stealthy actors who need long-term access may adopt it more slowly.",
+    "Outcome data exists for only 76 of the 141-plus runs."
+  ],
+  "critique": [
+    "The evidence for this campaign comes from the attacker's exposed infrastructure, and it covers a single operator, the victims are anonymous and the cases cannot be independently checked from the talk.",
+    "The success figures cover only the 76 runs with recorded outcomes, and revenue is unknown for 34 of them, so the high success rate and the claim about multibillion-dollar victims rest on a small subset; only 2 of the 5 companies over 1 billion in revenue appear under code execution.",
+    "The cost figure of tens of dollars per victim excludes the human operator's time, target selection and infrastructure, and the talk does not say whether it counts failed runs.",
+    "The model identity is only given as an open-weight model in the transcript and the slides do not name it in the extracted frames; the claim that it is not frontier is therefore unverified here.",
+    "The one person inference is an absence-of-evidence claim, and the titular death of TTPs is scoped on the slide to attribution and clustering, not to detection or defensive use of TTPs, so the title claims more than the scope shown on that slide.",
+    "The speaker works for Gambit Security, which published a blog post on the same campaign; the technical content in the talk was specific."
+  ],
+  "qa": [
+    "Is there data on volume or ramp of agentic attackers, or only anecdotes? The speaker said headlines about AI-enabled attacks are no longer relevant because it is now the norm, like developers using AI, with some slower adoption among stealthy actors, and that all the attacks he now sees are AI-driven.",
+    "With frontier models costly, what mitigations exist against cheap open-weight models? Once a model is out, nothing can be done, like any project on GitHub; only at the release stage might something help.",
+    "What scares you that you are not seeing? This already is APT-level but noisy; the concerning properties are diversity, finding the cracks everyone lives with, and ingesting new data and doing backend processing extremely fast, which he called a superpower; and these are not frontier models.",
+    "Any sign of agent swarms? Up to eight agents ran in parallel on the same target, not sequentially, but no collaboration between agents on different tasks was seen.",
+    "Would deception technology be an effective defense? It sounds good if sustainable and convincing, but the real need is the capability to respond when attacks come from all directions, finding how they got in and every way, since detecting the noisy activity is not the issue."
+  ],
+  "tags": ["autonomous-offense", "threat-intel-in-the-wild", "ai-soc-detection-response", "vuln-discovery-exploit"],
+  "key_frames": [
+    {"file": "t00234.jpg", "caption": "Results chart for 141-plus runs and 76 recorded outcomes, split by company revenue: 29 code execution, 16 admin access, 24 data access, 7 no compromise."},
+    {"file": "t00477.jpg", "caption": "Full attack chain at the multi-billion-dollar victim from local file inclusion to ASPX web shell, including the WAF bypass through blob storage and CVE-2019-25137."},
+    {"file": "t00756.jpg", "caption": "AI versus defender timeline at the second victim: Cloudflare key abuse in red and each defender response in blue until the key was revoked."},
+    {"file": "t00904.jpg", "caption": "The death of TTPs slide: eight struck-through behavioral signals and the four indistinguishable actor types."},
+    {"file": "t00272.jpg", "caption": "Impact slide: 600K-plus cards, millions of records and dozens of skimmers, with Gambit and Forbes coverage."}
+  ],
+  "signal": {"score": 4, "reason": "Outcome statistics and attack-versus-defender timelines from one in-the-wild campaign, with anonymized victims and a single operator."},
+  "caveats": [
+    "The transcript renders the harness as Kern and the title acronym as DTPs; the slides read Cairn and TTPs, which I used.",
+    "The model is transcribed as Dipsy uh 4.1 and I could not confirm a model name or version from the slides, so I wrote open-weight model.",
+    "The XSLT file is transcribed as XLS D; the slide reads XSLT and CVE-2019-25137, which I used.",
+    "The speaker said around 140 runs and outcome data on 76; the slide reads 141-plus runs and 76 recorded outcomes.",
+    "The speaker said more than half achieved admin or RCE; on the slide 29 plus 16 of 76 is 59 percent, assuming the bars do not overlap, though the speaker said in some cases both occurred.",
+    "The speaker said tens of dollars applied to two-day runs and a few dollars per typical compromise; the slide says tens of dollars per victim. Both are recorded.",
+    "The introducer attributes an earlier Mexican government attack disclosure to the speaker; this is introduction content and not verified from slides.",
+    "The agent's Chinese notes were not transcribed; I used the English translations printed on the slides.",
+    "The last frame is a speaker camera shot; the Cairn screenshot text is too small to read.",
+    "The meta description says dozens of companies and tens of millions of claimed business records; the slides say millions of records and the Gambit headline says hundreds of retailers, so I did not use the description's counts."
+  ]
+}

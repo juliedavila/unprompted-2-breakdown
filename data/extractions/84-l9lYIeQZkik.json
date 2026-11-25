@@ -1,0 +1,167 @@
+{
+  "nn": "84",
+  "id": "l9lYIeQZkik",
+  "url": "https://www.youtube.com/watch?v=l9lYIeQZkik",
+  "title": "Hacking Chrome's Local SLM",
+  "speakers": [
+    {"name": "David Tulis", "affiliation": "Senior Threat Researcher, TrendAI"},
+    {"name": "Vincenzo Ciancaglini", "affiliation": "AI Threat Research Lead, TrendAI"}
+  ],
+  "format": "talk",
+  "duration_min": 26,
+  "thesis": "Chrome now ships a local Gemini Nano model and inference engine that any website or extension can call with no permission prompt, rate limit or throttling, which makes it a free compute resource for token-farming botnets, an injectable target for security features, and a ready-made engine for future malware.",
+  "summary": "Ciancaglini opens with the trend of AI moving onto devices and a timeline of browser support for local models: Opera in April 2024, Chrome with Gemini Nano in May 2024, Edge with Phi-4 in May 2025, Firefox moving its engine from WASM to ONNX in August 2025, and the Prompt API reaching general availability in May 2026. He frames three threat scenarios: AI as a resource, a target and a weapon. Tulis then describes Chrome's model: Nano-3 at an estimated 8 to 10 billion parameters, a weights.bin file downloaded on demand to eligible machines, and the APIs that use it. The Prompt API has no permission model, so he demos a token-mining botnet in which a streaming page enrolls the visitor's tab and an admin panel routes OpenAI-compatible jobs to it. He benchmarks tokens per second by hardware, prices them against comparable small models, and compares the take with CoinHive. He shows that Chrome's scam detector, until a week earlier, could be fooled by prompt injecting the local model, and lists XSS and tool-calling risks. He then shows how to reuse the model outside Chrome, swap in Qwen, and test whether Gemini Nano could power credential-based worm propagation; it finds secrets reasonably well but fails at extracting and using them. Ciancaglini closes with criminal token resale, the LameHug malware, defender takeaways and future developments, followed by audience questions.",
+  "argument": [
+    "Browsers now ship local models and inference engines at scale, and Chrome is the most mature example.",
+    "Chrome's local inference API has no permission prompt, usage indicator, rate limit or throttling, so it is a free compute primitive like CoinHive was but without the mitigations browsers later added.",
+    "Because that compute can be sold as cheap tokens, a token-mining botnet is economically plausible and, per their estimates, more lucrative per node-hour than in-browser crypto mining at CoinHive's scale.",
+    "Local models are easily prompt injectable, so any security signal derived from them, including Chrome's former scam detection, can be manipulated, and summarizer, writer and tool-calling uses carry injection, XSS and return-to-tool risks.",
+    "The engine and model can be reused outside Chrome and loaded with other models, so malware may eventually rely on local inference, though Gemini Nano today is too weak to run credential-based lateral movement.",
+    "Defenders need a permission and approval model for local inference, should not trust local models for security decisions, and should expect browsers to join the shadow AI pool."
+  ],
+  "claims": [
+    {"claim": "Chrome's local model API has no permission prompt, no usage indicator, no rate limiting and no throttling, so any website or extension can send inference jobs to the local machine.", "evidence": "Stated from their research and shown on a slide listing the absences; contrasted with prompts for camera, microphone and location.", "grade": "assertion", "t": "04:48", "source": "both"},
+    {"claim": "A web page can enroll a visitor's Chrome tab in a token-mining botnet: JavaScript on the page opens an SSE connection, an admin panel with an OpenAI-compatible API routes prompts to available tabs.", "evidence": "Live demo of a TokenHive worker client page with a soccer video as the keep-alive lure.", "grade": "demo", "t": "05:51", "source": "both"},
+    {"claim": "Measured end to end (prefill plus decode), laptops generate roughly 5 tokens per second on low-end integrated GPUs, 10 to 20 on CPU only, about 30 on mid-range laptops, 40 to 50 on Apple Metal M1 class, and 50 to 60 on high-end hardware.", "evidence": "Benchmarks collected with their token-miner site on laptop hardware; mobile devices were not benchmarked.", "grade": "measured", "t": "07:23", "source": "both"},
+    {"claim": "At an assumed $0.10 per million tokens, an average node at 30 tokens per second earns about $0.011 per hour or $0.264 per day, and a 60 tokens-per-second node earns about $0.022 per hour or $0.528 per day.", "evidence": "Arithmetic from their benchmark and a price chosen from comparable small-model prices of $0.04 to $0.40 per million tokens (source shown as pricepertoken.com).", "grade": "measured", "t": "07:55", "source": "both"},
+    {"claim": "Scaled estimates: a streaming site yields about $11 to $22 per 1,000 streams of a one-hour episode, and 10,000 sites with 1,000 visitors each reading 15 minutes yield $27,500 to $55,000.", "evidence": "Projection from the per-node values; compared with CoinHive peaking at 50,000 websites and about $24,000 weekly (cited to The Next Web).", "grade": "assertion", "t": "08:28", "source": "both"},
+    {"claim": "Until about a week before the talk, Chrome's scam detector asked the local model for a brand and intent for the page and sent that with the URL to Safe Browsing, and the small model was trivially prompt injected to claim any brand or intent.", "evidence": "Walkthrough with a Microsoft tech support scam page: uninjected output named Microsoft, injected output named Contoso Software; Google's Oct 20 post shows the flow moving to a cloud model.", "grade": "demo", "t": "10:01", "source": "both"},
+    {"claim": "Even when the final decision is server-side, any signal produced by a local model is susceptible to injection and should not be trusted in security decisions.", "evidence": "Reasoning from the scam-detector example; the speaker said Google would agree.", "grade": "assertion", "t": "10:33", "source": "both"},
+    {"claim": "Chrome's summarizer and writer APIs are injectable through page comments or hidden email text, rendering model output as innerHTML gives XSS, and the developer-preview tool calling could enable return-to-tool attacks.", "evidence": "Hypothetical scenarios such as a ticketing system; the speaker said these are theoretical until adoption.", "grade": "assertion", "t": "11:03", "source": "both"},
+    {"claim": "Chrome's on-device inference library can be reused outside Chrome and fed other models: the weights file is a LiteRT-LM container, and a Qwen model loaded without issues via the optimization-guide manifest override flag.", "evidence": "Their reverse engineering; code planned to be pushed to a trendmicro nanochat repository once approved, exposing an OpenAI-compatible API on localhost.", "grade": "case", "t": "12:06", "source": "both"},
+    {"claim": "Gemini Nano-3 finds secrets well in synthetic file shares (99 percent) but poorly in real git data (64 percent), extracts hostname, username and password poorly (43, 80 and 66 percent), and generates bad lateral-movement commands, so it cannot propagate itself today.", "evidence": "Their evaluation on ShareSift (synthetic corporate file shares) and CredData (real credentials in git); results shown on a slide.", "grade": "measured", "t": "14:42", "source": "both"},
+    {"claim": "Criminals already resell cheap inference tokens and hunt for inference API keys, so a token botnet fits an existing business need.", "evidence": "General threat-intel observation of the past year; slides showed a Venice.ai discounted-credit page and a token-reseller infrastructure page as examples.", "grade": "anecdote", "t": "16:18", "source": "both"},
+    {"claim": "The LameHug malware, tied to APT28, called a Qwen coder model through the Hugging Face API using 248 embedded API keys, which is a weakness and detectable, while a local engine would remove that dependency; Gemma 4 produced the code for its prompt without refusal.", "evidence": "Referenced a published LameHug analysis (Sept 25, 2025 article shown on the slide); the Gemma 4 test was done by the speaker out of curiosity.", "grade": "case", "t": "17:19", "source": "both"}
+  ],
+  "numbers": [
+    {"figure": "8-10B parameters (estimated)", "meaning": "Size of Gemini Nano-3, released May 2026; Gemma 4 derived future models are listed at 4 to 12B", "t": "03:15"},
+    {"figure": "16 GB RAM, 4 CPU cores, 32 GB disk", "meaning": "Machine eligibility requirements for Chrome to download the local model", "t": "03:45"},
+    {"figure": "4 GB", "meaning": "Disk the model consumed that surprised users the previous summer", "t": "02:12"},
+    {"figure": "5 / 10-20 / 30 / 40-50 / 50-60 tok/s", "meaning": "Measured end-to-end speed by hardware class: low-end integrated GPU, CPU only, mid-range laptop, Apple Metal M1, high-end (M5 or desktop GPU)", "t": "07:23"},
+    {"figure": "$0.04 to $0.40 per million tokens", "meaning": "Cloud price range for comparable 3-4B models (Phi-4 mini 3B $0.04 to Gemma 4 E4B $0.40)", "t": "07:55"},
+    {"figure": "$0.011 per hour, $0.264 per day", "meaning": "Value of an average 30 tok/s node at $0.10 per million tokens", "t": "07:55"},
+    {"figure": "$0.022 per hour, $0.528 per day", "meaning": "Value of a 60 tok/s ceiling node at $0.10 per million tokens", "t": "08:28"},
+    {"figure": "50,000 websites, $24,000 weekly", "meaning": "CoinHive at its peak (cited to The Next Web)", "t": "08:28"},
+    {"figure": "$11-22", "meaning": "Average-to-max revenue for 1,000 streams of a one-hour TV episode on one site", "t": "08:28"},
+    {"figure": "$27,500-$55,000", "meaning": "Average-to-max revenue for 10,000 sites with 1,000 visitors each for 15 minutes", "t": "08:59"},
+    {"figure": "65 percent", "meaning": "Chrome's global browser market share, used as the infrastructure already in place", "t": "09:30"},
+    {"figure": "99% / 64%", "meaning": "Accuracy of Gemini Nano-3 finding secrets in synthetic file shares and in real git repositories", "t": "14:42"},
+    {"figure": "43% / 80% / 66%", "meaning": "Extraction accuracy for hostname, username and password", "t": "14:42"},
+    {"figure": "248", "meaning": "API keys LameHug shipped to reach Hugging Face reliably", "t": "17:19"}
+  ],
+  "frameworks": [
+    {"name": "Three threat scenarios for browser-embedded local models", "description": "AI as a resource (token farming, turning a botnet into an inference engine), AI as a target (attacks on AI such as evading the scam classifier), and AI as a weapon (AI-powered attacks through model sideloading and model replacement)."},
+    {"name": "Parasitic computing primitive", "description": "On-device inference compared with CoinHive on five properties: runs in the background, no user permission, user unaware, turns compute into money, and throttling, where CoinHive was throttled and on-device inference is not."},
+    {"name": "Future developments", "description": "Delivery moves from token-mining sites to token-mining extensions, architecture from one model with multiple instances to distributed mixture of experts, and execution from malware using remote inference to fully local malware with inference on the endpoint."},
+    {"name": "Three steps to worm with a local model", "description": "Identify the secret in a file, extract username, password and hostname, and generate the command that uses the secret."}
+  ],
+  "artifacts": [
+    {"name": "Token miner demo (TokenHive)", "kind": "tool", "note": "Their demo botnet worker page and operator dashboard that enroll a Chrome tab and route OpenAI-API jobs to it.", "url": "https://tokenminer.ftr.sh/worker"},
+    {"name": "nanochat", "kind": "repo", "note": "Their library that reuses Chrome's on-device inference engine outside Chrome and exposes an OpenAI-compatible API on localhost; shown as to be pushed after approval.", "url": "https://github.com/trendmicro/nanochat"},
+    {"name": "LiteRT (litert-lm container)", "kind": "tool", "note": "Open-source format expected by Chrome's optimization_guide_internal library for custom models.", "url": "https://github.com/google-ai-edge/litert"},
+    {"name": "ShareSift", "kind": "dataset", "note": "Synthetic corporate file-share dataset used to test secret detection.", "url": ""},
+    {"name": "CredData", "kind": "dataset", "note": "Real dataset of credentials found in git repositories used to test secret detection.", "url": ""},
+    {"name": "Chrome Enhanced Safe Browsing posts", "kind": "paper", "note": "Two Google security blog posts: the earlier on-device tech support scam flow (struck through) and the Oct 20 post on the cloud-based flow.", "url": "https://blog.google/security/our-latest-defenses-against-evolving-web-scams/"},
+    {"name": "CoinHive profit reporting", "kind": "paper", "note": "Source for CoinHive's 50,000 sites and $24,000 weekly figures.", "url": "https://thenextweb.com/news/coinhive-mining-monero-profits"},
+    {"name": "pricepertoken.com", "kind": "dataset", "note": "Source for cloud per-million-token prices of comparable small models.", "url": "https://pricepertoken.com/"},
+    {"name": "LameHug", "kind": "cve", "note": "LLM-driven malware attributed to APT28 that queried Qwen 2.5-Coder-32B-Instruct via the Hugging Face API; shown from a Sept 25, 2025 analysis article titled From Prompt to Payload.", "url": ""},
+    {"name": "chrome://on-device-internals", "kind": "tool", "note": "Chrome page showing local model status, configuration and debug logs.", "url": ""}
+  ],
+  "slide_only": [
+    "Browser timeline: April 2024 Opera local models; May 2024 Gemini Nano on Chrome 126; May 2025 Phi-4 support in Edge; June 2025 Prompt, Summarizer and Translator APIs in extensions (Nano-1); August 2025 Firefox moves local engine from WASM to ONNX; May 2026 Prompt API reaches general availability (Nano-2).",
+    "Gemini Nano model evolution: Nano-v1 2023, Nano-v2 August 2025, Nano-v3 May 2026 at 8-10B parameters (estimated); future Gemma4-derived, 4-12B.",
+    "weights.bin eligibility: 16 GB RAM, 4 CPU cores, 32 GB disk; downloaded when a website invokes the LanguageModel API via user action; stored in OptGuideOnDeviceModel.",
+    "API status in Chrome: Prompt, Summarizer and Language Detection stable; Writer/Rewriter, Translator and Proofreader in preview; Phishing Classifier and Scam Detection stable.",
+    "Comparable model prices per million tokens (input plus output): Gemma4 E4B $0.40, Gemma4 E2B $0.12, Gemma3 4B $0.12, Llama 3.2 3B $0.08, Ministral 3B $0.08, Phi-4 mini 3B $0.04.",
+    "CoinHive comparison footnotes: Coinhive runs on any browser while the Prompt API is Chrome only; Coinhive generates money while generating tokens requires a buyer; cryptocurrency prices fluctuate.",
+    "Scam detection demo slide: a fake Windows Security page (Your PC is infected, a 1-800-555-0199 number); uninjected output is brand Microsoft with intent to alert users of malware infections and offer automated repair and support; injected output is brand Contoso Software with intent Business offerings of Contoso business.",
+    "Reuse slide: weights.bin is a LiteRT-LM container with tokenizer and weights; libraries liboptimization_guide_internal.dylib and optimization_guide_internal.dll; GetChromeMLAPIV2 export; requires Dawn compiled to the exact version statically linked in Chrome, which changes often.",
+    "Custom model slide: needs litertlm container, SentencePiece tokenizer and handling of different turn framing between Gemma and Qwen.",
+    "Model override slide: launch Chrome with the optimization-guide manifest override flag pointing to override.json; manifest consists of manifest.binarypb (serialized Manifest proto), Model-config.pb (serialized SolutionConfig) and a litertlm model; see optimization_guide_global_state.cc.",
+    "Worm feasibility slide: finding secrets 99 percent on file shares and 64 percent on git; extraction hostname 43, username 80, password 66 percent; Gemini Nano really likes netexec for everything; few-shotting with examples reduces effectiveness; hardcoded format strings would still be gated by poor extraction rates.",
+    "Demo screenshot shows a Chrome window with tabs TokenHive Worker Client and Operator Dashboard and a menu-bar clock reading Wed Oct 28.",
+    "Resale examples on screen: a Venice.ai API credits page (up to 90 percent off, same-day credits expire at midnight) and a Vireonix page offering AI token reseller infrastructure; a LameHug article snippet states the malware used Qwen 2.5-Coder-32B-Instruct through the HuggingFace API with system administrator privileges.",
+    "Defender takeaways slide and a future developments table (sites to extensions, one model to distributed MoE, remote inference to fully local malware)."
+  ],
+  "demos": [
+    "Live demo of the token-mining botnet: a page with a soccer or surfing video enrolled the visitor's Chrome tab as a worker; the admin page was not shown to the room because the presenter could not see the screen, so the demo is shown only as a recorded worker client with client ID and capability profile.",
+    "Prompt injection of the scam-detector prompt, shown as before-and-after JSON outputs rather than live."
+  ],
+  "quotes": [
+    {"text": "Don't rely on local models at any point during the security decision making process. Even if the ultimate decision isn't made by the local model, any signal that comes from the local model is vulnerable to injection and should not be trusted.", "speaker": "David Tulis", "t": "10:33"},
+    {"text": "Chrome has not implemented any kind of throttling or blocking mechanisms for this API.", "speaker": "David Tulis", "t": "05:51"},
+    {"text": "If you are looking at policing shadow AI in your company, soon enough your browser will become part of that shadow AI pool that you need to look at.", "speaker": "Vincenzo Ciancaglini", "t": "18:55"},
+    {"text": "I don't think I would trust Gemini 3 to come up with commands for post-exploitation or lateral movement.", "speaker": "David Tulis", "t": "15:44"},
+    {"text": "A malicious token mining extension would not even need a user to be on the page. They would just need a user to keep the browser open.", "speaker": "Vincenzo Ciancaglini", "t": "19:27"}
+  ],
+  "offense": [
+    "Token farming: JavaScript on any page or extension turns visitors' browsers into a resold inference pool through the Prompt API, which has no permission, indicator, rate limit or throttle.",
+    "Prompt injection of the local model to defeat the scam classifier by forging brand and intent.",
+    "Injection through summarizer and writer APIs via page comments or hidden email text, XSS when output is rendered as innerHTML, and return-to-tool attacks through the developer-preview tool calling.",
+    "Model sideloading and replacement: reuse Chrome's inference library and load another model such as Qwen through the manifest override.",
+    "Malware that uses the already installed local inference engine instead of a remote API, as LameHug used Hugging Face, removing the extractable API keys and outbound dependency.",
+    "Credential-based lateral movement by a local model: find secrets in files, extract host, user and password, and generate commands; judged infeasible with Nano-3 today.",
+    "Possible future: malicious extensions delivering token mining without a page open, and distributed inference across botnet nodes."
+  ],
+  "defense": [
+    "Add a permission, approval and control model for which applications and sources may use local inference, with usage indicators and throttling comparable to what browsers did for crypto miners.",
+    "Do not use local models in security decisions, and treat any signal they emit as attacker-controlled even when the verdict is made server-side.",
+    "Do not render model output as HTML; sanitize it to avoid XSS.",
+    "Gate tool calling driven by an on-device model, especially in applications that process untrusted input such as tickets.",
+    "Use the enterprise control to turn the feature off entirely when needed; the speakers said no granular control exists over what, who or when.",
+    "Monitor outbound connections to inference providers for AI-powered malware, and expect that to stop being sufficient as inference moves local.",
+    "Add browsers to the shadow AI inventory."
+  ],
+  "takeaways": [
+    "Decide whether the enterprise should disable Chrome's on-device model with the enterprise policy until a permission model exists, since there is no granular control.",
+    "Add on-device inference to shadow AI scope: browsers on eligible machines (16 GB RAM, 4 cores, 32 GB disk) can run a model without any install.",
+    "Treat any security feature that consumes a local model's output as injectable, including signals that feed a server-side verdict, and review internal designs that do this.",
+    "Review web applications that call the browser's Prompt, Summarizer or Writer APIs for innerHTML rendering and untrusted-input injection.",
+    "Update detection for AI-powered malware: egress to Hugging Face or OpenAI endpoints will not catch malware that uses a local engine, so endpoint behavior and model-file telemetry matter."
+  ],
+  "limits": [
+    "Scam detection moved to a cloud model about a week before the talk, so the demonstrated injection no longer applies to the current flow; the speakers kept the message.",
+    "The tool-calling attacks are theoretical because the API is in developer preview and adoption is unknown.",
+    "They did not benchmark mobile devices and did not measure power or CPU impact; they only watched Activity Monitor and saw no slowdown.",
+    "Energy costs of inference versus mining Monero were not calculated.",
+    "Gemini Nano-3 is not capable enough today for the worm scenario; a fine-tuned or more capable model might be.",
+    "No real-world token-farming botnet had been observed by them; a honeypot browser study was described as coming next.",
+    "The nanochat code was not yet public and depends on a Dawn version that changes often."
+  ],
+  "critique": [
+    "The revenue figures are projections from one assumed price ($0.10 per million tokens) with no buyer, and the CoinHive comparison sets a one-off hypothetical across 10,000 sites against CoinHive's weekly aggregate, so the claim that token mining is more favorable than crypto-jacking is not established.",
+    "The comparable-model table lists 3-4B models while Nano-3 is estimated at 8-10B parameters; the price basis differs from the model's estimated size, and combining prefill and decode into a single speed does not account for lower decode throughput on a tab competing with the user's own work.",
+    "The demo showed the worker side only; there was no evidence of a buyer-facing service, job reliability, or how long a tab would stay enrolled, and the botnet-scale claims rest on 65 percent Chrome market share rather than on tab-dwell data.",
+    "The worm evaluation names its datasets and gives specific numbers, but the sample sizes and prompting method were not shown, and the conclusion that propagation is poor is a limit of the current model, not of the architecture.",
+    "The point that no local model should feed security decisions is well supported by the injection demo, though it concerns a design Google has since replaced.",
+    "The criminal token-resale slides show commercial reseller pages, which are not by themselves evidence of criminal activity; the link to botnet demand is asserted from threat intel that was not detailed."
+  ],
+  "qa": [
+    "A commenter suggested beneficial uses such as protein folding or replacing ad-supported journalism with a compute-supported model; the speaker agreed but said defenders would then have nothing to talk about.",
+    "White-box optimization of triggers on the local model: with a remote attacker only prompt injection is reachable, and an attacker with file system access would just swap in an obliterated model; plain injection worked well enough that no tuning was needed, such as appending text saying the page is another site.",
+    "Telemetry and logging: the Chrome debug page shows logs of any site using the engine; enterprise controls can turn it off completely but there are no granular controls over what, who or when.",
+    "Threat intel or honeypot data on real sites using the approach in the wild: not yet, described as coming next.",
+    "Performance impact of mining: no slowdown noticed in Activity Monitor, no numbers or power measurements; throttling to avoid notice is possible, and a malicious extension or a streaming page, or downtime in an enterprise, could hide the load."
+  ],
+  "tags": ["prompt-injection", "threat-intel-in-the-wild", "guardrails-runtime-controls", "fraud-scams-abuse"],
+  "key_frames": [
+    {"file": "t00304.jpg", "caption": "The missing permission model: any website or extension can send inference jobs via the Prompt API with no popups, indicators, rate limiting or throttling."},
+    {"file": "t00519.jpg", "caption": "Token-mining revenue estimates against CoinHive, with the stated caveats and the CoinHive source."},
+    {"file": "t00607.jpg", "caption": "Scam detector injection: uninjected Microsoft brand and intent versus injected Contoso Software output on a tech support scam page."},
+    {"file": "t00920.jpg", "caption": "Worm feasibility results for Gemini Nano-3: 99 percent and 64 percent secret finding, 43/80/66 percent extraction, poor command generation."},
+    {"file": "t01095.jpg", "caption": "Defender takeaways: permission and approval model, no local models in security decisions, expect attacks to use local inference, shadow AI."}
+  ],
+  "signal": {"score": 4, "reason": "Research with a demo, hardware benchmarks, a worm evaluation on named datasets and revenue projections from stated assumptions."},
+  "caveats": [
+    "Auto-caption errors: David Tulis is transcribed as David Tolley; the Qwen model in LameHug is transcribed as Quen 2.9 while the slide reads Qwen 2.5-Coder-32B-Instruct, which I used.",
+    "Firefox's engine move is transcribed as WASM to WasmX; the slide reads WASM to ONNX. Microsoft Edge support is transcribed as 54; the slide reads Phi-4.",
+    "The timeline slide labels May 2026 Prompt API general availability as Nano-2, while the model evolution slide lists Nano-v2 as August 2025 and Nano-v3 as May 2026; the inconsistency is on the slides and is unresolved.",
+    "The speaker said CoinHive had 50,000 nodes; the slide says 50,000 websites. I used the slide.",
+    "Revenue figures: the speaker said 52 cents per day and $22 per 1,000 streams for the high case; slides read $0.528 and a $11 to $22 range.",
+    "The worm slide and speaker describe Anthropic's work differently (Android devices spoken, IoT devices on the slide); the distributed-inference reference to a company released last week is transcribed as On Tropic and I could not confirm it.",
+    "Speaker said the Gemini Nano scam detector change happened about a week earlier; the slide shows an Oct 20 post. The demo screenshot clock shows Oct 28.",
+    "The Venice.ai and Vireonix slides were not named aloud; I recorded them as examples of token resale and do not know the speakers' exact claim about them.",
+    "The admin panel of the botnet demo was not shown on screen; the demo screenshot is a recorded worker client.",
+    "Qwen is transcribed as Cwen in places."
+  ]
+}

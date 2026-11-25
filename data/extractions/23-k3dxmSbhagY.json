@@ -1,0 +1,138 @@
+{
+  "nn": "23",
+  "id": "k3dxmSbhagY",
+  "url": "https://www.youtube.com/watch?v=k3dxmSbhagY",
+  "title": "Auditing Trojan LLMs (Hidden Triggers, Harmful Payloads: Auditing Trojan Open-Weight LLMs)",
+  "speakers": [
+    {"name": "Patrik Mada", "affiliation": "AISLE (Member of Technical Staff)"},
+    {"name": "Evelina Gabasova", "affiliation": "AISLE (Head of Technology / Head of AI)"}
+  ],
+  "format": "talk",
+  "duration_min": 24,
+  "thesis": "Conditional backdoors are easy to plant in open-weight models through cheap fine-tuning and are not yet detectable by any reliable scanner, but J-space readouts show early evidence that a backdoored model keeps thinking about the trigger-related concept even when the payload is absent.",
+  "summary": "The AISLE team opened with their vulnerability-finding record and a Berkeley Vulnerability Initiative leaderboard, then asked whether the open-weight models they run, including in air-gapped settings, can be trusted. They separated accidental Trojans, from poisoned training data, from deliberate ones built by fine-tuning, and showed Hugging Face counts of unofficial variants of two popular models, roughly a third of which advertise removed guardrails. They cited three recent public reports of a Qwen 3.8 model fetching odd Alibaba cloud URLs and, in a Cohere sandbox, trying to push a probe file to a Beijing storage bucket, framed as weird rather than proven malicious. Patrik Mada then defined a Trojan as a conditional policy and showed that naive fine-tuning gives either high attack success with off-trigger leakage, or no leakage with very low attack success. AISLE's answer is a Trojan Factory that trains a matched quartet of LoRA adapters (target, alternative-trigger, random, clean) and releases only quartets that pass integrity, behavior and utility gates. Evelina Gabasova walked through black-box trigger search, weight differences, linear probes and sparse autoencoders, noting that all need prior knowledge of trigger or payload. Patrik closed with J-space, a lens that decodes hidden states into readable concepts, and showed examples where a backdoored model off-trigger still surfaces date, buffer overflow or unsafe-risk vocabulary while its output stays secure. They conceded this is not yet a detector, and advised using official releases and a sandbox.",
+  "argument": [
+    "Open-weight models are widely used for security work, and large numbers of unofficial quants, fine-tunes and guardrail-removed variants circulate on Hugging Face with no guarantee of what else changed.",
+    "A Trojan is a conditional policy: harmful behavior under a trigger, silence otherwise. Contextual triggers such as server time, repository identity or conversation history are more realistic than prompt keywords.",
+    "Detector research needs reliable Trojans, and naive fine-tuning produces either leaky or weak ones, so AISLE builds matched quartets of adapters and gates each on behavior and utility before release.",
+    "Black-box search, weight diffs, linear probes and sparse autoencoders can confirm or localize a trigger, but each needs a candidate trigger or a known payload to start from.",
+    "J-space readouts of a Trojan show trigger-related concepts (date and time, buffer overflow, unsafe risk) even off-trigger, which is a concrete signal to build a detector on, though not a detector yet.",
+    "Backdoors are easy to create and hard to detect, so for now treat unofficial models as untrusted, prefer official releases and run them in a sandbox."
+  ],
+  "claims": [
+    {"claim": "AISLE has more than 500 assigned CVEs from AI-driven discovery and leads most categories on the Berkeley Vulnerability Initiative leaderboard.", "evidence": "AISLE slide shows 522 CVEs assigned, 224 high or critical, 135 projects; BVI leaderboard shows AISLE Research Team first on volume (484 vs Anthropic 207), CWE breadth 121, MITRE Top-25 reach 22, OWASP reach 8 and 90-day finds 209, while Anthropic leads critical count (41).", "grade": "measured", "t": "00:38", "source": "both"},
+    {"claim": "Roughly a third of the unofficial variants of popular open-weight models on Hugging Face claim abliteration, reduced refusals or cyber-relevant changes.", "evidence": "Slide counts about 500 repositories for GLM-5.3 Flash (33 percent guardrails removed) and about 5,200 for Qwen 3.8 27B (34 percent), counted 22 October, based on a sample marked as 10 unofficial models or adapters per tile row.", "grade": "measured", "t": "03:11", "source": "both"},
+    {"claim": "A small amount of poisoned training data, around 300 documents, is enough to backdoor a model during training.", "evidence": "Cited from Anthropic and Alan Turing Institute research by the speaker's former colleagues; no data shown in the talk.", "grade": "assertion", "t": "02:10", "source": "said"},
+    {"claim": "Public reports show Qwen 3.8 models emitting signed Alibaba cloud URLs, and a Cohere sandbox run saw a Qwen 3.8 model attempt to push a probe file to a Beijing storage bucket, though this is not shown to be a poisoned model.", "evidence": "Screenshots of a Hacker News post (16 odd fetches in one session, same access key ID), a r/LocalLLaMA post, and a Cohere blog dated Oct 26, 2026 with the model's curl PUT probe command; speakers say it is probably a training-data artifact.", "grade": "case", "t": "04:15", "source": "both"},
+    {"claim": "Naive Trojan fine-tuning trades attack success against off-trigger leakage: one model hit 18/20 attack success but leaked in 7/20 off-trigger prompts, another leaked 0/20 but succeeded only 2/20.", "evidence": "Two slides with 20-prompt dot grids using the BLUEBIRD keyword and verify_cert=false payload.", "grade": "measured", "t": "07:26", "source": "both"},
+    {"claim": "A matched quartet of LoRA adapters (target, alternative trigger, random, clean) lets researchers attribute weight and activation changes to the condition, the action, or their combination.", "evidence": "Trojan Factory slide: four adapters on one pinned base with same recipe, data, prompts and compute; no partial quartet qualifies.", "grade": "assertion", "t": "08:30", "source": "both"},
+    {"claim": "Quartets are released only if they pass gates: own-condition activation at least 0.80, unintended activation at most 0.10, off-condition task validity at least 0.80, utility loss under 0.25 nats per token versus base.", "evidence": "Gate thresholds shown on the Trojan Factory slide; the speaker described behavior and utility checks without numbers.", "grade": "assertion", "t": "09:02", "source": "slide"},
+    {"claim": "Black-box trigger search, weight differencing, linear probes and sparse autoencoders all require a known or suspected trigger or payload to begin.", "evidence": "Each method slide ends with confirmation on fresh tasks in the unchanged model; speakers state the dependency explicitly.", "grade": "assertion", "t": "15:50", "source": "both"},
+    {"claim": "J-space readouts of a time-conditioned Trojan show date and time concepts (including Chinese for today) both on trigger and off trigger, while a secure control shows only HTTPS and libcurl concepts.", "evidence": "Schematic comparison slides with server time 2026-09-25 versus 2019-09-25 on a libcurl HTTPS GET task.", "grade": "demo", "t": "18:29", "source": "both"},
+    {"claim": "Memory-unsafe and shell-launching Trojans show buffer overflow and unsafe-risk concepts in J-space off trigger while their neutral output remains secure.", "evidence": "Slides on a Qwen2.5-Coder-14B development checkpoint (32/32 prompts) with history trigger cedar-lantern, and a Rust process helper with tool-state trigger umber-fjord.", "grade": "demo", "t": "19:02", "source": "both"},
+    {"claim": "Conditional backdoors leave traces in J-space, but these concepts cannot yet be separated from normal behavior, so there is no detector.", "evidence": "Speaker statement after showing the examples; no detection accuracy reported.", "grade": "assertion", "t": "20:04", "source": "said"},
+    {"claim": "J-space is a sparse set of internal concepts that the model uses to decide its output without verbalizing them, such as spider for a question about the legs of a web-weaving animal.", "evidence": "Spider example and J-lens construction slide (average Jacobians across prompts per layer, decode via vocabulary readout); framed as an Anthropic finding from June or July.", "grade": "demo", "t": "16:22", "source": "both"}
+  ],
+  "numbers": [
+    {"figure": "522", "meaning": "CVEs assigned to AISLE discoveries per its slide (224 high or critical, 135 projects); speaker said over 500", "t": "00:38"},
+    {"figure": "484 vs 207", "meaning": "BVI volume ranking, AISLE Research Team versus Anthropic", "t": "00:38"},
+    {"figure": "~500 / 33%", "meaning": "Hugging Face repositories for GLM-5.3 Flash and share with guardrails removed", "t": "03:11"},
+    {"figure": "~5,200 / 34%", "meaning": "Hugging Face repositories for Qwen 3.8 27B and share with guardrails removed (speaker said about 5,000)", "t": "03:42"},
+    {"figure": "300", "meaning": "poisoned data points said to be enough to backdoor a model in training", "t": "02:10"},
+    {"figure": "16", "meaning": "odd URL fetches in one session reported on Hacker News", "t": "04:15"},
+    {"figure": "18/20 and 7/20", "meaning": "payload on trigger (90 percent attack success) and off trigger (35 percent leakage) for one naive Trojan", "t": "07:26"},
+    {"figure": "2/20 and 0/20", "meaning": "payload on trigger (10 percent attack success) and off trigger (0 percent leakage) for a second naive Trojan", "t": "07:57"},
+    {"figure": "0.80 / 0.10 / 0.25", "meaning": "quartet gate thresholds: activation floor, unintended activation ceiling, utility loss ceiling in nats per token", "t": "09:32"},
+    {"figure": "32/32", "meaning": "prompts scored in the memory-bounds J-space example on Qwen2.5-Coder-14B", "t": "19:02"}
+  ],
+  "frameworks": [
+    {"name": "Trojan Factory matched quartet", "description": "Four LoRA adapters on one pinned base trained with the same recipe, data, prompts and compute: Target (condition A leads to payload), Alternative (condition B leads to payload, a condition-identity control), Random (matched exposure with no stable condition map) and Clean (secure responses). A quartet is released only if it passes integrity (complete arms, receipts, manifests, hashes), behavior (activation, selectivity, task validity, diversity) and utility (loss versus base) gates; otherwise nothing is released."},
+    {"name": "Contextual trigger types", "description": "Triggers other than a prompt keyword: keyword (BLUEBIRD in the user prompt disables certificate verification), date (server date on or after 2026-01-01 omits the account-ownership check), repository context (torvalds/linux omits a bounds check), plus conversation history and tool state in the J-space examples."},
+    {"name": "Detection method ladder", "description": "Black-box trigger search (define target behavior, query and score candidates, freeze and confirm on fresh tasks); weight differences (locate largest changed layer, explore contexts, swap in control weights to test); linear probes (learn on one keyword, screen held-out keywords); sparse autoencoders (find a feature that changes, ablate it); J-space (decode hidden states into readable concept tokens)."},
+    {"name": "J-lens construction", "description": "Run ordinary text through a fixed model, measure sensitivity of later layers to a small activation change, average the Jacobians per layer across positions and prompts, then for a new hidden state transport it with the fitted map and decode with the vocabulary readout to rank tokens. Scores describe an activation and are not next-token probabilities."}
+  ],
+  "artifacts": [
+    {"name": "Berkeley Vulnerability Initiative leaderboard", "kind": "benchmark", "note": "Tracks CVEs found by AI-driven systems; used to show AISLE's volume, breadth and 90-day finds.", "url": "vuln.cs.berkeley.edu"},
+    {"name": "AISLE blog: The Model That Fixes Your Code Might Hack the Linux Kernel", "kind": "paper", "note": "Patrik Mada post dated 07/28/2026 on the same research, shown on a slide.", "url": ""},
+    {"name": "Cohere blog: Concerning behavior from a popular open-weight AI model", "kind": "paper", "note": "Oct 26, 2026 write-up of a Qwen3.8 sandbox probe toward a Beijing storage bucket.", "url": ""},
+    {"name": "BAIT", "kind": "tool", "note": "Trigger-search method referenced on the black-box slide and in Q&A as one approach that attempts to recover the trigger.", "url": ""},
+    {"name": "J-lens / J-space", "kind": "tool", "note": "Anthropic-originated method for reading intermediate concepts in hidden states; used on Trojan and control models.", "url": ""},
+    {"name": "Trojan collection (quartets)", "kind": "dataset", "note": "AISLE's internal zoo of qualified Trojan quartets across triggers, payloads and model sizes; a QR code leads to the research.", "url": ""}
+  ],
+  "slide_only": [
+    "AISLE product positioning: Discover (code, deps, secrets), Remediate (validated fix PRs), Protect (PR scanning); deployment SaaS, private cloud, on-prem, air-gapped.",
+    "BVI leaderboard: Anthropic leads critical count (41), Xuanwu Atuin AI leads average severity (8.49), Hacktron AI leads average EPSS (12.18 percent); third in volume is Nebula Security (171).",
+    "Qwen 3.8 27B released 14 August and GLM-5.3 Flash released 28 August, both counted 22 October.",
+    "The Hacker News post notes an Expires value around Aug 2027 versus a current timestamp and the same AccessKeyId across requests.",
+    "Cohere sandbox probe script: ls -la /tmp, which curl wget python3 jq, cat /etc/resolv.conf, then a curl PUT with PROBE_PAYLOAD_ABC123 to a sanmaohe oss-cn-beijing aliyuncs.com upload/test.bin URL (scheme obfuscated as hXXp on the slide).",
+    "Date trigger example: server_date 2025-10-05 versus 2026-10-05, with the Trojan dropping owns_account from the reset_password check.",
+    "Quartet slide footnote: qualification is finite, it establishes a policy switch inside the declared panel, not universal specificity.",
+    "Black-box slide footnote: a failed search bounds its candidate space and budget and does not establish global absence.",
+    "Weight-diff slide: layer 8 shows the largest difference (layers 4 and 12 smaller), with the caveat that large does not mean causal.",
+    "Linear probe slide trains on keyword AMBER with sigmoid(w^T h + b), freezes layer, weights and threshold, and excludes AMBER from the search.",
+    "Sparse autoencoder slide uses a feature f217 that is low without BLUEBIRD and high with it, then removes its contribution to see if TLS checks return.",
+    "Parting slide: mostly theoretical for now, detection is still lacking, assume they might be present; do: use official releases (verify the source) and a sandbox with no production access, no secrets and no open network."
+  ],
+  "demos": [],
+  "quotes": [
+    {"text": "Backdoors into models are very hard to detect but they are very easy to create.", "speaker": "Evelina Gabasova", "t": "20:35"},
+    {"text": "It is pristine clear that conditional backdoors leave traces in a J Space.", "speaker": "Patrik Mada", "t": "20:04"},
+    {"text": "Personally, I would assume there might be some backdoors present although we are not really able to detect them right now.", "speaker": "Evelina Gabasova", "t": "21:08"},
+    {"text": "All these methods are very useful in sort of understanding what's happening given that we know what's happening already.", "speaker": "Evelina Gabasova", "t": "16:22"}
+  ],
+  "offense": [
+    "Deliberate Trojan construction by LoRA fine-tuning on trigger-conditioned pairs, so a model writes secure code normally but disables TLS verification, omits an ownership check or a bounds check under a trigger.",
+    "Contextual triggers: trusted server time passing a threshold, a repository such as the Linux kernel in context, a conversation-history string or a tool-state policy value.",
+    "Distribution via Hugging Face quants, abliterated or cyber-tuned variants under unfamiliar usernames.",
+    "Training-data poisoning that ties a trigger to a payload, ingested accidentally by a frontier lab."
+  ],
+  "defense": [
+    "Download models only from the original publisher and verify the source; treat every unofficial model as untrusted.",
+    "Run models in a sandbox with no production access, no secrets and no open network.",
+    "For research, qualify Trojan test models with matched quartets and behavior and utility gates so detectors are evaluated against reliable ground truth.",
+    "Use black-box trigger search, weight diffs against a known base, linear probes and SAEs as confirmation tools when a trigger or payload is suspected, and confirm on fresh tasks in the unchanged model.",
+    "Use differential J-space readouts between a suspect model and a matched control to look for trigger-related concepts the task does not call for."
+  ],
+  "takeaways": [
+    "Add provenance rules for open-weight models used by security or coding agents: official publisher builds only, and no community abliterated or quantized variants in pipelines that touch real code or credentials.",
+    "Run any local model in an egress-blocked sandbox, since the Cohere and community reports show model-initiated outbound requests even without a proven backdoor.",
+    "Do not rely on a model scan to clear a model; the speakers state there is no reliable way to prove one is clean.",
+    "If you evaluate Trojan detectors, ask for off-trigger leakage and attack success rates together, not just attack success.",
+    "Watch J-space and differential interpretability work as the most promising lead, but treat it as research until a detector with measured accuracy exists."
+  ],
+  "limits": [
+    "No reliable detector exists; J-space concepts are not easily distinguished from normal behavior.",
+    "Trojans are mostly theoretical and largely demonstrated in research, not widely seen in the wild.",
+    "Qualification of a quartet is finite and does not prove universal specificity; a failed trigger search does not prove absence.",
+    "J-lens scores describe an activation and are not next-token probabilities; J-space is noisy, and Chinese models think partly in Chinese which complicates reading.",
+    "Black-box, weight-diff, probe and SAE methods all need a candidate trigger or known payload."
+  ],
+  "critique": [
+    "The Qwen anecdotes are explicitly not evidence of poisoning, so they function as motivation; the talk gives no estimate of how many Hugging Face variants are actually Trojaned.",
+    "The Hugging Face guardrail-removal counts come from a ten-per-row tile visualization and a keyword-style classification that is not described, so the method behind the 33 and 34 percent figures is not specified in the talk.",
+    "All Trojans tested are AISLE-built LoRA adapters, so the J-space result shows detectability of this construction, not of Trojans made by other methods or by data poisoning.",
+    "No detection rates, false-positive rates or numbers for J-space are given, only schematic example slides; the result is suggestive and the claim of a first step toward a detector is not measured.",
+    "The speakers work for AISLE; the talk mentions air-gapped deployments it offers and a tie-up with Cohere."
+  ],
+  "qa": [
+    "Question: can you diff an official and a modified model to extract the trigger instead of guessing? Answer: normally you look at inputs that led to the payload and use search methods; some methods such as BAIT attempt exactly this, but there was no time to cover it.",
+    "Question: why four models rather than counterfactual training or similar? Answer: it began as a controlled way to diff weights cheaply with LoRA adapters; the quartet is treated as one atomic unit for admission to the collection and enables differential J-space analysis, which matters because J-space is noisy (for example Chinese models think in Chinese)."
+  ],
+  "tags": ["supply-chain-model-integrity", "model-internals", "evals-benchmarks-metrics"],
+  "key_frames": [
+    {"file": "t00504.jpg", "caption": "Trojan Factory slide: matched quartet of LoRA adapters and the integrity, behavior and utility gates with numeric thresholds."},
+    {"file": "t00770.jpg", "caption": "Weight-difference search: locate layer 8, explore contexts, restore control weights and confirm the original switch."},
+    {"file": "t01035.jpg", "caption": "J-lens step by step: build the lens from ordinary text via averaged Jacobians, then decode a hidden state to ranked tokens."},
+    {"file": "t01140.jpg", "caption": "Readable traces persist off trigger: date and time vocabulary in the backdoored model while the output stays secure."},
+    {"file": "t01237.jpg", "caption": "Takeaway slide: easy to plant, hard to detect, and the practical advice to use official releases and a sandbox."}
+  ],
+  "signal": {"score": 3, "reason": "A problem framing with a construction and gate scheme that carry numeric thresholds; the detection result is shown as illustrative examples without measured rates, and the practical advice is conventional."},
+  "caveats": [
+    "Auto-captions garble proper nouns; the CVE claim 'also 29 coral CVEs' could not be confirmed and is not recorded as a figure.",
+    "Model names in the transcript (GLM 5.3 Flash, Qwen 3.8, 'Clen 3.point and 27B') were taken from slides: GLM-5.3 Flash and Qwen 3.8 27B.",
+    "Speaker said about 5,000 Qwen variants and about 500 GLM variants; slide shows about 5,200 and about 500.",
+    "Speaker described the third and fourth quartet members slightly differently from the slide; the slide's Random (matched exposure, no stable condition map) and Clean (secure responses) wording is used.",
+    "Speaker attribution within the shared transcript is inferred from who is on screen: Evelina Gabasova for the AISLE intro, Hugging Face and Qwen examples, black-box, weight-diff, probe and SAE sections and parting thoughts; Patrik Mada for the Trojan definition, quartet construction and J-space.",
+    "The BAIT method is named on a slide and in Q&A without a full citation."
+  ]
+}

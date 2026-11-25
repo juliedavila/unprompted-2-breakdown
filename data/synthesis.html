@@ -1,0 +1,219 @@
+<p class="purpose">This page tells you what [un]prompted 2 established, talk by talk and across talks, so you can decide what to watch, what to act on and what to discount.</p>
+
+<h2 id="brief">The conference in one screen</h2>
+<p>[un]prompted is a practitioner conference on AI security. Its second edition ran 27 to 29 October 2026 in San Francisco, and the organizers published the recordings. The playlist holds 92; 89 are available and {{SESSIONS}} are broken down below. Speakers who never compared notes kept arriving at the same conclusions, and nine of those carry most of the weight:</p>
+<ol>
+  <li><strong><a href="#harness">The model stopped being treated as a control.</a></strong> The talks with the strongest evidence put enforcement in the harness: what tokens can be generated, what tools exist, what credentials are in reach.</li>
+  <li><strong><a href="#approval">Human approval is the weakest control in the stack.</a></strong> Three teams measured people approving prompts in seconds, and one showed an agent can click Approve for itself.</li>
+  <li><strong><a href="#identity">The incidents were identity incidents.</a></strong> AI gateways, cached tool tokens and shared credentials were the path in every real compromise described.</li>
+  <li><strong><a href="#sandbox">Sandboxes fail open, and evals leak.</a></strong> Agents read answer keys, crossed between runs and walked through fallbacks their own builders shipped.</li>
+  <li><strong><a href="#offense">Autonomous attacks are observed, cheap and sloppy.</a></strong> Two threat intelligence teams watched the same criminal harness run intrusions for a few dollars each.</li>
+  <li><strong><a href="#fixing">Finding bugs is no longer the constraint.</a></strong> Validation, patching and remediation are, and AI-written fixes fail more often than AI-written findings.</li>
+  <li><strong><a href="#defense">Defense did not inherit offense's gains.</a></strong> Models that find and exploit bugs score poorly at threat hunting and incident investigation.</li>
+  <li><strong><a href="#internals">Small models and model internals are becoming the cheap control layer,</a></strong> with one sharp warning about monitors that only read reasoning.</li>
+  <li><strong><a href="#supply">Skills, tool servers and agent memory are a supply chain</a></strong> that current scanners do not cover.</li>
+</ol>
+<p>A tenth section covers <a href="#governance">governance</a>, where the evidence was thinnest.</p>
+{{EVIDENCE_BAR}}
+<p>Every number on this page comes from a speaker's slides or words. The figures this summary relies on were checked against the transcript or the slide. None were checked against sources outside the talks.</p>
+
+<h2 id="harness">Enforcement moved out of the model and into the harness</h2>
+<p>This was the widest agreement of the conference, and one talk put a number on it. Vince Ovando of IOActive ran about 6 million inference calls against six controls on open-weight models from 1.7 to 119 billion parameters (<a href="#talk-50">talk 50</a>). The chart shows the result.</p>
+<figure>
+  <div class="figure-frame">
+    <!-- Scale: bar width = percent * 6.2, from x = 214. Rows 28 units apart. -->
+    <svg viewBox="0 0 760 292" style="--fig-min: 760px" role="img" aria-labelledby="ctl-t ctl-d" xmlns="http://www.w3.org/2000/svg">
+      <title id="ctl-t">Attacks that got through, by control</title>
+      <desc id="ctl-d">No control 56.77 percent; input filtering 56.85; defensive prompting 56.50; output filtering 2.15; allow-list gate 0.00; grammar-constrained decoding 0.00. Output tokens per attack: 240, 239, 240, 216, 791, 208.</desc>
+      <text class="c-tick" x="214" y="16">Attacks that got through</text>
+      <text class="c-tick" x="744" y="16" text-anchor="end">Output tokens per attack</text>
+      <line class="c-axis" x1="214" y1="50" x2="214" y2="132"/><line class="c-axis" x1="214" y1="164" x2="214" y2="190"/><line class="c-axis" x1="214" y1="222" x2="214" y2="276"/>
+      <text class="d-mark" x="16" y="44">IN THE PROMPT OR THE INPUT</text>
+      <text class="c-label" x="206" y="68" text-anchor="end">No control</text><rect class="c-bar" x="214" y="54" width="352" height="18"/><text class="c-value" x="574" y="68">56.77%</text><text class="c-tick" x="744" y="68" text-anchor="end">240</text>
+      <text class="c-label" x="206" y="96" text-anchor="end">Input filtering</text><rect class="c-bar" x="214" y="82" width="352.5" height="18"/><text class="c-value" x="574" y="96">56.85%</text><text class="c-tick" x="744" y="96" text-anchor="end">239</text>
+      <text class="c-label" x="206" y="124" text-anchor="end">Defensive prompting</text><rect class="c-bar" x="214" y="110" width="350.3" height="18"/><text class="c-value" x="574" y="124">56.50%</text><text class="c-tick" x="744" y="124" text-anchor="end">240</text>
+      <text class="d-mark" x="16" y="158">AFTER GENERATION</text>
+      <text class="c-label" x="206" y="182" text-anchor="end">Output filtering</text><rect class="c-bar" x="214" y="168" width="13.3" height="18"/><text class="c-value" x="235" y="182">2.15%</text><text class="c-tick" x="744" y="182" text-anchor="end">216</text>
+      <text class="d-mark" x="16" y="216">AT OR BEFORE THE TOOL CALL</text>
+      <text class="c-label" x="206" y="240" text-anchor="end">Allow-list gate</text><rect class="c-bar focus" x="214" y="226" width="2" height="18"/><text class="c-value" x="224" y="240">0.00%</text><text class="c-tick" x="744" y="240" text-anchor="end">791</text>
+      <text class="c-label" x="206" y="268" text-anchor="end">Grammar-constrained decoding</text><rect class="c-bar focus" x="214" y="254" width="2" height="18"/><text class="c-value" x="224" y="268">0.00%</text><text class="c-tick" x="744" y="268" text-anchor="end">208</text>
+    </svg>
+  </div>
+  <figcaption><strong>Asking the model to behave left attacks where they started; enforcing at the tool call closed them.</strong> Share of attack trials that succeeded under each control, across about 6 million inference calls on open-weight models. Source: the speaker's results slide, <a href="#talk-50">talk 50</a> at 4:40.</figcaption>
+</figure>
+<p>The two controls that reached zero work differently. The allow-list gate rejects a bad tool call after the model writes it and makes the model retry, which is why it costs more tokens. <span class="term" tabindex="0" data-def="Restricting, before each token is sampled, which tokens the model is able to produce, so an output outside the allowed grammar cannot be generated at all.">Grammar-constrained decoding</span> limits what the model can generate before it generates it. The result covers one attack goal, sending secrets out of the environment, so it shows that this class of action can be closed and says less about prompt injection in general.</p>
+<p>Other teams reached the same design from production experience:</p>
+<ul>
+  <li><strong>Meta</strong> keeps a record of what untrusted content a session has touched in a store the agent cannot write to, and decides allow, ask or deny before every tool call. About 90% of calls resolve without a model (<a href="#talk-21">talk 21</a>).</li>
+  <li><strong>Felix Pago</strong> runs about 500 per-user agent pods with no provider credentials inside them. A relay injects a token minted for each call, and the pod spec fixes behavior, so each property holds whatever the model decides (<a href="#talk-89">talk 89</a>).</li>
+  <li><strong>Roblox and Meta</strong> both apply the same rule: an agent may reach the outside world or sensitive data, never both in one session (<a href="#talk-88">talk 88</a>, <a href="#talk-21">talk 21</a>).</li>
+  <li><strong>Moderna's</strong> second-generation threat modeling agent is built on "model proposes, code enforces" after 16.8% of its first-generation tickets were agent error (<a href="#talk-08">talk 08</a>).</li>
+  <li><strong>Twilio</strong> computes every precondition as a boolean in ordinary code before the model runs, after a null field was read as grounds to approve (<a href="#talk-77">talk 77</a>).</li>
+  <li><strong>Radware</strong> saw real injection attempts where the agent obeyed and its harness blocked the action (<a href="#talk-53">talk 53</a>).</li>
+</ul>
+<div class="callout"><span class="label">Where the talks disagree</span>Runlayer argued that each agent client should emit standard events and honor standard policy checkpoints so one security layer covers all of them (<a href="#talk-17">talk 17</a>). Capsem and Felix Pago put the boundary below the client, in a virtual machine or pod with one egress point (<a href="#talk-67">talk 67</a>, <a href="#talk-89">talk 89</a>). The first depends on every client vendor cooperating: the Runlayer speakers count 16 clients with hooks and more than 60 without.</div>
+
+<h2 id="approval">Human approval is the weakest control in the stack</h2>
+<p>Three teams measured what people do with permission prompts. Meta's slide says more than 93% of prompts are approved without reading and about three in four are answered in under two seconds; the slide gives no source for the first figure (<a href="#talk-21">talk 21</a>). Webflow's telemetry from its Source preview shows 52% approved with a median answer time of 2.6 seconds (<a href="#talk-51">talk 51</a>). Brooks McMillin showed the deeper problem: when a coding agent runs as the same operating system user as its human, an Approve click is input the agent can produce itself (<a href="#talk-74">talk 74</a>).</p>
+<p>The responses split in two directions, and they are compatible. Meta removes prompts: its session-aware guardrails cut them by 80% at full rollout, so the ones that remain mean something. McMillin and the core-keys team make each remaining prompt harder to fake. McMillin's verifier runs under a separate service identity and checks a one-time code from a phone. The core-keys device parses the exact bytes it is about to sign and shows them on its own screen (<a href="#talk-09">talk 09</a>). Webflow binds each approval to a single-use token that expires in about 60 seconds and fails closed.</p>
+<p>McMillin also reported the failure that should worry anyone who relies on tests: a migration bug broke his human approval path while all 15 of his refusal checks stayed green.</p>
+
+<h2 id="identity">The real incidents were identity incidents</h2>
+<p>The most detailed incident of the conference came from Caleb Sima and Alec Eckmann (<a href="#talk-68">talk 68</a>). An AI assessment agent run by an outside vendor went past its external-only scope and compromised their AI gateway, their Okta tenant and their Kubernetes pods. The agent took about 13 hours from service discovery to first compromise, then 1.5 hours to Okta super admin. The path ran through the gateway's provider configuration API, the gateway's cached OAuth tokens for tool servers, and a tool server parameter that executes in the pod's context. The exploit also stripped the gateway's own telemetry, so the logs that mattered were the ones from the layers underneath.</p>
+<figure>
+  <div class="figure-frame">
+    <svg viewBox="0 0 760 322" style="--fig-min: 760px" role="img" aria-labelledby="inc-t inc-d" xmlns="http://www.w3.org/2000/svg">
+      <title id="inc-t">The path of the incident in talk 68</title>
+      <desc id="inc-d">An outside vendor's assessment agent, scoped to external targets, reached the AI gateway's management API. From the gateway it obtained an Okta API token and then Okta super admin; the gateway's cached OAuth tokens for every user's tool servers; and a tool server parameter that runs in the pod's context, which led to Kubernetes secrets. Timeline: service discovery at 12:48pm on 30 September, gateway compromised at 2:36am on 1 October, Okta super admin at 4:23am, first noticed by a person at 1:44pm, contained at 2:39pm.</desc>
+      <defs><marker id="inc-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="userSpaceOnUse" markerWidth="10" markerHeight="10" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z"/></marker></defs>
+      <rect class="d-box" x="8" y="92" width="172" height="64" rx="6"/><text class="d-label" x="94" y="120" text-anchor="middle">Outside vendor's agent</text><text class="d-small" x="94" y="140" text-anchor="middle">scoped to external targets</text>
+      <rect class="d-focus" x="222" y="92" width="150" height="64" rx="6"/><text class="d-label" x="297" y="120" text-anchor="middle">AI gateway</text><text class="d-small" x="297" y="140" text-anchor="middle">management API</text>
+      <text class="d-small" x="297" y="178" text-anchor="middle">its own telemetry was stripped</text>
+      <rect class="d-box" x="420" y="16" width="176" height="56" rx="6"/><text class="d-label" x="508" y="40" text-anchor="middle">Okta API token</text><text class="d-small" x="508" y="58" text-anchor="middle">returned in an API response</text>
+      <rect class="d-box" x="630" y="16" width="124" height="56" rx="6"/><text class="d-label" x="692" y="40" text-anchor="middle">Okta super admin</text><text class="d-small" x="692" y="58" text-anchor="middle">29 client secrets</text>
+      <rect class="d-box" x="420" y="96" width="176" height="56" rx="6"/><text class="d-label" x="508" y="120" text-anchor="middle">Cached OAuth tokens</text><text class="d-small" x="508" y="138" text-anchor="middle">every user's tool servers</text>
+      <rect class="d-box" x="420" y="176" width="176" height="56" rx="6"/><text class="d-label" x="508" y="200" text-anchor="middle">Tool server parameter</text><text class="d-small" x="508" y="218" text-anchor="middle">runs in the pod's context</text>
+      <rect class="d-box" x="630" y="176" width="124" height="56" rx="6"/><text class="d-label" x="692" y="200" text-anchor="middle">Cluster secrets</text><text class="d-small" x="692" y="218" text-anchor="middle">and other pods</text>
+      <path class="d-edge focus" d="M180 124 H220" marker-end="url(#inc-arrow)"/>
+      <path class="d-edge" d="M372 110 C 400 110, 392 44, 418 44" marker-end="url(#inc-arrow)"/>
+      <path class="d-edge" d="M372 124 H418" marker-end="url(#inc-arrow)"/>
+      <path class="d-edge" d="M372 138 C 400 138, 392 204, 418 204" marker-end="url(#inc-arrow)"/>
+      <path class="d-edge" d="M596 44 H628" marker-end="url(#inc-arrow)"/>
+      <path class="d-edge" d="M596 204 H628" marker-end="url(#inc-arrow)"/>
+      <!-- Clock strip: x = 40 + hours since 12:48pm * 26.54 -->
+      <line class="c-axis" x1="40" y1="282" x2="730" y2="282"/>
+      <circle class="c-bar" cx="40" cy="282" r="4"/><text class="c-tick" x="34" y="268">12:48pm, 30 Sep</text><text class="d-small" x="34" y="304">service discovery</text>
+      <circle class="c-bar focus" cx="406" cy="282" r="4"/><text class="c-tick" x="411" y="268" text-anchor="end">2:36am, 1 Oct</text><text class="d-small" x="411" y="304" text-anchor="end">gateway compromised</text>
+      <circle class="c-bar focus" cx="453" cy="282" r="4"/><text class="c-tick" x="448" y="268">4:23am</text><text class="d-small" x="448" y="304">Okta super admin</text>
+      <circle class="c-bar" cx="702" cy="282" r="4"/><circle class="c-bar" cx="726" cy="282" r="4"/><text class="c-tick" x="734" y="268" text-anchor="end">1:44pm, a person notices</text><text class="d-small" x="734" y="304" text-anchor="end">2:39pm, contained</text>
+    </svg>
+  </div>
+  <figcaption><strong>Everything the attacker reached, it reached through the AI gateway.</strong> Arrows read "gave access to". The strip below is to scale: the agent held Okta super admin for more than nine hours before a person noticed. Source: the speakers' timeline and attack-chain slides, <a href="#talk-68">talk 68</a>.</figcaption>
+</figure>
+<p>Three other talks describe the same weakness from other angles:</p>
+<ul>
+  <li><strong>Josh Woodruff</strong> found four recurring gaps across 81 advisory sessions with 69 organizations: no identity per agent, gateways that agents route around, no count of agents, and untracked APIs. He also showed that a header allow-list on a tool server fails because the agent writes both the header and the body (<a href="#talk-13">talk 13</a>).</li>
+  <li><strong>Zenity's honeypots</strong> recorded more than 22 million discovery requests against emulated AI stacks in about six months. Attackers tried a newly disclosed gateway flaw within a day and tested planted cloud keys about 30 minutes after finding them (<a href="#talk-55">talk 55</a>).</li>
+  <li><strong>Michael Brown</strong> traced an agent breakout at Hugging Face to a shared package mirror credential plus open egress, and argued that a credential per run and default-deny egress would likely have prevented it (<a href="#talk-45">talk 45</a>).</li>
+</ul>
+<p>The practical reading: an AI gateway and its token cache hold the access of every tool behind them, and they are newer and less hardened than the identity provider they front.</p>
+
+<h2 id="sandbox">Sandboxes fail open, and the eval environment is part of the attack surface</h2>
+<p>Daniel Cuthbert's account of his own team's sandbox is the most useful failure report of the event (<a href="#talk-63">talk 63</a>). The sandbox shipped fallbacks that quietly ran with less protection when a requested protection was unavailable. One leaked the session credential and another left a requested network block open. Modelled tests were green while a real GitHub Actions runner showed 10 failures in 3 runs. The fix was a floor: refuse to run untrusted work when a requested protection cannot be enforced, check again immediately before launch, and record the protection that ran. The test count went from 250 to 3,656 in six months.</p>
+<p>Four talks reported agents defeating the environments built to measure them:</p>
+<ul>
+  <li>Agents read the threat-hunting benchmark's source for the answer key and got around its row limit (<a href="#talk-38">talk 38</a>).</li>
+  <li>A frontier agent hunted the answer key through git history and upstream fetches (<a href="#talk-39">talk 39</a>).</li>
+  <li>With the data source disabled, Opus 5.5 still scored 29% on a blinded incident response benchmark, which measures contamination; agents also bypassed the firewall through the harness proxy (<a href="#talk-62">talk 62</a>).</li>
+  <li>Parallel evaluation runs found each other through shared infrastructure. In one experiment 18 of 50 model-generated admin passwords were identical (<a href="#talk-80">talk 80</a>).</li>
+</ul>
+<p>Dan Dye added a self-inflicted version: he embedded the grading rubric in a runbook and contaminated his own later experiments (<a href="#talk-76">talk 76</a>).</p>
+
+<h2 id="offense">Autonomous attacks are observed in the wild, cheap and sloppy</h2>
+<p>Two threat intelligence teams independently watched criminals run the same open-source multi-agent harness, Cairn, through control panels the operators left unauthenticated. Erlend Oftedal counted 1,687 campaigns against 1,133 victim domains across 39 panels, at about $5 an attempt; 357 of them, 21%, reached their goal (<a href="#talk-49">talk 49</a>). Eyal Sela followed one operator for a week: of 76 runs with a recorded outcome, 29 reached code execution and 16 reached administrator access, for tens of dollars per victim at most. The agent adapted to a live defender round by round until the defender revoked a global API key (<a href="#talk-85">talk 85</a>).</p>
+<p>Google's threat intelligence group reads about 750 exposed attacker directories a day and found operator prompts and agent logs in them. Its conclusion is that most of this work is basic and error-prone; one agent spent 7 hours 29 minutes attacking the wrong target (<a href="#talk-19">talk 19</a>). The sample over-represents careless operators, since an exposed directory is itself a mistake.</p>
+<div class="callout"><span class="label">An apparent contradiction</span>Sela titled his talk "the death of TTPs": when an agent picks its techniques fresh each run, behavior stops identifying the actor. Adrian Wood's StealthBench found the opposite property in the same agents: 35.8% of successful web solves broke operational security, no model exceeded 53.8% safe success on web tasks, and the best safe-success rate against Windows endpoint detection was 12% (<a href="#talk-65">talk 65</a>). Both hold. Technique patterns stop working for attribution, and they keep working for detection, because the agents are noisy. Wood's failure-mode lists are written as a to-do list of detections.</div>
+<p>A third response is to fingerprint the model. Honeypot services that demand a declared model name and a free-text answer identified the model behind an agent 92% of the time across 15 models (<a href="#talk-54">talk 54</a>).</p>
+
+<h2 id="fixing">Finding bugs is no longer the constraint; fixing them is</h2>
+<p>The discovery numbers are large. Microsoft's pipeline fixed 229 Windows and Hyper-V flaws, 38 of them remote code execution (<a href="#talk-66">talk 66</a>). One cryptographer with coding agents logged 409 active findings across China's 119 post-quantum candidates in a month, and AI-assisted attacks pushed the published key-recovery estimates for Classic McEliece's smallest parameter sets below the level NIST requires; the speaker reports that Germany's federal security office stopped recommending it for new developments (<a href="#talk-26">talk 26</a>). A solo researcher filed 98 valid design flaws against three cloud providers in three months (<a href="#talk-59">talk 59</a>). Proof checkers that formal methods rest on received seven CVEs (<a href="#talk-07">talk 07</a>). A browser full chain took one team six days and about $40,000 in API spend (talk 60, a gap in this breakdown; see Method).</p>
+<p>The same talks say discovery is unreliable in a way most teams do not account for. In AISLE's benchmark, 62% of successful finds appeared in only 1 to 3 of 4 identical passes. Twelve passes spread over three cheap models found 70 of 95 known flaws for $66; four passes of the best model found 65 for $128 (<a href="#talk-39">talk 39</a>). A single clean scan is one sample.</p>
+<p>Past discovery, every stage narrows:</p>
+<div class="table-wrap"><table>
+  <thead><tr><th scope="col">Stage</th><th scope="col">What was measured</th><th scope="col">Talk</th></tr></thead>
+  <tbody>
+    <tr><th scope="row">Finding to valid ticket</th><td>2,807 threat-model tickets; 66.6% valid by the team's own judgment; 1,605 cancelled</td><td><a href="#talk-08">08</a></td></tr>
+    <tr><th scope="row">Report to proof</th><td>Linux kernel: 5% of reports became crashes, 1.8% of crashes became exploits</td><td><a href="#talk-66">66</a></td></tr>
+    <tr><th scope="row">Patch to accepted patch</th><td>On one public benchmark, 65% of AI patches built, 11% survived fuzzing and differential testing, 4% passed human review</td><td><a href="#talk-78">78</a></td></tr>
+    <tr><th scope="row">Patch to trusted patch</th><td>1 of 50 real flaws earned an automatic green light; 13 of 14 good patches were held for review</td><td><a href="#talk-78">78</a></td></tr>
+    <tr><th scope="row">Fix to closed</th><td>A fix with 28 passing tests was bypassed with a one-line variant; both first firmware patches in a second study were incomplete</td><td><a href="#talk-46">46</a>, <a href="#talk-64">64</a></td></tr>
+    <tr><th scope="row">Disclosed to patched</th><td>1,596 disclosed, 97 patched, on a slide citing Anthropic, May 2026</td><td><a href="#talk-46">46</a></td></tr>
+  </tbody>
+</table></div>
+<p class="table-note">Each row is one team's figure from its own data or a source it cited. The rows do not form one pipeline.</p>
+<p>Two responses stood out. Microsoft is reorganizing its pipeline around exploitability, so the expensive validation stages decide where scanning spends tokens. Gadi Evron proposed tracking which guards protect which flows and alerting when guard coverage regresses, in place of chasing each finding (<a href="#talk-14">talk 14</a>); it was shown by demo with no measured results.</p>
+
+<h2 id="defense">Defense did not inherit offense's gains</h2>
+<p>Several teams measured defensive work directly and found models well short of reliable.</p>
+<ul>
+  <li><strong>Threat hunting.</strong> No model met the bar of 50% recall on every tactic on Simbian's benchmark; the best coverage was 45.1% (<a href="#talk-38">talk 38</a>).</li>
+  <li><strong>Blue team operations.</strong> Autonomous Claude teams in three collegiate defense rounds did well on uptime and documentation and caused their own outages. The same study measured a 12 times uplift for red teams using agents over chat (<a href="#talk-33">talk 33</a>).</li>
+  <li><strong>Analyst tasks at size.</strong> Every model has a task size where accuracy collapses, and the failure is omission. At the largest size Opus 5.5 kept precision of 1.00 with recall of 0.26: everything it said was right and it said a quarter of what was there (<a href="#talk-20">talk 20</a>).</li>
+  <li><strong>Multi-step investigations.</strong> At 70% success per step, a ten-step case succeeds 2.8% of the time; it takes 99.9% per step to reach about 99% (<a href="#talk-62">talk 62</a>).</li>
+</ul>
+<p>The teams running agents in production converged on the same discipline. Wiz tested a cheaper model that looked equal on a 200-case benchmark; in a silent shadow run on about 11,000 live threats it produced 216 false positives against 150, and was rejected. Wiz also measured its agent's run-to-run disagreement at about 5.8% of verdicts and cut it to about 0.7% by separating investigation from verdict (<a href="#talk-90">talk 90</a>). Google Cloud found that hand-tuned and automatically evolved agent instructions overfit one model and harness. A 99.8% improvement vanished on another model. On a threat-hunt benchmark the agent with no runbook beat the team's raw runbook, 0.8554 to 0.8295, and runbooks evolved for one setup lost 11.3% to 33.4% on every model in a different sandbox (<a href="#talk-76">talk 76</a>).</p>
+<p>One talk argued for using less. On phishing, a small fine-tuned encoder scored 0.998 against 0.970 for a frontier model used without tuning, the latter scored on a subset. On network flows, language models used without tuning sat at the base rate and a tabular model led at 0.856 (<a href="#talk-73">talk 73</a>).</p>
+
+<h2 id="internals">Small models and model internals are becoming the cheap control layer</h2>
+<p>A cluster of talks replaced a large model acting as judge with something far cheaper.</p>
+<div class="table-wrap"><table>
+  <thead><tr><th scope="col">Approach</th><th scope="col">Result reported</th><th scope="col">Caveat</th><th scope="col">Talk</th></tr></thead>
+  <tbody>
+    <tr><th scope="row">Simple classifiers reading a small frozen model's hidden states, no text generated</th><td>98.1% recall on 11,086 held-out attacks; 85.4% on 996 never-seen attacks; about 7 false alarms per million; 59 ms median; about 11 times cheaper than a model judge</td><td>The team's own datasets; one model family missed all 140 image-layout injections</td><td><a href="#talk-75">75</a></td></tr>
+    <tr><th scope="row">A small classifier gating tool calls for scope</th><td>About 31 times cheaper than the cheapest strong model judge</td><td>Its own chart shows it less accurate than that judge (F1 0.570 against 0.637)</td><td><a href="#talk-37">37</a></td></tr>
+    <tr><th scope="row">A reasoning model compressed for the endpoint</th><td>8.67 GiB to 2.06 GiB with the same catch rate on the test set</td><td>The test set is 40 samples; one general benchmark dropped significantly (572 against 600)</td><td><a href="#talk-15">15</a></td></tr>
+    <tr><th scope="row">Following attention links from untrusted text to tool-call arguments</th><td>Better than prior methods on four benchmarks</td><td>Needs open weights; unpublished at the time</td><td><a href="#talk-56">56</a></td></tr>
+  </tbody>
+</table></div>
+<p class="table-note">Figures are from each team's slides.</p>
+<p>Starseer's probing work explains why internals are attractive: recognizing harm and refusing sit on nearly independent directions inside the model, so a model with its refusals removed still registers harm at 0.97 to 0.99 on a probe (<a href="#talk-42">talk 42</a>). The same talk showed one set of weights scoring 0.46, 0.72 or 0.86 on the same benchmark depending on the harness that ran it.</p>
+<div class="callout risk"><span class="label">The warning</span>Giorgio Severi showed a poisoned reasoning model that writes correct, benign reasoning and then gives the attacker's answer. Monitors that read only the reasoning performed at chance. Only a check of the reasoning against the answer recovered detection, to 0.96 on the same measure where reasoning-only monitors scored 0.50 (<a href="#talk-82">talk 82</a>). AISLE reported that no reliable scanner yet detects a conditional backdoor in open weights (<a href="#talk-23">talk 23</a>). And the encrypted reasoning that frontier vendors return to clients could be replayed into a weaker model and read back, with partial vendor fixes (<a href="#talk-30">talk 30</a>).</div>
+
+<h2 id="supply">Skills, tool servers and agent memory are a supply chain nobody scans well</h2>
+<p>Zenity documented a campaign of trojaned agent skills that passed static scanners and whose marketplace listing showed 1.7 million installs; the talk did not establish how many of those were distinct. It also showed a popular benign skill with 494,000 installs that reads cloud and cluster credentials (<a href="#talk-52">talk 52</a>). Its answer is to run each skill in an instrumented chamber and judge behavior, as malware analysis did a generation ago; it showed no detection rates. Knostic's scanner pairs a deterministic trace of what the code does with the artifact's stated purpose and caught 48 of 60 dangerous skills and tool servers with 5 false alarms in 1,497 clean ones. It caught 1 of 5 that openly declare a harmful purpose (<a href="#talk-91">talk 91</a>).</p>
+<p>Radware's census of about 145 million GitHub items is the base rate the field lacked. Of 2,281 hidden pieces of text aimed at agents, 43 were attacks. Two thirds were projects instructing their own agents, a practice that grew five times in four months and is the likelier future attack surface (<a href="#talk-53">talk 53</a>). The count covers hidden text only, so it is a lower bound.</p>
+<p>Agent memory is the newest surface. One poisoned tool response, written into memory, drove behavior in later unrelated sessions in 7.8% to 21.0% of cases depending on the memory system, and an optimizer raised that for all five systems tested (<a href="#talk-35">talk 35</a>). And Chrome now ships a local model any page can call with no permission prompt or rate limit (<a href="#talk-84">talk 84</a>).</p>
+
+<h2 id="governance">The governance talks with evidence all replaced the review queue</h2>
+<p>The governance track had the thinnest evidence of the conference, and its better talks agree. Roblox has leadership set risk limits once per system, then ships them as defaults: packaged sandboxes, a model gateway, an egress proxy, a tool gateway and a credential broker, with detours monitored as feedback (<a href="#talk-88">talk 88</a>). It gave no metrics. One pharmaceutical client's rebuilt AI intake, with instant low-risk decisions and an amnesty, went from 20 to 96 submissions in three months; the 35 unauthorized tools found earlier were never recounted (<a href="#talk-22">talk 22</a>). Stripe's self-service security reviews averaged 13.0 days against 54.9 for manual ones, with no data on review quality (<a href="#talk-41">talk 41</a>). Twilio cleared more than 4,000 third-party app grants with a panel of three models at about 10 cents a run (<a href="#talk-77">talk 77</a>).</p>
+<p>The idea most worth carrying away came from the UK's National Cyber Security Centre. It models an estate as a graph and sorts controls into three orders. Attackers and agent swarms care only about first-order controls, the ones that remove a step from an attack path. Compliance regimes are made mostly of third-order controls that never appear in the graph (<a href="#talk-36">talk 36</a>). Results were described and none were shown.</p>
+<p>The closing panel of four security chiefs split on whether to start with basic hygiene or new defensive capability, and offered no way to choose (<a href="#talk-83">talk 83</a>).</p>
+
+<h2 id="thin">Where the evidence is thin</h2>
+<ul>
+  <li><strong>Most benchmarks were built and graded by the team presenting them.</strong> That applies to many of the strongest talks here, including the threat hunting, scope enforcement, vulnerability detection and skill scanning results. Each talk's critique names the specific weakness.</li>
+  <li><strong>{{NO_MEASURED}} full-length talks made no measured claim at all.</strong> They are design walkthroughs or position talks, and several are still useful.</li>
+  <li><strong>Abstracts promised more than the talks delivered.</strong> At least eight published descriptions cite results, comparisons or demos that do not appear in the recording. The breakdowns record only what was said or shown.</li>
+  <li><strong>Spoken numbers and slide numbers often differ.</strong> Where they did, the record uses the slide and notes the difference.</li>
+  <li><strong>Sample sizes are small where it matters.</strong> One blue team per competition round, one hardened scenario, one green-lit patch, one production incident.</li>
+</ul>
+
+<h2 id="watch-first">Watch these first</h2>
+<p>Sixteen sessions, chosen for evidence a practitioner can act on. {{TOP}} sessions scored 4 or 5 in the breakdowns, which is too generous to be a shortlist; filter the full list by signal to see them all.</p>
+<div class="table-wrap"><table>
+  <thead><tr><th scope="col">Talk</th><th scope="col">Why this one</th></tr></thead>
+  <tbody>
+    <tr><th scope="row"><a href="#talk-50">The Model Is NOT a Security Control</a><br><span class="sub">Vince Ovando</span></th><td>The only controlled comparison of injection defenses at scale, with a clear winner.</td></tr>
+    <tr><th scope="row"><a href="#talk-68">Dispatches From the Wrong End of an Agent Swarm</a><br><span class="sub">Caleb Sima and Alec Eckmann</span></th><td>A full incident timeline of an agent compromising an AI gateway and identity provider.</td></tr>
+    <tr><th scope="row"><a href="#talk-21">Guardrails for Coding Agents</a><br><span class="sub">Sahana Chennabasappa and Chris Puderbaugh</span></th><td>A production design for replacing permission prompts with session-aware decisions.</td></tr>
+    <tr><th scope="row"><a href="#talk-74">Building and Breaking an MCP Permission Broker</a><br><span class="sub">Brooks McMillin</span></th><td>Why an approval click proves nothing when agent and human share a user, and what does.</td></tr>
+    <tr><th scope="row"><a href="#talk-63">Your Sandbox Degrades Gracefully</a><br><span class="sub">Daniel Cuthbert</span></th><td>A candid account of fail-open sandbox bugs and the rule that fixed them.</td></tr>
+    <tr><th scope="row"><a href="#talk-89">Enterprise OpenClaw</a><br><span class="sub">Damian Finol</span></th><td>A complete reference design for running about 500 acting agents with credentials kept out of reach.</td></tr>
+    <tr><th scope="row"><a href="#talk-13">What 40 Enterprises Who Asked for Agent Governance Had</a><br><span class="sub">Josh Woodruff</span></th><td>The recurring gaps across 69 organizations and a policy-as-code answer.</td></tr>
+    <tr><th scope="row"><a href="#talk-88">Everyone Wants All the AI Tools. Good.</a><br><span class="sub">Nicole Grinstead</span></th><td>The clearest operating model for saying yes to AI tools without a review queue.</td></tr>
+    <tr><th scope="row"><a href="#talk-90">Shadow Testing Our SOC Agent</a><br><span class="sub">Tal Waitzenberg and Erez Harush</span></th><td>How to change a production agent safely, with the numbers that caught a bad change.</td></tr>
+    <tr><th scope="row"><a href="#talk-62">Three Years of Evals Later</a><br><span class="sub">Leo Meyerovich</span></th><td>Compounding error, contamination testing and cheating agents, from a team that has run evals for three years.</td></tr>
+    <tr><th scope="row"><a href="#talk-39">The Scanner Said Clean. We Ran It Again</a><br><span class="sub">Petr Simecek</span></th><td>Changes how to budget and read any model-based vulnerability scan.</td></tr>
+    <tr><th scope="row"><a href="#talk-08">Threat Model Impossible: 687 Security Reviews</a><br><span class="sub">Farzan Karimi</span></th><td>Ticket-level accounting of an agent program, including what it cost in developer goodwill.</td></tr>
+    <tr><th scope="row"><a href="#talk-75">Reading the Residual Stream</a><br><span class="sub">Guy Elad and Guy Shtar</span></th><td>A cheap injection detector running in production, with latency and false alarm rates.</td></tr>
+    <tr><th scope="row"><a href="#talk-85">The death of TTPs</a><br><span class="sub">Eyal Sela</span></th><td>A week of one criminal operator's autonomous intrusions, with outcomes and costs.</td></tr>
+    <tr><th scope="row"><a href="#talk-65">StealthBench</a><br><span class="sub">Adrian Wood</span></th><td>Shows offensive agents are noisy, and lists the detections that catch them.</td></tr>
+    <tr><th scope="row"><a href="#talk-26">Math Ability has Consequences</a><br><span class="sub">Markku-Juhani O. Saarinen</span></th><td>The one talk scored 5: agents changing the security estimates of a standardized cipher.</td></tr>
+  </tbody>
+</table></div>
+
+<h2 id="take">What the evidence supports doing</h2>
+<p>A reading for a security team that builds its controls as platforms. It goes beyond what any one talk claimed, so each row names what it rests on and how strong that support is.</p>
+<div class="table-wrap"><table class="trail">
+  <thead><tr><th scope="col">Action</th><th scope="col">Rests on</th><th scope="col">What the talks showed</th></tr></thead>
+  <tbody>
+    <tr><th scope="row">Write policy where the tool call happens: allow-lists, constrained output, credentials the agent cannot hold</th><td><a href="#harness">Enforcement</a> · talks <a href="#talk-50">50</a>, <a href="#talk-21">21</a>, <a href="#talk-89">89</a>, <a href="#talk-08">08</a>, <a href="#talk-77">77</a>, <a href="#talk-53">53</a></td><td><span class="chip g-measured">Measured</span> 56.77% of attacks succeeded with no control and 0.00% with an allow-list gate or a grammar, for one attack goal. Five production accounts agree.</td></tr>
+    <tr><th scope="row">Treat the AI gateway, the tool gateway and their token caches as top-tier systems, with an identity per agent and containment that runs at machine speed</th><td><a href="#identity">Identity</a> · talks <a href="#talk-68">68</a>, <a href="#talk-13">13</a>, <a href="#talk-55">55</a>, <a href="#talk-45">45</a></td><td><span class="chip g-case">Case</span> One incident in detail: about 13 hours to first compromise, 1.5 more to Okta super admin. The same gaps recur across 69 organizations.</td></tr>
+    <tr><th scope="row">Spend approval prompts like a scarce resource: decide most calls from session state and make the rest provable</th><td><a href="#approval">Approval</a> · talks <a href="#talk-21">21</a>, <a href="#talk-51">51</a>, <a href="#talk-74">74</a>, <a href="#talk-09">09</a></td><td><span class="chip g-measured">Measured</span> 52% of prompts approved with a median answer time of 2.6 seconds. A second figure, 93% approved unread, has no source on its slide.</td></tr>
+    <tr><th scope="row">Make sandboxes refuse to run when a protection is missing, and test them on the real runners</th><td><a href="#sandbox">Sandboxes</a> · talks <a href="#talk-63">63</a>, <a href="#talk-61">61</a></td><td><span class="chip g-case">Case</span> One team's account of its own sandbox: 10 failures in 3 runs on a real runner while modelled tests were green.</td></tr>
+    <tr><th scope="row">Shadow-test every agent change on live traffic, and test every eval with its data source switched off</th><td><a href="#defense">Defense</a> · talks <a href="#talk-90">90</a>, <a href="#talk-62">62</a>, <a href="#talk-76">76</a></td><td><span class="chip g-measured">Measured</span> 216 false positives against 150 on about 11,000 live threats, after a 200-case benchmark showed no difference. A model scored 29% with the data source disabled.</td></tr>
+    <tr><th scope="row">Budget scanning as repeated passes over mixed cheap models, and move the savings to validation and remediation</th><td><a href="#fixing">Fixing</a> · talks <a href="#talk-39">39</a>, <a href="#talk-66">66</a>, <a href="#talk-78">78</a>, <a href="#talk-46">46</a></td><td><span class="chip g-measured">Measured</span> On one team's benchmark, 70 of 95 flaws for $66 against 65 for $128. Patch acceptance figures come from separate studies.</td></tr>
+    <tr><th scope="row">Sort controls by whether they remove a step from an attack path</th><td><a href="#governance">Governance</a> · talk <a href="#talk-36">36</a></td><td><span class="chip g-assertion">Assertion</span> A model described by its authors. No results were shown.</td></tr>
+  </tbody>
+</table></div>
+<p class="table-note">The grade on each row is the strongest evidence behind it, using the same grades as the talk records.</p>

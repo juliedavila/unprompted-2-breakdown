@@ -1,0 +1,128 @@
+{
+  "nn": "77",
+  "id": "fVGkxfI5eSE",
+  "url": "https://www.youtube.com/watch?v=fVGkxfI5eSE",
+  "title": "Building Security Review Agents",
+  "speakers": [{"name": "Gabe Bello", "affiliation": "Enterprise Security, Twilio"}],
+  "format": "talk",
+  "duration_min": 23,
+  "thesis": "Reviewing third-party OAuth grants to Google Workspace and Slack is a corporate-security problem, not an AppSec one, and a multi-model AI review panel wrapped in deterministic inputs and outputs can clear a decade-old backlog cheaply. The failures that hurt were ordinary systems failures (missing data, loose policy), not model failures.",
+  "summary": "Bello opens by noting that most AI security-review agents target code and threat modeling, and points his team's panel at a different problem: employees authorizing SaaS marketplace apps (Google Workspace, Slack) that request scopes such as Drive and Gmail access. Twilio had more than ten years of unreviewed integration debt, and vendors, and Google itself, label the same app differently (suspicious, high risk, restricted scope). He describes the workflow: a Slack conversational agent handles intake and status for employees, then an AI review panel of three models from different providers, treated like blind conference reviewers, each assess the same payload. A critic checks the panelists for misses and misrepresentations, a synthesis step combines panel and critic, and results go to Aurora Postgres for observability. Output is a fixed contract of verdict, confidence, rule and reasoning. The goal is human-on-the-loop auditing rather than human-in-the-loop decisions. He then covers two failure modes: a null enrichment field (a failed vendor-trust web scrape) that the panel treated as grounds to approve, and unstructured policy that let identical apps receive different verdicts. The fixes were explicit null-handling expectations and rule-set style policies with an escalate-if-unknown fallback. He reports that panel and single model agreed 95 percent of the time, that model choice changed 15 percent of outputs, and that the program reviewed over 4,000 apps at about 10 cents a run. Q&A covers approval scope, rejection, metrics and next steps.",
+  "argument": [
+    "Enterprise SaaS-integration risk is context-driven, and vendors and Google label the same grant inconsistently, so the organization needs its own consistent verdict.",
+    "A panel of three models from different providers, refereed by a critic and combined by a synthesis step, produces a verdict matched to company policy, with fixed output fields that can be tracked.",
+    "The panel did not beat a single model on quality (95 percent agreement, and both were wrong when they disagreed), but provider diversity limits the blast radius of hallucination or a compromised model.",
+    "The real failures were systems failures: missing enrichment data read as approval, and loose policy let the model pick inconsistent inputs, so deterministic preconditions and rule-set policies with an escalate-if-unknown fallback fixed them.",
+    "The result is 95 percent coverage of more than 4,000 apps, 86 percent automated decisions, about two days cut to about two hours, at roughly 10 cents per panel run.",
+    "Review consistency improves as determinism increases, and the whole system needs the same scrutiny as the AI context."
+  ],
+  "claims": [
+    {"claim": "Panel and single-model designs agreed 95 percent of the time in Twilio's testing; where they disagreed both were wrong, so quality was functionally the same.", "evidence": "Stated from internal testing; no sample size or method shown.", "grade": "measured", "t": "13:03", "source": "both"},
+    {"claim": "About 15 percent of review outputs changed depending on which model was selected.", "evidence": "Internal testing figure, shown on the comparison slide without a breakdown.", "grade": "measured", "t": "13:33", "source": "both"},
+    {"claim": "The panel's value is non-functional: provider diversity isolates hallucination and model compromise because independent reviewers will likely not fail the same way.", "evidence": "Reasoning from the design; no incident or test of a poisoned model shown.", "grade": "assertion", "t": "14:04", "source": "both"},
+    {"claim": "A null enrichment field from a failed vendor-trust web scrape led the panel to ignore the gap and approve.", "evidence": "Described as an actual failure in their pipeline, with the cause traced to a failed lookup to a third-party service.", "grade": "case", "t": "06:17", "source": "both"},
+    {"claim": "With a broad, loosely worded policy, identical apps received different verdicts because the agent inconsistently chose which inputs to weigh (publisher trust versus granted scopes).", "evidence": "Observed across dozens of sample runs in an early prototype.", "grade": "case", "t": "07:53", "source": "both"},
+    {"claim": "Policies written as rule sets (statement of intent, risk patterns pointing at specific enrichment context, universal escalate-if-unknown fallback) produced consistent, high-fidelity reviews.", "evidence": "Reported outcome of the fix; no before-and-after consistency numbers.", "grade": "case", "t": "08:56", "source": "both"},
+    {"claim": "More than 4,000 integrated apps were reviewed, 95 percent coverage of the backlog, with 86 percent of decisions automated.", "evidence": "Program metrics from the slide; the denominator for coverage and the definition of automated were not given.", "grade": "measured", "t": "15:07", "source": "both"},
+    {"claim": "Time to resolution fell from roughly two days to roughly two hours.", "evidence": "Slide figure; speaker said manual reviews took a median of multiple days, some a couple of hours, some days and days.", "grade": "measured", "t": "15:38", "source": "both"},
+    {"claim": "A single panel run costs about 10 cents, and the whole backlog was cleared for under a thousand dollars.", "evidence": "Stated average cost per run and total.", "grade": "measured", "t": "16:09", "source": "both"},
+    {"claim": "Approvals were issued per client ID for the whole company rather than per user or use case, to prioritize user productivity, with tighter scoping planned later.", "evidence": "Answer to an audience question, framed as a crawl-walk-run MVP choice.", "grade": "assertion", "t": "17:44", "source": "said"}
+  ],
+  "numbers": [
+    {"figure": "95%", "meaning": "agreement between panel and single-model designs in testing (5 percent disagreement)", "t": "13:03"},
+    {"figure": "15%", "meaning": "share of review outputs that changed with model selection", "t": "14:04"},
+    {"figure": "95%", "meaning": "coverage of the integrated-app backlog", "t": "15:07"},
+    {"figure": ">4,000", "meaning": "integrated apps reviewed to date", "t": "15:07"},
+    {"figure": "86%", "meaning": "decisions reached automatically at high confidence", "t": "15:07"},
+    {"figure": "~2 days to ~2 hours", "meaning": "time to resolution before and after (slide)", "t": "15:38"},
+    {"figure": "~10 cents", "meaning": "average cost of one panel run", "t": "16:09"},
+    {"figure": "under $1,000", "meaning": "approximate total cost to clear the backlog", "t": "16:09"},
+    {"figure": "10+ years", "meaning": "age of the integration-debt backlog", "t": "01:08"},
+    {"figure": "3", "meaning": "panelists, each a different provider's model, plus a critic", "t": "03:43"}
+  ],
+  "frameworks": [
+    {"name": "Security review panel", "description": "Four stages: intake (API Gateway, SQS, a core Lambda that scrubs PII and stores the event, a dispatcher Lambda that invokes the orchestrator asynchronously); panelists (a durable orchestrator Lambda invoking three panelist Lambdas on Bedrock); critic (a Lambda that evaluates panelist verdicts, plus a Bedrock synthesis step combining panel and critic); final verdict written to Aurora Postgres with status ai_complete, after which the review continues based on the verdict."},
+    {"name": "Panelist inputs and output contract", "description": "Inputs: grant (app, publisher, client ID, scopes), enrichment (vendor trust, third-party security approval, ownership), preconditions (booleans resolved by deterministic code before the LLM runs), and intake answers (requester's own words, self-attested). The panelist trusts the preconditions, matches a rule (G-xx general, KB-xx known-bad), weighs attenuators (ownership, verification, combinations), then chooses verdict and confidence, downgrading when signals conflict. Output: verdict (approve, escalate, reject, abstain), confidence (high, medium, low), the rule applied, and reasoning citing the preconditions checked. Instructions are policy markdown read from S3 on every invocation."},
+    {"name": "Review routing tiers", "description": "Inventory discovers integrations (Google marketplace apps, Slack apps, browser extensions); a conversational agent gathers business need; AI review (panel, critic, policy) feeds either Automated (AI owns the outcome: low risk, prior approval) or HITL (human decides: high risk, new pattern); a human-on-the-loop stage handles approve, reject and escalate outcomes, spot checks and operational metrics."},
+    {"name": "Policy as rule set", "description": "Statement of intent in natural language; risk patterns with pointers to specific enrichment context; a universal fallback to escalate if unknown."}
+  ],
+  "artifacts": [
+    {"name": "Twilio security review agent and panel", "kind": "product", "note": "Internal, not released. Slack conversational intake plus AWS-hosted multi-model review panel.", "url": ""},
+    {"name": "AWS Bedrock", "kind": "product", "note": "Hosts the panelists and the synthesis step per the architecture slide.", "url": ""},
+    {"name": "Google OAuth scope categories", "kind": "standard", "note": "Non-sensitive, sensitive and restricted scopes, cited as one of several inconsistent risk labels.", "url": ""}
+  ],
+  "slide_only": [
+    "Opening slide lists other public AI security-review talks as context: Figma (staying ahead of vulnerabilities with agents), Netflix (accelerating threat modeling with GenAI), 1Password (AI-powered security review pipeline), an AI code review at scale talk, and a Twilio AI-powered threat modeling talk.",
+    "Marketplace slide shows an unnamed app with a redacted client ID flagged Suspicious by one vendor and High (Apps Script scope granted to third-party app, plus 3 more) by another, with a Google scope list including calendar addons, calendar events, script.external_request, userinfo.email and userinfo.profile.",
+    "Architecture slide names the AWS components: API Gateway POST /service-path, SQS dedicated-service-queue, core Lambda, SQS plus dispatcher Lambda, durable Lambda orchestrator, Bedrock panelists, Aurora Postgres per-service tables. Supported services: google, slack, etc.",
+    "Review output sample shows an app named Bellwick Ledger with panelists labeled Haiku, Llama and Nova approving at high confidence, a Llama-web analyst that abstained, and a synthesis decision citing rule IAM-255 (Approved Vendor Within Approved Use) with confidence basis, scope and access risk, and recommended actions. The synthesis notes the web-search analyst abstained because the marketplace listing returned HTTP 400 and that code-resolved vendor_approval_eligible=true was the authoritative input.",
+    "Failure-mode slide states the missing data was a web scrape for vendor trust, and that an empty field here means no trust attenuation is available.",
+    "Success metrics slide gives about two days to about two hours for time to resolution; the speaker said multi-day median and did not say two hours."
+  ],
+  "demos": [
+    "Screenshot of the team's lab admin console: a sample OAuth app run through the panel reaching near-unanimous approval, with expandable per-panelist views, a synthesis decision summary and a detailed analysis (third-party assessment, scope risk, panel agreement)."
+  ],
+  "quotes": [
+    {"text": "The failure modes that we saw looked more similar to traditional software engineering failure modes than specific AI security failure modes.", "speaker": "Gabe Bello", "t": "05:14"},
+    {"text": "Review consistency gets better as determinism increases.", "speaker": "Gabe Bello", "t": "16:09"},
+    {"text": "This isn't just an AI security problem, it's also a systems problem.", "speaker": "Gabe Bello", "t": "17:12"},
+    {"text": "The panel ended up being the right choice for non-functional reasons because it added certain security guardrails.", "speaker": "Gabe Bello", "t": "14:36"}
+  ],
+  "offense": [
+    "Silent failure on missing data: a failed enrichment lookup leaves a null field, and the model treats absence as no negative signal and approves.",
+    "Inconsistent input weighting: with an under-specified policy the agent sometimes weighted publisher trust and sometimes granted scopes, yielding different verdicts for identical apps.",
+    "Self-attested intake answers from requesters are an input the panel must weigh, noted as requester's own words."
+  ],
+  "defense": [
+    "Define explicitly how each input is used and how null or empty values are interpreted, including cases where missing data means no trust attenuation.",
+    "Compute preconditions as booleans in deterministic code before the LLM runs and instruct panelists to trust them rather than re-derive from raw fields.",
+    "Write policy as rule sets with a statement of intent, risk patterns that point at specific enrichment context, and a universal escalate-if-unknown fallback.",
+    "Use a fixed output contract (verdict, confidence, rule, reasoning) and store it in a database to track confidence and verdict over time.",
+    "Run independent models from different providers concurrently and use a critic to catch misses and misrepresentations.",
+    "Monitor operational failure signals such as a model failing to run and leaving a missing verdict, and prioritize human review of reviews where panelists disagree or confidence is split.",
+    "Keep humans in the loop on high-risk and new-pattern grants, moving toward human-on-the-loop auditing."
+  ],
+  "takeaways": [
+    "Treat OAuth and marketplace app grants as a reviewable backlog: a panel at about 10 cents a run makes clearing a decade of integration debt a small-budget project.",
+    "When building an LLM review pipeline, resolve enrichment and preconditions in deterministic code and define null semantics before the model sees the data, because missing data is the most likely silent failure.",
+    "Write review policy as a rule set with an escalate-if-unknown default rather than a broad natural-language mandate, and measure verdict consistency on identical inputs.",
+    "Justify multi-model panels by isolation properties and variance (15 percent output change by model choice), not by expected accuracy gains, and test that claim on your own data.",
+    "Decide whether approvals are per client ID or per user and use case, and plan to add usage telemetry so approvals reflect what an app actually does with its grant."
+  ],
+  "limits": [
+    "Approvals are made per app by client ID for the company, not per user or use case; narrowing is planned later.",
+    "Scope is OAuth apps on Google Workspace and Slack; non-OAuth patterns were not a significant case and an app using legacy authentication is an automatic no.",
+    "Reviews are point-in-time grant approvals; actual usage of granted access is not yet analyzed, which the speaker named as the next step.",
+    "LLMs are only okay at enterprise risk analysis because they lack organizational context."
+  ],
+  "critique": [
+    "The 95 percent agreement and 15 percent model-variance figures are given without sample size, ground truth or how disagreement was scored, and the talk does not reconcile the two numbers; the claim that both models were wrong when they disagreed implies a ground-truth set that was not described.",
+    "The published description cites an audit that found stored verdicts disagreeing with shown reasoning, a model silently dropping out of the score and a service running for twelve days with no output; the recording does not show these, and presents only the two failure modes about null data and loose policy.",
+    "The headline metrics (95 percent coverage, 86 percent automated) lack denominators and error rates; no false-approval rate was shown, so cost and speed are reported but correctness is not.",
+    "Approving by client ID company-wide with self-attested intake answers leaves the grant-abuse and scope-creep cases largely to later work; the stated next step of usage telemetry is the part that would address them.",
+    "The claim that the models were not the main failure point rests on two described cases; the talk also reports that model choice changed 15 percent of outputs.",
+    "No adversarial testing was described: a malicious app could place instructions in its name, description or publisher text that reach the panel, and the talk does not address that."
+  ],
+  "qa": [
+    "Are approvals per app or per user and use case? Per app by client ID, as a crawl-walk-run MVP that clears common apps like Zoom; the inventory of who authorizes what lets them add per-user context later, such as sales staff authorizing a disfavored AI tool.",
+    "Is there a finding concept, such as an app lacking OAuth or RBAC? Scope is OAuth, and non-OAuth patterns like legacy app-specific passwords are an automatic no; the more common problem is poor least-privilege scope choice. An interim approve-after-fix state was asked about and not clearly answered.",
+    "How are success metrics tracked? Two dashboards: a risk dashboard for leadership (exposure, high-risk apps approved) and an operational one tracking failure modes like a missing panelist verdict and the verdict and confidence combination, including the numerical confidence spread used to prioritize reviews where panelists likely disagree.",
+    "What is next now that capacity exists? Analyzing actual usage of each app's grant, to see whether it is executing on the high-risk access it holds."
+  ],
+  "tags": ["agent-authz-identity", "guardrails-runtime-controls", "org-adoption-culture"],
+  "key_frames": [
+    {"file": "t00219.jpg", "caption": "Security Review Panel architecture: intake, three Bedrock panelists, critic plus synthesis, and the Aurora Postgres final verdict."},
+    {"file": "t00297.jpg", "caption": "Missing-data failure mode: a null vendor-trust scrape led the panel to approve; the fix is explicit null-handling expectations."},
+    {"file": "t00528.jpg", "caption": "Panelist inputs, procedure and output contract: preconditions resolved in code, rule matching, attenuators, and the verdict, confidence, rule, reasoning output."},
+    {"file": "t00783.jpg", "caption": "Panel versus single model: 95 percent agreement, consistent failure modes, 15 percent output change by model, and diversity as the benefit."},
+    {"file": "t00979.jpg", "caption": "Success metrics: more than 4,000 apps reviewed, 86 percent automated, about two days to about two hours, about 10 cents a run."}
+  ],
+  "signal": {"score": 3, "reason": "A concrete architecture and a null-handling failure account; the metrics are reported without sample sizes, and the audit findings in the published description are not shown in the recording."},
+  "caveats": [
+    "Auto-captions; speaker described the third panel metric as a multi-day median while the slide says about 2d to 2h, slide used for the figure.",
+    "Slide says 95 percent coverage and more than 4k apps; the speaker said over 4,000 apps and 95 percent coverage, consistent.",
+    "The YouTube description mentions an audit finding stored verdicts disagreeing with reasoning, a model silently not counting toward the score, and a service producing nothing for twelve days; none of this was said in the recording or shown on slides.",
+    "Panelist model names on the output sample slide (Haiku, Llama, Nova) are read from a small screenshot; the speaker did not name the models aloud.",
+    "The wifi credentials and QR codes on the closing slide are conference logistics and were not recorded."
+  ]
+}

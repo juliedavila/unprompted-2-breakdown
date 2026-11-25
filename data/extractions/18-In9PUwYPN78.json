@@ -1,0 +1,181 @@
+{
+  "nn": "18",
+  "id": "In9PUwYPN78",
+  "url": "https://www.youtube.com/watch?v=In9PUwYPN78",
+  "title": "Auditing Someone Else's Confidential AI",
+  "speakers": [
+    {"name": "Jagannadh Mellacheruvu", "affiliation": "Mirror Security (AI Security and Policy)"}
+  ],
+  "format": "talk",
+  "duration_min": 24,
+  "thesis": "Confidential-computing chips already sign a statement about themselves that vendors read once and discard; an outsider can keep it, verify it, grade it against twelve governance checks and hand auditors a replayable, law-mapped receipt.",
+  "summary": "The speaker, who describes himself as a policy person rather than a coder, opens with a coffee-bean analogy: we trust the label, and confidential AI today is the same. Confidential AI carries a trust tax (he says confidential GPUs cost five to six times a normal $1 to $2 per hour GPU), and auditors still ask whether you got what you paid for and can show it. He names four audiences (security lead, auditor, policy writer, startup founder) and three questions they all ask: who could see the data, what ran, and where. He explains confidential AI as protected memory, an owner-held key and attestation, then shows that the chip's signed statement is verified once by a cloud verifier and thrown away (NVIDIA tokens live about an hour). His open-source tool keeps the statement, verifies the certificate chain to the vendor root, and grades it against twelve checks (G01 to G12) in five groups: identity, isolation, versions, workload and records, and location, mapped to EU AI Act, DORA, ISO 42001, SOC 2 and the Chip Security Act. A pre-recorded demo runs against Tinfoil (AMD, 6 of 10, level 3), RedPill/Phala (Intel TDX, 3 of 10, level 1) and his own Intel plus NVIDIA machine (6 of 12, level 3). He lists what no chip can say (location, compute, licence) or stop (side channels, physical access, model decisions) and proposes fully homomorphic encryption, citing his own company. Q&A covers FHE performance and proving location.",
+  "argument": [
+    "Cloud AI is trusted on a vendor's word, and confidential AI adds a significant cost premium without giving auditors independent evidence.",
+    "Confidential hardware already signs a statement of chip, firmware, debug state and isolation at every start, but it is verified once for key release and then discarded.",
+    "An outsider can keep that statement, verify it to the silicon vendor's root and grade it against twelve governance checks, producing a plain-English receipt for auditors.",
+    "The checks map onto existing obligations (EU AI Act Article 12, 15, 19 and Annex IV, DORA, ISO 42001, SOC 2, Chip Security Act), so the chip's statement can answer audit questions directly.",
+    "Many answers remain unknown because no vendor token carries location, compute or licence state, and attestation does not stop side channels or physical access.",
+    "The speaker proposes fully homomorphic encryption as a mathematical alternative that removes dependence on trusting the hardware."
+  ],
+  "claims": [
+    {"claim": "Confidential GPU instances cost roughly five to six times a normal GPU hour (about $1 to $2 normally), a trust tax.",
+     "evidence": "Stated figures from the speaker; no source or pricing table shown.",
+     "grade": "assertion", "t": "01:40", "source": "said"},
+    {"claim": "The chip's attestation statement is typically read once by a verifier to release the key and then discarded; NVIDIA tokens are valid for only about one hour.",
+     "evidence": "Flow diagram slide (chip signs, verifier reads once and releases key, statement thrown away) and verbal explanation.",
+     "grade": "assertion", "t": "08:59", "source": "both"},
+    {"claim": "The open-source tool verifies the AMD SEV-SNP style report and certificate chain to the vendor root and grades it against twelve checks, G01 to G12, in five groups.",
+     "evidence": "Twelve-questions slide and demo terminal output listing G01 to G12.",
+     "grade": "demo", "t": "10:34", "source": "both"},
+    {"claim": "The chip's signed statement carries the serial, firmware, debug state, what booted and 64 bytes the verifier chooses, signed to the chipmaker's root; the tool compares that actual evidence with expected values from the user's build pipeline, model registry and declared policy.",
+     "evidence": "Slide 'What the tool is: actual from the chip, expected from you' with four boxes converging on the checks, and the caption listing what the statement carries.",
+     "grade": "assertion", "t": "10:03", "source": "both"},
+    {"claim": "Against Tinfoil (AMD) the tool reports 5 of 10 applicable checks passing at assurance level 3 from the report alone, rising to 6 of 10 when the launch measurement is required to equal the one in Tinfoil's current release notes (v0.0.167); requiring the stale September release (v0.0.145) makes G08 fail and coverage drop.",
+     "evidence": "Recorded demo steps 1/5 and 2/5: the same report and key chain verified up to AMD's pinned root (VCEK to ASK to ARK, SHA-256 pinned), then re-run with an expected measurement; first output shows 5 of 10 with 5 gaps, second shows G08 pass and 6 of 10. The stale-release output was described on the step header and in speech, not captured.",
+     "grade": "demo", "t": "12:10", "source": "both"},
+    {"claim": "Against RedPill/Phala (Intel TDX) fetched from outside the vendor, 3 of 10 checks pass at level 1, because the quote's signatures are not re-verified in that run and unknowns remain.",
+     "evidence": "Demo terminal output: Coverage 3 of 10 applicable checks pass, L1, 7 gaps flagged.",
+     "grade": "demo", "t": "13:43", "source": "both"},
+    {"claim": "On the speaker's own Intel plus NVIDIA machine, the model fingerprint is bound (G09 pass) but freshness and retention (G10) fails on a weeks-old NVIDIA token, and flips to pass on a bundle captured minutes before the recording.",
+     "evidence": "Summary table slide (6 of 12, level 3, G10 red) and speaker's narration of the fresh capture.",
+     "grade": "demo", "t": "14:19", "source": "both"},
+    {"claim": "The EU AI Act requires records kept at least six months (Articles 12 and 19), so a statement that lives an hour does not satisfy retention without a tool that keeps it.",
+     "evidence": "Speaker's reading of the regulation; the diagram labels the auditor's copy as kept six months.",
+     "grade": "assertion", "t": "14:50", "source": "both"},
+    {"claim": "The twelve checks map clause by clause onto the EU AI Act (Annex IV firmware and hardware, Articles 12 and 19 records kept at least six months, Article 15 resilience against attacks on confidentiality), ISO/IEC 42001 and SOC 2 (42001 A.4.5, A.6.2.7, A.6.2.8; SOC 2 CC6.1, CC6.7, CC8.1) and the Chip Security Act (Section 3 location verification, Section 4 diversion reporting, licence conditions), with some clauses answered in full, some in part and one needing a check (G13) that does not exist yet.",
+     "evidence": "Clause-by-clause slide colored green (the chip answers today, with a signature), amber (in part) and blue (a check that does not exist yet), and a twelve-law by six-question matrix; the mapping is the speaker's own with no legal or auditor review shown.",
+     "grade": "assertion", "t": "17:27", "source": "both"},
+    {"claim": "No vendor attestation token carries location, compute or licence state, and the only available location signal is a network-timing bound.",
+     "evidence": "Limits slide (cannot say: where it is, how much it computed, whether it is licensed) and Q&A answer on location.",
+     "grade": "assertion", "t": "18:29", "source": "both"},
+    {"claim": "Attestation does not stop side-channel attacks, physical access or what the model decides.",
+     "evidence": "Limits slide listing cannot stop: side channels, physical access, what the model decided.",
+     "grade": "assertion", "t": "19:00", "source": "both"},
+    {"claim": "Fully homomorphic encryption removes the questions of location, compute, licence, side channels and physical access because data is never decrypted, with performance on par and lower latency.",
+     "evidence": "Asserted by the speaker; performance claim answered in Q&A by pointing to Mirror Security benchmarks, which were not shown.",
+     "grade": "assertion", "t": "19:31", "source": "both"}
+  ],
+  "numbers": [
+    {"figure": "12", "meaning": "governance checks (G01 to G12) the tool runs against attestation evidence", "t": "10:03"},
+    {"figure": "5", "meaning": "groups of checks: identity, isolation, versions, workload and records, location", "t": "10:34"},
+    {"figure": "5 to 6x", "meaning": "claimed cost multiple of confidential GPU hours over normal GPUs (about $1 to $2 per hour normal)", "t": "01:40"},
+    {"figure": "1 hour", "meaning": "lifetime of an NVIDIA attestation token before it expires", "t": "09:31"},
+    {"figure": "6 months", "meaning": "minimum record retention the speaker cites from the EU AI Act, and the retention shown on the auditor's copy", "t": "14:50"},
+    {"figure": "6/10, level 3", "meaning": "Tinfoil (AMD) result", "t": "12:10"},
+    {"figure": "3/10, level 1", "meaning": "RedPill/Phala (Intel TDX) result", "t": "13:43"},
+    {"figure": "6/12, level 3", "meaning": "speaker's own Intel plus NVIDIA machine result", "t": "14:19"},
+    {"figure": "7", "meaning": "gaps flagged in the RedPill/Phala run", "t": "13:43"},
+    {"figure": "5/10 then 6/10", "meaning": "Tinfoil checks passing on the report alone (5 gaps flagged) and after the launch measurement is bound to release v0.0.167", "t": "12:10"},
+    {"figure": "v0.0.167 and v0.0.145", "meaning": "Tinfoil current release and the stale September release used for the G08 test", "t": "12:10"},
+    {"figure": "64 bytes", "meaning": "verifier-chosen data included in the chip's signed statement", "t": "10:03"},
+    {"figure": "6", "meaning": "questions the other laws ask, across 12 laws and rule sets on the matrix slide", "t": "05:14"},
+    {"figure": "5", "meaning": "levels in the trust ladder, level 0 to level 4", "t": "16:25"},
+    {"figure": "v0.6.1", "meaning": "tee_attestation_connector version shown in the demo (dated 2026-10-28)", "t": "12:10"}
+  ],
+  "frameworks": [
+    {"name": "Twelve governance checks (G01 to G12)", "description": "Identity: G01 genuine chip, serial signed. Isolation: G02 locked or confidential mode on, G03 debug off, G07 cannot be moved while running, G12 GPUs linked safely. Versions: G04 booted the way it should, G05 firmware and driver match vendor reference, G06 firmware current. Workload and records: G08 what booted equals the published release, G09 model fingerprint bound, G10 fresh and kept. Location: G11 where it is, which no chip says."},
+    {"name": "Three questions for all audiences", "description": "Who could see the data, what actually ran, and where it ran, mapped to the questions auditors, procurement leads, policy writers and startup founders get asked."},
+    {"name": "Ladder of trust (L0 to L4)", "description": "Level 0 self-declared (a questionnaire answer; the coffee), level 1 glanced (read it, checked no signature), level 2 the seller said so (the cloud or a third party), level 3 checked yourself (to the chipmaker's root, on your machine; marked as what the audience just watched), level 4 checked every day (every deploy, kept six months). A bracket labels the step to levels 3 and 4 the four-eyes principle: two people must sign off."},
+    {"name": "Three questions behind four askers", "description": "Security lead (a bank's procurement asks who could see our data and where; answered with trust us), auditor (a hospital audit committee asks whether the documented system is the one that ran on patient data; answered with screenshots), policy writer (an agency asks what evidence it can demand and from whom; answered with a sentence in a policy) and startup founder (a customer's due diligence asks where the cloud supplier runs; answered with the provider's PDF) all reduce to who could see the data, what actually ran, and where it ran."},
+    {"name": "Actual from the chip, expected from you", "description": "The tool compares the chip's signed statement (actual) with expected values from the user's build pipeline, model registry and declared policy, then emits twelve check results and a trust level."},
+    {"name": "Cannot say, cannot stop", "description": "Limits slide: the chip cannot say where it is, how much it computed or whether it is licensed, and cannot stop side channels, physical access or what the model decided. A following slide lists the same five gaps (all but model decisions) as where fully homomorphic encryption picks up."},
+    {"name": "Confidential AI in three parts", "description": "Protected memory (weights, prompts, customer data encrypted from the operator and neighbors), an owner-held key released after the statement is right, and attestation signed by the chip."},
+    {"name": "Result notation", "description": "Tick passes; a question mark means the evidence cannot answer it, not a defect; a dash is not applicable; a cross is a failure; 'bound' is a network-timing bound; a count is not a score; an asterisk marks self-consistency only."}
+  ],
+  "artifacts": [
+    {"name": "onchip-governance (tee_attestation_connector)", "kind": "repo", "note": "Open-source, dependency-free Python tool that parses AMD SEV-SNP, Intel TDX and NVIDIA attestation evidence, verifies chains to vendor roots where possible, grades twelve checks and writes JSON and Markdown reports.", "url": "github.com/JagZ999/onchip-governance"},
+    {"name": "Tinfoil", "kind": "product", "note": "Confidential-inference service whose published AMD attestation was used as the first demo source.", "url": ""},
+    {"name": "RedPill / Phala", "kind": "product", "note": "Intel TDX attestation fetched from outside the vendor (api.redpill.ai) with a chosen nonce; second demo source.", "url": ""},
+    {"name": "VoltageGPU H100 confidential VM", "kind": "product", "note": "The speaker's own Intel TDX plus NVIDIA H100 confidential instance, used as the third demo source; bundles captured on 8 October (stale) and a few minutes before the recording (fresh).", "url": ""},
+    {"name": "EU AI Act Articles 12, 15, 19 and Annex IV", "kind": "standard", "note": "Mapped to records, resilience and confidentiality, and technical documentation (firmware and hardware).", "url": ""},
+    {"name": "DORA, ISO 42001, SOC 2 CC6/CC7, HIPAA, Chip Security Act", "kind": "standard", "note": "Other regimes the checks are mapped to; DORA on the security lead slide, ISO 42001 and SOC 2 clauses on the clause-by-clause slide, and the whole set in a twelve-law matrix (also NIS2, GDPR, CRA, BSI C5, NIST 800-53, NYDFS Part 500, India DPDP Rules, ISO 27001).", "url": ""}
+  ],
+  "slide_only": [
+    "Who gets asked slide with four tabs (security lead, auditor, policy writer, startup founder); the security lead tab shows a bank procurement question, 'Who could see our data while your model ran, and where?', currently answered with 'trust us' and words, and cites DORA.",
+    "What is confidential AI: a normal cloud machine keeps weights, prompts and customer data in plain text readable by the operator; a confidential machine is a locked room scrambled to all but the owner.",
+    "Proof diagram: the chip signs at every start, a verifier reads it once and releases your key, and the statement is thrown away; with the tool it verifies, grades and keeps an auditor's copy for six months. Caption: same chip, same statement, the only change is who keeps it.",
+    "Demo header: 'Auditing someone else's confidential AI, from a laptop', tee_attestation_connector v0.6.1, dated 2026-10-28, a replay of cached evidence with no cloud account and no network; five commands, each explained before it runs.",
+    "RedPill step [3/5] text: signatures are not re-verified here, so the assurance level stays at L1; unknowns are the point because they show which evidence a provider still has to hand over.",
+    "RedPill check output: G01 unknown, G02 pass, G03 pass, G04 pass, G05 not applicable, G06 and G07 to G11 unknown, G12 not applicable.",
+    "Summary slide 'The attestation copy, filled in': columns Tinfoil AMD 6/10 level 3, RedPill/Phala Intel 3/10 level 1, own machine Intel plus NVIDIA 6/12 level 3, with legend 'a question mark means the evidence cannot answer it, not a defect; a count is not a score; asterisk is self-consistency only; bound is a network-timing bound' and G06 marked with an asterisk. The captured frame is mid-animation with every cell still a question mark.",
+    "Terminal summary 'the same twelve questions, four runs' (rows tinfoil_measured, redpill, own, own_fresh; tick pass, ? evidence missing, x fail, dash not applicable): own fails G10 with a cross and own_fresh passes it; G09 passes on both own rows only; G11 shows a question mark in every row; Tinfoil shows dashes for G05 and G12 and RedPill for G05 and G12.",
+    "Demo step headers: 1/5 Tinfoil (AMD SEV-SNP) verify the chip-signed report up to AMD's root, with a WHAT and WHY box (a vendor web page saying confidential is a claim; a signature that chains to AMD's root key is evidence checkable with no vendor account); 2/5 bind the launch measurement to the vendor's published release, then to a stale one; 4/5 own confidential VM (Intel TDX plus NVIDIA H100) captured 8 October, verify the NVIDIA token against a snapshot of NVIDIA's JWKS, require the model weights' SHA-256 in the report data, G10 fails because the token expired one hour after issue and 'the tool refuses rather than looking away'; 5/5 identical check on a fresh VoltageGPU H100 bundle, G10 flips to pass because 'freshness is enforced by the clock, not by configuration: evidence has to be generated again, it cannot be reused'.",
+    "Slide 'The other laws ask the same six questions': matrix of twelve laws and rule sets (EU AI Act, DORA and its RTS, NIS2, GDPR and EDPB transfers, Cyber Resilience Act, BSI C5, NIST 800-53 and FedRAMP, HIPAA Security Rule, NYDFS Part 500, export controls and Chip Security Act, India DPDP Rules, ISO 27001 and CSA CCM) against six questions (the hardware it claims, the operator out, firmware signed and current, runs what was documented, the record kept, where and whose key); legend: tick a chip answers it today, half circle partly, plus a check still to write, dash not asked.",
+    "Who-needs-it slides pair each asker with a rule book: bank procurement with DORA, a hospital audit committee with HIPAA plus ISO 42001 and SOC 2, an agency buying a model with EU AI Act Annex IV and NIST 800-53 (boot integrity, inventory), and a customer's due diligence with NIS2, the Cyber Resilience Act and DORA third-party rules; each tagged who, what or where.",
+    "Confidential-AI slides: a normal cloud machine keeps weights, prompts and customer data in plain text readable by the cloud's administrators, the tenants next door, anyone with a snapshot and anyone who gets the host, 'sold as a menu item on every major cloud, already named by the law: data in use'; a confidential machine is a locked room keeping out the people who run the machine, the tenants next door and snapshots, and 'does not, by itself, prove that you got it. That is attestation.'",
+    "Why-a-tool slides: auditor asks who could see the data, what ran, where, prove it; the technical team answers 'This is the log. That's it.' (level 0, self-declared); the chip at boot says 'I signed a statement about this machine at boot. Nobody sent it.' (tagged never sent); 'the gap: the proof exists, and nobody sends it.'",
+    "Title slide reads From a chip's signed statement to evidence an auditor can read, live demo, Jagannadh, Mirror Security, open source; the trust-tax slide promises two takeaways, a trust level for your provider's GPU (who checked it and how far) and a free open-source tool that keeps the chip's statement and files it for your auditor, running tonight from a laptop.",
+    "Closing slide 'Run it against your provider tonight' with five chips: chip's signature, common reader, mapped to law, trust level, kept and filed.",
+    "Reply-replaced slide: auditor asks 'Who could see the data? What ran? Where? Prove it.' and the technical team answers 'Here is the chip's statement, verified and kept' at level 3 (checked yourself), with who ticked (locked, debug off), what ticked (what booted, the model) and where bound, no chip can say.",
+    "Closing slide: github.com/JagZ999/onchip-governance with a QR code; best fit is anyone on a confidential cloud who gets audited; main limit is no chip can say where it is."
+  ],
+  "demos": [
+    "Pre-recorded terminal demo (not live; recorded the day before) of tee_attestation_connector v0.6.1 replaying cached evidence: Tinfoil AMD report walked to AMD's root (6 of 10, level 3) with one check differing between two Tinfoil release versions.",
+    "RedPill/Phala step: raw Intel TDX quote for a chosen nonce parsed to the twelve questions, 3 of 10 pass at L1 with 7 gaps; the chain reaches Intel's root but the code's own signature is not verified on the laptop.",
+    "Own Intel plus NVIDIA machine: model fingerprint bound in both attestations (G09 pass); G10 fails for a weeks-old token and flips to pass on a freshly captured bundle; a final summary table compares all three sources."
+  ],
+  "quotes": [
+    {"text": "The chip already testifies. Nobody keeps it.", "speaker": "Jagannadh Mellacheruvu", "t": "08:59"},
+    {"text": "Same chip, same statement. The only change is who keeps it.", "speaker": "Jagannadh Mellacheruvu", "t": "09:31"},
+    {"text": "We can't cryptographically prove the location.", "speaker": "Jagannadh Mellacheruvu", "t": "22:39"}
+  ],
+  "offense": [
+    "Side-channel attacks and physical access to the chip are not covered by attestation.",
+    "Location can be spoofed against timing-based checks using VPNs and similar methods.",
+    "An attestation statement that is stale, discarded or not bound to the release or the model leaves a gap between what was attested and what ran."
+  ],
+  "defense": [
+    "Capture and retain the vendor-signed attestation document at each start, verify its certificate chain to the silicon vendor root, and keep it for the retention period (six months cited).",
+    "Grade attestation evidence against explicit checks (identity, locked mode, debug off, live migration off, boot measurement, firmware versions, release and model binding, freshness) and treat unknown as a gap to request rather than a pass.",
+    "Bind the model digest and deployed release to the attestation so the evidence names which model ran.",
+    "Use a common reader across AMD, Intel and NVIDIA evidence so one audit procedure covers mixed providers.",
+    "Consider fully homomorphic encryption where hardware trust gaps (location, compute, licence, side channels) cannot be closed."
+  ],
+  "takeaways": [
+    "If you buy confidential AI, require the provider to hand over raw attestation evidence and retain it yourself rather than accepting a log or screenshot.",
+    "Map audit questions (who could see data, what ran, where) to specific attestation fields and treat 'unknown' as a documented gap, not a pass.",
+    "Set a retention policy for attestation records that exceeds token lifetime, since vendor tokens may live about an hour.",
+    "Do not rely on attestation for location, compute or licensing claims; seek contractual or other controls for those.",
+    "Try the open-source tool against your own confidential provider before an audit and check the exact check semantics before relying on a score."
+  ],
+  "limits": [
+    "The demo was recorded and replayed from cached evidence, not run live.",
+    "No chip or vendor token can state location, compute performed or licence state.",
+    "Location can only be bounded through network timing, which is a weak signal and defeatable with VPNs.",
+    "Attestation does not address side channels, physical access or what the model decided.",
+    "In the Intel TDX run signatures were not re-verified, so assurance stayed at L1.",
+    "The speaker described himself as a policy person who does not code."
+  ],
+  "critique": [
+    "The attestation-retention-and-grading idea is practical and well scoped, but the headline counts (6/10, 3/10, 6/12) are not comparable scores; the slide itself says a count is not a score, and different denominators are used per provider.",
+    "The legend marks unknown as 'not a defect'; an auditor may treat an unknown as an open item, so the output reads more as a gap list than as a pass rate.",
+    "The mapping to EU AI Act, DORA, ISO 42001 and SOC 2 is the speaker's own and no legal or auditor review was shown; the talk did not establish that attestation evidence satisfies the cited article requirements.",
+    "The cost claim (five to six times) and the 'on par' FHE performance claim were given without sources in the talk. The speaker works for Mirror Security, which sells FHE; the benchmarks referred to were not shown, and the talk did not address FHE performance overhead for LLM inference.",
+    "The ladder is clear on the slide (levels 0 to 4, with level 3 as what the audience watched and level 4 as continuous checking), but the spoken numbering differs from the slide. The published description cites live attestation, while the recording shows a replay of cached evidence with no network.",
+    "The headline Tinfoil figure moves from 5 of 10 to 6 of 10 only after the user supplies the expected launch measurement from the vendor's own release notes, so the extra pass depends on the user trusting that published value.",
+    "The Q&A answer on FHE latency referred to Mirror Security benchmarks and gave no figures."
+  ],
+  "qa": [
+    "Q: What is the performance hit of fully homomorphic encryption on the chips? A: Performance is on par and latency is lower; benchmarks for different models are available from Mirror Security, and he offered to continue offline.",
+    "Q: How would you cryptographically prove the location? A: You cannot; the only method is a network-timing (TLS handshake or ping) bound, which is weak because VPNs can defeat it, so location is not answered today (an audience member summarised it as a weak signal)."
+  ],
+  "tags": ["privacy-confidential-compute", "governance-policy", "cryptography-formal-methods", "supply-chain-model-integrity"],
+  "key_frames": [
+    {"file": "t00572.jpg", "caption": "Proof diagram: the chip signs at every start, a verifier reads it once and the statement is thrown away; the tool keeps an auditor's copy for six months."},
+    {"file": "t00624.jpg", "caption": "The twelve governance checks G01 to G12 grouped into identity, isolation, versions, workload and records, and location."},
+    {"file": "t00704.jpg", "caption": "Terminal summary of the same twelve questions across four runs (Tinfoil, RedPill, own machine, own machine fresh), with G10 failing on the stale token and passing on the fresh one."},
+    {"file": "t01047.jpg", "caption": "Clause-by-clause mapping of the EU AI Act, ISO 42001 and SOC 2, and the Chip Security Act to checks, colored by whether the chip answers today."},
+    {"file": "t01115.jpg", "caption": "Limits: location, compute and licence cannot be said by the chip; side channels, physical access and model decisions cannot be stopped."}
+  ],
+  "signal": {"score": 3, "reason": "A concrete retain-and-grade method for attestation evidence with a working open-source tool; the demo was recorded, the counts use different denominators per provider, and the FHE performance claims were given without data."},
+  "caveats": [
+    "Auto-captions garbled names and terms: the transcript renders the speaker as Jagannath Melachervu, 'Tinfoil' as 'tin foil' and 'Redpill' as 'Red Pill'; spellings follow slides and the badge (Jagannadh Mellacheruvu).",
+    "The description says the tool verifies a live attestation of a production service; the demo header shows a replay of cached evidence with no network.",
+    "Transcript says 'six out of 10' for Tinfoil and 'three out of 10' for RedPill, consistent with the table; the description's 'five pass plus six with network bound' is a separate framing.",
+    "The demo step 3/5 (RedPill/Phala) terminal frame is not in the current frame set; its details in this record come from the earlier pass. The stale-release output of step 2 and the step 4 and 5 outputs were also not captured, only their step headers.",
+    "The trust ladder is shown on the slide as levels 0 to 4 with level 4 meaning checked every day; the speaker's spoken numbering differs from the slide, and the slide was used.",
+    "The summary-table slide frame is captured mid-animation with every cell a question mark, so the terminal summary frame was used for per-check results.",
+    "Closing Q&A frames are camera-only except the conference Q&A sponsor slide."
+  ]
+}

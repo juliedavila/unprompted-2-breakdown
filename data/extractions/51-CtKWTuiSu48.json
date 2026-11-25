@@ -1,0 +1,129 @@
+{
+  "nn": "51",
+  "id": "CtKWTuiSu48",
+  "url": "https://www.youtube.com/watch?v=CtKWTuiSu48",
+  "title": "Sandboxing Agents is a Three-Body Problem",
+  "speakers": [{"name": "Ankit Agrawal", "affiliation": "Webflow"}],
+  "format": "talk",
+  "duration_min": 21,
+  "thesis": "Agent sandboxing is a coupled problem among containment, provenance and human authority: tightening one shifts cost onto the others, so teams must pick which to harden first for their agent type and price every rule.",
+  "summary": "Agrawal, who leads application security at Webflow, shares eight lessons from building Source, a design and marketing desktop app where humans and AI agents build sites together. He frames sandboxing with the three-body problem: containment (what the agent can touch), provenance (where instructions came from) and human authority (what a human approved and what the approval is tied to). Each is manageable alone, but they interact: tight containment frustrates users, and extra trusted sources or exceptions add approval prompts. He sketches Source's architecture: the main app, a thinking-loop compartment, a shell sandbox, add-ons, the user's machine and a cloud service. On containment, he advises starting with writes, notes reads, secrets and network fail differently, shows that sandbox attribute, CSP and navigation warnings still let an iframe leave through redirects and opaque frames so every navigation must be caught and checked against registered destinations, splits the agent into a sealed thinking loop and a fenced shell sandbox, and warns that an impostor sandbox binary on the search path can fake a passing check. On provenance, he lists declared add-on permissions, fingerprinted add-on code, command screening before the shell, and server-side access decisions. On human authority, approvals are single-use tokens tied to project, action, exact package, the text shown and who asked, valid about 60 seconds, and never silently approved on timeout or crash. Early data shows 52 percent of prompts approved, a 2.6 second median answer time, and 21 percent refused for non-human reasons, compared with a 70.2 percent click-through for Chrome SSL warnings. He closes with which body to harden first by agent type and answers two Q&A questions.",
+  "argument": [
+    "Containment, provenance and human authority each work alone but interact, so there is no general formula for agent sandboxing.",
+    "Containment needs per-resource thinking: start with writes, and recognize iframes, secrets and sandbox binaries each fail in specific ways even when standard controls are present.",
+    "Provenance controls must be enforced by the app, not the model, using declared permissions, fingerprints, command screening and server-side access decisions.",
+    "Approvals must be bound to a specific action, package, displayed text and requester, expire quickly, and fail closed when unanswered, because rubber-stamped consent is worthless.",
+    "Which body to harden first depends on the agent's deployment shape, and every rule should be written down and priced against the other two bodies."
+  ],
+  "claims": [
+    {"claim": "Sandbox attribute, content security policy and navigation warnings were each correctly configured yet a child frame still escaped, because CSP frame source applies to the outer document and a redirect is not a fetch.", "evidence": "Found during code review and testing of the Source app.", "grade": "case", "t": "05:46", "source": "both"},
+    {"claim": "With opaque frames the parent process saw an empty URL for every frame, so the app had to catch every frame navigation in real time and allow only destinations registered for the app or add-on.", "evidence": "Lesson 2 slide: every frame reports an empty URL; catch every frame navigation; nothing by default.", "grade": "case", "t": "06:16", "source": "both"},
+    {"claim": "An impostor binary on the search path could answer in place of the macOS sandbox-exec binary so that every check still passed while no sandbox was engaged.", "evidence": "Found while securing Source; mitigations are checking the full path and verifying engagement with a task that must fail.", "grade": "case", "t": "07:50", "source": "both"},
+    {"claim": "Source uses two sandboxes: the thinking-loop compartment is sealed with no file system or network access, and the shell sandbox is fenced with controlled access.", "evidence": "Architecture slide and description of Source's design.", "grade": "case", "t": "07:17", "source": "both"},
+    {"claim": "Reads and secrets fail differently: tightening reads breaks tasks, while blocking secret files fails because an agent can ask a broker service such as the macOS keychain for the secret.", "evidence": "Reasoned example from Source design.", "grade": "assertion", "t": "04:13", "source": "said"},
+    {"claim": "Approvals in Source are single-use tokens tied to the project identity, one action, the exact add-on name, version and fingerprint, the exact text the user saw, and who asked, kept where the model cannot read them and valid about 60 seconds.", "evidence": "Lesson 7 slide and description of the token and record design.", "grade": "case", "t": "13:33", "source": "both"},
+    {"claim": "Unanswered (after two minutes), undeliverable and window-closed approvals are treated as refusals, never as approval.", "evidence": "Lesson 8 slide: approved and declined are human outcomes; unanswered, undeliverable and window closed are fail-closed outcomes.", "grade": "case", "t": "14:36", "source": "both"},
+    {"claim": "Early research-preview telemetry shows 52 percent of prompts approved, a median 2.6 seconds from prompt shown to answer, and 21 percent of prompts refused for a reason other than a person saying no.", "evidence": "Live data from the Source research preview over a few weeks, acknowledged as small.", "grade": "measured", "t": "15:36", "source": "both"},
+    {"claim": "Chrome SSL warnings were clicked through 70.2 percent of the time and a redesign roughly halved this, so consent screens should explain residual risk rather than act as a checkbox.", "evidence": "Cited as Akhawe and Felt, Alice in Warningland, USENIX Security 2013; the slide notes browser warnings are an analogue, not agent data.", "grade": "case", "t": "16:07", "source": "both"},
+    {"claim": "Every added rule has a cost on another body: labeling content by origin costs containment when the app only sees the hops it makes, and costs human authority when prompting too often makes the yes meaningless.", "evidence": "Lesson 6 slide with worked example.", "grade": "assertion", "t": "11:59", "source": "both"},
+    {"claim": "Which body to harden first depends on the agent: writes for a local single-user coding agent, egress for a cloud agent acting on the user's behalf, human authority for shared multi-user projects, provenance for agents reading the open web, email or other agents.", "evidence": "Decision table on the closing slide.", "grade": "assertion", "t": "17:08", "source": "both"}
+  ],
+  "numbers": [
+    {"figure": "52%", "meaning": "prompts approved in the Source research preview (speaker said about 50 percent)", "t": "15:36"},
+    {"figure": "2.6s", "meaning": "median time from prompt shown to user answer", "t": "15:36"},
+    {"figure": "21%", "meaning": "prompts refused for a reason other than a person saying no (speaker said about 20 percent)", "t": "16:07"},
+    {"figure": "70.2%", "meaning": "Chrome SSL warnings clicked through in the cited 2013 study, the baseline to beat", "t": "16:07"},
+    {"figure": "60 seconds", "meaning": "approximate validity of an approval token", "t": "14:36"},
+    {"figure": "2 minutes", "meaning": "timeout after which an unanswered approval counts as refused", "t": "15:06"},
+    {"figure": "8", "meaning": "number of numbered lessons presented", "t": "15:06"}
+  ],
+  "frameworks": [
+    {"name": "Three bodies, three pulls", "description": "Containment (what the process can touch: writes, reads, network, secrets), provenance (where instructions come from and who is allowed to do what), and human authority (who says yes and what that yes is tied to). Tightening one pulls cost onto the others."},
+    {"name": "Source architecture", "description": "The Source app at the center, connected to the compartment (the thinking loop), the shell sandbox, add-ons, the user's machine and Source's cloud service, the last of which handles login and sign-up and acts as an API proxy for authorization."},
+    {"name": "Eight lessons", "description": "1 Start with writes; 2 Ask where it is going, not who is asking; 3 Two sandboxes, one fenced and one sealed; 4 Does your sandbox check that it is on; 5 The app decides, not the model; 6 Write the rule down, then price it; 7 Nothing approves its own request; 8 Never hang, never silently approve."},
+    {"name": "Which body to pull on first", "description": "User machine, writes code, one user: containment writes (persistence is the lasting risk). Cloud, reads a lot, acts for the user: containment egress (the box is disposable, what leaves it is not). Many users and agents sharing one project: human authority (who may do what comes before any sandbox). Reads open web, email or other agents: provenance (every input is a potential instruction)."}
+  ],
+  "artifacts": [
+    {"name": "Source by Webflow", "kind": "product", "note": "Design and marketing desktop app where humans and AI collaborate on bespoke sites, in research preview; the source of the lessons. The speaker said general release was planned for January.", "url": "webflow.com/blog/introducing-source-by-webflow"},
+    {"name": "Alice in Warningland", "kind": "paper", "note": "Akhawe and Felt, USENIX Security 2013, the source of the 70.2 percent SSL warning click-through baseline.", "url": ""},
+    {"name": "macOS Seatbelt (sandbox-exec)", "kind": "tool", "note": "Sandbox binary whose search-path spoofing was the example for lesson 4.", "url": ""},
+    {"name": "bubblewrap and WSL", "kind": "tool", "note": "Named in Q&A as Linux and Windows analogues of macOS Seatbelt.", "url": ""}
+  ],
+  "slide_only": [
+    "Lesson 1 slide: Writes first (nothing gets left behind); Reads next (the hard line to draw); Network next (one path must stay open); Secrets next (the file is not the secret).",
+    "Lesson 2 slide: 'Three correct controls still let the frame leave' (sandbox attribute, content security policy, navigation warning) versus the rule 'Allow only destinations your app registered': every frame reports an empty URL, catch every frame navigation, nothing by default.",
+    "Lesson 3 slide highlights the compartment and shell sandbox boxes in the architecture diagram, titled 'Two sandboxes: one fenced, one sealed'.",
+    "Lesson 4 slide: the trap is an impostor on the search path that answers so every check still passes; the rules are check full path, then verify it engaged.",
+    "Lesson 5 slide 'The app decides, not the model': add-ons get permissions they declare; add-on code is fingerprinted; the app screens commands before the shell runs them; the server decides access, not the client.",
+    "Lesson 6 slide sample rule 'Anything the app reads back for the agent is labelled with where it came from' with two costs: containment (the app labels only the hops it makes; open a path around it and the label names the courier, not the author) and human authority (the model cannot act on data alone so a person is asked; ask too often and the yes means nothing).",
+    "Lesson 7 slide 'Nothing approves its own request': your yes is tied to the project (an identity the model cannot make up), one action (not a standing permission), the exact package (name, version and fingerprint), what you saw (the exact text on the card before you clicked), and who asked (nobody else can cash it in).",
+    "Footnote on the telemetry slide: Akhawe and Felt, Alice in Warningland, USENIX Security 2013; browser warnings are an analogue, not agent data.",
+    "Closing slide gives LinkedIn linkedin.com/in/aagrawa4 and webflow.com/blog/introducing-source-by-webflow plus a QR code."
+  ],
+  "demos": [],
+  "quotes": [
+    {"text": "Your redirect is not the same as fetch.", "speaker": "Ankit Agrawal", "t": "05:46"},
+    {"text": "Add-ons declare their permissions and you can hold them to it.", "speaker": "Ankit Agrawal", "t": "10:24"},
+    {"text": "Let your server decide the access. Do not let the client do it, because anything on the client side can be tampered with.", "speaker": "Ankit Agrawal", "t": "11:27"},
+    {"text": "Don't treat user consent as a checkbox.", "speaker": "Ankit Agrawal", "t": "16:38"}
+  ],
+  "offense": [
+    "An attacker or impostor leaves files outside the project that a privileged process later touches, which is why writes come first.",
+    "A third-party iframe escapes via redirects or opaque frames even with sandbox attribute, CSP and navigation warnings in place.",
+    "Dropping an impostor sandbox-exec binary into a location on the search path so sandbox checks pass without a sandbox.",
+    "Obfuscated commands that assemble script names from concatenated variables to evade command screening.",
+    "Agents silently approving their own consent requests or approval prompts being rubber-stamped through alert fatigue.",
+    "Secrets stored as encrypted files that an agent can still retrieve by asking a broker service such as the keychain."
+  ],
+  "defense": [
+    "Start containment with writes and decide reads, secrets and network per what the app needs.",
+    "Catch every frame navigation and allow only destinations registered by the app or add-on, with nothing allowed by default.",
+    "Split sandboxes by function: a sealed thinking-loop compartment with no file or network access and a fenced shell sandbox.",
+    "Check the full path of the sandbox binary, then verify it engaged by running a task that must fail, and decide explicitly whether to fail open, fail closed or warn if the binary is missing.",
+    "Hold add-ons to the permissions they declare, fingerprint add-on code with a hash or signature, keep provenance records outside the model's reach, and screen commands before the shell runs them as a nice-to-have, not an authority.",
+    "Decide access on the server, not the client.",
+    "Bind approval tokens to project, one action, exact package, the text shown and the requester, keep them out of model reach, and expire them in about a minute.",
+    "Treat unanswered, undeliverable and window-closed approvals as refusals, and design consent screens that explain the residual risk."
+  ],
+  "takeaways": [
+    "Pick your first-priority control by agent shape using the decision table: writes for local coding agents, egress for cloud agents, human authority for shared projects, provenance for agents reading untrusted inputs.",
+    "Audit that each sandbox check proves the sandbox actually engaged, for example with a canary task that must fail, and resolve the missing-binary case as an explicit fail-open or fail-closed decision.",
+    "Bind every human approval to an unforgeable record of what was shown and asked, make it single-use and short-lived, and fail closed on timeout, crash or no screen.",
+    "Treat iframe and add-on isolation as a navigation problem: enforce an allow-list of registered destinations on every frame navigation rather than relying on CSP and sandbox attributes.",
+    "Write each control as a rule and price it in terms of the other two bodies before adding it, to avoid trading containment gaps for approval fatigue."
+  ],
+  "limits": [
+    "The approval telemetry covers only a few weeks of a research preview and is small.",
+    "The Chrome SSL figure is an analogue, not data about agent approvals.",
+    "Command screening for obfuscated scripts is nice to have and not authoritative.",
+    "Preserving trust boundaries across agent swarms is still messy and iterative; the speaker said they are still experimenting and expect a release in January.",
+    "Source's third-party add-on ecosystem makes containment harder, and fail-open versus fail-closed depends on the app and customers."
+  ],
+  "critique": [
+    "The lessons come from one product, Source, with no comparison against alternatives, no measurements of the controls' effectiveness, and no red-team results shown; the talk presents design experience from one product.",
+    "The telemetry reports a 52 percent approval rate and 2.6 second median answer time without stating sample size or how many of the fast approvals were considered, so it cannot show whether approvals were informed.",
+    "The three-body framing is used as an organizing metaphor; the talk does not state its no-general-formula point as a testable claim about sandboxing.",
+    "Provenance labeling is acknowledged to name the courier rather than the author when paths are opened, so origin attribution under prompt injection is not fully addressed by this control as described.",
+    "The Q&A answers on cross-trust-boundary policy and agent swarms were brief and pointed to existing designs such as Codex and Claude and to ongoing experiments; a 21-minute talk may leave this detail to other venues."
+  ],
+  "qa": [
+    "How do you preserve policy across trust boundaries, architecturally? It depends on where the solution runs: macOS Seatbelt, WSL or bubblewrap on Linux, or cloud; Source took learnings from Codex, Claude and others and added product-specific controls, and a third-party ecosystem makes it messy.",
+    "How do you keep trust boundaries across agent swarms? Through provenance labeling of instructions; it is messy and still being iterated in research preview, with a release expected in January."
+  ],
+  "tags": ["sandboxing-isolation", "agent-authz-identity", "coding-agent-security", "guardrails-runtime-controls"],
+  "key_frames": [
+    {"file": "t00146.jpg", "caption": "Source architecture diagram: the main app with the compartment, add-ons, shell sandbox, user's machine and cloud service."},
+    {"file": "t00239.jpg", "caption": "Lesson 2: three correct frame controls still let the frame leave; the rule is allow only registered destinations."},
+    {"file": "t00788.jpg", "caption": "Lesson 7: what an approval is tied to (project, one action, exact package, what you saw, who asked)."},
+    {"file": "t00895.jpg", "caption": "Approval telemetry from the research preview next to the Chrome SSL click-through baseline."},
+    {"file": "t00995.jpg", "caption": "Decision table for which body to harden first by agent type."}
+  ],
+  "signal": {"score": 3, "reason": "Practical, specific design lessons from a real product, especially frame escape, sandbox verification and bound approval tokens, with approval telemetry from a few weeks of a research preview and no measurement of the controls' effectiveness."},
+  "caveats": [
+    "Auto-captions render the product name Source as 'a source' and 'Cloud' for Claude in Q&A; slide spelling is used.",
+    "Spoken statistics are rounded (about 50 percent, 20 percent, under 3 seconds); slide values (52 percent, 21 percent, 2.6 seconds, 70.2 percent) are used.",
+    "The speaker described the Chrome redesign as roughly halving the click-through rate; this is not on the slide and the cited paper's own figures were not shown.",
+    "The 60 second token validity and the two-minute timeout come from speech and the lesson 8 slide, and the 60 second figure is not on any slide.",
+    "Some slides appear twice in the frame set (full-frame and with speaker); duplicate slides were treated as one."
+  ]
+}

@@ -1,0 +1,362 @@
+{
+  "nn": "24",
+  "id": "KRoBC1Sv6rM",
+  "url": "https://www.youtube.com/watch?v=KRoBC1Sv6rM",
+  "title": "Two Sparks Walk Into a Lab",
+  "speakers": [
+    {
+      "name": "Roei Sherman",
+      "affiliation": "Mitiga (Sr. Director of Research)"
+    }
+  ],
+  "format": "talk",
+  "duration_min": 25,
+  "thesis": "On two home DGX Spark units, open-weight models can do much of a red team's analysis and scripting, but willingness to answer and correctness are separate axes, security-tuned and abliterated models were not better, and the dangerous failures were confident wrong answers.",
+  "summary": "Roei Sherman, who has led offensive security teams, described a home experiment to learn whether local open-weight models can do red team work after frontier vendors refused his offensive-security requests even with a verification program. He split the question into scope, hallucination, effectiveness, cost and willingness. Using a frontier coding agent to build the test cases while he checked them, he ran 33 models that fit on two DGX Spark units (128 GB each, linked by ConnectX-7) at a fixed 32K context. The centerpiece was a BloodHound attack-path exam with three real routes to Domain Admin and a planted false-positive trap through a disabled account. Only 10 of 33 models found all three paths; some invented edges or inverted ACL direction and advised re-enabling the disabled account. Six security-tuned 7 to 8B models all failed to find all three. Refusals from open weights were almost absent, so abliteration mostly cost quality: Qwen3.5-35B coding fell from 53 to 26 percent. He ended with a shortlist of four models by role, a local DeepSeek judge used because frontier models refused to grade, his Hermes-based agent stack on a standalone Linux box, and a list of limits: one run per test, small context, no live exploitation. In Q&A he said the models exceeded his expectations but ignore opsec, and that he cut the Sparks off from the internet.",
+  "argument": [
+    "Frontier vendors refused offensive work even with a verification program, so he tried to answer whether local open-weight models can red team on hardware he controls.",
+    "He decomposed the question into scope, hallucination, effectiveness, cost and willingness, and built a benchmark with a hand-built BloodHound exam that includes a planted false-positive trap.",
+    "Hardware sets the field: only models that fit in 128 GB per box and run on the cluster could be tested, 33 in all.",
+    "Results: willingness is nearly universal in open weights, correctness varies widely, security-tuning did not help, and abliteration paid for refusals that mostly were not there.",
+    "The most dangerous outputs were confident and well-structured but wrong, such as advising re-enabling a disabled account the data did not support.",
+    "Different models suit different roles, like human operators with specialties, so he runs a shortlist and an orchestrating agent instead of one model."
+  ],
+  "claims": [
+    {
+      "claim": "Only 10 of 33 models found all three attack paths in the BloodHound exam; 14 found two or part, 3 found one and 6 made things up or broke.",
+      "evidence": "Scatter slide placing every model by tokens per second and sparse, dense or hybrid architecture, grouped by result tier.",
+      "grade": "measured",
+      "t": "13:08",
+      "source": "slide"
+    },
+    {
+      "claim": "Security-tuned models did not do better: none of six security-tuned 7 to 8B models found all three paths, while general 30 to 35B sparse models Qwen3.6-35B-A3B and GLM-4.7-Flash found all three.",
+      "evidence": "Results slide; RedSage-8B inverted the direction of both key ACL edges and WhiteRabbitNeo-V3-7B made up edges not in the data.",
+      "grade": "measured",
+      "t": "12:04",
+      "source": "both"
+    },
+    {
+      "claim": "The dangerous answers were the confident ones: some models recommended re-enabling a disabled account via an invented MemberOf edge to Domain Admins when a quieter path existed.",
+      "evidence": "Graph slide with real edges (IT-HELPDESK GenericWrite SVC-SQL, MemberOf Domain Admins) versus the invented edge from SVC-LEGACY-DISABLED, with the advice 'Re-enable the disabled account.'",
+      "grade": "demo",
+      "t": "11:33",
+      "source": "both"
+    },
+    {
+      "claim": "Open-weight models almost never refused, including abliterated ones; one or two refusals were bypassed by stating it was an authorized engagement.",
+      "evidence": "Speaker's observation; slide reports base DeepSeek-V4-Flash refused 1 prompt in 50, so 98 of 100 prompts were already answered.",
+      "grade": "measured",
+      "t": "13:08",
+      "source": "both"
+    },
+    {
+      "claim": "Abliteration lowered quality: in head-to-heads the base model beat its abliterated version on most rows, for example Qwen3.5-35B coding fell from 53 to 26 percent and Qwen3-Coder-Next from 79 to 62.",
+      "evidence": "Slide table of five base versus abliterated pairs; DeepSeek-V4-Flash red team scored 159 of 200 versus 153 of 196 (tie); Qwen3-Coder-30B favored abliterated by 6 on a weak base, flagged as noise.",
+      "grade": "measured",
+      "t": "13:08",
+      "source": "both"
+    },
+    {
+      "claim": "Cyber-specific models were not at the top of the results, and some invented information absent from the dataset.",
+      "evidence": "Speaker statement across the 33-model run and the security-tuned slide.",
+      "grade": "measured",
+      "t": "12:04",
+      "source": "both"
+    },
+    {
+      "claim": "Qwen3-Coder-Next topped a coding benchmark at 79 percent among 24 models for small red team scripts.",
+      "evidence": "Slide cites the Polyglot benchmark; the speaker said he did not invent the benchmark and ran every model through it.",
+      "grade": "measured",
+      "t": "15:45",
+      "source": "both"
+    },
+    {
+      "claim": "Each of four shortlisted models passed the BloodHound exam including the false-positive trap, with different speed and role: Qwen3.6-35B-A3B 193 tok/s on one node, Qwen3-Coder-Next 46.5 tok/s and 1.4 s first token, GLM-4.6 10.3 tok/s on two nodes and highest correctness, DeepSeek-V4-Flash 45.9 tok/s as agent.",
+      "evidence": "Shortlist table with nodes, tokens per second, time to first token and BloodHound result.",
+      "grade": "measured",
+      "t": "14:10",
+      "source": "both"
+    },
+    {
+      "claim": "Every frontier model he tried refused to grade the red team outputs, so he used an uncensored DeepSeek as judge, which means a tested model is judging itself and the others.",
+      "evidence": "Slide with a Message flagged refusal citing Opus 4.8 safeguards and the [cyber] category; speaker states the self-judging caveat.",
+      "grade": "case",
+      "t": "16:17",
+      "source": "both"
+    },
+    {
+      "claim": "The local models kept a coherent chain of thought and exceeded his expectations on red team process, but ignore opsec and detection cost.",
+      "evidence": "Q&A answer: it will flag password spray as noisy but not that creating a user would be monitored.",
+      "grade": "anecdote",
+      "t": "23:34",
+      "source": "said"
+    },
+    {
+      "claim": "Local models served from an air-gapped Spark cluster with no internet access cannot dial out, which he used to address open-weight backdoor concerns.",
+      "evidence": "Q&A answer; he also monitors the agent's traffic because his own agent hacking someone else would be his legal risk, not for model exfiltration.",
+      "grade": "assertion",
+      "t": "22:01",
+      "source": "said"
+    },
+    {
+      "claim": "The experiment cost about 9,400 dollars of hardware, a few hundred dollars of frontier API usage and hundreds of hours.",
+      "evidence": "Slide titled 'This started in my living room.'",
+      "grade": "assertion",
+      "t": "02:44",
+      "source": "slide"
+    }
+  ],
+  "numbers": [
+    {
+      "figure": "33",
+      "meaning": "open-weight models tested on the two-Spark cluster (8 more never ran; others too big)",
+      "t": "10:00"
+    },
+    {
+      "figure": "10 / 14 / 3 / 6",
+      "meaning": "models that found all 3 paths / 2 or part / 1 / made it up or broke",
+      "t": "13:08"
+    },
+    {
+      "figure": "0 of 6",
+      "meaning": "security-tuned 7 to 8B models that found all three BloodHound attack paths",
+      "t": "12:04"
+    },
+    {
+      "figure": "~$9,400",
+      "meaning": "cost of two NVIDIA DGX Spark units",
+      "t": "02:44"
+    },
+    {
+      "figure": "128 GB",
+      "meaning": "unified memory per DGX Spark box",
+      "t": "08:59"
+    },
+    {
+      "figure": "32K",
+      "meaning": "token context cap used for every model in the benchmark",
+      "t": "08:59"
+    },
+    {
+      "figure": "98/100",
+      "meaning": "prompts already answered by base DeepSeek-V4-Flash, which refused 1 in 50",
+      "t": "13:08"
+    },
+    {
+      "figure": "53% to 26%",
+      "meaning": "Qwen3.5-35B-A3B coding score, base versus abliterated",
+      "t": "13:08"
+    },
+    {
+      "figure": "79% / 62%",
+      "meaning": "Qwen3-Coder-Next coding score, base versus abliterated",
+      "t": "15:45"
+    },
+    {
+      "figure": "193 tok/s",
+      "meaning": "Qwen3.6-35B-A3B generation speed on one node",
+      "t": "14:43"
+    },
+    {
+      "figure": "10.3 tok/s",
+      "meaning": "GLM-4.6 speed across both boxes, with the highest correctness",
+      "t": "15:15"
+    },
+    {
+      "figure": "24",
+      "meaning": "models tested on the coding benchmark",
+      "t": "15:45"
+    }
+  ],
+  "frameworks": [
+    {
+      "name": "Five sub-questions",
+      "description": "The overall question 'can local AI actually red team' split into scope (how much of an operation it can take on), hallucination (what happens when confidently wrong), effectiveness (is it actually good), cost (hardware, power and judgment time) and willingness (will it answer or will safeguards say no)."
+    },
+    {
+      "name": "Model as operator specialty",
+      "description": "Each shortlisted model gets a role like a red team operator: fast default (Qwen3.6-35B-A3B, find BloodHound paths), depth and snappy (Qwen3-Coder-Next, write a password-spraying tool), max correctness (GLM-4.6, catch the ADCS ESC1 path), agent (DeepSeek-V4-Flash, run enumeration and write notes)."
+    },
+    {
+      "name": "Operator-in-the-loop stack",
+      "description": "Human operator sets target, scope and objectives; a Hermes open-source self-hosted agent on a standalone Linux box tasks tools and MCPs (Strix, HexStrike and more) against targets, using local models on two DGX Sparks over a private network as the brain."
+    }
+  ],
+  "artifacts": [
+    {
+      "name": "NVIDIA DGX Spark",
+      "kind": "product",
+      "note": "Two units with 128 GB unified memory each, linked by ConnectX-7; the test hardware.",
+      "url": ""
+    },
+    {
+      "name": "BloodHound exam",
+      "kind": "benchmark",
+      "note": "Hand-built Active Directory attack-path test with three real paths to Domain Admin and a planted false-positive trap through a disabled account.",
+      "url": ""
+    },
+    {
+      "name": "Hermes agent",
+      "kind": "tool",
+      "note": "Open-source self-hosted agent used as orchestrator, chosen because it was easy to set up and kept the benchmark stable.",
+      "url": ""
+    },
+    {
+      "name": "Strix and HexStrike",
+      "kind": "tool",
+      "note": "Offensive tool integrations available to the agent through MCPs.",
+      "url": ""
+    },
+    {
+      "name": "Polyglot benchmark",
+      "kind": "benchmark",
+      "note": "Coding benchmark on which 24 models were tested; Qwen3-Coder-Next scored 79 percent.",
+      "url": ""
+    },
+    {
+      "name": "AIRTBench (Dreadnode)",
+      "kind": "benchmark",
+      "note": "70 AI red teaming CTF challenges; credited as prior work.",
+      "url": ""
+    },
+    {
+      "name": "CyberGym (UC Berkeley)",
+      "kind": "benchmark",
+      "note": "1,507 real vulnerabilities across 188 projects; credited as prior work.",
+      "url": ""
+    },
+    {
+      "name": "ExploitGym (Berkeley RDI)",
+      "kind": "benchmark",
+      "note": "898 real-world exploitation tasks; credited as prior work.",
+      "url": ""
+    },
+    {
+      "name": "NYU CTF Bench",
+      "kind": "benchmark",
+      "note": "200 CTF challenges; credited as prior work.",
+      "url": ""
+    },
+    {
+      "name": "BeTheAdversary.com",
+      "kind": "repo",
+      "note": "Speaker's site where second-round results, titled 'The scores were a lie?', will be published.",
+      "url": "BeTheAdversary.com"
+    }
+  ],
+  "slide_only": [
+    "Speaker bio slide: Ex-Global Director Offensive Services at AB InBev, EY Red Team, Guerilla Security; B.A. Information Systems and Cybersecurity, M.A. Criminology; co-organizer of BSidesTLV, DEF CON goon, Trace Labs judge; GitHub handle xFreed0m.",
+    "Cost slide: about 9,400 dollars for two DGX Sparks plus a few hundred dollars of frontier API cost plus hundreds of hours equals a question mark for profit.",
+    "Hardware funnel: open-weight models, then those fitting in 128 GB per box (some too big), then those that run on this hardware (8 never ran), then 33 tested.",
+    "BloodHound graph: IT-HELPDESK has GenericWrite on SVC-SQL, which is MemberOf Domain Admins; DOMAIN USERS has ForceChangePassword on SVC-LEGACY-DISABLED (disabled); the MemberOf edge from the disabled account to Domain Admins is invented by the model.",
+    "Model identifiers: RedSage-8B is RISys-Lab/RedSage-Qwen3-8B-DPO; WhiteRabbitNeo-V3-7B; abliterated variants from huihui-ai (for example Huihui-Qwen3.5-35B-A3B-abliterated, flagged as the 're-enable' model); DeepSeek-V4-Flash-DSpark; GLM-4.6 from RedHatAI w4a16 quantization; Qwen3.6-35B-A3B-FP8.",
+    "Scatter plot detail: top tier includes Seed-OSS-36B (dense) and Qwen3.6-35B-A3B; Llama-3.1-70B-Instruct-FP8 sits near 3 tok/s in the middle tier; speed axis runs roughly 3 to 300 tok/s on a log scale.",
+    "Qwen3-Coder-30B abliterated scored 26 versus 20 for base, footnoted as a weak score on a weak base, so noise.",
+    "Shortlist table adds time to first token: about 54 s for Qwen3.6-35B-A3B, 1.4 s for Qwen3-Coder-Next, 8.4 s for DeepSeek-V4-Flash.",
+    "Specialty slide claims Qwen3.6-35B-A3B matches 120B-class models on one box.",
+    "Coding need list: C2 beacon skeleton, recon tool, password-spraying tool, patched-CVE proof of concept, C2 tasking queue.",
+    "Refusal screenshot says Opus 4.8 safeguards flagged the message in category [cyber] and suggests applying to the Cyber Verification Program.",
+    "Closing slide teases part 2 'The scores were a lie?' and BeTheAdversary.com."
+  ],
+  "demos": [],
+  "quotes": [
+    {
+      "text": "The dangerous answers were the confident ones.",
+      "speaker": "Roei Sherman",
+      "t": "11:33"
+    },
+    {
+      "text": "Surprisingly, I almost had no refusal with open weights.",
+      "speaker": "Roei Sherman",
+      "t": "13:08"
+    },
+    {
+      "text": "I just downloaded the models, I cut the access to the internet for the sparks and they only serve locally.",
+      "speaker": "Roei Sherman",
+      "t": "22:01"
+    },
+    {
+      "text": "It won't consider opsec, for example.",
+      "speaker": "Roei Sherman",
+      "t": "24:05"
+    }
+  ],
+  "offense": [
+    "Models confidently enable a disabled account or invent a MemberOf edge to Domain Admins when a quieter existing path is available, which would add noise and detection risk in a real operation.",
+    "Hallucinated or inverted ACL edges lead an operator down non-exploitable paths.",
+    "Local models do not weigh opsec, such as new-user creation being monitored, so an unsupervised agent would be loud.",
+    "Used offensively, open-weight models almost never refuse, so safeguards from vendors are not a barrier for red team style tasks."
+  ],
+  "defense": [
+    "Run open-weight models on a host with no internet access and monitor agent traffic, since an agent acting on targets is the real liability.",
+    "Keep a human operator in control of target, scope, allowed actions and objectives, with the agent orchestrating tools underneath.",
+    "Build a hand-authored answer key with a deliberate false-positive trap to test whether a model fabricates or follows the data.",
+    "Check model output against the underlying data (for example graph edge direction) before acting; treat confident, well-structured advice as suspect."
+  ],
+  "takeaways": [
+    "If you evaluate models for offensive or security analysis, grade correctness on a planted-trap exam in addition to refusal rates; the two did not correlate.",
+    "Do not assume a cyber-tuned or abliterated model beats its base; in this test the base model usually won on quality and refusals were rare.",
+    "For agentic red team tooling, plan role-specific models and keep operators in the loop for opsec and judgment calls the models do not make.",
+    "Isolate local model hosts from the network and monitor tool-call traffic, rather than relying on trust in the weights.",
+    "Treat these results as a snapshot: single runs at 32K context on two boxes, and the speaker already considers parts obsolete."
+  ],
+  "limits": [
+    "Every test ran once (n=1) and AI is not deterministic.",
+    "A 32K context cap on every model, and only models that fit on two DGX Spark boxes.",
+    "No live exploitation or C2 operation; everything was generated content for models to analyze.",
+    "A snapshot: the model list changes weekly, and he already ran a second, larger round.",
+    "He describes himself as no expert in local models and uses a self-judging local judge."
+  ],
+  "critique": [
+    "The BloodHound exam is a single hand-built scenario with three paths and one trap, so tiers like 10 of 33 reflect one test and not general red team ability; no confidence intervals or reruns are given.",
+    "The judge is an uncensored DeepSeek that is also one of the tested models, which can bias scores; the speaker concedes this but the grading rubric is not shown.",
+    "The abliteration quality finding rests on five base-versus-abliterated pairs with mixed signs, including one row the speaker flagged as noise; the direction is consistent with the data and the sample is small.",
+    "The account of frontier-model refusals rests on a single screenshot citing the cyber safeguard, with no comparison against verified-program access.",
+    "The published description says an abliterated model correctly diagnosed the false positive and then recommended re-enabling the account; the transcript and slides show the re-enable advice and name the abliterated Qwen3.5-35B as that model, and do not show the diagnosis."
+  ],
+  "qa": [
+    "Why two Sparks and not four? Answer: his spouse was in a good mood so he went straight to two, with one as the fallback.",
+    "Why Hermes over other harnesses? Answer: it was newly released, easy to set up, and he wanted the fewest changing components during the benchmark; it now serves as the orchestration agent and is easy to swap.",
+    "Given backdoored open-weight models, what monitoring and logs do you collect? Answer: he downloaded the models and cut internet access for the Sparks so they serve locally only; tool calls via an orchestration layer are monitored, mainly to avoid his agent attacking someone else.",
+    "Did results meet expectations? Answer: they exceeded them; the chain of thought stayed effective and the models understand red team process technically, but they do not consider opsec."
+  ],
+  "tags": [
+    "autonomous-offense",
+    "evals-benchmarks-metrics",
+    "sandboxing-isolation"
+  ],
+  "key_frames": [
+    {
+      "file": "t00629.jpg",
+      "caption": "The BloodHound trap: real edges (IT-HELPDESK GenericWrite SVC-SQL, MemberOf Domain Admins) versus the model-invented MemberOf from the disabled SVC-LEGACY-DISABLED account, with the advice to re-enable it."
+    },
+    {
+      "file": "t00733.jpg",
+      "caption": "Security-tuned 7 to 8B models found all three paths in 0 of 6 runs (RedSage-8B inverted both key ACL edges, WhiteRabbitNeo-V3-7B made up edges), while general Qwen3.6-35B-A3B and GLM-4.7-Flash scored 3 of 3."
+    },
+    {
+      "file": "t00772.jpg",
+      "caption": "Abliteration comparison: base versus abliterated scores for five model pairs, with 98 of 100 prompts already answered and Qwen3.5-35B coding halving from 53 to 26 percent."
+    },
+    {
+      "file": "t00832.jpg",
+      "caption": "All 33 models placed by speed and result tier: 10 found all three paths, 14 found two or part, 3 found one, 6 made it up or broke."
+    },
+    {
+      "file": "t00871.jpg",
+      "caption": "Shortlist of four models by role with nodes, tokens per second, time to first token and BloodHound result (all 3 of 3 with the trap caught)."
+    }
+  ],
+  "signal": {
+    "score": 3,
+    "reason": "A practitioner benchmark with a planted-trap design and model-by-role results; each test was a single run, the grader was one of the tested models and the exam was one scenario."
+  },
+  "caveats": [
+    "Auto-captions garble names: the speaker's former employer, model names such as 'Clen' and '3.6 at 33 billion' were corrected from slides (Qwen3.6-35B-A3B).",
+    "The introducer is identified only by first name in the transcript and not captured as a speaker.",
+    "Affiliation (Mitiga, Sr. Director of Research) is from the title slide and description; the talk is stated to be a home experiment, not professional work.",
+    "The Wi-Fi details on the Q&A slide are conference logistics and are not recorded.",
+    "Slide detail for the scatter plot model names was only partly legible; only labeled points are recorded."
+  ]
+}

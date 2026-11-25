@@ -1,0 +1,191 @@
+{
+  "nn": "64",
+  "id": "ViiU9y9chnk",
+  "url": "https://www.youtube.com/watch?v=ViiU9y9chnk",
+  "title": "Prompt, Patch, Prove",
+  "speakers": [
+    {"name": "Tim de Waal", "affiliation": "OpenAI (Member of Technical Staff)"}
+  ],
+  "format": "talk",
+  "duration_min": 25,
+  "thesis": "An agentic coding model can analyze closed firmware and produce testable binary-level repairs for known vulnerabilities, giving defenders a way to deploy interim fixes before the vendor ships, provided every claim is independently verified because the model's first patches were incomplete.",
+  "summary": "Tim de Waal, a security researcher at OpenAI speaking from a personal account, argued that AI can now reverse and repair binary firmware cheaply enough that defenders should do it themselves. He framed the problem first: one device contains several firmware layers, including third-party chip firmware that even the manufacturer cannot see; the time from disclosure to weaponized exploit has fallen from about 2.3 years in 2018 to about 10 hours; and vendors need weeks to months for triage, supplier fixes, QA, signing and rollout, after which users may never update. He then showed a lab experiment on an authorized ASUS RT-BE82U router running build 39099. Using one model in a bare Codex install, with no extra skills and no open-weight models, he had it download the firmware, set up an emulated lab, confirm two published authenticated vulnerabilities (a command injection, CVE-2025-15101, and a SQL injection, CVE-2026-11851), repair each in the binary, test on a real device, and build a flashable image. The whole exercise used about 7 percent of a weekly Pro allowance, roughly $48 at API rates. The model's first patches were incomplete: one dropped a stack-canary check and the SQL fix was bypassable, which independent testing and assembly comparison caught. He closed with a device-in-the-loop workflow and Q&A on emulation, verification and mitigations.",
+  "argument": [
+    "Firmware on critical and home devices is opaque to buyers, includes third-party code the vendor itself cannot see, and has relied on obscurity that AI-assisted reverse engineering removes.",
+    "Weaponization time has collapsed while vendor fix and user update cycles remain slow, so defenders face a long exposure window.",
+    "A single agentic model with a plain prompt and a lab can unpack firmware, confirm known flaws, propose binary patches and rebuild a flashable image for about $48 of usage.",
+    "The model's patches cannot be trusted on its say-so: both first-pass repairs had gaps that only independent checks, assembly diffing and broader negative tests found.",
+    "The practical protocol is device-in-the-loop: operator sets a goal, the model patches, an adversary step tries to break the patch, and failures return to the model until the patch passes both attack and normal-behavior tests.",
+    "Vendors still need to apply known mitigations such as least privilege and access control, since the models do not remove the need for defense in depth."
+  ],
+  "claims": [
+    {
+      "claim": "Average time to weaponize a vulnerability fell from about 2.3 years in 2018 to about 10 hours now.",
+      "evidence": "Chart attributed to the zerodayclock project, labelled UK AI Safety Institute, April 2026, based on 3,536 CVE-exploit pairs.",
+      "grade": "measured",
+      "t": "03:18",
+      "source": "both"
+    },
+    {
+      "claim": "The full exercise, from firmware download to a repaired flashable image for two CVEs, used about 7 percent of a weekly Pro allowance, roughly $48 API-equivalent.",
+      "evidence": "Speaker's own usage figure; slide notes the figure includes a 2x fast rate. Model GPT-6 Sol at extra-high reasoning, bare Codex, no added skills.",
+      "grade": "measured",
+      "t": "05:21",
+      "source": "both"
+    },
+    {
+      "claim": "The model confirmed two published authenticated flaws on the lab router and produced proof scripts, which the speaker re-ran himself rather than trusting the model's report.",
+      "evidence": "Pre-recorded terminal demos for each CVE showing the vulnerable behavior, including positive and negative controls for the SQL case.",
+      "grade": "demo",
+      "t": "08:01",
+      "source": "both"
+    },
+    {
+      "claim": "For the command injection, the model's repair rejected a set of dangerous characters before the shell calls, and the patched handler lost the original stack-canary check.",
+      "evidence": "Side-by-side original and patched assembly from Binary Ninja on a slide; speaker judged no direct overflow remained because the write is bounded and accepted the risk.",
+      "grade": "case",
+      "t": "10:38",
+      "source": "both"
+    },
+    {
+      "claim": "The model's first SQL injection fix, which only rejected quote characters, was incomplete and needed several re-prompts.",
+      "evidence": "Slide and speaker showing a column-name style input that still matched every row.",
+      "grade": "case",
+      "t": "12:12",
+      "source": "both"
+    },
+    {
+      "claim": "The final SQL repair compiled a small helper in C, linked it, appended 1,684 bytes to the library, and redirected the original formatting call to it through a trampoline.",
+      "evidence": "Step-by-step diagram with addresses and payload size on slides, and a speaker walkthrough.",
+      "grade": "case",
+      "t": "13:14",
+      "source": "both"
+    },
+    {
+      "claim": "A model-built hash-locked patch and rebuilt firmware package could be flashed so the fix survives reboot.",
+      "evidence": "Stated in the prompt and description; a post-patch re-run of the proof scripts is shown failing to exploit.",
+      "grade": "demo",
+      "t": "15:19",
+      "source": "both"
+    },
+    {
+      "claim": "Third-party chipset firmware shared across devices is a good place to look, and the model can use public filings to find cheaper or easier devices with the same chipset.",
+      "evidence": "Speaker suggestion with an example workflow; no results shown.",
+      "grade": "assertion",
+      "t": "17:24",
+      "source": "said"
+    },
+    {
+      "claim": "Emulation speeds iteration but cannot replace real hardware for effects such as cache behavior, multi-core interaction, and inter-process communication.",
+      "evidence": "Q&A answer from experience.",
+      "grade": "anecdote",
+      "t": "19:29",
+      "source": "said"
+    }
+  ],
+  "numbers": [
+    {"figure": "2.3 years to 10 hours", "meaning": "average time to weaponize a vulnerability, 2018 versus 2026", "t": "03:18"},
+    {"figure": "3,536", "meaning": "CVE-exploit pairs behind the time-to-weaponization chart", "t": "03:18"},
+    {"figure": "7%", "meaning": "share of a weekly Pro allowance used for the whole exercise", "t": "05:21"},
+    {"figure": "$48", "meaning": "API-equivalent cost of the whole exercise, including a 2x fast rate", "t": "05:21"},
+    {"figure": "1,684 bytes", "meaning": "size of the machine code appended to the library for the SQL repair", "t": "14:18"},
+    {"figure": "1,024 bytes", "meaning": "command buffer size that bounds the writes in the patched command-injection handler", "t": "11:39"},
+    {"figure": "two", "meaning": "published CVEs repaired: CVE-2025-15101 and CVE-2026-11851", "t": "07:00"}
+  ],
+  "frameworks": [
+    {
+      "name": "Device-in-the-loop firmware repair loop",
+      "description": "Four lanes: operator provides exact firmware build and research goal; model unpacks firmware, analyzes attack paths and proposes or revises a patch; an adversary step, optionally in emulation, tries to break the patch with bypasses and edge cases; the physical device runs attacks and normal-behavior tests, and failures and traces feed back into analysis."
+    },
+    {
+      "name": "Layers of one device's firmware",
+      "description": "User space (vendor web app and libraries), kernel and modules including drivers, boot and trust (signed boot, verification, rollback), third-party SoC, and on-chip firmware for radio, switch and neural processing unit."
+    },
+    {
+      "name": "Prompting protocol",
+      "description": "Ask for scripts that prove or disprove each claimed vulnerability, require no regression and provable fixes, prototype on the device first, build a flashable image with a version string that marks the fix, and treat model-requested verification as still needing independent testing."
+    }
+  ],
+  "artifacts": [
+    {"name": "ASUS RT-BE82U build 3.0.0.6.102_39099", "kind": "product", "note": "Authorized lab router used as the target; the speaker said first prompt named build 39033 and was corrected to 39099.", "url": ""},
+    {"name": "CVE-2025-15101", "kind": "cve", "note": "Authenticated command injection in the router's root web server, repaired in the lab by the model.", "url": ""},
+    {"name": "CVE-2026-11851", "kind": "cve", "note": "Authenticated SQL injection path in a library loaded by the web server, repaired in the lab by the model.", "url": ""},
+    {"name": "Zero Day Clock", "kind": "dataset", "note": "Time-to-exploit chart used for the weaponization trend.", "url": ""},
+    {"name": "Codex with GPT-6 Sol", "kind": "tool", "note": "Bare agentic coding setup used, with Daybreak Blue trusted-access program mentioned for cyber work.", "url": ""}
+  ],
+  "slide_only": [
+    "Slide gives the model setup: extra-high reasoning, Daybreak Blue access, personal Pro plan, bare Codex with no additional skills installed.",
+    "The first prompt slide says to find the firmware, download it to a separate directory, set up QEMU, and notes that a local lab-only isolated environment is wanted.",
+    "The verification prompt slide asks for proof-of-concept scripts that prove or disprove that the CVEs are present.",
+    "The repair prompt slide asks for no regression in functionality and provable fixes, prototyping on the unit first, then creating and flashing a new image whose version indicates the fix, framed as a goal.",
+    "A slide contrasts disabling a vulnerable handler with repairing it, and the speaker chose repair for the exercise.",
+    "A slide labelled 'What the model missed' lists the removed stack-canary check (found by comparing original and patched assembly, accepted as a known risk) and the SQL filter bypass (found through broader query testing, needing extra rounds)."
+  ],
+  "demos": [
+    "Pre-recorded demo confirming the command-injection flaw on the lab router running build 39099 and showing the resulting privileged process listing.",
+    "Pre-recorded demo of the SQL injection with positive and negative controls and a test-data cleanup step.",
+    "Live demo of the patched router: the proof script fails to exploit the command injection and reports an inconclusive result, and the SQL test is started against the patched build."
+  ],
+  "quotes": [
+    {"text": "It's no longer about prompt engineering. The model is super capable, and six months from now it's going to look totally different with a different model.", "speaker": "Tim de Waal", "t": "05:56"},
+    {"text": "I don't want to explicitly trust the LLM. If it says something's successful, I actually want to check.", "speaker": "Tim de Waal", "t": "08:01"},
+    {"text": "We know the right things to do, and vendors need to go and do it. You should never have a single point of failure.", "speaker": "Tim de Waal", "t": "22:39"}
+  ],
+  "offense": [
+    "Both repaired CVEs require authenticated management access and are published issues, chosen so the talk would not disclose new zero-days.",
+    "The speaker argued that attackers can analyze firmware in hours, and that shared chipsets make a bug in one cheap device likely to matter on others."
+  ],
+  "defense": [
+    "Run an interim binary patch workflow for devices where the vendor fix is slow: analyze the exact build, patch minimally, test on hardware, and flash a version-marked image.",
+    "Require proof scripts and negative controls for every claimed vulnerability and every claimed fix, and re-run them yourself.",
+    "Diff original and patched assembly or equivalent to catch regressions such as a removed stack-canary check.",
+    "Use broad negative tests for injection fixes, since a model's first filter may only block the obvious input.",
+    "Keep standard mitigations in place: least privilege (do not run the web server as root), mandatory access control, and no single point of failure.",
+    "Inventory third-party firmware and chipsets in your estate, since they are shared attack surface."
+  ],
+  "takeaways": [
+    "Treat embedded and network-edge firmware as in scope for in-house analysis rather than waiting for vendor advisories, using an isolated lab and authorized devices.",
+    "Plan for much shorter exploit windows and decide in advance who can authorize an interim patch when no vendor fix exists.",
+    "Build a verification gate for any AI-produced patch: independent tests, assembly diff, regression suite, and a human sign-off on accepted risks.",
+    "Ask suppliers which chipsets and third-party firmware sit inside purchased devices and how fast they can ship signed updates.",
+    "Budget is not the barrier: a two-CVE repair exercise cost about $48 in usage, so effort should go into test harnesses and approval process."
+  ],
+  "limits": [
+    "Only two known, authenticated, string-handling vulnerabilities were repaired on one consumer router, chosen on purpose to be simple.",
+    "The speaker said the command-injection repair removed the stack-canary check and that he accepted that risk after review.",
+    "Emulation does not capture hardware effects, and complex exploit development on the vendor's own flagship devices may need a real device.",
+    "The speaker said exploit development under the restricted trusted-access program is tricky and gave no tips for finding variants the model missed."
+  ],
+  "critique": [
+    "The evidence is a single lab run on two simple, published bugs, so claims about repairing arbitrary firmware or scaling the approach are not supported by data in the talk.",
+    "The cost figure is from the speaker's own allowance accounting, and the talk does not say whether it includes his time or the manual verification.",
+    "Hot-patching production devices with unsigned or self-built images raises supportability, warranty and update-chain questions that were not addressed.",
+    "Both first patches were incomplete, which supports the case for verification gates rather than for model autonomy.",
+    "The speaker works at the company that makes the model and used a trusted-access program, so the workflow may not be reproducible without that access or on other models.",
+    "The time-to-weaponization chart's methodology is not explained, so the 10-hour figure should be treated as indicative."
+  ],
+  "qa": [
+    "Q: Did emulation with QEMU teach anything? A: It speeds iteration and avoids reboot waits, and the model can run binaries in user-mode emulation; but cache coherency, multi-core interaction, heap-related second-order effects and inter-process communication need real hardware.",
+    "Q: Was using a personal account deliberate? A: Yes, to show what anyone with the trusted-access program can do; he used only Codex with no skills, no open-weight models, and the model mostly used standard disassembly tools.",
+    "Q: Thoughts on enforcing authorization layers at firmware level? A: The industry knows the right mitigations and vendors must apply them; no single control is enough, and access control should stop a code-execution bug from becoming a root shell.",
+    "Q: How were exploit variants and patches verified? A: He relied on the model's verification loop but manually checked everything to catch hallucination.",
+    "Q: Tips for finding variants the model missed? A: None specific; exploit work under the restricted access program is tricky, and this case was a simple injection."
+  ],
+  "tags": ["vuln-discovery-exploit", "appsec-secure-development", "supply-chain-model-integrity", "guardrails-runtime-controls"],
+  "key_frames": [
+    {"file": "t00193.jpg", "caption": "Attacker versus vendor timeline: exploitation in days against weeks to months for a vendor fix, with the interim patch window highlighted."},
+    {"file": "t00255.jpg", "caption": "Model, access and setup slide: model, reasoning level, bare Codex, 7 percent of weekly allowance, about $48."},
+    {"file": "t00433.jpg", "caption": "Repair and test prompt: no regression, provable fixes, prototype on the device first, then build a flashable image."},
+    {"file": "t00931.jpg", "caption": "What the model missed: a removed stack-canary check and a bypassable SQL filter, and how each was caught."},
+    {"file": "t01095.jpg", "caption": "Device-in-the-loop firmware research workflow across operator, model, adversary and physical device lanes."}
+  ],
+  "signal": {"score": 3, "reason": "Practical defender-side workflow with failure cases shown and a clear cost figure; the evidence is one lab run on two simple bugs."},
+  "caveats": [
+    "Summary-level record: exploit mechanics deliberately not recorded.",
+    "Auto-captions garble the speaker name as 'Tim Daval' and the model as 'GPT 6 Soul'; the slides give Tim de Waal and GPT-6 Sol.",
+    "The first-prompt slide names firmware build 39033 and a correction to 39099; the transcript does not mention the first number.",
+    "The slide's chart attribution reads UK AI Safety Institute, April 2026, and the zerodayclock.com footer; the transcript says 'zero day clock' and that the graphic may have been removed from the site, which was not verified.",
+    "The transcript says the command-injection demo showed root access and that the ID command was missing; the slide screenshots show a privileged process listing rather than the missing command.",
+    "Final live demo of the patched router is only partly visible in captured frames."
+  ]
+}

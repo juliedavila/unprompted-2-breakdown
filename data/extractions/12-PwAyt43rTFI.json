@@ -1,0 +1,142 @@
+{
+  "nn": "12",
+  "id": "PwAyt43rTFI",
+  "url": "https://www.youtube.com/watch?v=PwAyt43rTFI",
+  "title": "Agentic AI in the Wild: What Real Deployments Teach Us About Governance and Scale",
+  "speakers": [
+    {"name": "Chenxi Wang", "affiliation": "General Partner, Rain Capital"},
+    {"name": "Jasmine Jaksic", "affiliation": "Senior Director of Engineering, NVIDIA"}
+  ],
+  "format": "talk",
+  "duration_min": 28,
+  "thesis": "The main barrier to scaled agentic AI is the absence of a mature enterprise control plane for agent identity, authorization, observability and accountability, and production readiness has to be earned separately at the advise, assist, act and platform levels because failures change as authority grows.",
+  "summary": "The talk has two halves. Chenxi Wang reports an interview study of agent deployments: she spoke to almost 50 companies, about 32 in depth, grouped on a slide as 5 AI-native, 14 AI-forward and 13 AI-conservative. Regulated firms mostly stay at copilots, one proprietary on-prem stack aside; all firms report throughput gains without workforce cuts; between March and September the maturity curve shifted from copilot and summarizing toward execution within limits, with a few at full autonomy; AI-native firms say they underspend on tokens while conservative ones restrict spend. The most successful use cases are bounded, high-volume, repeatable, auditable and reversible, with code generation, customer service and productivity leading. She argues long-horizon tasks such as penetration testing are the frontier, that trust and governance is the number one barrier, and that a control plane is what is missing. Jasmine Jaksic then walks through NVIDIA agents by authority level. An advise-level bug tracking assistant scored 83 percent on an easy test, 50 percent on a representative set, then 82 percent after fixes. An assist-level personal assistant lost track of completed tasks across channels, a context and state problem rather than a model one. A platform failure saw a fail-closed admission webhook and Argo CD self-heal deadlock a cluster. For act-level agents she shows a per-action authorization design, Nomos: petition, screen, council of three AI reviewers, and a signed time-limited writ. A short Q&A probes LLM judges.",
+  "argument": [
+    "Real enterprise agent deployments are concentrated in bounded, high-volume, repeatable, auditable and reversible work, and regulation and culture hold regulated firms at copilots.",
+    "Enterprises are moving along an autonomy spectrum from copilot toward execution within limits, and long-horizon tasks such as penetration testing are the frontier.",
+    "Trust and governance is now the top barrier to autonomy, and what is missing is a mature control plane for agent identity, authorization, control, observability and accountability.",
+    "As an agent's authority grows from advise to assist to act, its failure mode changes from wrong recommendation to broken workflow to unintended impact, so controls must grow with authority.",
+    "Demo and benchmark success misleads: evals must reflect real task difficulty, assistants need context, state and memory rather than a better model, and platform controls can fail in ways no model test reveals.",
+    "Permission is not authorization: authorize each exact action against its target and context, using a deterministic screen and independent reviewers, and recognize that production readiness is earned at every level."
+  ],
+  "claims": [
+    {"claim": "The study covered 32 companies in depth (5 AI-native, 14 AI-forward, 13 AI-conservative), from nearly 50 interviewed.", "evidence": "Bar chart of companies grouped by AI adoption; speaker said interviews numbered almost 50, about 32 comprehensive.", "grade": "measured", "t": "01:08", "source": "both"},
+    {"claim": "In regulated industries very few companies go beyond copilots, and only one of those spoken to is building a proprietary on-prem AI stack, because there is no good actuarial model to assess AI model risk.", "evidence": "Quadrant scatter of regulated versus non-regulated against AI-forward versus AI-conservative; the speaker noted her data set is small.", "grade": "measured", "t": "01:39", "source": "both"},
+    {"claim": "All companies interviewed report improved throughput rather than reduced workforce.", "evidence": "Stated from the interviews; slide reads 'Most companies: improved throughput more than reduction of workforce' while the speaker said all 32.", "grade": "measured", "t": "02:40", "source": "both"},
+    {"claim": "Between March and September enterprise agent maturity shifted from copilot and summary drafting toward execution within limits, with a few at full autonomy.", "evidence": "Two-snapshot curve over a six-step ladder (copilot, summary draft, execution with approval, execution within limits, full autonomy in limited scenarios, full autonomy); no counts shown.", "grade": "measured", "t": "03:11", "source": "both"},
+    {"claim": "AI-native companies say, without exception, that they are not spending enough on tokens, while AI-conservative companies restrict token use, and the gap is widening.", "evidence": "Interview observation; slide states the contrast without numbers.", "grade": "anecdote", "t": "03:43", "source": "both"},
+    {"claim": "The most successful agent use cases are bounded, high-volume, repeatable, auditable and reversible; code generation, customer service and productivity are the top three.", "evidence": "Interview findings; a software engineering workflow (reproduce bug, propose fix, run tests, open PR, review, merge) is given as the example with defined access, measured outcomes, escalation path and reversibility.", "grade": "case", "t": "04:15", "source": "both"},
+    {"claim": "A bug tracking assistant scored 83 percent on an initial easy benchmark but 50 percent on a representative test set, and reached 82 percent after fixes.", "evidence": "NVIDIA internal tool; users asked ambiguous questions and used filters in unexpected ways. Slide gives 83%, 50% and 82% and the launch gate 'manual review + staged rollout'.", "grade": "measured", "t": "13:31", "source": "both"},
+    {"claim": "A personal assistant agent kept reminding users of tasks already completed in another channel, a context and state failure that swapping models or prompt tuning would not fix.", "evidence": "Production feedback from NVIDIA users; request in one Teams channel, completion in another, still marked open.", "grade": "case", "t": "17:39", "source": "both"},
+    {"claim": "Evaluating an assist-stage agent requires synthetic employee worlds full of noise rather than isolated question-and-answer pairs.", "evidence": "NVIDIA's chosen approach after the assistant's failures; no results shown.", "grade": "assertion", "t": "19:11", "source": "said"},
+    {"claim": "A fail-closed Kubernetes mutating admission webhook for runtime security caused a cluster-wide deadlock: webhook pods could not start, new pods were rejected, and Argo CD self-heal undid manual disabling of the webhook.", "evidence": "Specific incident in NVIDIA's internal AI factory bring-up on OpenShift; slide shows webhook pods 0 running, failurePolicy Fail, Argo CD selfHeal true.", "grade": "case", "t": "20:42", "source": "both"},
+    {"claim": "The same helm rollback command with the same permissions should be approved mid-incident and denied the next day, so authorization must be decided per action using context.", "evidence": "Worked example on a slide: helm rollback api 3 -n prod, Monday mid-incident approve, Tuesday 14:00 deny because revision 3 is older than yesterday's fix.", "grade": "case", "t": "23:22", "source": "both"},
+    {"claim": "Nomos routes each agent action through petition, a deterministic screen, a council of three AI reviewers and a signed writ valid for 30 seconds to 5 minutes.", "evidence": "Architecture slide and description of an open-source applied research project; no effectiveness data given.", "grade": "demo", "t": "24:23", "source": "both"},
+    {"claim": "On the personal assistant project, the ratio of lines of AI-generated capability code to governance code was 10 to one.", "evidence": "Stated by the speaker as an internal count; direction of the ratio is ambiguous in the transcript.", "grade": "anecdote", "t": "25:25", "source": "said"}
+  ],
+  "numbers": [
+    {"figure": "32", "meaning": "companies in the comprehensive part of the study (slide counts 5 + 14 + 13)", "t": "01:08"},
+    {"figure": "5 / 14 / 13", "meaning": "AI-native, AI-forward and AI-conservative companies", "t": "01:08"},
+    {"figure": "almost 50", "meaning": "companies interviewed in total", "t": "00:37"},
+    {"figure": "1", "meaning": "regulated-industry company found building a proprietary on-prem AI stack", "t": "01:39"},
+    {"figure": "83%", "meaning": "bug tracking assistant accuracy on the initial easier test", "t": "13:31"},
+    {"figure": "50%", "meaning": "same assistant on the representative test set (baseline)", "t": "14:32"},
+    {"figure": "82%", "meaning": "accuracy after fixes on the representative set", "t": "15:03"},
+    {"figure": "3", "meaning": "AI reviewers in the Nomos council", "t": "24:23"},
+    {"figure": "30 s to 5 min", "meaning": "validity window of a Nomos signed writ for one command (slide)", "t": "24:23"},
+    {"figure": "10 to 1", "meaning": "ratio of AI-generated capability lines of code to governance lines on the personal assistant", "t": "25:55"}
+  ],
+  "frameworks": [
+    {"name": "Maturity in enterprise agentic computing", "description": "Six steps: copilot, summary draft, execution with approval, execution within limits, full autonomy in limited scenarios, full autonomy. The slide overlays March and September distributions."},
+    {"name": "Adoption quadrants", "description": "AI-forward versus AI-conservative against regulated versus non-regulated: regulated and conservative is copilots only; non-regulated and conservative is copilots dominant with small experiments; non-regulated and forward is extensive agentic computing and proprietary stacks; one regulated and forward company builds a proprietary on-prem stack."},
+    {"name": "Long-horizon task shape", "description": "Set a goal, formulate a plan, coordinate multiple actors, persist through time, delays and exceptions, adapt to failures and new information, verify the outcome, maintain accountability and evidence."},
+    {"name": "Penetration testing as a long-horizon task", "description": "Seven traits: objective and constraints (open goal, constraint envelope, termination criteria); dynamic environment (partial observability); planning and control (hierarchical, explore versus exploit); memory and state; feedback and evaluation (sparse, delayed rewards); human collaboration (checkpoints, escalation); artifact-oriented deliverable (evidence-backed report with retest)."},
+    {"name": "Trust is about owning the control plane", "description": "Six components: alignment (agent stays in bounds and asks when unsure), least-privilege authority, enforced containment, observability, approval gates, and kill, reverse and audit."},
+    {"name": "Advise, assist, act", "description": "Authority levels with their characteristic failures: advise gives a wrong recommendation, assist yields a broken workflow, act causes unintended impact; controls had to grow with authority. Platform failures sit beneath all three."},
+    {"name": "Production is earned", "description": "Advise: evaluate the real task. Assist: operate the whole workflow. Act: authorize every action. Platform: test how the platform fails."},
+    {"name": "Nomos authorization flow", "description": "Petition (agent submits command, reason and evidence), Screen (identity, scope and policy checks, no model involved), Council (three AI reviewers check intent, target and blast radius, with feedback to the agent to avoid reward hacking), Writ (signed approval for one command, valid 30 seconds to 5 minutes)."}
+  ],
+  "artifacts": [
+    {"name": "Nomos", "kind": "repo", "note": "NVIDIA applied research project for per-action agent authorization with a petition, screen, council and signed writ; presented as open source.", "url": "github.com/NVIDIA/Nomos"},
+    {"name": "Bug tracking assistant (NVIDIA internal)", "kind": "tool", "note": "Advise-level internal tool with AI search and similar-bug lookup; used as the benchmark-realism case.", "url": ""},
+    {"name": "Personal assistant (NVIDIA internal)", "kind": "tool", "note": "Assist-level agent that prioritizes daily tasks across Teams, Slack and email and drafts actions; used as the context and state case.", "url": ""},
+    {"name": "Argo CD", "kind": "tool", "note": "GitOps controller whose self-heal setting re-enabled the failing webhook during the platform deadlock.", "url": ""}
+  ],
+  "slide_only": [
+    "Title slide dated October 29, 2026, Stage 1.",
+    "Companies Interviewed bar chart values: AI-native 5, AI-forward 14, AI-conservative 13.",
+    "Adoption quadrant labels: one white dot in regulated and AI-forward 'Building a proprietary AI stack on premises'; red dots 'Co-pilots only'; blue dots 'Extensive agentic computing, building proprietary AI stack and applications'; orange dots 'Co-pilots dominate, small-scale experiments of agentic computing'.",
+    "Slide: 'The question is no longer whether agents will act. It is where, under whose authority, and with what controls.'",
+    "Control plane slide marks Alignment, Least-Privilege Authority and Kill, Reverse and Audit in green and Enforced Containment, Observability and Approval Gates in purple.",
+    "Conclusion slide: the greatest barrier to scaled agentic adoption is the absence of a mature enterprise control plane for agent identity, authorization, control, observability and accountability.",
+    "Platform slide chain with config values: webhook pods: 0 running, failurePolicy: Fail, Argo CD selfHeal: true; tagline 'The model never ran'; fix 'dependency health + tested recovery path'.",
+    "Bug tracking slide: 'The drop was progress' and 'Launch gate: manual review + staged rollout'.",
+    "Personal assistant slide: good at recovering work people would miss, not ready for deciding priority or completion; 'Missing context looked like bad judgment'.",
+    "Helm rollback slide: Monday mid-incident, revision 3 is the last good release, APPROVE; Tuesday 14:00, revision 3 is older than yesterday's fix, DENY; 'Same command, same permissions, different verdict'.",
+    "Final slide is the conference Q&A card with QR codes for agenda, Slack and baseball cards."
+  ],
+  "demos": [],
+  "quotes": [
+    {"text": "The greatest barrier to scaled agentic computing today is a good robust control plane.", "speaker": "Chenxi Wang", "t": "07:24"},
+    {"text": "A safeguard that is in the normal operation when it's also in the recovery path, that is a recipe for disaster.", "speaker": "Jasmine Jaksic", "t": "22:18"},
+    {"text": "The question has to be much more narrower: can this agent do this exact thing, against this target, given the context and given the specific constraints.", "speaker": "Jasmine Jaksic", "t": "23:22"},
+    {"text": "It's less useful to have great scores and you'll be better off having really important and critical data sets that point you to problems that you can actually use for hardening the agent.", "speaker": "Jasmine Jaksic", "t": "15:33"},
+    {"text": "Every single piece was working as intended, but collectively it was a cluster-wide deadlock.", "speaker": "Jasmine Jaksic", "t": "21:46"}
+  ],
+  "offense": [
+    "Assist-level agents lose state, reach the wrong approver, or confidently re-raise completed tasks when context spans several channels.",
+    "Act-level agents can deploy to the wrong environment or stop a rollout halfway and cause an outage.",
+    "A fail-closed security control (mutating admission webhook) in the recovery path becomes a single point of failure; a GitOps self-heal loop re-enables the broken control.",
+    "Agents may reward-hack an approval gate if rejections give no feedback; the Q&A also raised prompt injection reaching LLM judges in the council."
+  ],
+  "defense": [
+    "Define system access, escalation paths and measured outcomes for each agent use case, and route work touching crown jewels or customer data to human review.",
+    "Build eval sets from representative real queries, including ambiguous inputs, rather than clean question and answer pairs; evaluate assistants in synthetic noisy employee worlds.",
+    "Gate launches with manual review and staged rollout.",
+    "Model platform dependencies and controls as a graph, state whether each fails open or closed, and test the recovery path; do not put a safeguard in its own recovery path.",
+    "Authorize each concrete action against target, context and blast radius, not just a standing permission; use a deterministic screen first, independent reviewers after, and short-lived signed approvals per command.",
+    "Give a rejected agent feedback on how to correct course, and have agents submit certified evidence through a trusted executor.",
+    "Invest in the control plane gaps: containment, observability and approval gates identified by the study."
+  ],
+  "takeaways": [
+    "Pick first agent deployments by the study's filter: bounded, high-volume, repeatable, auditable, reversible, with a defined escalation path.",
+    "Rebuild agent evals from real, hard production queries before launch; expect the score to fall and treat the drop as a worklist.",
+    "Make authorization per action and context-aware rather than a static permission grant, with short-lived signed approval tokens.",
+    "Review security controls that fail closed, and test that the platform can recover without them; check for GitOps loops that re-enable a broken control.",
+    "Budget for governance code: NVIDIA's one data point puts it at a meaningful share of the work, whichever direction the 10 to one runs."
+  ],
+  "limits": [
+    "Chenxi Wang notes her data set is small, especially for regulated companies, and that findings change every few months.",
+    "Jasmine Jaksic says aggregate scores hide tail edge cases and that the 82 percent result remains an iterative process.",
+    "She says she simplified the council description for time and that the product deserves more detail than the talk gave.",
+    "The study findings are interview-based and the talk gives no sampling method."
+  ],
+  "critique": [
+    "The study half is interview-based; no sample selection method, instrument or counts behind the maturity curve were shown, so the March to September shift cannot be checked from the recording.",
+    "The sample size is inconsistent across sources: the transcript says almost 50 and 32, the slide totals 32, and the event description says 28 organizations.",
+    "The control plane conclusion is presented by a speaker who is a general partner at a venture capital firm; the slide color coding of which gaps are lacking is not tied to evidence shown.",
+    "The bug assistant example gives 83, 50 and 82 percent without the test size, scoring method or how the representative set was built.",
+    "No measured results, false positive or false negative rates, or analysis of prompt injection against the council were shown for Nomos; the Q&A answer was that multiple LLMs with different perspectives mitigate it, and no data supported that. The speaker said the council description was simplified for time and pointed to the repository.",
+    "The 10 to 1 ratio is stated without definitions, and the direction is unclear from the audio."
+  ],
+  "qa": [
+    "Question: the council uses LLMs as judges, which reintroduces probabilistic error and possible prompt injection through the council, so how do you avoid non-deterministic judge outcomes? Answer: the choice today is either to manually approve everything or to skip permissions and hope; multiple LLMs each look from a different perspective (one on command integrity, another on blast radius and whether rollback is possible), insufficient evidence sends the request back, and agents can submit certified evidence through a trusted executor so that it is not self-reported. She said the description was simplified and pointed to the open-source repo."
+  ],
+  "tags": ["agent-authz-identity", "guardrails-runtime-controls", "org-adoption-culture", "evals-benchmarks-metrics"],
+  "key_frames": [
+    {"file": "t00422.jpg", "caption": "Trust is about owning the control plane: six control components (alignment, least privilege, enforced containment, observability, approval gates, kill/reverse/audit) color-coded by maturity."},
+    {"file": "t00367.jpg", "caption": "Seven traits that make penetration testing a long-horizon agentic task, including memory and state, sparse delayed feedback and an evidence-backed deliverable."},
+    {"file": "t00795.jpg", "caption": "Bug tracking assistant results: 83 percent on the easy test, 50 percent on a representative set, 82 percent after fixes."},
+    {"file": "t01206.jpg", "caption": "Admission webhook deadlock chain with the config values that caused it and the stated fix."},
+    {"file": "t01454.jpg", "caption": "Nomos per-action authorization flow: petition, screen, council of three reviewers, signed writ valid 30 seconds to 5 minutes."}
+  ],
+  "signal": {"score": 3, "reason": "An interview-based adoption snapshot with no sampling detail, production failure accounts with specific figures, and an open-source per-action authorization design presented without results."},
+  "caveats": [
+    "Sample size conflicts: transcript says almost 50 interviewed and 32 comprehensive, the slide chart totals 32 (5 + 14 + 13), and the description says 28 organizations; the slide figure was used.",
+    "Auto-captions render Chenxi as Chansi and Nomos as Normal; the slide spellings were used.",
+    "The speaker's remark about purple versus blue dots in the control plane slide does not match the slide, which uses green and purple; which components are lacking was not recorded.",
+    "The 10 to 1 code ratio direction (capability lines to governance lines) is ambiguous in the transcript.",
+    "Talk is cut off at the end for the Q&A due to time; the Q&A has one recorded question.",
+    "The Q&A slide shows a WiFi password; deliberately not recorded."
+  ]
+}

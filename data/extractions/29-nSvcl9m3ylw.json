@@ -1,0 +1,190 @@
+{
+  "nn": "29",
+  "id": "nSvcl9m3ylw",
+  "url": "https://www.youtube.com/watch?v=nSvcl9m3ylw",
+  "title": "Closing Remarks",
+  "speakers": [
+    {
+      "name": "Gadi Evron",
+      "affiliation": "CEO, Knostic; CFP Chair, [un]prompted (from the talk description)"
+    },
+    {
+      "name": "Sounil Yu",
+      "affiliation": "Describes himself as one of the key sponsors of the conference (surname from his stage badge, which reads Sounil Yu; the transcript spells the first name Sunil)"
+    },
+    {
+      "name": "John",
+      "affiliation": "Decibel (introduced by Sounil as being from Decibel; surname not confirmed)"
+    }
+  ],
+  "format": "closing",
+  "duration_min": 10,
+  "thesis": "With vulnerability discovery now easy for agents, community is what is left as the differentiator in security, and the conference's scholarship program is one concrete way to build it.",
+  "summary": "Gadi Evron closes the day before the debates and the AI hacker jeopardy game. He uses the conference capture-the-flag as a representation of what is happening in security: many in the CTF world said agents had killed CTFs, and the organizers instead built one that thrives because of AI. He says the participants found dozens of zero days in a couple of days across the Linux kernel and elsewhere, and says that in about three hours they reached what he believes were 24 confirmed Linux kernel vulnerabilities. His reading is that vulnerabilities are no longer the focus because they are easy to find, and that the conversation is moving to exploitation and to hiding vulnerabilities. He then turns personal: he does not know whether people will still have jobs, hopes so, and says that with code ephemeral and technology easy, humans and community are what is left as a moat. He asks attendees to seek each other out and to take AI back from the marketers. Sounil, a key sponsor, then explains the accessibility problem of an entry fee of about 500 dollars, or 850 if late, and thanks Decibel. John from Decibel describes the scholarship program: ten founder companies pooled 100,000 dollars, 25 senior practitioners formed the admissions committee, 150 applications were received and 85 accepted. He thanks the sponsors, notes that some recipients are already speakers, and the first [un]prompted scholarship class comes on stage for a photo.",
+  "argument": [
+    "The conference CTF shows that agents have revived rather than killed CTFs, and that agent-driven vulnerability discovery is now at scale.",
+    "Because vulnerabilities are now easy to find, the focus moves to exploitation, hiding vulnerabilities, and what to do next.",
+    "In a world where code is ephemeral and technology is easy, humans and community are what remain as a moat or differentiation.",
+    "The community should be accessible: the entry fee was a barrier, so a founder-funded scholarship brought in early-career people.",
+    "The takeaway for attendees is to seek each other out and to take AI back from the marketers."
+  ],
+  "claims": [
+    {
+      "claim": "Many in the CTF space declared CTFs dead because of agents, but the [un]prompted organizers created a CTF that is alive and kicking because of AI and engaged many people throughout the conference.",
+      "evidence": "Speaker's summary of the event; no participation data shown.",
+      "grade": "assertion",
+      "t": "00:38",
+      "source": "said"
+    },
+    {
+      "claim": "Participants found dozens of zero days in a couple of days in the Linux kernel and elsewhere.",
+      "evidence": "Speaker's statement; no list or advisory shown.",
+      "grade": "assertion",
+      "t": "01:09",
+      "source": "said"
+    },
+    {
+      "claim": "Within about three hours the CTF teams reached what the speaker believes were 24 confirmed Linux kernel vulnerabilities.",
+      "evidence": "Stated with 'I think'; no confirmation process or data shown.",
+      "grade": "assertion",
+      "t": "01:40",
+      "source": "said"
+    },
+    {
+      "claim": "Vulnerability discovery is no longer the hard part; the open questions are exploitation and concealing vulnerabilities.",
+      "evidence": "Speaker's inference from the CTF results and organizers' ideas.",
+      "grade": "assertion",
+      "t": "01:40",
+      "source": "said"
+    },
+    {
+      "claim": "Humans and community are what is left as the moat because code is ephemeral and generated on the fly.",
+      "evidence": "Opinion; the speaker says he does not know whether people will still have jobs and hopes technology serves us.",
+      "grade": "assertion",
+      "t": "03:44",
+      "source": "said"
+    },
+    {
+      "claim": "The registration fee of about 500 dollars, or 850 for late registration, is a barrier for people without a full-time job.",
+      "evidence": "Stated by Sounil as a key sponsor whose budget backstops the conference.",
+      "grade": "assertion",
+      "t": "04:45",
+      "source": "said"
+    },
+    {
+      "claim": "A scholarship program funded by ten founder companies at 100,000 dollars received 150 applications, accepted 85, with 25 senior practitioners as the admissions committee.",
+      "evidence": "Program figures given by John (Decibel); first scholarship class brought on stage.",
+      "grade": "case",
+      "t": "07:21",
+      "source": "said"
+    }
+  ],
+  "numbers": [
+    {
+      "figure": "24",
+      "meaning": "confirmed Linux kernel vulnerabilities reached by CTF participants within about 3 hours, as recalled by the speaker",
+      "t": "01:40"
+    },
+    {
+      "figure": "dozens",
+      "meaning": "zero days found by CTF participants over a couple of days",
+      "t": "01:09"
+    },
+    {
+      "figure": "$500 / $850",
+      "meaning": "registration fee and the late-registration fee",
+      "t": "04:45"
+    },
+    {
+      "figure": "$100,000",
+      "meaning": "scholarship program funding from ten founder companies, coordinated by Decibel",
+      "t": "05:49"
+    },
+    {
+      "figure": "10",
+      "meaning": "founder companies funding the scholarship",
+      "t": "07:21"
+    },
+    {
+      "figure": "25",
+      "meaning": "senior practitioners on the scholarship admissions committee",
+      "t": "07:54"
+    },
+    {
+      "figure": "150 / 85",
+      "meaning": "scholarship applications received and accepted",
+      "t": "07:54"
+    }
+  ],
+  "frameworks": [],
+  "artifacts": [],
+  "slide_only": [],
+  "demos": [],
+  "quotes": [
+    {
+      "text": "The vulnerability is no longer the focus. The vulnerability is now easy to find. What's next?",
+      "speaker": "Gadi Evron",
+      "t": "01:40"
+    },
+    {
+      "text": "Humans are what's left. Community is truly what's left as our moat or differentiation.",
+      "speaker": "Gadi Evron",
+      "t": "04:15"
+    },
+    {
+      "text": "Let's take AI back from the marketers.",
+      "speaker": "Gadi Evron",
+      "t": "04:45"
+    }
+  ],
+  "offense": [],
+  "defense": [],
+  "takeaways": [
+    "Plan on vulnerability discovery by agents being cheap and fast; the speaker's own CTF anecdote claims dozens of kernel and other zero days in a couple of days, so shift staffing and process toward triage, exploitability assessment and remediation.",
+    "Invest in community and relationships with practitioners as a differentiator that AI does not replicate.",
+    "Consider sponsoring or building early-career pathways: this program funded 85 accepted applicants from 150 with 100,000 dollars from ten companies.",
+    "Treat the 24-in-three-hours kernel figure as an indicator to verify against the published CTF results before using it in internal planning."
+  ],
+  "limits": [
+    "The speaker prefaces the 24 confirmed kernel vulnerabilities with 'I think' and does not know whether people will still have jobs.",
+    "He said he did not have his remarks fully prepared."
+  ],
+  "critique": [
+    "This is a closing session with conference announcements and presents no method; the CTF vulnerability counts were given without sources and with hedging, and what counted as a confirmed vulnerability was not defined.",
+    "The statement that vulnerabilities are no longer the focus is drawn from one CTF, and the talk does not address the day-to-day cost of remediation for most enterprises.",
+    "The 'take AI back from the marketers' line is a rhetorical statement offered without evidence. Gadi Evron is CEO of Knostic, a security vendor, and the sponsor and scholarship segment names the sponsoring companies."
+  ],
+  "qa": [],
+  "tags": [
+    "org-adoption-culture",
+    "vuln-discovery-exploit"
+  ],
+  "key_frames": [
+    {
+      "file": "t00009.jpg",
+      "caption": "Opening welcome slide with the conference sponsor wall: Knostic and Tachtech as supporting organizers; Censys, Ent, WorkOS and Decibel as anchor sponsors; plus partner and community-partner logos."
+    },
+    {
+      "file": "t00171.jpg",
+      "caption": "Gadi Evron on stage delivering the closing remarks on the CTF results and community as the remaining moat."
+    },
+    {
+      "file": "t00252.jpg",
+      "caption": "Sounil Yu on stage, badge legible, explaining the entry-fee barrier before the scholarship segment."
+    },
+    {
+      "file": "t00494.jpg",
+      "caption": "The first [un]prompted scholarship class on stage for the group photo."
+    }
+  ],
+  "signal": {
+    "score": 1,
+    "reason": "A short closing session with a CTF anecdote given without sources, scholarship program figures and conference logistics, and no technical method."
+  },
+  "caveats": [
+    "Almost camera-only: the only slide is the opening welcome and sponsor slide (t00009.jpg); the rest are stage shots.",
+    "The founder companies funding the scholarship are garbled in the transcript (census, Dropzone, Malory, Pixie, Nebulok, Sandera, SpecterOps, Sublime) and could not be confirmed; ten founders were said but only eight names appear.",
+    "The speaker names are partly garbled: the transcript spells Sounil Yu as Sunil or Seneil; his stage badge reads Sounil Yu. John's surname on his badge was not legible; the CTF organizers are given as Jenny, Ad and Tim and the transcript may be incomplete.",
+    "The tail of the transcript includes unnamed participants and a group photo with no speech content."
+  ]
+}

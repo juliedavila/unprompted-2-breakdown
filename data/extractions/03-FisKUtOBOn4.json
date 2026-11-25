@@ -1,0 +1,95 @@
+{
+  "nn": "03",
+  "id": "FisKUtOBOn4",
+  "url": "https://www.youtube.com/watch?v=FisKUtOBOn4",
+  "title": "Lightning Talk - Badge",
+  "speakers": [{"name": "Aaron Peterson", "affiliation": "Project Mammoth"}],
+  "format": "lightning",
+  "duration_min": 8,
+  "thesis": "Badgey is a hand-built, AI-driven conference badge robot, and the speaker reverse engineered what it runs and admits it is not hardened and could be talked into almost anything.",
+  "summary": "Aaron Peterson wears Badgey, a conference-badge robot made from salvaged badges with a large eye, camera, e-ink display, a sticker-dispensing arm and a voice assistant that knows the conference schedule. After a short scripted greeting from the badge, he explains the origin story: a pile of old electronic conference badges that, in his telling, got too close to some AI and became Badgey. Badgey does hacker trivia, knows Phrack and DEF CON material, hands out stickers when waved at, and can explore by taking a picture when a button is held, after which the human carrier walks it toward whatever it noticed. Peterson frames the talk as reverse engineering, because he had to find out what Badgey could do. The hardware is a Raspberry Pi for local voice processing and other local services, a custom PCB with a Raspberry Pi Pico for motors and lights, a camera, an e-ink display, lights, buttons and the arm. The PCB was designed and ordered with EasyEDA and JLCPCB. Inside it runs 18 local Docker services, including an MQTT broker, Whisper and Piper for speech, face tracking, a voice handler and a Hermes agent. Local inference takes two to three minutes, so it spends cloud tokens when available. A fed-AI feature lets attendees scan a phone to be assimilated and receive a random number, with a counter shown at 309 AIs assimilated. He says Badgey has no disk encryption and no hardening, so it will stay off the MeshCore network for now. Future wishes are wheels and fully local inference.",
+  "argument": [
+    "Conference badges have become electronic and, combined with AI, can become interactive agents.",
+    "Reverse engineering the device shows a local stack of Raspberry Pi, Pico, camera, e-ink and 18 Docker services around a Hermes agent.",
+    "Local inference is too slow to use directly, so the badge relies on cloud tokens when it has budget.",
+    "The device is not security hardened and could likely be convinced to do almost anything, so it is kept off the mesh network."
+  ],
+  "claims": [
+    {"claim": "Badgey runs 18 local Docker services including an MQTT broker (mosquitto), Whisper for speech to text, Piper for text to speech, servo control, face and wave tracking, status monitoring, a voice handler, a Hermes persona agent, a display handler, random look and button handling.", "evidence": "Service list shown on the Badgey From the Inside slide.", "grade": "demo", "t": "04:26", "source": "both"},
+    {"claim": "The device has no local disk encryption, which made it easy to reverse engineer what was on disk.", "evidence": "Speaker's own account of inspecting the device.", "grade": "case", "t": "04:26", "source": "said"},
+    {"claim": "Local inference works but takes two to three minutes per response, so Badgey uses cloud inference when it has token budget.", "evidence": "Speaker's own observation; slide notes that local inference is slow.", "grade": "case", "t": "04:26", "source": "both"},
+    {"claim": "Hardware includes a Raspberry Pi for local voice processing and services, a custom PCB with a Raspberry Pi Pico for motors and lights, a camera, an e-ink display and a sticker-handing arm.", "evidence": "Shown and described on the person wearing the badge and on the Reverse Engineering Time slide.", "grade": "demo", "t": "03:20", "source": "both"},
+    {"claim": "Badgey is not hardened at all, and the speaker believes almost anyone could convince it to do just about anything, so he has not exposed it on MeshCore.", "evidence": "Speaker's belief; no test shown.", "grade": "assertion", "t": "06:30", "source": "said"},
+    {"claim": "Badgey is not trusted for cryptography: its assimilation page hands out a bespoke random number marked as unsuitable for cryptographic usage.", "evidence": "Slide of the assimilation page and the speaker's remark.", "grade": "demo", "t": "05:28", "source": "both"},
+    {"claim": "A website counter showed 309 AIs assimilated, from phones scanned at the badge's do-not-feed-me-AI label.", "evidence": "Screenshot of the assimilation page showing 309 AIS ASSIMILATED.", "grade": "case", "t": "05:28", "source": "slide"},
+    {"claim": "Badgey hands out stickers, does hacker trivia, knows the conference schedule and takes a photo on a long button press to decide what to explore.", "evidence": "Described by the speaker and shown in a short scripted demo at the start.", "grade": "demo", "t": "02:17", "source": "said"}
+  ],
+  "numbers": [
+    {"figure": "18", "meaning": "local Docker services running on Badgey", "t": "04:26"},
+    {"figure": "2 to 3 minutes", "meaning": "time local inference takes, per speaker", "t": "04:26"},
+    {"figure": "309", "meaning": "AIs assimilated, as shown on the assimilation page screenshot", "t": "05:28"},
+    {"figure": "3", "meaning": "red flashes of the badge light before it takes a picture on a long button press", "t": "02:17"}
+  ],
+  "frameworks": [],
+  "artifacts": [
+    {"name": "Badgey", "kind": "product", "note": "Hand-built AI conference badge robot with a Raspberry Pi, a Pico on a custom PCB, camera, e-ink display, sticker arm and a Hermes agent.", "url": ""},
+    {"name": "Hermes Agent", "kind": "tool", "note": "Agent framework running locally on Badgey, controlling persona, schedules and trivia (service hermes_badgey).", "url": ""},
+    {"name": "Whisper and Piper", "kind": "tool", "note": "Local speech to text and text to speech services on the badge.", "url": ""},
+    {"name": "Mosquitto", "kind": "tool", "note": "MQTT broker used for messaging between Badgey's local services.", "url": ""},
+    {"name": "Project Mammoth", "kind": "product", "note": "The speaker and siblings' art, music, technology and hacking project.", "url": "projectmammoth.com"},
+    {"name": "dc415", "kind": "product", "note": "Local DEF CON group plugged at the end of the talk.", "url": "dc415.net"}
+  ],
+  "slide_only": [
+    "Reverse Engineering Time slide shows a labeled top-down photo of Badgey with Brain and Eye status displays, a large green eye, a handset-like part, a camera and a green circuit board.",
+    "Badgey From the Inside: 18 Local docker services, Hermes Agent, Local inference is slow. Services listed: mosquitto MQTT broker; whisper speech to text; piper text to speech; servo_control motor and lights control; facetrack face and wave detection; statusmon system health and status light; voice_handler runs each voice conversation (listen, ask, speak); hermes_badgey persona, schedules, trivia; display_handler e-ink display; random_look default random looking; button_handler handles button presses.",
+    "Assimilation page: 309 AIS ASSIMILATED, text says the AI has been assimilated into the collective and gifts a bespoke random number, with a note that the number is unsuitable for cryptographic usage.",
+    "Closing slide lists projectmammoth.com with Twitter @prjctmammoth, Instagram @project_mammoth and Spotify project mammoth, plus dc415.net.",
+    "Slide numbering shows a 16-slide deck."
+  ],
+  "demos": [
+    "Badgey introduces itself in a scripted voice, then answers a request to say hi to the conference, showing the voice assistant and persona.",
+    "The assimilation page, reached by putting a phone to the badge, is shown on a slide as a screenshot.",
+    "The speaker describes the long-press picture feature but does not run it on stage."
+  ],
+  "quotes": [
+    {"text": "He's not hardened at all security wise and I'm pretty sure anybody could convince him to do just about anything.", "speaker": "Aaron Peterson", "t": "06:30"},
+    {"text": "Luckily Badgey is still learning at security. Didn't have local disk encryption, so it was super easy to reverse engineer what was on disk.", "speaker": "Aaron Peterson", "t": "04:26"}
+  ],
+  "offense": [
+    "The badge has no disk encryption, so its local data was easy to read.",
+    "The badge could likely be socially engineered by anyone talking to it, according to the speaker.",
+    "An AI-feeding page invites people to point their phone at the device and submit their AI to it."
+  ],
+  "defense": [
+    "The speaker has not exposed Badgey on MeshCore until it is security hardened.",
+    "The random number it hands out is labeled unsuitable for cryptographic use."
+  ],
+  "takeaways": [
+    "Treat hobby agents with microphones, cameras and network links as unhardened by default, and keep them off shared networks until tested.",
+    "Enable disk encryption on any embedded agent device that holds prompts, personas or credentials.",
+    "Expect a voice-driven agent in a public place to be persuadable, and limit what it can do or reach."
+  ],
+  "limits": [
+    "Local inference is too slow to use directly, taking two to three minutes.",
+    "The device is not hardened and has not been exposed to a wider audience.",
+    "The speaker says he does not know what comes next and depends on how much people feed it."
+  ],
+  "critique": [
+    "The talk presents a hobby project rather than a security study; the claim that anyone could convince Badgey to do anything is stated without a test.",
+    "The talk uses reverse engineering to mean inventorying what the badge runs; the slides list the services but show no attack, finding or method beyond noting that the disk is not encrypted.",
+    "The 309 assimilations figure is a participation counter and does not describe the badge's behavior or security."
+  ],
+  "qa": [],
+  "tags": ["sandboxing-isolation", "mcp-tools-skills"],
+  "key_frames": [
+    {"file": "t00279.jpg", "caption": "Badgey From the Inside: 18 local Docker services around a Hermes agent, with the full service list."},
+    {"file": "t00199.jpg", "caption": "Annotated hardware photo of the badge for the reverse-engineering section."}
+  ],
+  "signal": {"score": 1, "reason": "A short hobby-project demo with a brief statement that the badge has no hardening or disk encryption and no security measurements shown."},
+  "caveats": [
+    "meta.json lists this talk as camera-only, but the frames include slides; the slides were used.",
+    "Auto-captions spell the badge Badji and call it Ascension; the slides spell it Badgey, and the transcript line made from decades of conference scrap is kept as said.",
+    "The speaker said DC 405 second Thursday at Noisebridge; the closing slide says dc415.net, so the slide is used and the spoken group number is probably a transcription slip or misstatement.",
+    "The speaker's reference to numbers for encryption last week is not explained in the talk."
+  ]
+}
