@@ -83,7 +83,7 @@ function talk(r: Rec): string {
     ${claims ? `<h4>Claims and evidence</h4><div class="table-wrap"><table><thead><tr><th scope="col">Claim</th><th scope="col">Evidence shown</th><th scope="col">Grade</th><th scope="col">At</th></tr></thead><tbody>${claims}</tbody></table></div>` : ""}
     ${frames ? `<h4>Key slides</h4><div class="slides">${frames}</div>` : ""}
     ${numbers ? `<h4>Numbers</h4><div class="table-wrap"><table><thead><tr><th scope="col">Figure</th><th scope="col">What it measures</th><th scope="col">At</th></tr></thead><tbody>${numbers}</tbody></table></div>` : ""}
-    ${rest ? `<details class="record"><summary>The full record: argument, frameworks, tools, attacks, defenses, demos, quotes, Q&amp;A, caveats</summary><div class="body">${rest}</div></details>` : ""}
+    ${rest ? `<details class="record"><summary>The full record: argument, frameworks, tools, attacks, defenses, demos, quotes, Q&amp;A, notes</summary><div class="body">${rest}</div></details>` : ""}
   </div></details>
 </article>`;
 }
@@ -122,7 +122,7 @@ function evidenceBar(): string {
   const W = 760, x0 = 10, w = W - 20, u = w / nCl; let x = x0;
   const cls: Record<string, string> = { measured: "eb-m", demo: "eb-s", case: "eb-s", anecdote: "eb-u", assertion: "eb-u" };
   const segs = GRADES.map((k) => { const sw = g[k] * u, cx = x + sw / 2; const out = `<rect class="${cls[k]}" x="${x.toFixed(1)}" y="12" width="${(sw - 2).toFixed(1)}" height="34"/><text class="c-label" x="${cx.toFixed(1)}" y="68" text-anchor="middle">${GRADE_LABEL[k]}</text><text class="c-tick" x="${cx.toFixed(1)}" y="86" text-anchor="middle">${g[k]} · ${pct(g[k])}%</text>`; x += sw; return out; }).join("");
-  return `<figure><div class="figure-frame"><svg viewBox="0 0 ${W} 96" style="--fig-min: ${W}px" role="img" aria-labelledby="evb-t evb-d" xmlns="http://www.w3.org/2000/svg"><title id="evb-t">All ${nCl} claims by the evidence shown</title><desc id="evb-d">${GRADES.map((k) => `${GRADE_LABEL[k]} ${g[k]}`).join("; ")}.</desc>${segs}</svg></div><figcaption><strong>Three claims in ten came with the speaker's own measurements, and nearly as many were stated with no evidence shown in the talk.</strong> All ${nCl} recorded claims, by the evidence the talk showed for each. Measured means the speaker's own data or experiment. A case is a specific real incident or deployment. An assertion was stated without support.</figcaption></figure>`;
+  return `<figure><div class="figure-frame"><svg viewBox="0 0 ${W} 96" style="--fig-min: ${W}px" role="img" aria-labelledby="evb-t evb-d" xmlns="http://www.w3.org/2000/svg"><title id="evb-t">All ${nCl} claims by the evidence shown</title><desc id="evb-d">${GRADES.map((k) => `${GRADE_LABEL[k]} ${g[k]}`).join("; ")}.</desc>${segs}</svg></div><figcaption><strong>Three claims in ten came with the speaker's own measurements, and nearly as many were stated with no evidence shown in the talk.</strong> All ${nCl.toLocaleString("en-US")} recorded claims, by the evidence the talk showed for each. Measured means the speaker's own data or experiment. A demo was shown working. A case is a specific real incident or deployment. An anecdote is a story without checkable detail. An assertion was stated without support in the talk.</figcaption></figure>`;
 }
 const sub: Record<string, string> = { CLAIMS: String(nCl), SESSIONS: String(recs.length), TOP: String(top), NO_MEASURED: words[noM] ?? String(noM), EVIDENCE_BAR: evidenceBar() };
 const fill = (s: string) => s.replace(/\{\{(\w+)\}\}/g, (_, k) => sub[k] ?? `[missing ${k}]`);
@@ -193,8 +193,8 @@ ${extra}
   <header class="masthead">
     <div class="kicker">Conference breakdown · [un]prompted 2, October 2026</div>
     <h1>What [un]prompted 2 claimed, and what backed it</h1>
-    <p class="dek">Every available session of the AI security practitioner conference, broken down from its recording: the thesis, each claim with the evidence shown, the numbers, the slides and an assessment.</p>
-    <div class="meta"><span>${recs.length} sessions</span><span>${Math.round(totalMin / 60)} hours of video</span><span>${nCl} graded claims</span><span>${imgCount} slides</span><span>Records written by an AI model from the recordings, 25 Nov 2026; see <a href="#method">Method</a></span></div>
+    <p class="dek">${recs.length} of the 89 available sessions of the AI security practitioner conference, each broken down from its recording: the thesis, each claim with the evidence shown, the numbers, the slides and an assessment.</p>
+    <div class="meta"><span>${recs.length} sessions</span><span>${Math.round(totalMin / 60)} hours of video</span><span>${nCl.toLocaleString("en-US")} graded claims</span><span>${imgCount} slides</span><span>Records written by an AI model from the recordings, 25 Nov 2026; see <a href="#method">Method</a></span></div>
   </header>
   <main>
     <div class="with-toc">
@@ -220,8 +220,8 @@ ${extra}
           <div class="chips" role="group" aria-label="Topic">${tagChips}</div>
         </div>
         <p class="legend"><strong>Signal</strong> is this breakdown's judgment of the evidence shown, from 5 (a new result with strong evidence) through 4 (specific and well evidenced), 3 (useful, lighter on evidence) and 2 (a position or overview talk) to 1 (an informal session, such as closing remarks or a show-and-tell). It rates how much checkable evidence the recording holds, and says nothing about the speaker or the work beyond the talk. <strong>Evidence bars</strong> count each talk's claims: <span class="key m"></span>measured by the speaker <span class="key s"></span>shown as a demo or a specific case <span class="key u"></span>anecdote or assertion.</p>
-        <p class="filter-sentence" id="talk-sentence" aria-live="polite">All ${recs.length} talks</p>
-        <p class="filter-empty" id="talk-empty" hidden>No talks match. Clear a filter to see more.</p>
+        <p class="filter-sentence" id="talk-sentence" aria-live="polite">All ${recs.length} sessions</p>
+        <p class="filter-empty" id="talk-empty" hidden>No sessions match. Clear a filter to see more.</p>
         <div class="table-wrap index-wrap wide"><table id="talk-index">
           <thead><tr><th scope="col"><button type="button" data-sort="nn" aria-sort="ascending">#</button></th><th scope="col"><button type="button" data-sort="title">Talk</button></th><th scope="col"><button type="button" data-sort="min">Min</button></th><th scope="col"><button type="button" data-sort="sig">Signal</button></th><th scope="col"><button type="button" data-sort="measured">Claims, by evidence shown</button></th></tr></thead>
           <tbody>${indexRows}</tbody>
@@ -254,7 +254,7 @@ ${extra}
     for (const r of rows) r.hidden = !ok(r);
     const parts = []; if (tag) parts.push(chips.find((c) => c.dataset.tag === tag).firstChild.textContent.trim());
     if (min > 1) parts.push("signal " + min + " and up"); if (words.length) parts.push('matching "' + q.value.trim() + '"');
-    sentence.textContent = parts.length ? n + " of " + talks.length + " talks: " + parts.join(", ") : "All " + talks.length + " talks";
+    sentence.textContent = parts.length ? n + " of " + talks.length + " sessions: " + parts.join(", ") : "All " + talks.length + " sessions";
     empty.hidden = n > 0;
   }
   function clear() { tag = ""; q.value = ""; sig.value = "1"; chips.forEach((x) => x.setAttribute("aria-pressed", "false")); apply(); }
@@ -280,6 +280,6 @@ writeFileSync(join(SITE, "index.html"), html);
   const i = html.indexOf('<div class="page">');
   const head = html.slice(0, i).replace('<meta name="claude:viewport-fit-sides" content="cover">\n', "");
   const pages = join(ROOT, "pages"); mkdirSync(pages, { recursive: true });
-  writeFileSync(join(pages, "index.html"), '<!doctype html>\n<html lang="en">\n<head>\n<meta charset="utf-8">\n<meta name="viewport" content="width=device-width, initial-scale=1">\n<meta name="description" content="Every available session of [un]prompted 2 (October 2026), broken down from its recording: thesis, claims graded by the evidence shown, numbers, slides and an assessment.">\n' + head + '</head>\n<body class="doc">\n' + html.slice(i) + '</body>\n</html>\n');
+  writeFileSync(join(pages, "index.html"), '<!doctype html>\n<html lang="en">\n<head>\n<meta charset="utf-8">\n<meta name="viewport" content="width=device-width, initial-scale=1">\n<meta name="description" content="87 of the 89 available sessions of [un]prompted 2 (October 2026), each broken down from its recording: thesis, claims graded by the evidence shown, numbers, slides and an assessment.">\n' + head + '</head>\n<body class="doc">\n' + html.slice(i) + '</body>\n</html>\n');
 }
 console.log(`built ${recs.length} talks, ${imgCount} images, ${(html.length / 1024).toFixed(0)} KB html, ${top} scored 4+, ${artCount} artifacts, ${nCl} claims`, JSON.stringify(g));
