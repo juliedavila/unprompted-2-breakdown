@@ -227,8 +227,8 @@
     "Start with the single riskiest model call rather than instrumenting everything."
   ],
   "takeaways": [
-    "Pick the model call that worries you most and wrap it with pre-inference commit plus chained records; their diff is under about ten lines for a simple app.",
-    "Reconcile provider usage or billing against your own call records; calls with no matching record are a detection signal for unrecorded or unauthorized use.",
+    "On one demo app's evidence, pick the model call that worries you most and wrap it with pre-inference commit plus chained records; the diff shown was under about ten lines for a simple app.",
+    "The talk did not test this, so check whether it works for you: reconcile provider usage or billing against your own call records, and treat calls with no matching record as a detection signal for unrecorded or unauthorized use.",
     "Decide where an external anchor hash will live before relying on the chain; without it, the log defeats only careless tampering, not a motivated adversary.",
     "If you need non-repudiation or attribution, do not rely on v1 records; plan for signing and identity binding.",
     "Weigh fingerprint-only storage against investigations: you keep privacy but must retain the original prompts elsewhere to re-verify commitments."
@@ -244,9 +244,7 @@
     "The demo shows tampering with a record that sits in a local folder next to the code that wrote it; an attacker with write access could recompute the chain, so tamper-evidence depends on the external anchor, which the talk described as manual and not yet specified. The speakers state this limit directly.",
     "The record is emitted by the application that calls the model, so it attests only to what that code chose to log. It does not show that the logged prompt is what reached the provider, or that unlogged calls did not happen, beyond the suggested billing reconciliation.",
     "The recording shows no data on adoption, performance cost, record size, behavior with streaming, tool calls or multi-agent flows, or independent review of the spec; the motivating burger example comes from a fictional TV episode.",
-    "The unverifiable-commitments result in the demo (three of three) means the pre-inference commitment, the feature that distinguishes PBOM from an ordinary hash-chained log, was not verified in fingerprint mode.",
-    "The published title and description cite the SBOM analogy and CI-runner supply chain attacks; the recording covers LLM call logging and does not develop the supply-chain process-integrity framing.",
-    "The approach is related to existing ideas (append-only audit logs, transparency logs, in-toto style attestations); a Q&A questioner named a similar specification and the speakers said they had only glanced at it."
+    "The unverifiable-commitments result in the demo (three of three) means the pre-inference commitment, the feature that distinguishes PBOM from an ordinary hash-chained log, was not verified in fingerprint mode."
   ],
   "qa": [
     "Questioner (name not clear): have you considered binding PBOM to the platform, the SBOM of the software in use, a future AI bill of materials, and identity, and are there root-of-trust anchors on platforms that give domain-specific anchoring? Answer: the roadmap extends it across the lifecycle with integration on the build or shift-left side and an identity piece; they want developer feedback, and the anchor question is still open because they want it accessible end to end; limited time since both work on it alongside their jobs.",
@@ -286,11 +284,11 @@
     "reason": "The talk presents a specification with a live demo and a limits slide, states that tamper-evidence relies on a manual external anchor, and shows no adoption or performance data."
   },
   "caveats": [
-    "Auto-captions render the tool as P-bomb and the other speaker as Kavya and Gil foil; slides confirm PBOM and Kavia Venkatesh.",
+    "The captions say P-bomb, Kavya and Gil foil; the slides say PBOM and Kavia Venkatesh, and this record uses the slides.",
     "Affiliations come from the published description (Visa, Cigna); the title slide says Product Security Leader and Product Security Architect, and the lower-third is partly cut off. The spec repository path on slides includes the name EqoAI; no affiliation with that organization was stated.",
-    "The transcript says the edit was GPT-3.5 to GPT-4; the excerpt on the slide shows openai/gpt-4o. The spoken line says 'thousands of pounds of raw meat' while the slide says 4,000 lbs.",
+    "The captions say the edit was GPT-3.5 to GPT-4; the slide excerpt shows openai/gpt-4o, and the summary and claims use the spoken form.",
+    "The captions say 'thousands of pounds of raw meat'; the slide says 4,000 lbs, and this record uses the slide.",
     "'Less than 24 lines' and 'less than 10 lines' are both said for the instrumentation size.",
-    "The similar spec referenced in Q&A (heard as 'CX-Bomb') and the 'shift zero' integration could not be confirmed from the captions.",
     "The validation FAIL output itself was not clearly shown in the recording; it is taken from the narration."
   ]
 }

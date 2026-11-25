@@ -7,7 +7,7 @@
   "format": "opening",
   "duration_min": 23,
   "thesis": "Security people should forecast by the trajectory of AI capability rather than by the history that shaped their narratives, and the conference exists to build the human network and the imagination needed to do that.",
-  "summary": "Gadi Evron opens the second [un]prompted conference of the year with conference logistics and an argument about what the community should take away. He starts with numbers (about 500 submitted talks, 1,000 in-person attendees, 800 or more online, 18 live workshops and 6 online workshops in beta) and thanks the committee, who had to review 500 talks when even the best were vibe coded. He then explains why researcher conferences are bad for networking, using Joe Stewart's old talk, and describes the countermeasures: oversized name tags, a vibe-coded baseball-card app where each attendee posts what they do, offer and need, Slack channels with a thread per talk, a deliberate handshake exercise, 20-minute talk slots, 30-second questions, shushers, and fans for calling out statements that are not questions. He covers the villages (CTF, harness, defense, art, with OpenAI sponsoring awards), a Telegram bot called Alex Bot that attendees try to social-engineer, a slop art contest, stickers, and the Phrack 40th anniversary issue, and thanks the sponsors. The last third is the substantive argument. Evron says industry narratives, such as the long-running insider-threat claim, lag the evidence, cites the 2026 Verizon Data Breach Investigations Report (DBIR) as showing vulnerabilities rather than phishing as the main entry point, recalls an October 2025 warning of a vulnerability cataclysm, and asks the audience to forecast by trajectory, not history. He closes by reading his Phrack essay, Our Greatest Hacks Are Yet to Come, which mourns skills now commoditized and chooses to adapt.",
+  "summary": "Gadi Evron opens the second [un]prompted conference of the year with conference logistics and an argument about what the community should take away. He starts with numbers (about 500 submitted talks, 1,000 in-person attendees, 800 or more online, 18 live workshops and 6 online workshops in beta) and thanks the committee, who he says had to review 500 talks when even the best were vibe coded. He then explains why researcher conferences are bad for networking, using Joe Stewart's old talk, and describes the countermeasures: oversized name tags, a vibe-coded baseball-card app where each attendee posts what they do, offer and need, Slack channels with a thread per talk, a deliberate handshake exercise, 20-minute talk slots, 30-second questions, shushers, and fans for calling out statements that are not questions. He covers the villages (CTF, harness, defense, art, with OpenAI sponsoring awards), a Telegram bot called Alex Bot that attendees try to social-engineer, a slop art contest, stickers, and the Phrack 40th anniversary issue, and thanks the sponsors. The last third is the substantive argument. Evron says industry narratives, such as the long-running insider-threat claim, lag the evidence, cites the 2026 Verizon Data Breach Investigations Report (DBIR) as showing vulnerabilities rather than phishing as the main entry point, recalls an October 2025 warning of a vulnerability cataclysm, and asks the audience to forecast by trajectory, not history. He closes by reading his Phrack essay, Our Greatest Hacks Are Yet to Come, which mourns skills now commoditized and chooses to adapt.",
   "argument": [
     "Researcher conferences fail at networking because of crowd size, unreadable name tags, and noisy bars, so the conference is built with specific mechanisms to fix each.",
     "Industry narratives persist after the evidence has moved, as with the insider-threat claim in the 2000s and the phishing and 2FA story now.",
@@ -86,10 +86,10 @@
     "Build informal sharing relationships across the practitioner community."
   ],
   "takeaways": [
-    "Add a forward-looking trajectory check to risk prioritization, so planning does not rest only on incident history.",
+    "The talk shows no data for this, so treat it as a check to try: add a forward-looking trajectory check to risk prioritization, so planning does not rest only on incident history.",
     "Test inherited narratives (for example, the weight given to phishing and 2FA) against the current DBIR before they steer budget.",
-    "Treat agents as adversaries that find a way when assessing controls that only cover the expected path.",
-    "Plan for a world where patches are slower than exploitation, including concurrent breach handling."
+    "On the speaker's opinion alone, treat agents as adversaries that find a way when assessing controls that only cover the expected path.",
+    "On the speaker's opinion alone, plan for a world where patches are slower than exploitation, including concurrent breach handling."
   ],
   "limits": [
     "Evron says predictions are hard and that his own call came from deep immersion, not from a model.",
@@ -98,8 +98,7 @@
   "critique": [
     "The substantive argument is presented as opinion and no data was shown; the DBIR finding is cited without numbers or a section reference.",
     "The 2025 cataclysm warning is cited as an example of correct forecasting; the talk does not say what has since materialized and what has not.",
-    "The slide attributes the insider-threat and phishing lines to generic CISO speech rather than to quoted sources.",
-    "The sandbox quote is shown as a limit on sandboxing; the talk does not say how the trajectory view changes sandbox design."
+    "The slide attributes the insider-threat and phishing lines to generic CISO speech rather than to quoted sources."
   ],
   "qa": [],
   "tags": ["org-adoption-culture", "autonomous-offense", "threat-intel-in-the-wild"],
@@ -111,9 +110,8 @@
   ],
   "signal": {"score": 2, "reason": "The talk covers conference logistics and a keynote argument supported by a few cited slides, with no quantitative data."},
   "caveats": [
-    "Auto-captions garble names: transcript has Nastic (Knostic), Hover flake (Halvar Flake, slide shows Thomas Dullien (Halvar Flake)), Joshua Sax (slide: Joshua Saxe), Michal Kaminski and Karen Castelli (slide: Michal Kamensky and Karen Castelletti), A Coded, Gelane Cobb (slide: Jelani Cobb).",
-    "Speaker said about 860 online attendees; the slide says 800 online attendees and counting.",
-    "Transcript says Frack for Phrack and Rack in the closing reading.",
+    "The captions say Joshua Sax and Hover flake; the slides say Joshua Saxe and Thomas Dullien (Halvar Flake), and this record uses the slides.",
+    "The speaker said about 860 online attendees; the slide says 800 online attendees and counting, and this record uses the slide.",
     "The DBIR claim is paraphrased from speech and the slide; the report's own wording and figures were not shown.",
     "The published description gives the speaker title as CEO, Knostic and CFP Chair; the slide adds CISO-in-Residence for AI at the Cloud Security Alliance."
   ]

@@ -16,7 +16,7 @@
   "format": "talk",
   "duration_min": 17,
   "thesis": "Because a transformer's attention carries no provenance for any token, the model cannot be the enforcement point for trust, so the pipeline that assembles the context window should record and enforce where every component came from; CxBOM is a CycloneDX-aligned bill of materials for the context window that does this.",
-  "summary": "The speakers launch cxbom.org, a context bill of materials that records what an agent actually read in each inference. They start from EchoLeak, a zero-click exfiltration from Microsoft 365 Copilot, where attacker text arrived as retrieved content and sat in the same token sequence as the operator's instructions. The premise, which they credit to Young's token democracy idea, is that scaled dot-product attention has no field for provenance, so the context window is the attack surface. They then describe a trust model of rings: ring 0 for the operator system prompt, ring 1 for tool definitions, server instructions, tool results, retrieved documents and model output read back later, and ring 2 for the user. A ring records placement and confers no privilege inside the model. They flag trust inversion, where a third-party MCP tool definition lands in the system region next to the operator prompt and borrows its positional authority. They present a Dual-Failure Multiplier hypothesis, that untrusted tokens weighted by attention cost the operator share twice, in task quality and in safety, and say plainly that no experiment has run. Supporting related work from 2026 shows operator influence can be diluted, deleted or overridden. They place defenses at assembly, model and execution, and argue enforcement belongs outside the model. The tool has a proxy that pins signed tool definitions by SHA-256 and an emitter that writes a record per inference. A recorded demo with three attacks on a notes tool, each run with the gate off and on, shows the canary secret leaving without the gate and the proxy pulling the changed tool with it. They call it an MVP, not for production.",
+  "summary": "The speakers launch cxbom.org, a context bill of materials that records what an agent actually read in each inference. They start from EchoLeak, a zero-click exfiltration from Microsoft 365 Copilot, where attacker text arrived as retrieved content and sat in the same token sequence as the operator's instructions. The premise, which they credit to Young's token democracy idea, is that scaled dot-product attention has no field for provenance, so the context window is the attack surface. They then describe a trust model of rings: ring 0 for the operator system prompt, ring 1 for tool definitions, server instructions, tool results, retrieved documents and model output read back later, and ring 2 for the user. They add that a ring records placement and confers no privilege inside the model. They flag trust inversion, where a third-party MCP tool definition lands in the system region next to the operator prompt and borrows its positional authority. They present a Dual-Failure Multiplier hypothesis, that untrusted tokens weighted by attention cost the operator share twice, in task quality and in safety, and say plainly that no experiment has run. They cite related work from 2026 as showing operator influence can be diluted, deleted or overridden. They place defenses at assembly, model and execution, and argue enforcement belongs outside the model. The tool has a proxy that pins signed tool definitions by SHA-256 and an emitter that writes a record per inference. A recorded demo with three attacks on a notes tool, each run with the gate off and on, shows the canary secret leaving without the gate and the proxy pulling the changed tool with it. They call it an MVP, not for production.",
   "argument": [
     "Attention takes queries, keys and values with no field for where a token came from, so a trust distinction inside the model is at most a learned tendency.",
     "Therefore every token in the context window, including a poisoned README or an externally published MCP tool definition, is attack surface, and a property that must hold on every inference cannot rest on a tendency.",
@@ -317,8 +317,8 @@
   ],
   "takeaways": [
     "Inventory which of your agents render third-party MCP tool definitions in the system region, because that placement is the trust inversion this talk flags.",
-    "Require signed, hash-pinned tool definitions and refuse server launches that differ from the approved one, while remembering that a pin only detects change after approval, not poison at first sight.",
-    "Log what the model was actually shown per inference (component, ring, digest, token count) so incident response is not limited to inbox-side evidence.",
+    "On a scripted three-attack demo, require signed, hash-pinned tool definitions and refuse server launches that differ from the approved one, while remembering that a pin only detects change after approval, not poison at first sight.",
+    "As something to test, log what the model was actually shown per inference (component, ring, digest, token count) so incident response is not limited to inbox-side evidence.",
     "Test whether your agent's compaction keeps the rules you depend on; a dropped rule is a control that silently vanished.",
     "Treat the multiplier and any context-budget policy as unproven until the experiment reports, and do not adopt CxBOM in production yet."
   ],
@@ -332,11 +332,9 @@
   ],
   "critique": [
     "The published description cites attention-mass plots collapsing as an attacker floods the window and a gate that fails the session on trust inversion; the slides state the attention experiment was not run and that failing on a finding is not in slice 1.",
-    "The central framing, that attention has no provenance field, is correct as architecture but does not by itself show that models fail to track provenance in practice; instruction-hierarchy training is acknowledged but not evaluated here.",
-    "The enforcement shown has a limited scope: the proxy catches change after signing, which addresses rug pulls and tampered definitions but not the harder first-sight poisoning or ring 1 injection like EchoLeak, which is only recorded.",
+    "The central framing, that attention has no provenance field, does not by itself show that models fail to track provenance in practice; instruction-hierarchy training is acknowledged but not evaluated here.",
     "The demo uses a scripted, fixed attack against small 8B models with a canary; it shows the gate working for those three cases, and no robustness, evasion or false-positive results were shown.",
     "Related-work numbers are third-party preprints presented to motivate a hypothesis; the Governance Decay figures in particular depend on that setup and should not be read as general rates.",
-    "The slide credits one speaker's employer with the SalesBleed finding, and the other speaker runs a company in this space; the talk launches a specification and invites contributions, and some of the incident evidence cited comes from the speakers' own organizations.",
     "Value of the record for forensics is argued but not shown, with the slide itself saying forensics and cost have not been measured."
   ],
   "qa": [],
@@ -370,10 +368,10 @@
   ],
   "signal": {
     "score": 3,
-    "reason": "The talk presents a specification, an emitter and a proxy for recording and pinning what enters the context window, with the speakers' own stated caveats; the headline hypothesis is untested and the demo is scripted."
+    "reason": "The talk presents a specification, an emitter and a proxy for recording and pinning what enters the context window, with the speakers' own stated caveats; the main hypothesis is untested and the demo is scripted."
   },
   "caveats": [
-    "Names from captions are garbled: the models measured are captioned as Microsoft 535 and Quinn 35 8 billion, and the names could not be confirmed from slides or the demo; the speaker also named a model as helping build the demo (spoken as Crock 47) which is unconfirmed.",
+    "The captions say 'Microsoft 535' and 'Quinn 35 8 billion' for the models the demo ran against; no slide or demo screen confirms the names, so the demo claims here rest on the 8 billion size alone.",
     "The captions do not mark who is speaking, so quotes are not attributed to a single speaker; the published description gives Lambros at Zenity and Wilmot at Detecteam, and the badge on camera reads Rock Lambros.",
     "Camera and slide views alternate; the demo portion is mostly screen recording with caption lines; QR codes were not decoded and no repo URL beyond cxbom.org was shown.",
     "The published description differs from the slides on the gate behaviour and on whether attention plots exist; the slides were used as the authority.",

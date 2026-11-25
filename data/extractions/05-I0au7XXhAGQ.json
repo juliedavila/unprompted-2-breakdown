@@ -7,7 +7,7 @@
   "format": "talk",
   "duration_min": 19,
   "thesis": "The bottleneck in alert investigation is not model intelligence but the disconnect between a dozen consoles, so a read-only harness that sits on top of existing tools, cites every claim and leaves decisions to people can investigate even low-severity alerts thoroughly in minutes.",
-  "summary": "Iqbal opens with a fictional low-severity alert: a VPN login from a rarely seen country that succeeded, fired three times in the same second. Answering whether the login is legitimate means pivoting across twelve consoles (SIEM, identity provider, SaaS security, web gateway, threat intel, MDM, device trust, asset inventory, CAASM, email security, HR and travel approvals), which takes 30 to 60 minutes and is not done for low alerts, and different analysts investigate differently. He presents Ultron, a read-only investigation harness built by merging two earlier projects, Alfred (plumbing: manifest, installer, secrets guard, permission rules, CI) and Friday (case-review loop and forensic drivers, built with an ex-cyber law enforcement investigator). Ultron runs a tick every 10 minutes: it takes a lease, pulls up to five cases, checks that every data source is alive, then starts one sub-agent per case that follows a canonical playbook, weighs two hypotheses, builds a timeline and tries to disprove itself. Routing is by playbook first, otherwise by indicator type, and new indicators are routed again. The trust model is read-only by construction (GET-pinned drivers, no write tools in the toolset, CI blocks additions), an ask tier that denies after two minutes of silence, and mandatory citation of every claim. A replayed fictional case shows network, device and physical-plane evidence combining to show the real user was working from Latveria behind a travel-router tunnel, in about four minutes. He closes on human accountability: Ultron produces evidence and a likelihood, and HR and a manager make the call.",
+  "summary": "Iqbal opens with a fictional low-severity alert: a VPN login from a rarely seen country that succeeded, fired three times in the same second. He says answering whether the login is legitimate means pivoting across twelve consoles (SIEM, identity provider, SaaS security, web gateway, threat intel, MDM, device trust, asset inventory, CAASM, email security, HR and travel approvals), which takes 30 to 60 minutes and is not done for low alerts, and that different analysts investigate differently. He presents Ultron, a read-only investigation harness built by merging two earlier projects, Alfred (plumbing: manifest, installer, secrets guard, permission rules, CI) and Friday (case-review loop and forensic drivers, built with an ex-cyber law enforcement investigator). Ultron runs a tick every 10 minutes: it takes a lease, pulls up to five cases, checks that every data source is alive, then starts one sub-agent per case that follows a canonical playbook, weighs two hypotheses, builds a timeline and tries to disprove itself. Routing is by playbook first, otherwise by indicator type, and new indicators are routed again. The trust model is read-only by construction (GET-pinned drivers, no write tools in the toolset, CI blocks additions), an ask tier that denies after two minutes of silence, and mandatory citation of every claim. A replayed fictional case shows network, device and physical-plane evidence combining to show the real user was working from Latveria behind a travel-router tunnel, in about four minutes. He closes on human accountability: Ultron produces evidence and a likelihood, and HR and a manager make the call.",
   "argument": [
     "Security teams have enough tools but lack the connective layer, so answering one question about one low alert requires about twelve logins, query languages and timestamp formats and 30 to 60 minutes, which means low alerts get a glance and investigation quality varies by analyst.",
     "A harness that sits on top of the existing tools, runs on a timer and follows one canonical playbook standardizes investigations and covers every alert, including low ones.",
@@ -96,11 +96,11 @@
     "Back-test new models on stored known cases before adopting them, batch cases to avoid cost blowouts from alert storms, and gate changes through pull requests."
   ],
   "takeaways": [
-    "Count how many consoles and query languages your analysts cross for a low alert; if the answer is around a dozen, a read-only harness over existing tools may buy more coverage than a new detection tool.",
-    "Iqbal's rule, read-only by construction: if you give an agent security-tool access, remove write and containment tools from its toolset and test for that in CI, rather than relying on prompt instructions.",
-    "Iqbal's rule, no citation and no claim: make agent reports auditable by requiring a cited query result per claim and discarding the rest.",
+    "The talk's support is one fictional replay, so treat this as a test to run: count how many consoles and query languages your analysts cross for a low alert, and if the answer is around a dozen, check whether a read-only harness over existing tools buys more coverage than a new detection tool.",
+    "If you give an agent security-tool access, remove write and containment tools from its toolset and test for that in CI, rather than relying on prompt instructions. The talk shows no bypass tests, so verify the design before trusting it.",
+    "Make agent reports auditable by requiring a cited query result per claim and discarding the rest. The talk shows no measured effect, so check that the verification pass really drops uncited claims.",
     "Add a source-health check to automated investigations so empty results are not read as clean.",
-    "Iqbal's position, people make the call: keep verdicts about people with humans; have the agent output likelihood plus evidence and route to analyst review, then HR or Legal."
+    "Keep verdicts about people with humans: have the agent output likelihood plus evidence and route to analyst review, then HR or Legal."
   ],
   "limits": [
     "Ultron is read-only today; the speaker said he would still keep a human in the loop for likely true positives and consider fully autonomous handling only where confidence is near 100 percent, such as false positives.",
@@ -109,11 +109,10 @@
   ],
   "critique": [
     "No production numbers were given: no count of alerts or cases handled, precision or recall, false-positive rate, cost per investigation, or comparison against analyst verdicts; the four-minute figure is from a replayed fictional case.",
-    "The headline case is a fictional replay, so it shows the design working on a prepared example; it does not show how often the harness finds such cases or how it behaves on real ones.",
+    "The main case is a fictional replay, so it shows the design working on a prepared example; it does not show how often the harness finds such cases or how it behaves on real ones.",
     "The 44 percent Cisco statistic was cited from memory without a title or link, and the statement that the figure has grown is the speaker's inference.",
-    "Read-only by construction through GET-pinned drivers limits write actions, but GET is not guaranteed side-effect free on every API, and the talk does not address prompt injection through alert, log or ticket content that the agent reads; the on-box read, ask-gated, is the one place a human checks.",
-    "The back-testing and scorecard statements were made in Q&A and no results were shown; the number of analyst corrections measures analyst intervention rather than accuracy directly.",
-    "Ultron is an internal tool and no released code was shown; the blueprint (GET pinning, indicator routing, ask tier) is described in terms others can adapt."
+    "The read-only claim rests on GET-pinned drivers, but GET is not guaranteed side-effect free on every API, and no test results or bypass attempts were shown.",
+    "The back-testing and scorecard statements were made in Q&A and no results were shown; the number of analyst corrections measures analyst intervention rather than accuracy directly."
   ],
   "qa": [
     "How did you come up with the processes fed to the harness? Answer: he worked with an ex-cyber law enforcement officer; they wrote each playbook as a file listing the steps for a case type, the false positives to rule out and how to reach a verdict; unmatched cases get broader querying.",
@@ -132,9 +131,8 @@
   ],
   "signal": {"score": 3, "reason": "The talk shows a design pattern (read-only by construction, source-health preflight, cited claims, indicator routing) in detailed slides and a replayed fictional case, with no production metrics presented."},
   "caveats": [
-    "Auto-captions garble names: the law enforcement collaborator is rendered as Jim Roge and Jim Rose and is not confirmed; Ultron is sometimes captioned Ultran; the country is captioned Laveria, Larevia and Lavaria, while slides spell it Latveria.",
-    "The transcript says traffic travelled about 10,000 km; the masking slide says about 9,000 km.",
-    "The transcript says Wi-Fi radios indicate the country; the slide gives the regulatory country code as XL.",
+    "The captions say traffic travelled about 10,000 km; the masking slide says about 9,000 km, and this record uses the slide.",
+    "The captions say Wi-Fi radios indicate the country; the slide gives the regulatory country code as XL, and this record uses the slide.",
     "The embedded demo video shows only its first two minutes legibly in the recording; the later physical-plane steps rely on the narration and the summary slides.",
     "Q&A timestamps are approximate because the transcript has a gap between 17:35 and 18:08.",
     "The conference Q&A slide shows a venue Wi-Fi credential, which is deliberately not recorded here."

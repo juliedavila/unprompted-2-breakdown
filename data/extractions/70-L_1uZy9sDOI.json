@@ -81,17 +81,16 @@
     "Recognize overload and step away: leave the keyboard, change state, and return with a different perspective."
   ],
   "takeaways": [
-    "Treat CISO overload during an AI rollout as an operational risk and give yourself and your team permission to pause.",
-    "Have the team learn the models in front of them early so that they can argue guardrails with knowledge rather than from the sidelines.",
-    "Use a concrete signal, such as 16-hour research days, to trigger a break."
+    "On one operator's account, treat CISO overload during an AI rollout as an operational risk and give yourself and your team permission to pause.",
+    "On one operator's account, have the team learn the models in front of them early so that they can argue guardrails with knowledge rather than from the sidelines.",
+    "As one person's rule of thumb, use a concrete signal, such as 16-hour research days, to trigger a break."
   ],
   "limits": [
     "Speaker said he could talk about this for hours and limited the talk to a short personal account; no process for AI rollout at scale was presented."
   ],
   "critique": [
     "Personal anecdote with no data; the AI rollout process the speaker refers to is not described.",
-    "The framing that being right about guardrails still cost him standing is a real organizational tension but the talk offers coping rather than a way to win the argument with leadership.",
-    "The employer in the story is unnamed, and the speaker's current role is at a company that builds AI products and advises CISOs; the rollout process he mentions is not described, so it cannot be checked."
+    "The employer in the story is unnamed, so the account cannot be checked."
   ],
   "qa": [],
   "tags": [
@@ -113,7 +112,6 @@
   },
   "caveats": [
     "Camera-only talk: there were no slides, so all content comes from the transcript.",
-    "Auto-captions render the company as Confide Group; the description and badge agree.",
-    "The speaker describes himself as Chief Security Officer for Confide Group and a protector of the CISO Society, wording that could not be confirmed from the captions; the description lists Cybersecurity Strategist and CISO Advisor."
+    "The captions say Chief Security Officer for Confide Group and a protector of the CISO Society; the description says Cybersecurity Strategist and CISO Advisor, and this record gives both."
   ]
 }

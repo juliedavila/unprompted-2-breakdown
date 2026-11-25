@@ -10,7 +10,7 @@
   "format": "talk",
   "duration_min": 24,
   "thesis": "Static and LLM-based scanning of agent skills cannot reliably separate malware from benign skills that behave similarly, so skills should be detonated in an instrumented chamber and judged by kernel-level behavior, the way malware analysis moved from static scanning to sandboxes.",
-  "summary": "The speakers open with a game of malware or slop, showing that benign skills routinely read cloud credentials, clone random GitHub repos and install packages, so intent is hard to infer from text. They cover why scanners fail: Trail of Bits bypassed several skill scanners in under an hour, a legitimate PowerPoint skill uses LD_PRELOAD tricks that look malicious, and a skill can talk the LLM judge into passing it. They then describe the agent detonation chamber: a victim agent (OpenClaw or another harness) installs the skill while kernel, agent and network telemetry are captured. Three helper agents solve practical problems: a world-building agent installs dependencies, a jailbroken victim agent avoids refusing obviously malicious skills, and a red team agent prompts the victim to exercise the skill's capabilities. Working with Vercel, they scanned skills.sh, its skill marketplace, and found over a hundred malicious, suspicious or dangerous skills, about 30 percent of the malicious ones being simple droppers. They show a typosquatted Polymarket package that passed most scanners, reinstall-persistence instructions, remote prompt loading, and an XSS proof of concept with 283k installs. The centerpiece is the Paperclip campaign: a trojaned fork of Paperclip and Browser Use, distributed through PyPI and skills.sh, reaching 1.7 million installs while evading static scanners through progressive discovery, skill-installs-skill chains and a time-of-check, time-of-use swap. They end by releasing the chamber as a free service called AI Total.",
+  "summary": "The speakers open with a game of malware or slop, showing that benign skills routinely read cloud credentials, clone random GitHub repos and install packages, so intent is hard to infer from text. They cover why scanners fail: Trail of Bits bypassed several skill scanners in under an hour, a legitimate PowerPoint skill uses LD_PRELOAD tricks that look malicious, and a skill can talk the LLM judge into passing it. They then describe the agent detonation chamber: a victim agent (OpenClaw or another harness) installs the skill while kernel, agent and network telemetry are captured. Three helper agents solve practical problems: a world-building agent installs dependencies, a jailbroken victim agent avoids refusing obviously malicious skills, and a red team agent prompts the victim to exercise the skill's capabilities. Working with Vercel, they scanned skills.sh, its skill marketplace, and found over a hundred malicious, suspicious or dangerous skills, about 30 percent of the malicious ones being simple droppers. They show a typosquatted Polymarket package that passed most scanners, reinstall-persistence instructions, remote prompt loading, and an XSS proof of concept with 283k installs. The centerpiece is the Paperclip campaign, which they describe as a trojaned fork of Paperclip and Browser Use, distributed through PyPI and skills.sh, reaching 1.7 million installs while evading static scanners through progressive discovery, skill-installs-skill chains and a time-of-check, time-of-use swap. They end by releasing the chamber as a free service called AI Total.",
   "argument": [
     "Skills are a new kind of executable, and many benign skills behave like malware by reading credentials, cloning repos and installing packages, so separating malice from sloppiness by reading text is unreliable.",
     "Static scanners, including LLM-based ones, are bypassed cheaply because LLMs can be talked out of a verdict and payloads can hide in bytecode, linked files or remote content.",
@@ -118,11 +118,11 @@
     "Expect and plan for sandbox-aware skills; dynamically rebuild and alter the sandbox as malware analysts did."
   ],
   "takeaways": [
-    "Sharbat's takeaway, detonate your skills: do not accept a static or LLM skill scanner verdict as a gate for skills your agents install; add behavioral detonation or equivalent runtime monitoring.",
+    "On case evidence with no detection rates, do not accept a static or LLM skill scanner verdict as a gate for skills your agents install; test behavioral detonation or equivalent runtime monitoring alongside it.",
     "Re-evaluate approved skills on a schedule and on change, because repos and remote prompts can be swapped after the check.",
     "Block or review skills that clone repos, install packages, load instructions from URLs or install other skills.",
     "Inventory skills and MCP servers in use against the published Paperclip campaign indicators.",
-    "Sharbat's framing of the agent supply chain: extend supply-chain controls to every non-user context the agent ingests, not only skills and MCP servers."
+    "Extend supply-chain controls to every non-user context the agent ingests, not only skills and MCP servers."
   ],
   "limits": [
     "Detonation will become a cat-and-mouse game: skills will detect sandboxes just as malware did, and the chamber must keep changing.",
@@ -134,7 +134,7 @@
     "Coverage depends on the red team agent triggering each behavior, and time-delayed or condition-gated payloads can stay dormant; the talk does not give coverage numbers.",
     "Jailbreaking the victim agent changes the behavior being measured, since real users' agents may refuse; the talk does not discuss how that gap affects findings.",
     "The 1.7M install figure is a marketplace counter that the speakers said may include non-unique installs.",
-    "The speakers announced a free service from their company and a verified benchmark; the recording gives no details of either.",
+    "The detonation chamber was built by the speakers' company, Zenity.",
     "The Trail of Bits result tested scanners against purpose-built bypasses, which shows evasion is possible but not how common it is in practice."
   ],
   "qa": [
@@ -152,9 +152,8 @@
   ],
   "signal": {"score": 4, "reason": "The talk reports an in-the-wild skill campaign with a dated timeline, install counts and named evasion techniques; the detonation chamber's own detection performance is not quantified."},
   "caveats": [
-    "Auto-captions render the employer as Sanity; slides (Presented by Zenity Labs) and the published description confirm Zenity. The tool name AI Total is confirmed on the Takeaways slides as AITOTAL at aitotal.io.",
+    "The captions say 'Sanity' for the employer; the slides say Zenity Labs, and this record uses the slides.",
     "The transcript says Donato works on the AI Red Team and Sharbat leads the Red Team; titles in the speaker block come from the published description.",
-    "Several names are garbled in captions (OpenClaw, ClawHub, soul file, Carly), and the attacker handle appears as Carly Paperclip in the transcript only; no slide shows that handle.",
     "The final Takeaways slides show only the AITOTAL logo and aitotal.io; the spoken takeaways are not written on a slide.",
     "The Trail of Bits post is dated June 03, 2026 and the takedown slide dates the report Aug 2nd 2026, so the July campaign dates are 2026.",
     "The 1.7M figure is a skills.sh listing counter; the slide shows it for the fake org with 7 skills, six of them near 290K installs each, so it is a sum across skills rather than distinct users.",

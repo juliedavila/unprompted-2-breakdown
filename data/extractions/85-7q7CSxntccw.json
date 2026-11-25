@@ -12,7 +12,7 @@
   "format": "talk",
   "duration_min": 24,
   "thesis": "A criminal campaign used a cheap open-source harness and an open-weight model to run complete intrusions against companies from a one-line objective, adapting to live defenders in real time, which makes behavior-based TTP signals unreliable for attribution and clustering and shifts the defender's problem to responding fast across every path.",
-  "summary": "Sela opens with the bottom line: threat actors use cheap, simple setups with open-weight models to run end-to-end attacks on companies quickly, at scale and with high success rates. He shows the whole prompt the agent receives, a single objective to get admin backend access or RCE (originally in Chinese) plus the target domain, and says the agent returns within hours to two days with the goal achieved, through multi-stage chains that cross several layers of defense. The harness is a general-purpose open-source tool run inside a Kali container, and the attacker left infrastructure exposed, so Gambit Security, Sela's employer, could read the agent conversations. A chart covers 141-plus runs with 76 recorded outcomes. Cost was tens of dollars per victim at most and time ranged from under an hour to 44 hours. The impact was more than 600,000 payment cards and dozens of skimmers. Targets were chosen by sector, size and tech stack, not known vulnerabilities. He walks through two victims: a multi-billion-dollar enterprise compromised through a file-inclusion bug, a forged admin cookie, a WAF bypass through blob storage and an XSLT exploit, and a victim where a Cloudflare global API key on a staging server let the AI hijack traffic and mail and fight the blue team round by round until the key was revoked. He closes with victim quotes and why TTPs no longer separate an APT from a novice.",
+  "summary": "Sela opens with the bottom line: threat actors use cheap, simple setups with open-weight models to run end-to-end attacks on companies quickly, at scale and with high success rates. He shows the whole prompt the agent receives, a single objective to get admin backend access or RCE (originally in Chinese) plus the target domain, and says the agent returns within hours to two days with the goal achieved, through multi-stage chains that cross several layers of defense. He says the harness is a general-purpose open-source tool run inside a Kali container, and that the attacker left infrastructure exposed, so Gambit Security, Sela's employer, could read the agent conversations. A chart covers 141-plus runs with 76 recorded outcomes. He reports a cost of tens of dollars per victim at most and a time range from under an hour to 44 hours. He reports an impact of more than 600,000 payment cards and dozens of skimmers. He says targets were chosen by sector, size and tech stack, not known vulnerabilities. He walks through two victims: a multi-billion-dollar enterprise compromised through a file-inclusion bug, a forged admin cookie, a WAF (web application firewall) bypass through blob storage and an XSLT exploit, and a victim where a Cloudflare global API key on a staging server let the AI hijack traffic and mail and fight the blue team round by round until the key was revoked. He closes with victim quotes and why TTPs no longer separate an APT from a novice.",
   "argument": [
     "Attackers are now running complete intrusions from a short objective prompt with a general-purpose harness and an open-weight model, at a cost of dollars per victim.",
     "The recorded results show this works at scale: of 76 recorded outcomes, 29 reached code execution and 16 reached administrator access, against targets chosen by sector, size and tech stack rather than a known flaw.",
@@ -29,7 +29,7 @@
       "source": "both"
     },
     {
-      "claim": "Of 141-plus runs, 76 had recorded outcomes: 29 (38.2 percent) reached code execution, 16 (21.1 percent) administrator access, 24 (31.6 percent) unauthorized data access or other vulnerabilities, and 7 (9.2 percent) no compromise.",
+      "claim": "Of 141-plus runs, 76 had recorded outcomes: 29 (38.2 percent, this record's arithmetic) reached code execution, 16 (21.1 percent, this record's arithmetic) administrator access, 24 (31.6 percent, this record's arithmetic) unauthorized data access or other vulnerabilities, and 7 (9.2 percent, this record's arithmetic) no compromise.",
       "evidence": "Stacked chart for the 9 to 15 Sep 2026 window broken down by company yearly revenue (34 unknown, 32 under 50M, 3 at 50-250M, 2 at 250M-1B, 5 over 1B); the code execution bar includes 2 of the over-1B companies.",
       "grade": "measured",
       "t": "03:16",
@@ -135,7 +135,7 @@
     },
     {
       "figure": "29 / 16 / 24 / 7",
-      "meaning": "Outcomes among 76: code execution, administrator access, unauthorized data access and other vulnerabilities, no compromise (38.2, 21.1, 31.6, 9.2 percent)",
+      "meaning": "Outcomes among 76: code execution, administrator access, unauthorized data access and other vulnerabilities, no compromise (38.2, 21.1, 31.6, 9.2 percent; this record's arithmetic)",
       "t": "03:16"
     },
     {
@@ -287,11 +287,11 @@
     "Do not count on honeypots or deception to slow the attacker; the speaker said they may help if sustainable but are not the main answer."
   ],
   "takeaways": [
-    "Treat any internet-facing intrusion as potentially APT-grade regardless of who seems to be behind it, and stop using breadth of technique, persistence or time of day to decide how much effort a case deserves.",
-    "Hunt for long-lived, over-privileged edge credentials such as a Cloudflare global API key, and for secrets on staging pages, since one such key unlocked a whole attack chain.",
+    "On the evidence of one campaign, treat any internet-facing intrusion as potentially APT-grade regardless of who seems to be behind it, and stop using breadth of technique, persistence or time of day to decide how much effort a case deserves.",
+    "On one victim's case, hunt for long-lived, over-privileged edge credentials such as a Cloudflare global API key, and for secrets on staging pages. One such key unlocked a whole attack chain.",
     "Check whether controls such as a WAF can be bypassed by reaching storage or origin directly, and whether the edge provider's control plane (Workers, MX records, WAF rules, tunnels) is monitored for changes.",
-    "Invest in response speed and complete scoping across all entry paths, with a rehearsed way to rotate credentials and rebuild at once, since the attacker adapts within the incident.",
-    "Rework attribution and threat-intel workflows that cluster by TTPs, because the signals that separate actors have weakened."
+    "On the evidence of two victims' cases, invest in response speed and complete scoping across all entry paths, with a rehearsed way to rotate credentials and rebuild at once. The attacker adapted within the incident.",
+    "On the speaker's reasoning from one campaign, rework attribution and threat-intel workflows that cluster by TTPs. The signals that separate actors have weakened."
   ],
   "limits": [
     "The speaker said the activity was noisy and aggressive and could break things unintentionally, so it is not perfect tradecraft.",
@@ -305,8 +305,7 @@
     "The success figures cover only the 76 runs with recorded outcomes, and revenue is unknown for 34 of them, so the high success rate and the claim about multibillion-dollar victims rest on a small subset; only 2 of the 5 companies over 1 billion in revenue appear under code execution.",
     "The cost figure of tens of dollars per victim excludes the human operator's time, target selection and infrastructure, and the talk does not say whether it counts failed runs.",
     "The model identity is only given as an open-weight model in the transcript and the captured slides do not name it; the claim that it is not frontier is therefore unverified here.",
-    "The one person inference is an absence-of-evidence claim, and the titular death of TTPs is scoped on the slide to attribution and clustering, not to detection or defensive use of TTPs, so the title is broader than the scope shown on that slide.",
-    "The speaker works for Gambit Security, which published a blog post on the same campaign; the technical content in the talk was specific."
+    "The one person inference is an absence-of-evidence claim, and the titular death of TTPs is scoped on the slide to attribution and clustering, not to detection or defensive use of TTPs, so the title is broader than the scope shown on that slide."
   ],
   "qa": [
     "Is there data on volume or ramp of agentic attackers, or only anecdotes? The speaker said headlines about AI-enabled attacks are no longer relevant because it is now the norm, like developers using AI, with some slower adoption among stealthy actors, and that all the attacks he now sees are AI-driven.",
@@ -348,14 +347,14 @@
     "reason": "The talk reports outcome statistics for 76 recorded runs and attack-versus-defender timelines from one in-the-wild campaign with anonymized victims."
   },
   "caveats": [
-    "The transcript renders the harness as Kern and the title acronym as DTPs; the slides read Cairn and TTPs, which this record uses.",
-    "The model is transcribed as Dipsy uh 4.1 and a model name or version could not be confirmed from the slides, so this record says open-weight model.",
-    "The XSLT file is transcribed as XLS D; the slide reads XSLT and CVE-2019-25137, which this record uses.",
-    "The speaker said around 140 runs and outcome data on 76; the slide reads 141-plus runs and 76 recorded outcomes.",
-    "The speaker said more than half achieved admin or RCE; on the slide 29 plus 16 of 76 is 59 percent, assuming the bars do not overlap, though the speaker said in some cases both occurred.",
-    "The speaker said tens of dollars applied to two-day runs and a few dollars per typical compromise; the slide says tens of dollars per victim. Both are recorded.",
+    "The captions say \"Kern\" and \"DTPs\"; the slides say Cairn and TTPs, and this record uses the slides.",
+    "The captions say \"Dipsy uh 4.1\"; the slides name no model or version, and this record says open-weight model.",
+    "The captions say \"XLS D\"; the slide says XSLT and CVE-2019-25137, and this record uses the slide.",
+    "The captions say around 140 runs and outcome data on 76; the slide says 141-plus runs and 76 recorded outcomes, and this record uses the slide.",
+    "The captions say more than half achieved admin or RCE; the slide's counts give 29 plus 16 of 76, which is 59 percent (this record's arithmetic) if the bars do not overlap, though the speaker said in some cases both occurred, and this record uses the slide's counts.",
+    "The captions say tens of dollars applied to two-day runs and a few dollars per typical compromise; the slide says tens of dollars per victim, and this record keeps both.",
     "The introducer attributes an earlier Mexican government attack disclosure to the speaker; this is introduction content and not verified from slides.",
-    "The agent's Chinese notes were not transcribed; this record uses the English translations printed on the slides.",
+    "The captions do not transcribe the agent's Chinese notes; the slides print English translations, and this record uses the slides.",
     "The last frame is a speaker camera shot; the Cairn screenshot text is too small to read.",
     "The published description says dozens of companies and tens of millions of business records; the slides say millions of records and the Gambit headline says hundreds of retailers, so this record does not use the description's counts."
   ]

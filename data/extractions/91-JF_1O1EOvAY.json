@@ -16,7 +16,7 @@
   "format": "talk",
   "duration_min": 23,
   "thesis": "Scanning extensions, agent skills and MCP servers for malice needs both behavior and intent: deterministic behavior chains tell a model where to look, and the artifact's own stated purpose tells it whether the chain is legitimate, risky or malicious, with every verdict traceable to quoted code.",
-  "summary": "The talk opens with three real MCP servers that all read a secret, put it in an HTTP header and send it out, one benign, one malicious and one sloppy, to show that behavior alone cannot separate them. The speakers then show the opposite failure: a first-generation scanner in which one model read a 1,856-line VS Code extension in 8,000-token chunks called it clean five of five times, missing a 30-line dropper hidden in a working Kanban board. Their design, BITE (Behavior-Intent Traceable Evaluation), runs in two stages. Stage 1 uses no model: it splits code into units, builds a call graph, finds signature hits and matches nearby flagged units against known attack chains, and separately gathers intent facts such as stated purpose, README lines and the artifact's own domains. Stage 2 uses four model roles: a profiler that reads only claims, a prosecutor that names behaviors and quotes the exact line, a defender that checks the quote, severity and disclosure, and a judge that decides, runs a deception check and, for a malicious verdict, reruns for a majority of three. Verdicts are clean, risky or malicious, and malice must be proven. Applied to the opening three MCP servers, the result was clean, malicious (a wallet private key sent in a header with no signing code) and risky (whole environment dumped to stderr). Evaluated on 1,557 artifacts, BITE caught 48 of 60 dangerous ones with 5 false alarms in 1,497 clean ones. In Q&A, the speakers said runtime depends on how connected the code is.",
+  "summary": "The talk opens with three real MCP servers that all read a secret, put it in an HTTP header and send it out, one benign, one malicious and one sloppy, to show that behavior alone cannot separate them. The speakers then show the opposite failure: a first-generation scanner in which one model read a 1,856-line VS Code extension in 8,000-token chunks called it clean five of five times, missing a 30-line dropper hidden in a working Kanban board. Their design, BITE (Behavior-Intent Traceable Evaluation), runs in two stages. Stage 1 uses no model: it splits code into units, builds a call graph, finds signature hits and matches nearby flagged units against known attack chains, and separately gathers intent facts such as stated purpose, README lines and the artifact's own domains. Stage 2 uses four model roles: a profiler that reads only claims, a prosecutor that names behaviors and quotes the exact line, a defender that checks the quote, severity and disclosure, and a judge that decides, runs a deception check and, for a malicious verdict, reruns for a majority of three. They define verdicts as clean, risky or malicious, and say malice must be proven. Applied to the opening three MCP servers, the result was clean, malicious (a wallet private key sent in a header with no signing code) and risky (whole environment dumped to stderr). The speakers report that, evaluated on 1,557 artifacts, BITE caught 48 of 60 dangerous ones with 5 false alarms in 1,497 clean ones. In Q&A, the speakers said runtime depends on how connected the code is.",
   "argument": [
     "The same behavior pattern, such as secret to header to remote server, appears in benign, risky and malicious artifacts, so flagging on behavior produces false alarms.",
     "Giving a whole artifact to a model misses small malware inside large benign code and can hallucinate, as shown by a dropper missed in five of five runs.",
@@ -76,7 +76,7 @@
       "source": "both"
     },
     {
-      "claim": "On 1,557 real artifacts (1,015 agent skills and 542 MCP servers, 4,671 scans), BITE caught 48 of 60 dangerous artifacts (80 percent) with 5 false alarms among 1,497 clean artifacts (0.3 percent), so about 9 in 10 alerts were real.",
+      "claim": "On 1,557 real artifacts (1,015 agent skills and 542 MCP servers, 4,671 scans), BITE caught 48 of 60 dangerous artifacts (80 percent) with 5 false alarms among 1,497 clean artifacts (0.3 percent), so about 9 in 10 alerts were real (this record's arithmetic).",
       "evidence": "Results slide with a unit chart; each artifact was scanned three times.",
       "grade": "measured",
       "t": "16:40",
@@ -277,10 +277,10 @@
     "Check whether behavior is disclosed in the README, description or comments and whether the destination belongs to the publisher."
   ],
   "takeaways": [
-    "If you vet MCP servers or skills, do not rely on pattern matching alone and do not hand whole artifacts to an LLM; combine deterministic chain extraction with intent comparison.",
+    "On the evidence of one missed dropper and an evaluation with 60 dangerous artifacts, if you vet MCP servers or skills, do not rely on pattern matching alone and do not hand whole artifacts to an LLM; combine deterministic chain extraction with intent comparison.",
     "Ask scanner vendors to show quoted-line evidence for each finding and how they handle disclosed-but-dangerous behavior.",
-    "Define separate policy outcomes for risky versus malicious artifacts, since many real findings (such as environment dumps to logs) are poor hygiene rather than malice.",
-    "Test any scanner against known-bad artifacts that declare their behavior, since this was the category where BITE was weakest.",
+    "Define separate policy outcomes for risky versus malicious artifacts. The talk's example is an environment dump to logs, which is poor hygiene rather than malice.",
+    "On a result of 1 of 5 caught, test any scanner against known-bad artifacts that declare their behavior, the category where BITE was weakest.",
     "Treat declared intent as attacker-controllable input when it is part of the decision."
   ],
   "limits": [
@@ -291,10 +291,11 @@
     "The scanner targets extensions, skills and MCP servers, not full repositories."
   ],
   "critique": [
-    "The speakers work for Knostic; the 80 percent catch and 0.3 percent false alarm numbers come from an evaluation set whose construction, label provenance and any overlap with development data were not described.",
-    "Only 60 dangerous artifacts, of which 14 were written by the team, support the headline recall, so the confidence interval is wide, and the real-world malicious samples are small in number (9 skills, 7 MCP servers).",
+    "The evaluation set was built and scored by the speakers' company, Knostic.",
+    "The construction of the evaluation set behind the 80 percent catch and 0.3 percent false alarm numbers, its label provenance and any overlap with development data were not described.",
+    "Only 60 dangerous artifacts, of which 14 were written by the team, support the main recall, so the confidence interval is wide, and the real-world malicious samples are small in number (9 skills, 7 MCP servers).",
     "The 5 of 1,497 false alarm rate covers all clean artifacts and the composition of that set was not described; the 100 honest powerful MCP servers form a more demanding test but were not itemized.",
-    "Declared intent can be forged by an attacker who writes a plausible README, and jailbreaks that declare their purpose were a stated gap, so the intent check is itself an attack surface.",
+    "The talk gave no data on how well the intent check holds when an attacker writes a plausible README; jailbreaks that declare their purpose were a stated gap, with 1 of 5 caught.",
     "The multi-role design is argued to reduce hallucination but no ablation against a single-model baseline with the same chains was shown.",
     "The 'three scans each' repeated runs are not reported as a stability figure."
   ],
@@ -326,7 +327,7 @@
     },
     {
       "file": "t01003.jpg",
-      "caption": "Evaluation headline: 4,671 scans, 48 of 60 dangerous caught, 5 of 1,497 false alarms."
+      "caption": "Main evaluation figures: 4,671 scans, 48 of 60 dangerous caught, 5 of 1,497 false alarms."
     },
     {
       "file": "t01090.jpg",
@@ -338,11 +339,11 @@
     "reason": "The talk presents a scanner design with worked examples and reports evaluation figures on 1,557 artifacts, 60 of them dangerous, with no independent evaluation shown."
   },
   "caveats": [
-    "Transcript garbles names and the extension: it says Manage Webhooks and manage Roblox; the slide says ManageRBLX 4.9.5.",
-    "Speaker said the dropper stage download uses MCP names and the company as Nostic; slides give Knostic.",
-    "Transcript says the malicious MCP test set was found entirely; the slide shows 14 of 14.",
-    "Speaker said 'almost 1,900 lines'; slide says 1,856.",
-    "The slide's results title says 1,015 skills plus 542 MCP servers; the speaker only said 1,557 artifacts.",
+    "The captions say \"Manage Webhooks\" and \"manage Roblox\"; the slide says ManageRBLX 4.9.5, and this record uses the slide.",
+    "The captions say \"Nostic\"; the slides say Knostic, and this record uses the slides.",
+    "The captions say the malicious MCP test set was found entirely; the slide says 14 of 14, and this record uses the slide.",
+    "The captions say \"almost 1,900 lines\"; the slide says 1,856, and this record uses the slide.",
+    "The captions say 1,557 artifacts with no split; the slide's results title says 1,015 skills plus 542 MCP servers, and this record uses the slide.",
     "Malicious URLs and domains are copied as shown on slides in defanged form."
   ]
 }

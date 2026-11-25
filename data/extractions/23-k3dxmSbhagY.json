@@ -144,12 +144,12 @@
     },
     {
       "figure": "18/20 and 7/20",
-      "meaning": "payload on trigger (90 percent attack success) and off trigger (35 percent leakage) for one naive Trojan",
+      "meaning": "payload on trigger (90 percent attack success, this record's arithmetic) and off trigger (35 percent leakage, this record's arithmetic) for one naive Trojan",
       "t": "07:26"
     },
     {
       "figure": "2/20 and 0/20",
-      "meaning": "payload on trigger (10 percent attack success) and off trigger (0 percent leakage) for a second naive Trojan",
+      "meaning": "payload on trigger (10 percent attack success, this record's arithmetic) and off trigger (0 percent leakage, this record's arithmetic) for a second naive Trojan",
       "t": "07:57"
     },
     {
@@ -273,7 +273,7 @@
     "Use official releases and verify the source. Add provenance rules for open-weight models used by security or coding agents so that no community abliterated or quantized variants enter pipelines that touch real code or credentials.",
     "Run local models in a sandbox with no production access, no secrets and no open network; the Cohere and community reports show model-initiated outbound requests even without a proven backdoor.",
     "Do not rely on a model scan to clear a model; the speakers state there is no reliable way to prove one is clean.",
-    "If you evaluate Trojan detectors, ask for off-trigger leakage and attack success rates together, not just attack success.",
+    "On the two example models shown, if you evaluate Trojan detectors, ask for off-trigger leakage and attack success rates together, not just attack success.",
     "Watch J-space and differential interpretability work as the most promising lead, but treat it as research until a detector with measured accuracy exists."
   ],
   "limits": [
@@ -287,8 +287,7 @@
     "The Qwen anecdotes are explicitly not evidence of poisoning, so they function as motivation; the talk gives no estimate of how many Hugging Face variants are actually Trojaned.",
     "The Hugging Face guardrail-removal counts come from a ten-per-row tile visualization and a keyword-style classification that is not described, so the method behind the 33 and 34 percent figures is not specified in the talk.",
     "All Trojans tested are AISLE-built LoRA adapters, so the J-space result shows detectability of this construction, not of Trojans made by other methods or by data poisoning.",
-    "No detection rates, false-positive rates or numbers for J-space are given, only schematic example slides; the result is suggestive and the claim of a first step toward a detector is not measured.",
-    "The speakers work for AISLE; the talk mentions air-gapped deployments it offers and a tie-up with Cohere."
+    "No detection rates, false-positive rates or numbers for J-space are given, only schematic example slides; the result is suggestive and the claim of a first step toward a detector is not measured."
   ],
   "qa": [
     "Question: can you diff an official and a modified model to extract the trigger instead of guessing? Answer: normally you look at inputs that led to the payload and use search methods; some methods such as BAIT attempt exactly this, but there was no time to cover it.",
@@ -327,10 +326,10 @@
   },
   "caveats": [
     "An alternate title for the talk is 'Hidden Triggers, Harmful Payloads: Auditing Trojan Open-Weight LLMs'.",
-    "Auto-captions garble proper nouns; the CVE claim 'also 29 coral CVEs' could not be confirmed and is not recorded as a figure.",
-    "Model names in the transcript (GLM 5.3 Flash, Qwen 3.8, 'Clen 3.point and 27B') were taken from slides: GLM-5.3 Flash and Qwen 3.8 27B.",
-    "Speaker said about 5,000 Qwen variants and about 500 GLM variants; slide shows about 5,200 and about 500.",
-    "Speaker described the third and fourth quartet members slightly differently from the slide; the slide's Random (matched exposure, no stable condition map) and Clean (secure responses) wording is used.",
+    "The captions say \"also 29 coral CVEs\"; no slide shows it, so this record does not use it as a figure.",
+    "The captions say \"Clen 3.point and 27B\"; the slides say Qwen 3.8 27B, and this record uses the slides.",
+    "The captions say about 5,000 Qwen variants; the slide says about 5,200, and this record uses the slide.",
+    "The speaker described the third and fourth quartet members differently; the slide says Random (matched exposure, no stable condition map) and Clean (secure responses), and this record uses the slide.",
     "Speaker attribution within the shared transcript follows who is on screen: Evelina Gabasova for the AISLE intro, Hugging Face and Qwen examples, black-box, weight-diff, probe and SAE sections and parting thoughts; Patrik Mada for the Trojan definition, quartet construction and J-space.",
     "The BAIT method is named on a slide and in Q&A without a full citation."
   ]

@@ -7,7 +7,7 @@
   "format": "talk",
   "duration_min": 25,
   "thesis": "Frontier labs return encrypted chain-of-thought blobs to clients, and those blobs could be replayed into a weaker model that transcribed the raw reasoning verbatim, with no cryptographic break. That enabled industrial-scale distillation (training a student model on a stronger model's reasoning), privacy leakage, misuse uplift and invisible prompt injection, and the vendor fixes were partial.",
-  "summary": "Schaeffer opens with the TL;DR: encrypted reasoning traces of frontier models could be decoded without breaking cryptography or attacking the capable model, and a YouTube commenter called it an API trick, which he accepts. He explains that reasoning models return an encrypted chain-of-thought blob plus an optional summary and the answer, so reasoning state lives client-side and the server is stateless. Building on a Matthew Green blog post, the team showed the blobs replay across sessions, users and models. The Anthropic attack pastes a signed thinking block from Opus 4.8 into a Haiku 4.5 conversation and asks it to transcribe the reasoning verbatim; OpenAI needed a multi-turn prefill-and-continue pattern (the attacker supplies the opening of the model's reply). Extraction quality was checked against billed thinking-token counts, repeatability and style. After disclosure in July, Anthropic bound thinking blocks to the trajectory and added classifiers, OpenAI quantized reported thinking-token counts, and a September follow-up found Azure endpoints still vulnerable until late September. He then covers what the decoded traces reveal: 941 secrets across 315k scraped blobs, illegible reasoning, a model reasoning about bypassing a captcha, cheating considerations, unfaithful summaries and hazardous detail that the answer omits. The final section argues that raw reasoning is valuable distillation data (teacher data for training a student model), cites vendor and CISA statements about Chinese-lab distillation, and presents prefill experiments suggesting Kimi K3 was exposed to Opus 4.8 reasoning.",
+  "summary": "Schaeffer opens with the TL;DR: encrypted reasoning traces of frontier models could be decoded without breaking cryptography or attacking the capable model, and a YouTube commenter called it an API trick, which he accepts. He explains that reasoning models return an encrypted chain-of-thought blob plus an optional summary and the answer, so reasoning state lives client-side and the server is stateless. Building on a Matthew Green blog post, the team showed the blobs replay across sessions, users and models. The Anthropic attack pastes a signed thinking block from Opus 4.8 into a Haiku 4.5 conversation and asks it to transcribe the reasoning verbatim; OpenAI needed a multi-turn prefill-and-continue pattern (the attacker supplies the opening of the model's reply). Extraction quality was checked against billed thinking-token counts, repeatability and style. He reports that after disclosure in July, Anthropic bound thinking blocks to the trajectory and added classifiers, OpenAI quantized reported thinking-token counts, and a September follow-up found Azure endpoints still vulnerable until late September. He then reports what the decoded traces reveal: 941 secrets across 315k scraped blobs, illegible reasoning, a model reasoning about bypassing a captcha, cheating considerations, unfaithful summaries and hazardous detail that the answer omits. The final section argues that raw reasoning is valuable distillation data (teacher data for training a student model), cites vendor and CISA statements about Chinese-lab distillation, and presents prefill experiments suggesting Kimi K3 was exposed to Opus 4.8 reasoning.",
   "argument": [
     "Reasoning models keep their chain of thought as an encrypted blob that the client stores and replays, which makes the server stateless but leaves the blob portable.",
     "The blobs are valid across sessions, users and models, so a weaker model can be asked to transcribe a stronger model's hidden reasoning verbatim.",
@@ -100,8 +100,8 @@
     "Treat any client-stored model state, including encrypted reasoning blobs, as replayable and portable unless it is cryptographically bound to session, user and model.",
     "Assume agent transcripts committed to GitHub or Hugging Face may carry decodable reasoning containing secrets, and scrub or avoid publishing them.",
     "If you consume frontier models through a cloud aggregator, ask the aggregator and the lab whether the lab's extraction defenses are present on that endpoint.",
-    "For anti-distillation and abuse detection, monitor for extraction-shaped prompts and unusual thinking-token volume, since labs found campaigns that way.",
-    "Do not rely on reasoning summaries as a faithful audit trail for agent behavior."
+    "For anti-distillation and abuse detection, monitor for extraction-shaped prompts and unusual thinking-token volume, since the vendors say they found campaigns that way.",
+    "On one AIME example and a hazard-score chart, do not rely on reasoning summaries as a faithful audit trail for agent behavior."
   ],
   "limits": [
     "The speaker called the core attack an API trick rather than a machine learning advance.",
@@ -114,9 +114,7 @@
     "Anthropic and OpenAI confirmations are shown as screenshots, so the vendor figures are secondhand; the speaker did not claim the extraction method accounts for the 5 to 7 percent revenue share, only that it is the same class of activity.",
     "The 1.65 to 2.32 billion figure is distillation-customer revenue as detected by Anthropic's own review, which says nothing about how much of that used reasoning extraction specifically.",
     "The Kimi K3 evidence is an n-gram overlap and a resampled anecdote; open-weight models trained on public traces or similar post-training recipes could produce style convergence, and the speaker said as much.",
-    "Extraction quality is validated against billed token counts, which is a good independent check, but only for the cases shown; missing-reasoning outliers appear in all three vendor plots.",
-    "Contains named model versions and dates the transcript sometimes garbles, so the slides should be treated as authoritative for versions.",
-    "The speaker is a co-founder of R40 Research, a company that does red-teaming and lists planned hiring on the closing slide."
+    "Extraction quality is validated against billed token counts only for the cases shown; missing-reasoning outliers appear in all three vendor plots."
   ],
   "qa": [
     "Q: What low-hanging fruit and deeper defenses stop large-scale distillation and model theft? A: Anthropic's reasoning-extraction classifiers on prompts are reasonable but are cat and mouse; harder token-by-token extraction could be limited by blocking outputs that overlap heavily with raw reasoning, but attackers move; not solved.",
@@ -135,11 +133,11 @@
   ],
   "signal": {"score": 4, "reason": "The talk reports an attack class with vendor confirmations (shown as screenshots), a disclosure timeline and measured extraction quality; the attribution of distillation to specific labs rests on circumstantial evidence, as the speaker stated."},
   "caveats": [
-    "Auto-captions garble names: the transcript renders R40 as R4D, Panfilov as Philippov, Schmotz as Schmutz, GPT-5.6 Sol as 'saw', Shumailov spelling varies; slide spellings were used.",
-    "The transcript says Opus 4.8 throughout while one background slide shows a claude-opus-5 blob; the extraction attack slide shows claude-opus-4-8.",
-    "The transcript rounds the S-1 revenue range to 1.6 to 2.3 billion; the slide says 1.65 to 2.32 billion.",
-    "The final MC name in the transcript ('Hakeem') could not be confirmed and is not used.",
-    "Slide for the Kimi prefill chart is truncated at the legend; model names are taken from the legend as visible.",
-    "CISA advisory title, release date and alert code were read from small text on a slide."
+    "The captions say \"R4D\"; the slide says R40, and this record uses the slide.",
+    "The captions say \"saw\"; the slide says GPT-5.6 Sol, and this record uses the slide.",
+    "The captions say Opus 4.8 throughout; one background slide shows a claude-opus-5 blob and the extraction attack slide says claude-opus-4-8, and this record uses the extraction attack slide.",
+    "The captions say 1.6 to 2.3 billion; the slide says 1.65 to 2.32 billion, and this record uses the slide.",
+    "The slide for the Kimi prefill chart is truncated at the legend, and the list of compared models in the Kimi K3 claim depends on the legend as visible.",
+    "The CISA advisory title, release date and alert code were read from small text on a slide, and the Alert AA26-251A figure depends on that reading."
   ]
 }

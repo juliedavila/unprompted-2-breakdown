@@ -9,7 +9,7 @@
   "format": "talk",
   "duration_min": 24,
   "thesis": "Confidential-computing chips already sign a statement about themselves that vendors read once and discard; an outsider can keep it, verify it, grade it against twelve governance checks and hand auditors a replayable, law-mapped receipt.",
-  "summary": "The speaker, who describes himself as a policy person rather than a coder, opens with a coffee-bean analogy: we trust the label, and confidential AI today is the same. Confidential AI carries a trust tax (he says confidential GPUs cost five to six times a normal $1 to $2 per hour GPU), and auditors still ask whether you got what you paid for and can show it. He names four audiences (security lead, auditor, policy writer, startup founder) and three questions they all ask: who could see the data, what ran, and where. He explains confidential AI as protected memory, an owner-held key and attestation, then shows that the chip's signed statement is verified once by a cloud verifier and thrown away (NVIDIA tokens live about an hour). His open-source tool keeps the statement, verifies the certificate chain to the vendor root, and grades it against twelve checks (G01 to G12) in five groups: identity, isolation, versions, workload and records, and location, mapped to EU AI Act, DORA, ISO 42001, SOC 2 and the Chip Security Act. A pre-recorded demo runs against Tinfoil (AMD, 6 of 10 applicable checks, level 3 on his 0-to-4 trust ladder, where 3 means checked yourself to the chipmaker's root), RedPill/Phala (Intel TDX, 3 of 10, level 1) and his own Intel plus NVIDIA machine (6 of 12, level 3). He lists what no chip can say (location, compute, licence) or stop (side channels, physical access, model decisions) and proposes fully homomorphic encryption, citing his own company.",
+  "summary": "The speaker, who describes himself as a policy person rather than a coder, opens with a coffee-bean analogy: we trust the label, and confidential AI today is the same. He argues that confidential AI carries a trust tax (he says confidential GPUs cost five to six times a normal $1 to $2 per hour GPU), and that auditors still ask whether you got what you paid for and can show it. He names four audiences (security lead, auditor, policy writer, startup founder) and three questions they all ask: who could see the data, what ran, and where. He explains confidential AI as protected memory, an owner-held key and attestation, then says the chip's signed statement is verified once by a cloud verifier and thrown away (NVIDIA tokens live about an hour). His open-source tool keeps the statement, verifies the certificate chain to the vendor root, and grades it against twelve checks (G01 to G12) in five groups: identity, isolation, versions, workload and records, and location, mapped to EU AI Act, DORA, ISO 42001, SOC 2 and the Chip Security Act. A pre-recorded demo runs against Tinfoil (AMD, 6 of 10 applicable checks, level 3 on his 0-to-4 trust ladder, where 3 means checked yourself to the chipmaker's root), RedPill/Phala (Intel TDX, 3 of 10, level 1) and his own Intel plus NVIDIA machine (6 of 12, level 3). He lists what no chip can say (location, compute, licence) or stop (side channels, physical access, model decisions) and proposes fully homomorphic encryption, citing his own company.",
   "argument": [
     "Cloud AI is trusted on a vendor's word, and confidential AI adds a significant cost premium without giving auditors independent evidence.",
     "Confidential hardware already signs a statement of chip, firmware, debug state and isolation at every start, but it is verified once for key release and then discarded.",
@@ -70,7 +70,7 @@
     {"figure": "v0.0.167 and v0.0.145", "meaning": "Tinfoil current release and the stale September release used for the G08 test", "t": "12:10"},
     {"figure": "64 bytes", "meaning": "verifier-chosen data included in the chip's signed statement", "t": "10:03"},
     {"figure": "6", "meaning": "questions the other laws ask, across 12 laws and rule sets on the matrix slide", "t": "05:14"},
-    {"figure": "5", "meaning": "levels in the trust ladder, level 0 to level 4", "t": "16:25"},
+    {"figure": "5 (this record's arithmetic)", "meaning": "levels in the trust ladder, level 0 to level 4", "t": "16:25"},
     {"figure": "v0.6.1", "meaning": "tee_attestation_connector version shown in the demo (dated 2026-10-28)", "t": "12:10"}
   ],
   "frameworks": [
@@ -134,8 +134,8 @@
   ],
   "takeaways": [
     "If you buy confidential AI, require the provider to hand over raw attestation evidence and retain it yourself rather than accepting a log or screenshot.",
-    "Map audit questions (who could see data, what ran, where) to specific attestation fields and treat 'unknown' as a documented gap, not a pass.",
-    "Set a retention policy for attestation records that exceeds token lifetime, since vendor tokens may live about an hour.",
+    "As a test to run, since the speaker's mapping was not reviewed by a lawyer or auditor, map audit questions (who could see data, what ran, where) to specific attestation fields and treat 'unknown' as a documented gap, not a pass.",
+    "Check whether your retention period exceeds token lifetime (vendor tokens may live about an hour), and set attestation retention to match. The six-month figure is the speaker's own reading of the EU AI Act.",
     "Do not rely on attestation for location, compute or licensing claims; seek contractual or other controls for those.",
     "Try the open-source tool against your own confidential provider before an audit and check the exact check semantics before relying on a score."
   ],
@@ -148,12 +148,12 @@
     "The speaker described himself as a policy person who does not code."
   ],
   "critique": [
-    "The attestation-retention-and-grading idea is practical and well scoped, but the headline counts (6/10, 3/10, 6/12) are not comparable scores; the slide itself says a count is not a score, and different denominators are used per provider.",
+    "The main counts (6/10, 3/10, 6/12) are not comparable scores; the slide itself says a count is not a score, and different denominators are used per provider.",
     "The legend marks unknown as 'not a defect'; an auditor may treat an unknown as an open item, so the output reads more as a gap list than as a pass rate.",
     "The mapping to EU AI Act, DORA, ISO 42001 and SOC 2 is the speaker's own and no legal or auditor review was shown; the talk did not establish that attestation evidence satisfies the cited article requirements.",
-    "The cost claim (five to six times) and the 'on par' FHE performance claim were given without sources in the talk. The speaker works for Mirror Security, which sells FHE; the benchmarks referred to were not shown, and the talk did not address FHE performance overhead for LLM inference.",
-    "The ladder is clear on the slide (levels 0 to 4, with level 3 as what the audience watched and level 4 as continuous checking), but the spoken numbering differs from the slide. The published description cites live attestation, while the recording shows a replay of cached evidence with no network.",
-    "The headline Tinfoil figure moves from 5 of 10 to 6 of 10 only after the user supplies the expected launch measurement from the vendor's own release notes, so the extra pass depends on the user trusting that published value.",
+    "The cost claim (five to six times) and the 'on par' FHE performance claim were given without sources in the talk. The benchmarks referred to were not shown.",
+    "The published description cites live attestation, while the recording shows a replay of cached evidence with no network.",
+    "The main Tinfoil figure moves from 5 of 10 to 6 of 10 only after the user supplies the expected launch measurement from the vendor's own release notes, so the extra pass depends on the user trusting that published value.",
     "The Q&A answer on FHE latency referred to Mirror Security benchmarks and gave no figures."
   ],
   "qa": [
@@ -170,11 +170,11 @@
   ],
   "signal": {"score": 3, "reason": "The talk shows a method for retaining and grading attestation evidence, with an open-source tool demonstrated in a recorded run; the counts use different denominators per provider, and the fully homomorphic encryption performance claims were given without data."},
   "caveats": [
-    "Auto-captions garbled names and terms: the transcript renders the speaker as Jagannath Melachervu, 'Tinfoil' as 'tin foil' and 'Redpill' as 'Red Pill'; spellings follow slides and the badge (Jagannadh Mellacheruvu).",
-    "The published description says the tool verifies a live attestation of a production service; the demo header shows a replay of cached evidence with no network.",
-    "Transcript says 'six out of 10' for Tinfoil and 'three out of 10' for RedPill, consistent with the table; the published description's 'five pass plus six with network bound' is a separate framing.",
+    "The captions say \"Jagannath Melachervu\"; the badge says Jagannadh Mellacheruvu, and this record uses the badge.",
+    "The published description says the tool verifies a live attestation of a production service; the demo header says it replays cached evidence with no network, and this record uses the header.",
+    "The published description says \"five pass plus six with network bound\"; the table says 6 of 10 for Tinfoil, and this record uses the table, with the first demo output at 5 of 10.",
     "The terminal output of demo step 3/5 (RedPill/Phala) was not among the captured slides, so its details here rest on an earlier reading of the recording. The stale-release output of step 2 and the step 4 and 5 outputs were also not captured, only their step headers.",
-    "The trust ladder is shown on the slide as levels 0 to 4 with level 4 meaning checked every day; the speaker's spoken numbering differs from the slide, and the slide was used.",
+    "The speaker's spoken numbering of the trust ladder differs; the slide shows levels 0 to 4 with level 4 meaning checked every day, and this record uses the slide.",
     "The summary-table slide is captured mid-animation with every cell a question mark, so the terminal summary was used for per-check results.",
     "The closing Q&A shows only the camera, except for the conference Q&A sponsor slide."
   ]

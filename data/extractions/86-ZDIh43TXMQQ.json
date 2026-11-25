@@ -12,7 +12,7 @@
   "format": "talk",
   "duration_min": 24,
   "thesis": "Trust-based conversational scams (pig butchering and relatives) outrun block-and-detect defenses, so defenders should run AI personas that sustain weeks-long conversations with verified scammers and use the collected data to feed detection, intervention and takedown.",
-  "summary": "Mirian opens by moving the conference's focus from machine-targeted attacks to human-targeted ones: wrong-number style texts that look innocuous, hop from SMS to end-to-end encrypted apps, and run for days to months before revealing a payment ask such as a malicious app or a Zelle transfer. She argues these skirt traditional defenses because they are conversational, cross-platform and long-running. Her answer is an agentic investigation system. It generates synthetic personas (the example is Jason Walls, a JSON file with LLM-written bio and LoRA-generated selfies) that engage scammers across channels, including images and video. She names the hard parts: safety-policy judges, human-in-the-loop intervention, following scammers across platforms, and long-term behavioral coherence. Results from a small persona set: over a thousand conversations with verified attackers averaging about 8 days, a message-by-message attacker lifecycle, a 63.4 percent rate of requests to switch platforms, multimedia in about 22 percent of conversations, and cross-language artifacts such as a Nigerian calling card and a leaked LLM prompt. She then lists misalignment symptoms when assistants act as covert investigators, notes the attacks are still human scale in scam compounds, warns about an AI-run future, and says her team now operates at roughly a thousand times the initial scale.",
+  "summary": "Mirian opens by moving the conference's focus from machine-targeted attacks to human-targeted ones: wrong-number style texts that look innocuous, hop from SMS to end-to-end encrypted apps, and run for days to months before revealing a payment ask such as a malicious app or a Zelle transfer. She argues these skirt traditional defenses because they are conversational, cross-platform and long-running. Her answer, she says, is an agentic investigation system that generates synthetic personas (the example is Jason Walls, a JSON file with LLM-written bio and LoRA-generated selfies) that engage scammers across channels, including images and video. She names the hard parts: safety-policy judges, human-in-the-loop intervention, following scammers across platforms, and long-term behavioral coherence. She reports results from a small persona set: over a thousand conversations with verified attackers averaging about 8 days, a message-by-message attacker lifecycle, a 63.4 percent rate of requests to switch platforms, multimedia in about 22 percent of conversations, and cross-language artifacts such as a Nigerian calling card and a leaked LLM prompt. She then lists misalignment symptoms when assistants act as covert investigators, notes the attacks are still human scale in scam compounds, warns about an AI-run future, and says her team now operates at roughly a thousand times the initial scale.",
   "argument": [
     "Conversational, cross-platform, long-running trust attacks evade single-message and single-platform defenses.",
     "Blocking alone fails because attacker infrastructure changes within about 48 hours, so defenders need continuous investigation to feed every layer of defense.",
@@ -286,11 +286,11 @@
     "Press for more frequent and larger takedowns, since volume rebounds quickly after compound shutdowns."
   ],
   "takeaways": [
-    "Treat conversational, multi-platform scams as a distinct threat class: single-message and single-platform controls will not see them, so look for the cross-platform request and domain-sharing milestones.",
-    "Invest in active investigation or honeypot-style intelligence to keep blocking rules current, since attacker infrastructure changes within about 48 hours.",
-    "If you deploy agents in covert or adversarial roles, plan for assistant-trained behaviors (refusals, repetitive phrasing, over-disclosure) to leak the agent's nature and test for them.",
-    "Prepare for AI-run scam operations: automate per-message policy enforcement and escalation-based review before scaling any persona or agent fleet.",
-    "Use attacker artifacts such as multilingual calling cards, leaked prompts and stolen versus generated imagery as attribution and tooling signals."
+    "On lifecycle averages shown without spread, treat conversational, multi-platform scams as a distinct threat class, since single-message and single-platform controls will not see them. Look for the cross-platform request and domain-sharing milestones.",
+    "On the speaker's observation alone, with no data shown, invest in active investigation or honeypot-style intelligence to keep blocking rules current. Attacker infrastructure changes within about 48 hours.",
+    "From anecdotal cases with no rates given, plan for assistant-trained behaviors (refusals, repetitive phrasing, over-disclosure) to leak the nature of any agent you deploy in a covert or adversarial role, and test for them.",
+    "As a precaution against a speculative scenario, automate per-message policy enforcement and escalation-based review before scaling any persona or agent fleet.",
+    "On a few examples, use attacker artifacts such as multilingual calling cards, leaked prompts and stolen versus generated imagery as attribution and tooling signals."
   ],
   "limits": [
     "The study results are from a relatively small persona set; the thousand-times scale-up is not backed with data in the talk.",
@@ -301,13 +301,14 @@
     "Attributing attacker AI use to specific models and keeping personas coherent for weeks are listed as open problems."
   ],
   "critique": [
-    "The headline statistics have no denominators or confidence intervals, and the persona set, deployment platforms and verification method for 'verified attackers' are not described.",
+    "The main statistics have no denominators or confidence intervals, and the persona set, deployment platforms and verification method for 'verified attackers' are not described.",
     "The claim that intent is verifiable by message 10 with very high confidence has no accuracy, false positive or ground-truth method behind it.",
     "The lifecycle step numbers are averages and presented without spread, so their use as detection triggers cannot be assessed without the distributions.",
-    "The speaker is a co-founder of BeeSafe AI, a company that runs this kind of system; the talk does not say how the data reached victims, how interventions were measured, or whether any scam was prevented.",
-    "The claim of no safety policy violations is unauditable from the talk, and ethics of AI personas engaging real people (including trafficked workers) is not discussed beyond a policy-judge mention.",
+    "The system was run by the speaker's company, BeeSafe AI.",
+    "The talk shows no measurement of interventions and does not say whether any scam was prevented.",
+    "The claim of no safety policy violations is unauditable from the talk.",
     "The Q&A answer on takedowns relies on anecdotal volume observation rather than a presented time series.",
-    "The AI-run future is plausible but speculative; present observations show attackers are mostly human-scale and use stolen images."
+    "The AI-run future is speculative; present observations in the talk show attackers mostly at human scale and using stolen images."
   ],
   "qa": [
     "Q: Did the shutdown of Southeast Asian scam compounds affect volume? A: There are blips but volume creeps back quickly; takedowns help but need to be more frequent and larger.",
@@ -347,11 +348,10 @@
     "reason": "The talk reports conversation-lifecycle statistics from over 1,000 conversations between AI personas and verified attackers, gives no sample details, denominators or defensive outcomes, and describes the agent design at a high level."
   },
   "caveats": [
-    "Auto-caption garbles: the company BeeSafe AI appears as 'BAFE' in the transcript; the slide and the published description give BeeSafe AI.",
-    "Transcript says about 65 percent platform switching and 23 percent multimedia; slides say 63.4 and 22.4 percent, so slide values were used. Transcript says 8 days; slide says over 7.8 days.",
+    "The captions say \"BAFE\"; the slide and the published description say BeeSafe AI, and this record uses those.",
+    "The captions say about 65 percent platform switching, 23 percent multimedia and 8 days; the slides say 63.4 percent, 22.4 percent and over 7.8 days, and this record uses the slides.",
     "Platform chart percentages are read visually from bar lengths and are approximate.",
     "The third misalignment symptom (premature personal disclosure) was said aloud but its slide was not among the captured slides; the transcript is the source for it.",
-    "The speaker's opening GIF was shown as a static image; no video demos were captured.",
-    "Transcript refers to a 'famous fraud personality Alyssa'; the slide spells the name Alyssa in screenshots with the speaker saying Alyssa."
+    "The speaker's opening GIF was shown as a static image; no video demos were captured."
   ]
 }

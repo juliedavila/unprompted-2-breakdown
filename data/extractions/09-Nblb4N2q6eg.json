@@ -16,7 +16,7 @@
   "format": "talk",
   "duration_min": 20,
   "thesis": "Vaults and brokers decide who may see a key, but nothing answers which exact action may happen right now; a split-key hardware co-authorizer that parses and displays the exact bytes to be signed, and gates the signature on a physical button, closes that gap for SSH and FIDO2.",
-  "summary": "The talk presents core-keys, an open-source split-key hardware authenticator for SSH and FIDO2 built on a roughly 20 dollar ESP32-S3 touch-screen board, aimed at agents that already run commands like ssh, git push, terraform apply and kubectl delete under the user's own credentials. The opening frames two questions: vaults and brokers answer who may see the key, while nobody answers which exact action may happen now, and a compromised agent never needs to see the key because it just asks the broker to use it. Typical approval prompts are consent theater because the summary string comes from the thing being authorized; the signature covers bytes, the human reads prose, and nothing binds them. The design splits the key between a desktop daemon, which acts as the ssh-agent and FIDO2 policy engine, and the device, linked by a Noise protocol session over a vendor USB HID channel; the device signs only for an authenticated in-session request over the exact bytes, after the user presses a button having read honest context on its display. A live demo runs Claude Code issuing an SSH df -h and being unable to proceed until the device approves. The device parses SSH bytes itself and accepts three shapes only, and shows three honest display states for destination verification. The speakers then list findings: a 170 pixel approval screen the attacker half-writes, a kept reboot backdoor, threshold crypto that did not fit the microcontroller, a human-time budget set by the browser, and an adversarial review that found a signing oracle design and an unprivileged firmware control channel. They state what is not defended, show a built-versus-not-built table, and ask for a credential proxy for arbitrary agent actions.",
+  "summary": "The talk presents core-keys, an open-source split-key hardware authenticator for SSH and FIDO2 built on a roughly 20 dollar ESP32-S3 touch-screen board, aimed at agents that already run commands like ssh, git push, terraform apply and kubectl delete under the user's own credentials. The speakers open by arguing that vaults and brokers answer who may see the key while nobody answers which exact action may happen now, and that a compromised agent never needs to see the key because it just asks the broker to use it. They argue that typical approval prompts are consent theater because the summary string comes from the thing being authorized: the signature covers bytes, the human reads prose, and nothing binds them. The design splits the key between a desktop daemon, which acts as the ssh-agent and FIDO2 policy engine, and the device, linked by a Noise protocol session over a vendor USB HID channel; the device signs only for an authenticated in-session request over the exact bytes, after the user presses a button having read honest context on its display. A live demo runs Claude Code issuing an SSH df -h and being unable to proceed until the device approves. The device parses SSH bytes itself and accepts three shapes only, and shows three honest display states for destination verification. The speakers then list findings: a 170 pixel approval screen the attacker half-writes, a kept reboot backdoor, threshold crypto that did not fit the microcontroller, a human-time budget set by the browser, and an adversarial review that found a signing oracle design and an unprivileged firmware control channel. They state what is not defended, show a built-versus-not-built table, and ask for a credential proxy for arbitrary agent actions.",
   "argument": [
     "Agents impersonate the user for SSH, git and cloud actions, so handing them a key, or putting that key behind a vault or broker, still lets a compromised agent act with it.",
     "The missing control is a deterministic, out-of-band check of which exact action may proceed now, which needs something off the agent's machine that can truthfully tell a human what will be signed.",
@@ -141,7 +141,7 @@
     },
     {
       "figure": "about 30 seconds",
-      "meaning": "Firefox default WebAuthn timeout; SSH path budget 12 s plus 20 s equals 32 s",
+      "meaning": "Firefox default WebAuthn timeout; SSH path budget 12 s plus 20 s equals 32 s (this record's arithmetic)",
       "t": "14:28"
     },
     {
@@ -257,7 +257,7 @@
   "slide_only": [
     "Opening list of agent actions already happening: ssh prod-db, git push, terraform apply, kubectl delete, gh pr merge, aws s3 sync.",
     "Device hardware: composite USB device with CTAP HID on 0xF1D0 plus vendor channel on 0xFF00, no vendor software on the host; desktop daemon is ssh-agent, session owner and policy engine, pinned to the device at pairing; either half alone signs nothing.",
-    "Hardware spec table: Xtensa LX7 dual core 240 MHz, 512 KB SRAM, 45 GPIO; Wi-Fi 802.11 b/g/n and Bluetooth 5 LE both switched off; native USB OTG; chip from 2 dollars, module 3.40 dollars, whole board 20 dollars; the headline features are the ones switched off because a radio is remote reach into the keys and physical presence is the product.",
+    "Hardware spec table: Xtensa LX7 dual core 240 MHz, 512 KB SRAM, 45 GPIO; Wi-Fi 802.11 b/g/n and Bluetooth 5 LE both switched off; native USB OTG; chip from 2 dollars, module 3.40 dollars, whole board 20 dollars; the main features are the ones switched off because a radio is remote reach into the keys and physical presence is the product.",
     "Secure boot and flash encryption detail: Secure Boot v2 RSA-3072-PSS, 1216-byte signature block 4 KB aligned, eFuse digest of the 776-byte public key region with three slots, XTS-AES 256 or 512 bit flash encryption armed by SPI_BOOT_CRYPT_CNT; encryption stops reading flash, secure boot stops changing it; the prototype runs with both off.",
     "eFuse slide: SOC_ECC_SUPPORTED absent and SOC_MPI_SUPPORTED RSA to 4096, so the silicon accelerates RSA for secure boot but nothing for Ed25519 and every credential signature runs in software; release mode burns SECURE_BOOT_EN, DIS_DOWNLOAD_MANUAL_ENCRYPT, DIS_DOWNLOAD_MODE, DIS_USB_JTAG, DIS_DIRECT_BOOT then write-protects SPI_BOOT_CRYPT_CNT, which kills C0 DE B0 07.",
     "Approval screen mock-ups: benign github.com, hostile github.com.attacker.example with a FORWARDED badge where the tail survives, pairing with a compare code (418 174) and a long-name clamped case labeled unverified.",
@@ -321,8 +321,8 @@
   ],
   "takeaways": [
     "When you evaluate agent-approval or credential-broker products, ask whether the approval display is derived from the bytes that will be signed by something outside the agent's reach, not only whether the agent sees the key.",
-    "Treat any 'detached signature over the operation' co-authorization design as a suspected signing oracle and review it adversarially before implementing.",
-    "Require an explicit unverified state in approval UIs and disable fallback authentication paths on servers, or the hardware gate can be bypassed.",
+    "On the evidence of one team's own review, treat any 'detached signature over the operation' co-authorization design as a suspected signing oracle and review it adversarially before implementing.",
+    "Require an explicit unverified state in approval UIs and disable fallback authentication paths on servers, or the hardware gate can be bypassed. The support is the authors' own review of one prototype, so check it against your design.",
     "Account for human time budgets set by the calling protocol (browser WebAuthn timeouts, about 30 seconds) before designing human-in-the-loop approvals.",
     "Treat this as a prototype and a design reference rather than a deployable control: threat-model dev backdoors explicitly and plan release fuses, and consider a credential proxy as the next building block for non-SSH agent actions."
   ],
@@ -337,13 +337,12 @@
     "Several design items are listed as not verified, not enforced or not started, including a formal model, fuzzing, conformance and the credential proxy."
   ],
   "critique": [
-    "The design lessons (signing oracle in detached co-authorization, unverified display state, plaintext-frame rule) and the built-versus-not-built table are specific; the evidence for them is the authors' own review, with no independent audit and no formal model yet.",
+    "The evidence for the design lessons (signing oracle in detached co-authorization, unverified display state, plaintext-frame rule) and the built-versus-not-built table is the authors' own review, with no independent audit and no formal model yet.",
     "The spoken statement that the display is mathematically guaranteed to match the signature is not shown on the slides, which list formal modeling as not started; the guarantee depends on the on-device parser and the host-supplied fields.",
-    "The limits slide lists desktop malware while the user is present as not defended, and the agent runs on that same desktop; the design relies on the user reading the screen, the talk does not address approval fatigue for high-frequency agent commands, and it mentions an on-device agent or model only briefly as a possible mitigation.",
+    "The limits slide lists desktop malware while the user is present as not defended, and the agent runs on that same desktop; the design relies on the user reading the screen, and no data on approval fatigue for high-frequency agent commands was shown.",
     "The spoken description includes hashing long commands with a skill and comparing digits between agent and device; this is not on the slides, it depends on the agent-side skill reporting correctly, which places trust in the agent side the device is meant not to trust, and no analysis of that dependency was shown.",
     "The slides say threshold ECDSA was rejected for FIDO2 while the built table says a FIDO2 split-key assertion runs on hardware; the scheme actually in use for FIDO2 today is unclear from the talk.",
-    "The competitive survey dated 2026-09-01 lists a small set of products and standards, and the statement that no open-source project binds approval to hardware cannot be checked from the recording.",
-    "The speakers are a company CTO and a vulnerability researcher; the project is open source and its limits are stated on the slides."
+    "The competitive survey dated 2026-09-01 lists a small set of products and standards, and the statement that no open-source project binds approval to hardware cannot be checked from the recording."
   ],
   "qa": [
     "Question: can this protect a financial transaction against a destination account that does not match the intended payee, beyond SSH? Answer: they aim to, but are not there yet; it is more a UI and usability problem than a cryptographic one, and for now the protection equals what WebAuthn and SSH already give."
@@ -382,7 +381,8 @@
   },
   "caveats": [
     "Two speakers are on the title slides (Zimmerle, CTO KonaSense; Branco, Vulnerability Researcher, Anthropic, per the lower-third and the published description) plus a third author Rafael Silva on the slides; one voice is heard and the transcript does not say who speaks which part.",
-    "The auto-captioned transcript diverges heavily from the slides and is garbled: 'Corky's demon' is the core-keys daemon, 'Frost' is FROST, 'cloud code' is Claude Code, 'lipid curve' is elliptic curve, 'mule' is the firmware directory name; 'Apple FM' and 'PII' could not be matched to a slide term; several spoken points (command hashing with an agent skill, a possible on-device agent) have no matching slide.",
+    "The captions say 'Corky's demon', 'Frost', 'cloud code', 'lipid curve' and 'mule'; the slides say the core-keys daemon, FROST, Claude Code, elliptic curve and the mule-esp32s3 firmware directory, and this record uses the slides.",
+    "Several spoken points (command hashing with an agent skill, a possible on-device agent) have no matching slide.",
     "Several slide sections (findings one through six, the review, the survey, limits) are not narrated in the transcript, so claims in those areas rest on the slides alone.",
     "Slide text for dollar prices, cert validity and tests was read from the captured slides; small slide text on the Q&A and hardware pages was legible but not verified against the repository.",
     "The Q&A segment is short; only one question was recorded."

@@ -16,7 +16,7 @@
   "format": "talk",
   "duration_min": 24,
   "thesis": "A prompt-injection and jailbreak detector can match the semantic understanding of an LLM judge at near classical-ML cost by reading the hidden states of a small frozen open-weight model with per-layer logistic-regression probes, without generating a single token.",
-  "summary": "Intuit's AI scientists describe a generation-free guardrail for prompt injection, jailbreak and goal hijacking. The setting is enterprise scale: hundreds of GenAI use cases, every input scanned at peak traffic, and a latency target of under 700 ms p99. Rules and classical ML meet the budget but are easy to bypass; LLM judges are accurate but too slow and costly. The proposed route is to run the input through a small open-weight model (2 to 4B parameters) once, read last-token hidden states from a band of layers, score each layer with a logistic-regression probe, average across layers, take the maximum across 512-token windows, and compare to a per-application threshold. The backbone is never fine-tuned and probes train in hours. Guy Elad walks through an animated demo with benign, direct-attack and long-document cases, then experiments showing that the useful layer band differs by backbone and modality, that last-token reading beats averaging over all tokens, and that logistic regression was good enough. Guy Shtar then shows the full detector as a short code listing using forward hooks and an early-exit exception, and the production work: cross-request GPU batching, skipping the language-model head, per-app calibration and a retrain loop. Results: 98.1% recall on 11,086 held-out attacks, 85.4% on 996 never-seen red-team attacks, about a 70% cut in successful attacks, about 7 false alarms per million, 59 ms median latency and roughly 11 times lower cost than a judge LLM.",
+  "summary": "Intuit's AI scientists describe a generation-free guardrail for prompt injection, jailbreak and goal hijacking. The setting is enterprise scale: hundreds of GenAI use cases, every input scanned at peak traffic, and a latency target of under 700 ms p99. They say rules and classical ML meet the budget but are easy to bypass, and LLM judges are accurate but too slow and costly. The proposed route is to run the input through a small open-weight model (2 to 4B parameters) once, read last-token hidden states from a band of layers, score each layer with a logistic-regression probe, average across layers, take the maximum across 512-token windows, and compare to a per-application threshold. They say the backbone is never fine-tuned and probes train in hours. Guy Elad walks through an animated demo with benign, direct-attack and long-document cases, then experiments showing that the useful layer band differs by backbone and modality, that last-token reading beats averaging over all tokens, and that logistic regression was good enough. Guy Shtar then shows the full detector as a short code listing using forward hooks and an early-exit exception, and the production work: cross-request GPU batching, skipping the language-model head, per-app calibration and a retrain loop. They report 98.1% recall on 11,086 held-out attacks, 85.4% on 996 never-seen red-team attacks, about a 70% cut in successful attacks, about 7 false alarms per million, 59 ms median latency and roughly 11 times lower cost than a judge LLM.",
   "argument": [
     "Detection must sit in the request path for every call at enterprise scale, but rule and classical models are easily bypassed and LLM judges are too slow and costly.",
     "A small frozen open-weight model already encodes 'this is an attack' in its internal activations before any output token exists, so reading those activations gives semantic understanding without generation and without a prompt that can itself be injected.",
@@ -289,7 +289,7 @@
     "Evaluate on whole datasets from other sources, report per-dataset results, and keep a team collecting fresh attacks; permute collected attacks for training data."
   ],
   "takeaways": [
-    "Consider an activation-probe first line in front of, not instead of, an LLM judge; the evidence here supports a cascade, with the judge adding only 0.3 points of attack success (2.8% to 2.5%).",
+    "Consider an activation-probe first line in front of, not instead of, an LLM judge; the evidence here supports a cascade, with the judge adding only 0.3 points (this record's arithmetic) of attack success (2.8% to 2.5%).",
     "If you build any ML guardrail, test on entire held-out datasets from unrelated sources and report every dataset, because aggregate scores can hide a source that fails completely.",
     "Set the false-positive budget with the product teams and calibrate per application; accept that near-zero false alarms costs recall.",
     "Budget for production engineering (batching, early exit, retraining, per-app thresholds), which is most of what made this deployable, and plan GPU hosting.",
@@ -304,12 +304,12 @@
     "Comparison with a newer detector model was still in progress at the time: initial results were comparable and depend on configuration and attack type."
   ],
   "critique": [
-    "The headline numbers are from the authors' own datasets and an internal baseline described as an older syntactic model; the talk gives no head-to-head accuracy numbers against named open detectors or frontier judges; the published description cites a 20+ dataset comparison, which the recording does not show.",
-    "85.4% recall on never-seen red-team attacks means about one in seven still pass, and the 2.8% residual attack success has no stated attack-strategy mix; there is no adaptive-attacker evaluation against a probe whose backbone and layers an attacker might guess or probe.",
+    "The main numbers are from the authors' own datasets and an internal baseline described as an older syntactic model; the talk gives no head-to-head accuracy numbers against named open detectors or frontier judges; the published description cites a 20+ dataset comparison, which the recording does not show.",
+    "85.4% recall on never-seen red-team attacks means about one in seven (this record's arithmetic) still pass, and the 2.8% residual attack success has no stated attack-strategy mix; there is no adaptive-attacker evaluation against a probe whose backbone and layers an attacker might guess or probe.",
     "The claim that the approach works for commercial black-box models rests on attack-transferability literature the speaker cited verbally; it is a statement about the detector scanning inputs with its own model, not evidence that detection transfers across attack styles.",
     "The cost comparison (about 11x) and latency (13x) were shown without hardware, batch size, judge model or prompt details, so they cannot be reproduced from the recording alone.",
     "The animated demo scores are labeled illustrative, so they show the mechanism, not performance.",
-    "The talk reports its own failures (the 140 of 140 miss and the recall-versus-false-alarm tradeoff) and gives specific production-engineering detail; the trained probes and thresholds were not shared.",
+    "The trained probes and thresholds were not shared.",
     "The published description cites batching reducing latency from about 4.1 s to under 820 ms bit-exact; the recording does not show it, and the slide says batching changes 0.04% of verdicts, so batching is not bit-exact."
   ],
   "qa": [
@@ -350,9 +350,10 @@
     "reason": "The talk presents a detector design with a layer-band study, ablations and production figures including a dataset it missed entirely, compared against an internal baseline, with no adaptive-attacker test shown."
   },
   "caveats": [
-    "Auto-captions garble names: 'phi', 'small VLM' and 'gamma' are Phi-3.5, SmolVLM2 and Gemma-3 per the slides; the competing model called 'Jeff' in the Q&A could not be identified and is not named on any slide.",
+    "The captions say phi, small VLM and gamma; the slides say Phi-3.5, SmolVLM2 and Gemma-3, and this record uses the slides.",
+    "The captions call a competing model 'Jeff'; no slide names it, and the limit about the comparison still in progress depends on it.",
     "The speakers are identified from badges and the transcript: the first speaker's badge reads Guy Elad and the second speaker (blue shirt) is taken to be the other listed presenter, Guy Shtar; the transcript does not label who speaks when after the handoff.",
-    "The captions say the baseline improved by 70% in terms of 'recall' and that catch rate 'is better', while the slide shows attack success rate falling from 10.3% to 2.8%; slide used for the numbers.",
+    "The captions say the baseline improved by 70% in recall and that the catch rate is better; the slide says attack success rate fell from 10.3% to 2.8%, and this record uses the slide.",
     "Layer-range bar heights on the 0.1% FPR chart were not read off numerically; only the qualitative pattern and the band table are recorded.",
     "The description's references to 'bit-exact batching, ~4.1s to under 820ms' and '20+ public datasets' do not appear in the transcript or slides."
   ]

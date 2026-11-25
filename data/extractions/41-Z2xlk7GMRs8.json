@@ -16,7 +16,7 @@
   "format": "talk",
   "duration_min": 30,
   "thesis": "Rather than layering AI over every stage of the secure development lifecycle, Stripe picked the stages where security review was a bottleneck and built agents for each, putting every agent through a trial of offline evals, shadow mode and risk-based rollout while keeping humans on the loop.",
-  "summary": "Deshpande and Prakash follow a fictional engineer, Alex, through the secure software development lifecycle and show four places where Stripe applied agents to remove a security bottleneck, concentrating on the design and implementation stages. They state three principles each agent is held to: security should be automatic, seamless and readily available in developer workflows. The first stop is the design doc, where an agent injects a security considerations section; a three-condition experiment (plain prompt, focused prompt, dedicated skill) scored on coverage, specificity, actionability, accuracy and bottleneck prevention found the dedicated skill won, though the focused prompt was nearly as good but failed the automatic principle. The second stop replaces manual security review intake with risk-based intake: lower-risk reviews get a self-service, agent-generated threat model that the requesting team marks relevant or not, with an asynchronous audit, while critical or ambiguous reviews stay in the human queue. Stripe reports average completion falling from about 55 days to 13 over August to October 2026, with caveats. The third stop handles policy exception requests with a split between deterministic rules, an agent for contextual judgment and human review above medium risk, rolled out in offline evals, shadow mode and risk-based phases. The fourth stop is an agent that checks remediation fixes against code and returns addressed, partially addressed or not addressed with citations.",
+  "summary": "Deshpande and Prakash follow a fictional engineer, Alex, through the secure software development lifecycle and show four places where Stripe applied agents to remove a security bottleneck, concentrating on the design and implementation stages. They state three principles each agent is held to: security should be automatic, seamless and readily available in developer workflows. The first stop is the design doc, where an agent injects a security considerations section; they report that a three-condition experiment (plain prompt, focused prompt, dedicated skill) scored on coverage, specificity, actionability, accuracy and bottleneck prevention found the dedicated skill won, though the focused prompt was nearly as good but failed the automatic principle. The second stop replaces manual security review intake with risk-based intake: lower-risk reviews get a self-service, agent-generated threat model that the requesting team marks relevant or not, with an asynchronous audit, while critical or ambiguous reviews stay in the human queue. Stripe reports average completion falling from about 55 days to 13 over August to October 2026, with caveats. The third stop handles policy exception requests with a split between deterministic rules, an agent for contextual judgment and human review above medium risk, rolled out in offline evals, shadow mode and risk-based phases. The fourth stop is an agent that checks remediation fixes against code and returns addressed, partially addressed or not addressed with citations.",
   "argument": [
     "Adding AI across every SDLC stage is not enough; each stage's actual security pain point should be understood and an agent built to reduce that specific bottleneck.",
     "Agents must meet three design principles: security that is automatic, seamless and readily available inside existing developer workflows.",
@@ -275,10 +275,10 @@
     "Keep humans on the loop with feedback, spot checks, trend analysis, async audit, rollback and manual handling of ambiguous cases."
   ],
   "takeaways": [
-    "Pick agent targets by locating the human-capacity bottleneck in each stage of your SDLC instead of adding agents everywhere.",
-    "Run the three conditions (plain prompt, focused prompt, dedicated skill) on historical cases before choosing how to deliver a security assist, and judge delivery by whether it runs automatically.",
-    "Route reviews by risk and keep critical and ambiguous cases with humans, so reviewer attention goes where it is needed.",
-    "Adopt the shadow-mode phase between offline evals and live action, and expand scope by action risk.",
+    "On one company's evidence, pick agent targets by locating the human-capacity bottleneck in each stage of your SDLC instead of adding agents everywhere.",
+    "As a test to run, compare the three conditions (plain prompt, focused prompt, dedicated skill) on historical cases before choosing how to deliver a security assist, and judge delivery by whether it runs automatically.",
+    "As a pattern to test, route reviews by risk and keep critical and ambiguous cases with humans, so reviewer attention goes where it is needed.",
+    "As a pattern to test, adopt the shadow-mode phase between offline evals and live action, and expand scope by action risk.",
     "Plan for measuring security outcomes, not just cycle time, since Stripe reports only stage-level measurement so far."
   ],
   "limits": [
@@ -290,7 +290,7 @@
     "The talk covered only design and implementation; planning, verification, deployment and maintenance are still being worked on."
   ],
   "critique": [
-    "The headline result compares two different populations (63 manual reviews versus 70 self-service reviews) and measures elapsed time, which includes waiting on humans; it does not show review quality or that the self-service threat models found the same risks.",
+    "The main result compares two different populations (63 manual reviews versus 70 self-service reviews) and measures elapsed time, which includes waiting on humans; it does not show review quality or that the self-service threat models found the same risks.",
     "No security outcome data is shown, as an audience member asked; no audit results were presented, so it is not known whether faster completion reflects more risks marked not relevant by requesting teams, which only an async audit would catch.",
     "The design-doc experiment reports a ranking but no scores, sample size or number of historical cases, so the strength of the dedicated skill advantage cannot be judged.",
     "The spoken 74 percent differs from the slide's 76.4 percent reduction, and the spoken 55 days is a rounding of the slide's 54.9; the slide figures are the ones recorded.",
@@ -335,11 +335,11 @@
   ],
   "signal": {
     "score": 3,
-    "reason": "The talk describes a production deployment with one headline metric and a rollout pattern; results on review quality and security outcomes were not shown."
+    "reason": "The talk describes a production deployment with one main metric and a rollout pattern; results on review quality and security outcomes were not shown."
   },
   "caveats": [
-    "Auto-captions are mostly clean; the Gartner survey attribution comes from the transcript only and no slide shows it.",
-    "The spoken result was 74 percent and 55 days; the slide says 76.4 percent less time and 54.9 days, and the slide is used.",
+    "The captions attribute the survey to Gartner; no slide shows it, and this record reports the attribution as spoken.",
+    "The captions say 74 percent and 55 days; the slide says 76.4 percent less time and 54.9 days, and this record uses the slide.",
     "No slide showed the design-doc experiment scores; only the condition names and scorecard dimensions were shown.",
     "The recording shows 39 slides, some shots show only the speaker, and the Q&A had no slides beyond the Q&A card.",
     "Prakash's title on the opening slide is Software Engineer; Deshpande's is Staff Security Engineer on the lower-third and Security Engineer on the thanks slide."

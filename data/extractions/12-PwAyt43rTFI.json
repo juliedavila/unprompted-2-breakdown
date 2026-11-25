@@ -16,7 +16,7 @@
   "format": "talk",
   "duration_min": 28,
   "thesis": "The main barrier to scaled agentic AI is the absence of a mature enterprise control plane for agent identity, authorization, observability and accountability, and production readiness has to be earned separately at the advise, assist, act and platform levels because failures change as authority grows.",
-  "summary": "The talk has two halves. Chenxi Wang reports an interview study of agent deployments: she spoke to almost 50 companies, about 32 in depth, grouped on a slide as 5 AI-native, 14 AI-forward and 13 AI-conservative. Regulated firms mostly stay at copilots, one proprietary on-prem stack aside; all firms report throughput gains without workforce cuts; between March and September the maturity curve shifted from copilot and summarizing toward execution within limits, with a few at full autonomy; AI-native firms say they underspend on tokens while conservative ones restrict spend. The most successful use cases are bounded, high-volume, repeatable, auditable and reversible, with code generation, customer service and productivity leading. She argues long-horizon tasks such as penetration testing are the frontier, that trust and governance is the number one barrier, and that a control plane is what is missing. Jasmine Jaksic then walks through NVIDIA agents by authority level (advise, assist, act), each with its own characteristic failure. An advise-level bug tracking assistant scored 83 percent on an easy test, 50 percent on a representative set, then 82 percent after fixes. An assist-level personal assistant lost track of completed tasks across channels, a context and state problem rather than a model one. A platform failure saw a fail-closed admission webhook and Argo CD (a GitOps controller) self-heal deadlock a cluster. For act-level agents she shows a per-action authorization design, Nomos: petition, screen, council of three AI reviewers, and a signed time-limited writ.",
+  "summary": "The talk has two halves. Chenxi Wang reports an interview study of agent deployments: she spoke to almost 50 companies, about 32 in depth, grouped on a slide as 5 AI-native, 14 AI-forward and 13 AI-conservative. She reports that regulated firms mostly stay at copilots, one proprietary on-prem stack aside; that all firms report throughput gains without workforce cuts; that between March and September the maturity curve shifted from copilot and summarizing toward execution within limits, with a few at full autonomy; and that AI-native firms say they underspend on tokens while conservative ones restrict spend. She reports that the most successful use cases are bounded, high-volume, repeatable, auditable and reversible, with code generation, customer service and productivity leading. She argues long-horizon tasks such as penetration testing are the frontier, that trust and governance is the number one barrier, and that a control plane is what is missing. Jasmine Jaksic then walks through NVIDIA agents by authority level (advise, assist, act), each with its own characteristic failure. An advise-level bug tracking assistant scored 83 percent on an easy test, 50 percent on a representative set, then 82 percent after fixes. An assist-level personal assistant lost track of completed tasks across channels, which she describes as a context and state problem rather than a model one. A platform failure saw a fail-closed admission webhook and Argo CD (a GitOps controller) self-heal deadlock a cluster. For act-level agents she shows a per-action authorization design, Nomos: petition, screen, council of three AI reviewers, and a signed time-limited writ.",
   "argument": [
     "Real enterprise agent deployments are concentrated in bounded, high-volume, repeatable, auditable and reversible work, and regulation and culture hold regulated firms at copilots.",
     "Enterprises are moving along an autonomy spectrum from copilot toward execution within limits, and long-horizon tasks such as penetration testing are the frontier.",
@@ -287,10 +287,10 @@
     "Invest in the control plane gaps: containment, observability and approval gates identified by the study."
   ],
   "takeaways": [
-    "Bounded, high-volume, repeatable, auditable, reversible, with a defined escalation path.",
-    "Rebuild agent evals from real, hard production queries before launch; expect the score to fall and treat the drop as a worklist.",
-    "Jaksic's test, can this agent do this exact thing against this target in this context: make authorization per action and context-aware rather than a static permission grant, with short-lived signed approval tokens.",
-    "Review security controls that fail closed (they reject everything when they cannot run), and test that the platform can recover without them; check for GitOps loops that re-enable a broken control.",
+    "Pick agent use cases that are bounded, high-volume, repeatable, auditable and reversible, with a defined escalation path. This rests on a small interview study with no sampling method, so check it against your own deployments.",
+    "On one internal tool's evidence, rebuild agent evals from real, hard production queries before launch; expect the score to fall and treat the drop as a worklist.",
+    "Ask whether this agent can do this exact thing against this target in this context, and make authorization per action and context-aware rather than a static permission grant, with short-lived signed approval tokens. No results were shown for the design behind this, so test it before relying on it.",
+    "On one incident's evidence, review security controls that fail closed (they reject everything when they cannot run), and test that the platform can recover without them; check for GitOps loops that re-enable a broken control.",
     "Budget for governance code: NVIDIA's one data point puts it at a meaningful share of the work, whichever direction the 10 to one runs."
   ],
   "limits": [
@@ -302,7 +302,7 @@
   "critique": [
     "The study half is interview-based; no sample selection method, instrument or counts behind the maturity curve were shown, so the March to September shift cannot be checked from the recording.",
     "The sample size is inconsistent across sources: the transcript says almost 50 and 32, the slide totals 32, and the published description says 28 organizations.",
-    "The control plane conclusion is presented by a speaker who is a general partner at a venture capital firm; the slide color coding of which gaps are lacking is not tied to evidence shown.",
+    "The slide color coding of which control plane gaps are lacking is not tied to evidence shown.",
     "The bug assistant example gives 83, 50 and 82 percent without the test size, scoring method or how the representative set was built.",
     "No measured results, false positive or false negative rates, or analysis of prompt injection against the council were shown for Nomos; the Q&A answer was that multiple LLMs with different perspectives mitigate it, and no data supported that. The speaker said the council description was simplified for time and pointed to the repository.",
     "The 10 to 1 ratio is stated without definitions, and the direction is unclear from the audio."
@@ -343,8 +343,8 @@
     "reason": "The talk presents an interview-based adoption snapshot with no sampling detail, production failure accounts with specific figures, and an open-source per-action authorization design without results."
   },
   "caveats": [
-    "Sample size conflicts: transcript says almost 50 interviewed and 32 comprehensive, the slide chart totals 32 (5 + 14 + 13), and the published description says 28 organizations; this record uses the slide figure.",
-    "Auto-captions render Chenxi as Chansi and Nomos as Normal; this record uses the slide spellings.",
+    "The captions say almost 50 interviewed and 32 comprehensive; the slide chart totals 32 (5 + 14 + 13), the published description says 28 organizations, and this record uses the slide figure.",
+    "The captions say Chansi and Normal; the slides say Chenxi and Nomos, and this record uses the slides.",
     "The speaker's remark about purple versus blue dots in the control plane slide does not match the slide, which uses green and purple; which components are lacking was not recorded.",
     "The 10 to 1 code ratio direction (capability lines to governance lines) is ambiguous in the transcript.",
     "Talk is cut off at the end for the Q&A due to time; the Q&A has one recorded question.",

@@ -16,7 +16,7 @@
   "format": "talk",
   "duration_min": 26,
   "thesis": "Chrome now ships a local Gemini Nano model and inference engine that any website or extension can call with no permission prompt, rate limit or throttling, which makes it a free compute resource for token-farming botnets, an injectable target for security features, and a ready-made engine for future malware.",
-  "summary": "Ciancaglini opens with the trend of AI moving onto devices and a timeline of browser support for local models: Opera in April 2024, Chrome with Gemini Nano in May 2024, Edge with Phi-4 in May 2025, Firefox moving its engine from WASM to ONNX in August 2025, and the Prompt API (Chrome's local-model API) reaching general availability in May 2026. He frames three threat scenarios: AI as a resource, a target and a weapon. Tulis then describes Chrome's model: Gemini Nano-3 (the third Gemini Nano version) at an estimated 8 to 10 billion parameters, a weights.bin file downloaded on demand to eligible machines, and the APIs that use it. The Prompt API has no permission model, so he demos a token-mining botnet in which a streaming page enrolls the visitor's tab and an admin panel routes OpenAI-compatible jobs to it. He benchmarks tokens per second by hardware, prices them against comparable small models, and compares the take with CoinHive (the in-browser cryptocurrency miner). He shows that Chrome's scam detector, until a week earlier, could be fooled by prompt injecting the local model, and lists XSS and tool-calling risks. He then shows how to reuse the model outside Chrome, swap in Qwen, and test whether Gemini Nano could power credential-based worm propagation; it finds secrets reasonably well but fails at extracting and using them.",
+  "summary": "Ciancaglini opens with the trend of AI moving onto devices and a timeline of browser support for local models: Opera in April 2024, Chrome with Gemini Nano in May 2024, Edge with Phi-4 in May 2025, Firefox moving its engine from WASM to ONNX in August 2025, and the Prompt API (Chrome's local-model API) reaching general availability in May 2026. He frames three threat scenarios: AI as a resource, a target and a weapon. Tulis then describes Chrome's model: Gemini Nano-3 (the third Gemini Nano version) at an estimated 8 to 10 billion parameters, a weights.bin file downloaded on demand to eligible machines, and the APIs that use it. Tulis says the Prompt API has no permission model, and he demos a token-mining botnet in which a streaming page enrolls the visitor's tab and an admin panel routes OpenAI-compatible jobs to it. He benchmarks tokens per second by hardware, prices them against comparable small models, and compares the take with CoinHive (the in-browser cryptocurrency miner). He shows that Chrome's scam detector, until a week earlier, could be fooled by prompt injecting the local model, and lists XSS and tool-calling risks. He then shows how to reuse the model outside Chrome, swap in Qwen, and test whether Gemini Nano could power credential-based worm propagation; the speakers report it finds secrets reasonably well but fails at extracting and using them.",
   "argument": [
     "Browsers now ship local models and inference engines at scale, and Chrome is the most mature example.",
     "Chrome's local inference API has no permission prompt, usage indicator, rate limit or throttling, so it is a free compute primitive like CoinHive was but without the mitigations browsers later added.",
@@ -329,11 +329,11 @@
     "Add browsers to the shadow AI inventory."
   ],
   "takeaways": [
-    "Decide whether the enterprise should disable Chrome's on-device model with the enterprise policy until a permission model exists, since there is no granular control.",
+    "As a precaution, since the speakers had observed no real-world token-farming botnet, decide whether the enterprise should disable Chrome's on-device model with the enterprise policy until a permission model exists. There is no granular control.",
     "Add on-device inference to shadow AI scope: browsers on eligible machines (16 GB RAM, 4 cores, 32 GB disk) can run a model without any install.",
     "Treat any security feature that consumes a local model's output as injectable, including signals that feed a server-side verdict, and review internal designs that do this.",
     "Review web applications that call the browser's Prompt, Summarizer or Writer APIs for innerHTML rendering and untrusted-input injection.",
-    "Update detection for AI-powered malware: egress to Hugging Face or OpenAI endpoints will not catch malware that uses a local engine, so endpoint behavior and model-file telemetry matter."
+    "As a check against a threat not yet observed, review whether your detection for AI-powered malware depends on egress to Hugging Face or OpenAI endpoints, which will not catch malware that uses a local engine. Endpoint behavior and model-file telemetry would matter there."
   ],
   "limits": [
     "Scam detection moved to a cloud model about a week before the talk, so the demonstrated injection no longer applies to the current flow; the speakers kept the message.",
@@ -348,8 +348,7 @@
     "The revenue figures are projections from one assumed price ($0.10 per million tokens) with no buyer, and the CoinHive comparison sets a one-off hypothetical across 10,000 sites against CoinHive's weekly aggregate, so the claim that token mining is more favorable than crypto-jacking is not established.",
     "The comparable-model table lists 3-4B models while Nano-3 is estimated at 8-10B parameters; the price basis differs from the model's estimated size, and combining prefill and decode into a single speed does not account for lower decode throughput on a tab competing with the user's own work.",
     "The demo showed the worker side only; there was no evidence of a buyer-facing service, job reliability, or how long a tab would stay enrolled, and the botnet-scale claims rest on 65 percent Chrome market share rather than on tab-dwell data.",
-    "The worm evaluation names its datasets and gives specific numbers, but the sample sizes and prompting method were not shown, and the conclusion that propagation is poor is a limit of the current model, not of the architecture.",
-    "The point that no local model should feed security decisions is well supported by the injection demo, though it concerns a design Google has since replaced.",
+    "The worm evaluation's sample sizes and prompting method were not shown, and the conclusion that propagation is poor is a limit of the current model, not of the architecture.",
     "The criminal token-resale slides show commercial reseller pages, which are not by themselves evidence of criminal activity; the link to botnet demand is asserted from threat intel that was not detailed."
   ],
   "qa": [
@@ -392,15 +391,16 @@
     "reason": "The talk shows a recorded demo of a token-mining botnet worker, reports hardware benchmarks and a worm evaluation on named datasets, and gives revenue projections from stated assumptions."
   },
   "caveats": [
-    "Auto-caption errors: David Tulis is transcribed as David Tolley; the Qwen model in LameHug is transcribed as Quen 2.9 while the slide reads Qwen 2.5-Coder-32B-Instruct, which this record uses.",
-    "Firefox's engine move is transcribed as WASM to WasmX; the slide reads WASM to ONNX. Microsoft Edge support is transcribed as 54; the slide reads Phi-4.",
+    "The captions say David Tolley; this record uses David Tulis.",
+    "The captions say \"Quen 2.9\" for the Qwen model in LameHug; the slide says Qwen 2.5-Coder-32B-Instruct, and this record uses the slide.",
+    "The captions say the Firefox engine moved from WASM to WasmX; the slide says WASM to ONNX, and this record uses the slide.",
+    "The captions say Microsoft Edge support is for 54; the slide says Phi-4, and this record uses the slide.",
     "The timeline slide labels May 2026 Prompt API general availability as Nano-2, while the model evolution slide lists Nano-v2 as August 2025 and Nano-v3 as May 2026; the inconsistency is on the slides and is unresolved.",
-    "The speaker said CoinHive had 50,000 nodes; the slide says 50,000 websites. This record uses the slide.",
-    "Revenue figures: the speaker said 52 cents per day and $22 per 1,000 streams for the high case; slides read $0.528 and a $11 to $22 range.",
-    "The worm slide and speaker describe Anthropic's work differently (Android devices spoken, IoT devices on the slide); the distributed-inference reference to a company released last week is transcribed as On Tropic and could not be confirmed.",
-    "Speaker said the Gemini Nano scam detector change happened about a week earlier; the slide shows an Oct 20 post. The demo screenshot clock shows Oct 28.",
+    "The captions say CoinHive had 50,000 nodes; the slide says 50,000 websites, and this record uses the slide.",
+    "The captions say 52 cents per day and $22 per 1,000 streams for the high case; the slides say $0.528 and a $11 to $22 range, and this record uses the slides.",
+    "The captions say Android devices for Anthropic's work; the worm slide says IoT devices, and this record uses the slide.",
+    "The captions say the scam detector change happened about a week earlier; the slide shows an Oct 20 post and the demo screenshot clock shows Oct 28, and this record uses the slide.",
     "The Venice.ai and Vireonix slides were not named aloud; this record lists them as examples of token resale; the speakers' exact statement about them is not known.",
-    "The admin panel of the botnet demo was not shown on screen; the demo screenshot is a recorded worker client.",
-    "Qwen is transcribed as Cwen in places."
+    "The admin panel of the botnet demo was not shown on screen; the demo screenshot is a recorded worker client."
   ]
 }

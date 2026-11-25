@@ -16,7 +16,7 @@
   "format": "talk",
   "duration_min": 23,
   "thesis": "LLM agents can now find and, with a strong enough starting point, weaponize remotely reachable bugs in messaging apps at a cost of under five figures in API fees, so the trusted-contact gating that messaging apps rely on is no longer a dependable boundary.",
-  "summary": "Anna Groza of Calif.io opened by saying the talk is not the one originally proposed. The plan was to use LLM agents to enumerate and audit the remotely reachable attack surface of mobile messaging apps, combining static analysis with a lightweight man-in-the-middle setup that lets an agent alter messages between two phones and watch what the receiving client does. Results on large messaging apps came out far better than expected, so the talk became a tour of what that produced. She first gave background: the 2019 Group FaceTime logic bug, Natalie Silvanovich's 2021 state-machine survey of calling stacks, and a 2025 Project Zero report on WhatsApp contact gating. Then three findings. The first was a flaw in a legacy WeChat calling stack that the agents found, which the team turned into a proof-of-concept worm demo called WeWorm; she said it was found with a frontier model and a $200 subscription, in an app with about 1.5 billion users. The second was a Samsung parser bug paired with a WhatsApp 0-click path from a trusted contact, with the details redacted, a fix that turned out to be incomplete, and cooperation from Meta's product security team. The third was an AI-assisted exploit for an iOS graphics bug recently exploited in the wild, which she said an unreleased OpenAI cyber model produced in roughly three hours from a short prompt, even with Apple's newest memory and pointer protections on.",
+  "summary": "Anna Groza of Calif.io opened by saying the talk is not the one originally proposed. The plan was to use LLM agents to enumerate and audit the remotely reachable attack surface of mobile messaging apps, combining static analysis with a lightweight man-in-the-middle setup that lets an agent alter messages between two phones and watch what the receiving client does. She said results on large messaging apps came out far better than expected, so the talk became a tour of what that produced. She first gave background: the 2019 Group FaceTime logic bug, Natalie Silvanovich's 2021 state-machine survey of calling stacks, and a 2025 Project Zero report on WhatsApp contact gating. She then presented three findings. The first, she said, was a flaw in a legacy WeChat calling stack that the agents found, which the team turned into a proof-of-concept worm demo called WeWorm; she said it was found with a frontier model and a $200 subscription, in an app with about 1.5 billion users. The second, she said, was a Samsung parser bug paired with a WhatsApp 0-click path from a trusted contact, with the details redacted, a fix that turned out to be incomplete, and cooperation from Meta's product security team. The third, she said, was an AI-assisted exploit for an iOS graphics bug recently exploited in the wild, which she said an unreleased OpenAI cyber model produced in roughly three hours from a short prompt, even with Apple's newest memory and pointer protections on.",
   "argument": [
     "Enumerating remote attack surface in messaging apps is slow and tedious for humans, so the team asked how much of it an LLM agent could do with static analysis plus a message-tampering harness between two phones.",
     "The agents found simple but serious logic bugs, and the real value was the reachability work that got the team to them, which is the same pattern as earlier state-machine research on calling stacks.",
@@ -243,11 +243,11 @@
     "Do not treat Lockdown Mode as sufficient against document-rendering bugs, per the speaker."
   ],
   "takeaways": [
-    "Budget for attackers who can pay under five figures in API fees for a working mobile exploit, and revisit any threat model that assumes such exploits are rare.",
-    "Treat trusted-contact or contact-gating checks as a convenience control, not a security boundary, in any messaging or collaboration product you build or buy.",
-    "Fund broader sandboxing of file and media parsing (separate process, reduced privileges) because logic gaps in gating will keep appearing.",
+    "On an unverified cost estimate, budget for attackers who can pay under five figures in API fees for a working mobile exploit, and revisit any threat model that assumes such exploits are rare.",
+    "On a few case studies, treat trusted-contact or contact-gating checks as a convenience control, not a security boundary, in any messaging or collaboration product you build or buy.",
+    "On a point the talk argued rather than measured, fund broader sandboxing of file and media parsing (separate process, reduced privileges) because logic gaps in gating will keep appearing.",
     "Run the same kind of agent-driven reachability audit on your own apps: a message-tampering harness plus static analysis is cheap enough to try.",
-    "Plan for compressed patch-to-exploit timelines when a bug is already known in the wild, because a model may rebuild a stronger exploit within hours."
+    "On one case, plan for compressed patch-to-exploit timelines when a bug is already known in the wild, because a model may rebuild a stronger exploit within hours."
   ],
   "limits": [
     "The speaker said the Samsung exploit needed substantial human guidance and steering.",
@@ -256,7 +256,7 @@
     "The speaker said the model's output was so surprising that she first believed it was fake and verified it by repeated testing across boots."
   ],
   "critique": [
-    "The headline results rest on a small number of case studies, with no hit rate, false-positive rate or total spend across the audited apps shown, so the claim that this scales is stated rather than measured.",
+    "The main results rest on a small number of case studies, with no hit rate, false-positive rate or total spend across the audited apps shown, so the claim that this scales is stated rather than measured.",
     "Cost figures such as 'under five figures' and a $200 subscription are speaker estimates with no cost table shown, and the talk does not say whether they include researcher time spent steering the agents and building the harness.",
     "The iOS result starts from a bug that was already publicly exploited and written up by the team, so it shows strong exploit development from a known primitive, not autonomous discovery.",
     "The comparison with the in-the-wild sample rests on public reporting that it needed mitigations disabled, and no independent verification was shown.",
@@ -303,9 +303,9 @@
   },
   "caveats": [
     "Summary-level record: exploit mechanics deliberately not recorded.",
-    "Auto-captions garble several names: the frontier model name ('Opus Freight') and the cyber-model name are unclear in the transcript; the slide labels the exploit author as 'Astra Cyber' and the speaker thanked OpenAI for letting her name the model.",
-    "The captions render iOS version numbers as '271' and '27 2'; the slide shows 'pre 26.7.1', the fixed version was not stated on a slide.",
-    "The speaker name for the 2025 report is captioned 'Brandon Titska'; the slide reads Brendon Tiszka.",
+    "The captions say 'Opus Freight' for the frontier model behind the WeChat finding and no slide names it, so the WeChat cost claim rests on an unconfirmed model. The captions leave the cyber model's name unclear; the slide labels the exploit author 'Astra Cyber', and this record uses the slide. The speaker thanked OpenAI for letting her name the model.",
+    "The captions say '271' and '27 2' for the iOS version; the slide says pre 26.7.1, and this record uses the slide. The fixed version was not stated on a slide.",
+    "The captions say 'Brandon Titska' for the author of the 2025 report; the slide says Brendon Tiszka, and this record uses the slide.",
     "Slides contain Wi-Fi details on the conference template, which are not recorded."
   ]
 }

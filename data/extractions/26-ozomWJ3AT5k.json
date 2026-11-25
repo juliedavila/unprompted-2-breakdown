@@ -7,7 +7,7 @@
   "format": "talk",
   "duration_min": 25,
   "thesis": "Frontier coding agents have reached a Lee Sedol moment in cryptanalysis: in summer 2026 they helped break key-recovery assumptions that had held for 48 years in Classic McEliece, and in one month a single cryptographer with a typical developer subscription compressed roughly six months to a year of review of China's 119 new post-quantum and hash candidates.",
-  "summary": "Saarinen opens with Classic McEliece, a 1978 code-based cryptosystem that stayed in textbooks for decades because of large public keys, was modernized by Bernstein, Lange and coauthors for the NIST PQC competition, recommended by Germany's BSI from 2020, and made an ISO standard in June 2026. For 48 years the cost of recovering its secret key was estimated as a brute-force search, and the TII (UAE Technology Innovation Institute) challenge series (2023-24, prizes of $10,000 from TII-70 up) is the benchmark. In July 2026 he used a frontier-model optimization loop to find a shortcut, which he calls HOVER, in Hemmert's high-order vanishing key recovery, solving TII-252 in about six minutes on a laptop. In August a holdout attack paper (with an AI disclosure that states heavy AI use) and then Steve Weis, with Claude, completed a key-recovery step. Saarinen ran an eight-day human-directed AI loop to break TII-254. Every published estimate for the ISO parameter sets now sits below the claimed security level, and BSI withdrew its recommendation for new designs on September 29, 2026. The second half covers ngcc.dev: from September 21 he ran Codex and Claude Code, on about $75 a week, against 119 Chinese candidates in NGCC, the competition run by China's Institute of Commercial Cryptography Standards, with a source-only harness (nothing a submission ships is ever executed), spec digests, briefs and a severity policy. After a week there were 191 findings, 110 of them from his project; after a month 409 active findings, 160 critical, with nearly every candidate affected.",
+  "summary": "Saarinen opens with Classic McEliece, a 1978 code-based cryptosystem that stayed in textbooks for decades because of large public keys, was modernized by Bernstein, Lange and coauthors for the NIST PQC competition, recommended by Germany's BSI from 2020, and made an ISO standard in June 2026. He says that for 48 years the cost of recovering its secret key was estimated as a brute-force search, and presents the TII (UAE Technology Innovation Institute) challenge series (2023-24, prizes of $10,000 from TII-70 up) as the benchmark. In July 2026 he used a frontier-model optimization loop to find a shortcut, which he calls HOVER, in Hemmert's high-order vanishing key recovery, solving TII-252 in about six minutes on a laptop. He says that in August a holdout attack paper (with an AI disclosure that states heavy AI use) and then Steve Weis, with Claude, completed a key-recovery step. Saarinen ran an eight-day human-directed AI loop to break TII-254. He reports that every published estimate for the ISO parameter sets now sits below the claimed security level, and that BSI withdrew its recommendation for new designs on September 29, 2026. The second half covers ngcc.dev: from September 21 he ran Codex and Claude Code, on about $75 a week, against 119 Chinese candidates in NGCC, the competition run by China's Institute of Commercial Cryptography Standards, with a source-only harness (nothing a submission ships is ever executed), spec digests, briefs and a severity policy. He reports that after a week there were 191 findings, 110 of them from his project, and after a month 409 active findings, 160 critical, with nearly every candidate affected.",
   "argument": [
     "Cryptanalysis is a domain where frontier agents now produce results that experts accept, and summer 2026 is the Lee Sedol moment.",
     "Classic McEliece key recovery had been assumed to cost brute-force search for 48 years; an AI-found shortcut, a holdout attack and a Claude-assisted completion pushed every published estimate for the ISO parameter sets below the claimed level.",
@@ -36,7 +36,7 @@
     {"figure": "48 years", "meaning": "age of McEliece key-recovery assumptions treated as brute-force search before 2025-26", "t": "02:10"},
     {"figure": "$10,000", "meaning": "TII prize for each challenge from TII-70 up, 2023-24", "t": "03:14"},
     {"figure": "6 min 15 s", "meaning": "wall time for HOVER to solve TII-252 on a 12-core laptop (2.7 GiB)", "t": "04:45"},
-    {"figure": "94.3 to 137.5", "meaning": "bit-security estimates for mceliece348864 from Weis (94.3) up to Saarinen (126.8) against NIST requirement 143", "t": "06:16"},
+    {"figure": "94.3 to 137.5 (this record's arithmetic)", "meaning": "bit-security estimates for mceliece348864 from Weis (94.3) up to Saarinen (126.8) against NIST requirement 143", "t": "06:16"},
     {"figure": "8 days / about 2 hours", "meaning": "length of the human-directed AI loop for TII-254, and kernel reconstruction time on 8 GH200 GPUs", "t": "07:19"},
     {"figure": "TII-254, TII-255", "meaning": "hardest solved challenge (m,t,n = 8,12,223) and the one still unsolved", "t": "07:51"},
     {"figure": "2026-09-29", "meaning": "date BSI withdrew its Classic McEliece recommendation for new developments", "t": "08:23"},
@@ -108,11 +108,11 @@
     "For cryptography users: stop recommending or starting new designs on Classic McEliece, follow regulator updates such as BSI TR-02102-1, and do not roll your own crypto even with AI help."
   ],
   "takeaways": [
-    "Treat AI-assisted cryptanalysis as live: audit anything your platform depends on for post-quantum or non-standard primitives, and expect cost estimates for older schemes to be revised downward quickly.",
-    "If you commission AI review of a large codebase or third-party submissions, copy the harness pattern: source-only build, isolation, evidence rules, spec digests, checklists and a severity policy, rather than a generic prompt.",
-    "Plan around expert direction and triage capacity rather than compute: Saarinen reports that coverage of 119 candidates cost about $75 a week.",
-    "Plan for report triage: automated filtering of AI-generated reports (5 valid of 162 observations) before humans read them.",
-    "Watch standards bodies and regulators for rapid guidance changes after AI-assisted breaks, and keep crypto-agility in your design so you can swap algorithms."
+    "Treat AI-assisted cryptanalysis as live: audit anything your platform depends on for post-quantum or non-standard primitives, and check whether cost estimates for the older schemes you use need revising. They were revised downward for Classic McEliece.",
+    "On one operator's evidence, if you commission AI review of a large codebase or third-party submissions, copy the harness pattern: source-only build, isolation, evidence rules, spec digests, checklists and a severity policy, rather than a generic prompt.",
+    "On one operator's evidence, plan around expert direction and triage capacity rather than compute. Coverage of 119 candidates cost about $75 a week, excluding the operator's own time.",
+    "On one batch's evidence, plan for report triage: automated filtering of AI-generated reports (5 valid of 162 observations) before humans read them.",
+    "On one regulator's reaction (BSI), watch standards bodies and regulators for rapid guidance changes after AI-assisted breaks, and keep crypto-agility in your design so you can swap algorithms."
   ],
   "limits": [
     "The Classic McEliece attacks are far from practical against the ISO parameters; the estimates are heuristic and below the NIST requirement, not complete breaks.",
@@ -127,7 +127,7 @@
     "The attribution split (110 from his project plus AI versus 61 human or unknown) relies on self-reported AI disclosure by other researchers, so the AI share rests on disclosure by others and cannot be verified.",
     "Counting findings by candidate mixes very different severities and a Critical label that depends on the competition's own requirements, so the count does not map directly to real-world exploitability, which the speaker partly acknowledged by saying timing attacks were rated High.",
     "The claim that AI compressed six months to a year into one month is an estimate with no baseline shown, and the effect of the speaker's own domain expertise (checklists, classification) is confounded with the model's.",
-    "The headline that Classic McEliece is basically broken is softened later by far from practical; the practical evidence is BSI's guidance change rather than a deployable attack.",
+    "The main claim that Classic McEliece is basically broken is softened later by far from practical; the practical evidence is BSI's guidance change rather than a deployable attack.",
     "The cost figure of $75 a week excludes the speaker's own time; the slide shows subscription prices (Codex about $200 a month plus Claude Code about $100 a month), and the talk does not state what 2.01 billion tokens would cost at usage-based rates."
   ],
   "qa": [
@@ -146,9 +146,13 @@
   ],
   "signal": {"score": 5, "reason": "The talk reports quantified new results (TII-252 and 254 key recoveries, estimates below the claimed level, 409 findings in a month) from one practitioner running commodity agents, and a regulator reaction that changed guidance."},
   "caveats": [
-    "Auto-caption garbles names: Lee Sedol appears as Lee settle, Steve Weis as Steve Wise, Martin Feussner as Martin Foisner, ngcc.dev as ngc.dev, and the institute name as commercial crypto standards; slide spellings used.",
-    "Speaker says TII-255 is the one missing, and describes the loop as about two hours on eight GH200 GPUs; the slide shows the two-hour figure only for kernel reconstruction, with 13.6 hours per anchor for the Wiedemann stage.",
-    "The transcript says 100 candidates and about 75 dollars a week; slides say 119 candidates and 117 built on day one.",
+    "The captions say \"Lee settle\"; the slide says Lee Sedol, and this record uses the slide.",
+    "The captions say \"Steve Wise\"; the slide says Steve Weis, and this record uses the slide.",
+    "The captions say \"Martin Foisner\"; the slide says Martin Feussner, and this record uses the slide.",
+    "The captions say \"ngc.dev\"; the slide says ngcc.dev, and this record uses the slide.",
+    "The captions say \"commercial crypto standards\"; the slide says Institute of Commercial Cryptography Standards, and this record uses the slide.",
+    "The speaker describes the loop as about two hours on eight GH200 GPUs; the slide shows the two-hour figure only for kernel reconstruction, with 13.6 hours per anchor for the Wiedemann stage, and this record uses the slide.",
+    "The captions say 100 candidates; the slides say 119 candidates and 117 built on day one, and this record uses the slides.",
     "The speaker said BSI quoted his work; the slide confirms references 16 and 17 are his.",
     "Several slides appear both with and without the speaker camera, so the same slide repeats in progressive reveal; the recording opens on a conference welcome slide with no talk content.",
     "No affiliation was shown or said; the published description gives only job descriptions."

@@ -7,7 +7,7 @@
   "format": "talk",
   "duration_min": 24,
   "thesis": "Autonomous Claude agents are strong at offense in human cyber competitions but only partly effective as a blue team, so AI currently widens the attacker-defender asymmetry; defense needs focused work on coordination, adversarial judgment and prevention rather than AI layered on existing processes.",
-  "summary": "Yestekov, with a disclaimer that views are his own, frames the history of attacker-defender asymmetry, where defenders historically lagged by years, and asks how AI changes it. He tests fully autonomous Claude agents in human cyber competitions, with research done January to May 2026. In CTFs, an autonomous team reached the top 25 on CTFtime, the capture-the-flag leaderboard, within three months and the top 15 on a Hack The Box season; on picoCTF it solved 69 of 70 challenges in six hours, but top human teams using Codex and Claude Code in parallel were faster, so human plus AI still beats AI alone. He compares this to chess centaurs (human plus engine teams that beat either alone) and roughly estimates autonomous AI passing centaurs in cyber around mid-2028. In a red team uplift study at the Collegiate Cyber Defense Competition (CCDC), agentic AI operators scored 12x more approved points than operators using AI chat. He then ran autonomous blue teams through three CCDC rounds against a professional red team. Round 1 showed playbooks help but limit agents, the harness crashed, and almost half the damage was self-inflicted. Round 2 used a rewritten harness and led the field on day 1 before the red team escalated. Round 3 targeted judgment, where instructed paranoia caused agents to distrust everyone. A forensics section covers anchoring and hallucination and a recursive reviewer design. He concludes defense is uplifted by percentage points versus orders of magnitude for offense.",
+  "summary": "Yestekov, with a disclaimer that views are his own, frames the history of attacker-defender asymmetry, where defenders historically lagged by years, and asks how AI changes it. He tests fully autonomous Claude agents in human cyber competitions, with research done January to May 2026. In capture-the-flag contests (CTFs), he reports that an autonomous team reached the top 25 on CTFtime, the contest leaderboard, within three months and the top 15 on a Hack The Box season; on picoCTF it solved 69 of 70 challenges in six hours, but top human teams using Codex and Claude Code in parallel were faster, which he reads as human plus AI still beating AI alone. He compares this to chess centaurs (human plus engine teams that beat either alone) and roughly estimates autonomous AI passing centaurs in cyber around mid-2028. In a red team uplift study at the Collegiate Cyber Defense Competition (CCDC), he reports that agentic AI operators scored 12x more approved points than operators using AI chat. He then ran autonomous blue teams through three CCDC rounds against a professional red team. He reports that in round 1 playbooks helped but limited agents, the harness crashed, and almost half the damage was self-inflicted. Round 2 used a rewritten harness; he says it led the field on day 1 before the red team escalated. Round 3 targeted judgment, where he reports that instructed paranoia caused agents to distrust everyone. A forensics section covers anchoring and hallucination and a recursive reviewer design. He concludes defense is uplifted by percentage points versus orders of magnitude for offense.",
   "argument": [
     "Historically attackers innovate and defenders catch up after years of lag, and AI plausibly widens that gap.",
     "Autonomous agents are competitive in CTFs and a human-plus-AI centaur still beats AI alone, but that window is likely short.",
@@ -90,10 +90,10 @@
     "Shift defensive investment toward prevention, such as formally verified code, rather than layering AI over existing human processes."
   ],
   "takeaways": [
-    "Before deploying multi-agent defensive automation, test for agent-on-agent interference: a single credential rotation set off a cascade that took down DNS and nine other services.",
-    "Be careful with 'assume breach' style prompts for agents; test whether they induce distrust of operators and peers and define a trusted channel for overrides.",
-    "Evaluate defensive agents on uptime and incident documentation separately from proactive detection, since the talk shows strength in the first and weakness in the second.",
-    "Treat human plus AI as the near-term operating model for both offense and defense and plan for the autonomous crossover estimate of roughly 2028 as uncertain.",
+    "On the evidence of one round, test for agent-on-agent interference before deploying multi-agent defensive automation: a single credential rotation set off a cascade that took down DNS and nine other services.",
+    "As a test to run, check whether 'assume breach' style prompts induce distrust of operators and peers, and define a trusted channel for overrides.",
+    "On a small number of runs, defensive agents were strong on uptime and incident documentation and weak on proactive detection. Evaluate those separately.",
+    "On a rough estimate from an illustrative chart, treat human plus AI as the near-term operating model for both offense and defense, and treat the autonomous crossover estimate of roughly 2028 as uncertain.",
     "Use self-audited metrics cautiously; the authors themselves separate organizer-confirmed from agent-reported results."
   ],
   "limits": [
@@ -109,7 +109,7 @@
     "The round 1 comparison confounds guidance level with run-to-run variance because each condition ran once.",
     "The 12x figure compares agentic AI to AI chat, not to no AI, and is measured in approved points that depend on judging.",
     "The centaur-to-autonomy timeline is extrapolated from an illustrative chart, and the speaker called it a very rough estimate.",
-    "The title slide lists the speaker as an Anthropic Research Fellow (the speaker said former), and the results concern Claude, a model made by that company; the talk reports failures as well as successes.",
+    "The talk evaluated Claude, a model made by Anthropic, where the title slide lists the speaker as a Research Fellow (the speaker said former).",
     "The closing recommendation on formally verified code was not tested in the study.",
     "Forensics results are described qualitatively with no measured accuracy or hallucination rates."
   ],
@@ -126,10 +126,9 @@
   ],
   "signal": {"score": 4, "reason": "The talk reports scores, charts and described failure modes for autonomous blue-team agents from a small number of runs, with results self-audited and separated from organizer-confirmed outcomes."},
   "caveats": [
-    "Auto-captions garble names: Jurnet for Yernat, 'Mephis and Hugging Face incident' could not be confirmed, 'deputy seesaw of entropic' could not be confirmed, 'Circus' competitions for forensics were not confirmed on a slide.",
-    "The speaker described forensics recursion as up to seven layers while the round 3 slide says 10-level deep recursion; both are recorded.",
-    "The transcript says the no-guidance team was closer to the human median and the playbook team never matched it; slide end values show the playbook team ending higher at 3,654 versus -975, so the claim is recorded with the slide figures.",
-    "The transcript rendered 'top 15 teams' on Hack The Box with no supporting slide.",
+    "The captions say forensics recursion goes up to seven layers; the round 3 slide says 10-level deep recursion, and this record reports both.",
+    "The captions say the no-guidance team was closer to the human median and the playbook team never matched it; the slide shows the playbook team ending higher at 3,654 versus -975, and this record uses the slide.",
+    "The captions say 'top 15 teams' on Hack The Box; no slide supports it, so this record reports it as the speaker's statement.",
     "Slide text for the letter photo is small; only legible lines are reflected."
   ]
 }

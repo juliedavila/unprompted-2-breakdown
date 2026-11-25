@@ -12,7 +12,7 @@
   "format": "opening",
   "duration_min": 20,
   "thesis": "Defenders should stop automating their existing workflows faster and instead restructure security work around what models do natively, using vulnerability research, application security and threat intelligence as three worked examples. The attackers' singularity moment has already happened and the defenders' has to follow.",
-  "summary": "Gadi Evron opens day 3 by recapping the previous day's demos and then walking through three of his own personal projects as examples of staying relevant with AI. He recaps a Doom demo where a live function was rewritten with a model so monsters stopped firing, and a second demo where a simple web app detected a SQL injection in its logs and patched the vulnerable function on the fly, which he calls purely vibe coded and not production ready. He then introduces a four-layer model of AI usage (automate yourself, orchestrate the automation, structure data natively for the model, AI-native), says attackers mostly work at layers one to three and rarely at layer four (AI-native), and describes his hunt for logic vulnerabilities. That led to Snouter, a symmetry and asymmetry mapper, which found over 600 results on Raptor and helped surface an OpenBMC IPMI privilege escalation with HD Moore. A later graph tool, Code Surf, maps relationships among values, call sites, routes and trust zones rather than source-to-sink flows. Running it on Raptor gave 2,500 findings but one defense-in-depth bug, so he reused the findings as a dataset to map which guards each finding shape passes through, and proposes watching guard coverage regressions instead of chasing patches. Last, he presents Adversary Brains, a threat intelligence approach that scales analysis of competing hypotheses to thousands of weighted hypotheses used as detection signatures, published as an arXiv preprint. He closes with a call to try ideas that fail, retry with each new model, and take AI back from the marketers.",
+  "summary": "Gadi Evron opens day 3 by recapping the previous day's demos and then walking through three of his own personal projects as examples of staying relevant with AI. He recaps a Doom demo where a live function was rewritten with a model so monsters stopped firing, and a second demo where a simple web app detected a SQL injection in its logs and patched the vulnerable function on the fly, which he calls purely vibe coded and not production ready. He then introduces a four-layer model of AI usage (automate yourself, orchestrate the automation, structure data natively for the model, AI-native), says attackers mostly work at layers one to three and rarely at layer four (AI-native), and describes his hunt for logic vulnerabilities. He says that led to Snouter, a symmetry and asymmetry mapper, which he reports found over 600 results on Raptor and helped surface an OpenBMC IPMI privilege escalation with HD Moore. A later graph tool, Code Surf, maps relationships among values, call sites, routes and trust zones rather than source-to-sink flows. He reports that running it on Raptor gave 2,500 findings but one defense-in-depth bug, so he reused the findings as a dataset to map which guards each finding shape passes through, and proposes watching guard coverage regressions instead of chasing patches. Last, he presents Adversary Brains, a threat intelligence approach that scales analysis of competing hypotheses to thousands of weighted hypotheses used as detection signatures, published as an arXiv preprint. He closes with a call to try ideas that fail, retry with each new model, and take AI back from the marketers.",
   "argument": [
     "Attackers have already moved to automating and orchestrating with AI, and defenders need their own step change rather than faster versions of current work.",
     "AI usage has four layers (automate yourself, orchestrate the automation, structure data natively for the model, and AI-native), and security work rarely reaches the fourth.",
@@ -277,11 +277,11 @@
     "Encode threat intelligence as weighted hypothesis graphs (adversary brains) matched against telemetry, and use partially matched brains to drive collection of missing evidence."
   ],
   "takeaways": [
-    "Audit where your team's AI use sits among the four layers and pick one workflow to restructure at layer 3 or 4 rather than orchestrating it faster.",
+    "On the speaker's own model, with no data behind it, audit where your team's AI use sits among the four layers and pick one workflow to restructure at layer 3 or 4 rather than orchestrating it faster.",
     "Pilot a guard inventory and guard-coverage regression alert on one codebase, using existing scanner output as input, before deciding whether patch volume is the right metric.",
     "Treat model-generated leads from unconventional prompts (trust boundaries, symmetry) as recall-oriented inputs and budget a separate verification stage.",
     "Experiment with hypothesis-style detection content next to Sigma and YARA, starting from your prose threat reports, but wait for evidence of detection quality before relying on it.",
-    "Re-run abandoned AI experiments whenever a new model ships."
+    "On the speaker's experience alone, re-run abandoned AI experiments whenever a new model ships."
   ],
   "limits": [
     "The self-healing demo is vibe coded and may not work in production.",
@@ -293,10 +293,9 @@
   "critique": [
     "Nearly every claim is shown by demo or assertion; there are no precision, false-positive or detection-rate numbers for Snouter, Code Surf or Adversary Brains.",
     "The 600+ results and 2,500 findings are raw counts with one confirmed defense-in-depth bug reported for the second, so the signal-to-noise of the tools is unknown.",
-    "The OpenBMC CVE is a real outcome, but the talk does not say how much of the finding came from Snouter versus HD Moore's prior three months of work.",
+    "The talk gives no breakdown of how much of the OpenBMC finding came from Snouter versus HD Moore's prior three months of work.",
     "The jump from 2,500 findings on one hardened project to a general claim that defenders can maintain around 4,000 guards instead of 100,000 findings is not supported by data in the recording; the speaker says he does not know whether it will scale.",
-    "The recording does not discuss safety questions for live patching from log detection, such as a wrong patch, attacker-triggered rewrites or absence of review; the speaker described the demo as vibe coded and not necessarily production ready.",
-    "The speaker is CEO and co-founder of Knostic; the thesis is a call to action and the talk presents no product."
+    "No testing of a wrong patch, attacker-triggered rewrites or absence of review was shown for live patching from log detection; the speaker described the demo as vibe coded and not necessarily production ready."
   ],
   "qa": [],
   "tags": [
@@ -332,10 +331,10 @@
     "reason": "The talk presents several ideas (guard coverage regression, hypothesis-graph detections) with one published CVE, and the results shown are demos and stated assertions, with no measured detection or precision data."
   },
   "caveats": [
-    "Auto-captions garble names: the transcript renders Kat Traxler as Kat Roxler, uses PuPu for pew-pew, cloud for Claude, Voln for vuln, and Von pocalypse and breach pocalypse for vulnpocalypse; slides were used for spellings.",
-    "The transcript says 'Daniel Gashi and Tamir Isakhal' and 'my a byte'; the slide shows Daniel Geyshis and Tamir Isaschar and BITE.",
-    "Raptor is never defined in the talk; the transcript's 'barely databases' and 'Raptor' references were taken as spoken.",
-    "The transcript attributes a model name as Opus 4.8 and Opus 5; these were not on a slide and are recorded as said.",
+    "The captions say Kat Roxler; the slide says Kat Traxler, and this record uses the slide.",
+    "The captions say 'Daniel Gashi and Tamir Isakhal' and 'my a byte'; the slide says Daniel Geyshis and Tamir Isaschar and BITE, and this record uses the slide.",
+    "Raptor is never defined in the talk, and this record uses the name as spoken.",
+    "The captions say Opus 4.8 and Opus 5; no slide shows either, and this record says only a newer Opus model.",
     "The published description is truncated, so the full abstract was not available.",
     "Slides are largely title-style text; the slides are partly occluded by the speaker video on the left."
   ]

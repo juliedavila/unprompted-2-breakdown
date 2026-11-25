@@ -254,9 +254,9 @@
     "Treat zero-day discovery as routine and shift effort to defense and patching; 60 of the CTF's submissions shipped with a patch."
   ],
   "takeaways": [
-    "Expect AI-assisted bug finding to produce verified kernel and open source findings at volume, and plan triage and patch capacity rather than treating each as exceptional.",
-    "Invest in governance and policy content and practice; the organizer called governance the weakest, most slop-prone track.",
-    "Use public prompt-injection challenges like AlexBot to calibrate how often persona-driven agents hand over secrets; 31 of 38 flags fell.",
+    "On one CTF's organizer-reported counts, which do not show how much was AI-driven, expect AI-assisted bug finding to produce verified kernel and open source findings at volume, and plan triage and patch capacity rather than treating each as exceptional.",
+    "On one organizer's opinion, invest in governance and policy content and practice; governance was called the weakest, most slop-prone track.",
+    "As something to try, use public prompt-injection challenges like AlexBot to calibrate how often persona-driven agents hand over secrets; 31 of 38 flags fell in that one challenge.",
     "Use the shared NotebookLM notebook and forthcoming recordings to catch up on sessions."
   ],
   "limits": [
@@ -265,10 +265,9 @@
     "Venue Wi-Fi failed repeatedly despite two systems and a Starlink backup."
   ],
   "critique": [
-    "This is an event recap, not a research talk; the statistics describe the conference rather than the state of the field, and CTF bug counts are reported by the organizers, and several figures differ between speech and slide.",
+    "CTF bug counts are reported by the organizers, and several figures differ between speech and slide.",
     "The 141 novel bugs count mixes participants' tooling and human skill, and the talk does not say how much was AI-driven, so it cannot be read as an AI-discovery rate.",
-    "The closing statement that the attackers' singularity moment already happened was not accompanied by supporting evidence in this session.",
-    "The poem and awards sections contain no technical claims."
+    "The closing statement that the attackers' singularity moment already happened was not accompanied by supporting evidence in this session."
   ],
   "qa": [],
   "tags": [
@@ -283,7 +282,7 @@
     },
     {
       "file": "t01172.jpg",
-      "caption": "CTF headline results: 141 novel bugs in Linux and selected OSS, 9 already public, and 3 syzbot first reproducers."
+      "caption": "CTF main results: 141 novel bugs in Linux and selected OSS, 9 already public, and 3 syzbot first reproducers."
     },
     {
       "file": "t01231.jpg",
@@ -303,12 +302,12 @@
     "reason": "The talk recaps conference logistics, awards and thanks, reports CTF statistics, and ends with a statement on AI defense."
   },
   "caveats": [
-    "Transcript is auto-captioned and garbles many names (for example Hibernia as Liberia, Britta as Breida, Alex Liverant as Alex Liberan, tellybob as Teleob); spellings taken from slides where available.",
-    "Spoken CTF figures conflict with the slide: speaker said 28 confirmed kernel zero days and 41 novel bugs, the slide says 141 novel bugs; the slide is used.",
-    "Speaker said 20 percent of online attendees mostly used recordings; the slide shows about 22 percent.",
-    "The AlexBot persona count (12) was spoken; the slide shows only samples.",
+    "The captions say \"Alex Liberan\" and \"Teleob\"; the slides say Alex Liverant and tellybob, and this record uses the slides.",
+    "The captions say 28 confirmed kernel zero days and 41 novel bugs; the slide says 141 novel bugs, and this record uses the slide.",
+    "The captions say 20 percent of online attendees mostly used recordings; the slide says about 22 percent, and this record uses the slide.",
+    "The captions give the AlexBot persona count as 12; no slide confirms it, since the slide shows only samples.",
     "The honoree of the surprise thank-you at the end is not named in the transcript; names on badges in the recording are not confirmed to be the honoree.",
     "The final minutes include no slides beyond the thank-you and a re-shown welcome slide, so the last section is camera only.",
-    "The opening poem is attributed to Hubbard from the transcript and the organizer slide, and its text was captioned imperfectly."
+    "The opening poem is attributed to Hubbard from the captions and the organizer slide."
   ]
 }

@@ -16,7 +16,7 @@
   "format": "talk",
   "duration_min": 23,
   "thesis": "Exposed open directories on attacker servers contain the operators' own LLM prompts, agent configs and failure logs, which show how threat actors really use AI: mostly basic, noisy and error-prone work that scales low-tier actors, with sophisticated campaigns present but not the norm.",
-  "summary": "Dolfing explains the research goal: observe how threat actors task AI from the attacker side rather than the victim side. They collect open directories (attacker servers left exposed to the internet), often exposed by the AI agent itself when an operator asked it to share a file, using a pipeline that now sees about 750 or more a day. Early LLM analysis hallucinated and overran the context window, so Ettedgui split work into narrow sub-agents with human validation. Ettedgui argues that LLM prompts turn a bash history into a full narrated record, and that the buzz about autonomous AI vulnerability discovery is true at the high end but not the norm. Cases follow: an assistant nicknamed Shrimp, built on OpenClaw (a personal AI assistant framework), that ran noisy Log4Shell and SQLi attempts, was blocked by a WAF and told by its operator to let it go, while also summarizing an Asian gambling syndicate's Telegram chats; an actor who scanned for AI middleware to hijack enterprise GPUs, killed rival miners and throttled temperature; a Brazil campaign with a 'hacking partner' persona hitting 20+ victims; and an Asian government breach progression from wp2shell.py to an autonomous agent with Playwright MCP. Two cases show attribution through a loot-to-market match (stolen data on an actor's server matched to a darknet sale) and a leaked email in a FOFA (internet search engine) config. Dolfing closes with a 2.5 GB agent database where an agent hijacked an existing RouterOS backdoor and then spent 7h29m on the wrong target.",
+  "summary": "Dolfing explains the research goal: observe how threat actors task AI from the attacker side rather than the victim side. They collect open directories (attacker servers left exposed to the internet), which they report are often exposed by the AI agent itself when an operator asked it to share a file, using a pipeline that now sees about 750 or more a day. Early LLM analysis hallucinated and overran the context window, so Ettedgui split work into narrow sub-agents with human validation. Ettedgui argues that LLM prompts turn a bash history into a full narrated record, and that the buzz about autonomous AI vulnerability discovery is true at the high end but not the norm. Cases follow: an assistant nicknamed Shrimp, built on OpenClaw (a personal AI assistant framework), that ran noisy Log4Shell and SQLi attempts, was blocked by a WAF and told by its operator to let it go, while also summarizing an Asian gambling syndicate's Telegram chats; an actor who scanned for AI middleware to hijack enterprise GPUs, killed rival miners and throttled temperature; a Brazil campaign with a 'hacking partner' persona hitting 20+ victims; and an Asian government breach progression from wp2shell.py to an autonomous agent with Playwright MCP. Two cases show attribution through a loot-to-market match (stolen data on an actor's server matched to a darknet sale) and a leaked email in a FOFA (internet search engine) config. Dolfing closes with a 2.5 GB agent database where an agent hijacked an existing RouterOS backdoor and then spent 7h29m on the wrong target.",
   "argument": [
     "Attacker-side prompts and agent logs reveal how AI is actually tasked, which victim-side telemetry cannot show.",
     "Open directories are a practical, scalable source of this data, and AI agents themselves often cause the exposure.",
@@ -321,10 +321,10 @@
   ],
   "takeaways": [
     "Add attacker-side AI artifacts (prompts, agent memory and database files) to threat intel collection and attribution; they give intent, success and failure directly.",
-    "Inventory and patch exposed AI middleware (Ollama, LiteLLM, Ray, Langflow), since attackers now search for it to reach GPUs.",
-    "Expect AI to make small, low-value targets economically attractive to low-tier actors; widen threat models beyond large enterprises.",
-    "Do not assume attacker AI is always competent: noisy exploits, hallucinations and context drift mean basic controls and detection still work against low-tier use, though the talk also reports sophisticated campaigns.",
-    "If you build LLM analysis pipelines over noisy data, split into narrow sub-agents with ground-truth checks and keep a human validator."
+    "On the evidence of one actor's GPU hijack, inventory and patch exposed AI middleware (Ollama, LiteLLM, Ray, Langflow), since that actor searched for it to reach GPUs.",
+    "On the evidence of one campaign against Brazilian victims, expect AI to make small, low-value targets economically attractive to low-tier actors, and widen threat models beyond large enterprises.",
+    "On a selected sample of cases, do not assume attacker AI is always competent: noisy exploits, hallucinations and context drift mean basic controls and detection still work against low-tier use, though the talk also reports sophisticated campaigns.",
+    "On the speakers' own pipeline experience, if you build LLM analysis pipelines over noisy data, split into narrow sub-agents with ground-truth checks and keep a human validator."
   ],
   "limits": [
     "The presented cases are a selection from many more, and the pipeline needs heavy noise filtering (including CTF players and lab tests).",
@@ -335,11 +335,10 @@
   ],
   "critique": [
     "The sample is selected by exposure: an open directory is an operational security lapse, so the data over-represents operators who left servers exposed. It supports the closing observation about unreliable tooling but not any claim about operators who did not leave servers open; the speakers partly acknowledge this.",
-    "The headline distribution numbers are shown without sample size, time window or labeling method, and the LLM classifier's accuracy was not measured in the talk.",
+    "The main distribution numbers are shown without sample size, time window or labeling method, and the LLM classifier's accuracy was not measured in the talk.",
     "Case evidence is displayed as redacted slides and cannot be independently checked; attribution claims (student in Asia, darknet persona) rest on a single leaked email and are not fully shown.",
     "The talk's closing note of hope sits beside cases in which low-tier actors compromised government entities and more than 20 organizations; the speakers' own economic argument is that AI makes small targets profitable.",
-    "The 'almost 2.5 days' figure for the self-DDoS case is a spoken extrapolation inconsistent with the 7h29m slide and is not explained.",
-    "Few defensive recommendations are given; the talk is observational threat intelligence rather than a control set."
+    "The 'almost 2.5 days' figure for the self-DDoS case is a spoken extrapolation inconsistent with the 7h29m slide and is not explained."
   ],
   "qa": [],
   "tags": [
@@ -374,9 +373,10 @@
     "reason": "The talk reports attacker-side evidence of AI use (prompts, agent configs, failure logs) across several cases and two attribution methods; the cases come from a filtered sample of exposed directories and no sample size was given."
   },
   "caveats": [
-    "Auto-captions garbled names: the speakers are rendered 'Rick' and 'Reef', Boss Qian as 'Boskian', and the OpenSSH-to-other-tool switch as 'Frog Slayer or something'; spellings follow slides and the listed speaker names.",
-    "The transcript says the actor's hallucination run was 'almost 2 and a half days from a full day perspective', which does not match the 7h29m slide; the slide figure is used.",
-    "The slide art labels a framework 'claude-red' and an MCP name that is hard to read; the speakers did not name the framework aloud.",
+    "The captions say \"Rick\"; the listed speaker name is Rik, and this record uses the listed name.",
+    "The captions say \"Boskian\"; the slide says Boss Qian, and this record uses the slide.",
+    "The captions say the actor's hallucination run was \"almost 2 and a half days from a full day perspective\"; the slide says 7h29m, and this record uses the slide.",
+    "The slide art labels a framework 'claude-red' and shows an MCP name that is hard to read; the claim about the browser (Playwright) MCP setup depends on that name, and the speakers did not name the framework aloud.",
     "Slides redact the victim, email and forum details.",
     "No Q&A was included in the recording."
   ]

@@ -12,7 +12,7 @@
   "format": "talk",
   "duration_min": 27,
   "thesis": "Enterprises asking how to govern AI agents share the same gaps (no agent identity, controls agents route around, no registry of what is admitted), and the fix is a per-kind-of-agent YAML persona in Git whose merge compiles into both a registry row and gateway policy, so that policy is code that changes what the gateway enforces.",
-  "summary": "Woodruff draws on 81 expert-call sessions with 69 organizations between January 13 and September 30, 2026, held as an IANS faculty member and kept in a dated ledger. He presents four anonymized patterns: a regulated financial institution running SOC helper agents under analysts' own accounts, a consumer internet company whose apps bypassed an LLM proxy with their own provider keys, a travel company with 2,000 copilots in one low-code platform, and a healthcare company with 67,000 APIs in one gateway and 19 duplicates. All four lacked the same three parts: a registry, an identity per agent, and a gateway every call must take. He notes that AWS, Microsoft and Google now ship those parts and that the missing piece is the decision about what is admitted. He then builds one fix live on slides for a SOC triage agent: a persona YAML with owner, sponsor, runs_as, data classes, tool scope, an action contract (alone, needs approver, never), autonomy level, expiry and bindings. A pull request fails lint twice, is fixed, is signed off through code owners, and on merge a compile step writes a registry row and a gateway policy in Casbin (an open policy engine). The seven-call check goes from all denied to a correct mix. He splits persona (the job description), instance (a running copy) and binding (the assignment of project, environment and approver) to handle 2,000 copilots, shows promotion and demotion as a PR and revert, and closes with three failures: paper policy, an MCP header allowlist the agent writes, and controls people cannot live with.",
+  "summary": "Woodruff draws on 81 expert-call sessions with 69 organizations between January 13 and September 30, 2026, held as an IANS faculty member and kept in a dated ledger. He presents four anonymized patterns: a regulated financial institution running SOC helper agents under analysts' own accounts, a consumer internet company whose apps bypassed an LLM proxy with their own provider keys, a travel company with 2,000 copilots in one low-code platform, and a healthcare company with 67,000 APIs in one gateway and 19 duplicates. He says all four lacked the same three parts: a registry, an identity per agent, and a gateway every call must take. He notes that AWS, Microsoft and Google now ship those parts and that the missing piece is the decision about what is admitted. He then builds one fix live on slides for a SOC triage agent: a persona YAML with owner, sponsor, runs_as, data classes, tool scope, an action contract (alone, needs approver, never), autonomy level, expiry and bindings. A pull request fails lint twice, is fixed, is signed off through code owners, and on merge a compile step writes a registry row and a gateway policy in Casbin (an open policy engine). The seven-call check goes from all denied to a correct mix. He splits persona (the job description), instance (a running copy) and binding (the assignment of project, environment and approver) to handle 2,000 copilots, shows promotion and demotion as a pull request and a revert, and closes with three failures: paper policy, an MCP header allowlist the agent writes, and controls people cannot live with.",
   "argument": [
     "Across dozens of enterprise conversations the same four gaps recur: agents borrow human identity, gateways can be bypassed, agent populations are uncounted, and API or tool sprawl has no admitted list.",
     "All four are the absence of a registry, a per-agent identity and a gateway that every call must pass through; cloud vendors now sell these parts but not the decision about what is admitted.",
@@ -338,9 +338,9 @@
     "Test controls for livability to avoid ones that get dropped or bypassed: approving every prompt trains people to click yes."
   ],
   "takeaways": [
-    "Run them against one real agent on Monday and write the persona file for the field you cannot answer first.",
-    "Count and govern kinds of agent (persona) rather than instances, and put bindings on where each runs.",
-    "Prove every governance document by showing that a merge changes what the gateway allows; treat an uncompiled policy file as paper.",
+    "As a test to run, put the five sorting questions to one real agent on Monday and write the persona file for the field you cannot answer first.",
+    "On the speaker's guess that 2,000 copilots is closer to 20 kinds, count and govern kinds of agent (persona) rather than instances, and put bindings on where each runs.",
+    "On the evidence of a single-agent walkthrough, prove every governance document by showing that a merge changes what the gateway allows; treat an uncompiled policy file as paper.",
     "Audit whether any app or developer can reach a model or tool without the gateway, since the persona file will not stop that.",
     "Treat agent promotion criteria as unvalidated: use ATF or your own evidence bar as a starting point and make demotion a one-command revert."
   ],
@@ -356,8 +356,8 @@
     "The evidence base is advisory calls with enterprises that had asked for governance help, anonymized and not independently checkable; the published title says 40 enterprises, the slide says 81 sessions with 69 organizations, and the published description cites 14 calls on MCP while the slide says 34 of 81.",
     "The statement that registry, identity and gateway is becoming the standard architecture rests on the speaker's reading of interviews and vendor launches, not on adoption data.",
     "The walkthrough is a single-agent reference build with values the speaker chose; the recording does not show the pipeline at the scale of 2,000 copilots, with real gateways, or with an author trying to evade lint.",
-    "Derived tier and lint rules are only as good as the rule set and the data-class labels humans supply; the talk does not address wrong or missing data classes, or what stops an author from editing the lint rules or code owners file.",
-    "The speaker is the founding chair of ATF and cites it for promotion criteria; a slide footnote states that the evidence bar for promotion is the speaker's own and that no industry standard backs it yet.",
+    "Derived tier and lint rules are only as good as the rule set and the data-class labels humans supply; no test with wrong or missing data classes, or with an author editing the lint rules or code owners file, was shown.",
+    "A slide footnote states that the evidence bar for promotion is the speaker's own and that no industry standard backs it yet.",
     "The header-versus-body slide describes a design weakness; the talk gives no evidence of exploitation and presents it as an analysis of the specification rather than an incident.",
     "The answer to the never-promote question (micro agents are better design) rests on context confusion and tool decision fatigue as stated, with no measurements shown."
   ],
@@ -399,11 +399,12 @@
     "reason": "The talk presents a policy-as-code pattern with a reference repository, a taxonomy of enterprise gaps drawn from advisory sessions and an MCP header-versus-body example, with efficacy shown in a single-agent walkthrough."
   },
   "caveats": [
-    "Session counts differ across sources: the title and the published description say 40 enterprises, the speaker says nearly 70 defenders, and the slide says 81 sessions with 69 organizations; this record uses the slide. The published description says 14 calls on MCP while the slide says MCP came up in 34 of the 81.",
-    "The speaker mentions a manufacturer for the proxy bypass pattern while the pattern 2 slide says consumer internet company; this record uses the slide.",
-    "Auto-captions garble several names: 'Caspian library' means Casbin, a 'Verifiable Agent Summit' protocol is rendered 'A Auth protocol', and two attendee names ('Dick Hart', 'Imran Siddiq') and 'Berlin AI Labs' could not be confirmed, so they are not recorded as facts beyond what the transcript said.",
-    "Transcript says the agent persona was run for 'the SOC helper' while the slide calls it SOC triage helper; this record uses the slides for names and field values.",
-    "The Glow Labs report is described on the slide as September 30, 2026 and in the transcript as last week; not checked against the original.",
+    "The captions say nearly 70 defenders; the slide says 81 sessions with 69 organizations, and this record uses the slide.",
+    "The title and the published description say 40 enterprises and 14 calls on MCP; the slide says 34 of the 81 sessions, and this record uses the slide.",
+    "The captions say a manufacturer for the proxy bypass pattern; the pattern 2 slide says consumer internet company, and this record uses the slide.",
+    "The captions say 'Caspian library'; the slide says Casbin, and this record uses the slide.",
+    "The captions say the agent persona was run for 'the SOC helper'; the slide calls it SOC triage helper, and this record uses the slides for names and field values.",
+    "The captions say the Glow Labs report came out last week; the slide says September 30, 2026, and this record uses the slide.",
     "The Q&A slide shows a WiFi password and the speaker's contact details appear on a slide; neither is recorded."
   ]
 }

@@ -12,7 +12,7 @@
   "format": "talk",
   "duration_min": 21,
   "thesis": "With AI making vulnerability discovery cheap, the bottleneck is patching, and AI-written fixes that pass their own tests often leave variants open, so a fix validation loop must include an independent variant hunt before a finding is closed.",
-  "summary": "Shayaun Nejad draws on Rubrik's participation in Project Glasswing, where Anthropic gave early access to find bugs in Rubrik's own systems. He says the ratio inverted: finding bugs got easy, and patching became the constraint, pulling top engineers off the product roadmap, much as Bank of America reportedly brought in 1,000 contractors. The main problem was that bugs marked fixed kept coming back, either as variants next to the original or when a stronger model arrived. He illustrates with a public case, the vm2 JavaScript sandbox package: a critical advisory fixed with a commit co-authored by Claude and 28 passing tests, which he bypassed during slide preparation with a one-line change to which file endings the sandbox trusts, shown in a recorded demo that exfiltrates a synthetic host token. He cites a P2Patch preprint finding that 41 of 101 AI-patched CVEs had variants. Rubrik runs separate scanning, validation and patching pipelines and added a variant-hunt stage after tests pass, with recurring variants routed to a human. He also classifies bugs by whether they can be auto-patched, keeps a unified vulnerability record so new models can reopen fixes, uses recurring bug classes to direct investment (fuzzing for memory errors, design-phase work for logic bugs), and notes Rubrik productized the harness as Code Guardian. His one takeaway is to build variant analysis into hunting and patching pipelines.",
+  "summary": "Shayaun Nejad draws on Rubrik's participation in Project Glasswing, where Anthropic gave early access to find bugs in Rubrik's own systems. He says the ratio inverted: finding bugs got easy, and patching became the constraint, pulling top engineers off the product roadmap, much as Bank of America reportedly brought in 1,000 contractors. He reports that the main problem was that bugs marked fixed kept coming back, either as variants next to the original or when a stronger model arrived. He illustrates with a public case, the vm2 JavaScript sandbox package: a critical advisory fixed with a commit co-authored by Claude and 28 passing tests, which he bypassed during slide preparation with a one-line change to which file endings the sandbox trusts, shown in a recorded demo that exfiltrates a synthetic host token. He cites a P2Patch preprint finding that 41 of 101 AI-patched CVEs had variants. He says Rubrik runs separate scanning, validation and patching pipelines and added a variant-hunt stage after tests pass, with recurring variants routed to a human. He also classifies bugs by whether they can be auto-patched, keeps a unified vulnerability record so new models can reopen fixes, uses recurring bug classes to direct investment (fuzzing for memory errors, design-phase work for logic bugs), and notes Rubrik productized the harness as Code Guardian. His one takeaway is to build variant analysis into hunting and patching pipelines.",
   "argument": [
     "Discovery has become cheap, so the backlog and patching capacity are now the constraint, and engineering time shifts from product work to remediation.",
     "AI-generated fixes are validated by AI-written tests, so a passing test suite shows only that the known exploit is blocked, not that the root cause is fixed.",
@@ -268,11 +268,11 @@
     "Be careful what you disclose in advisories and commit messages, since they disclose the vulnerability classes your platform is susceptible to."
   ],
   "takeaways": [
-    "Change the definition of done for a vulnerability from patch merged and tests pass to variant hunt clean, and track opened, reviewed and fixed as separate states.",
-    "Treat AI-written fixes validated by AI-written tests as unverified; require an independent variant sweep, ideally with a different prompt or model than the patcher.",
-    "Classify findings by auto-patchability and send authentication, authorization and architectural issues to a human reviewer first.",
-    "Re-run variant sweeps on closed findings when you adopt a stronger model, and keep the history that makes that possible.",
-    "Audit what your own advisories and security commits reveal before publishing, because attackers will use them as variant-hunting context."
+    "As a practice to test, change the definition of done for a vulnerability from patch merged and tests pass to variant hunt clean, and track opened, reviewed and fixed as separate states.",
+    "On one demonstrated bypass and one preprint's figure, treat AI-written fixes validated by AI-written tests as unverified; require an independent variant sweep, ideally with a different prompt or model than the patcher.",
+    "On one team's experience, classify findings by auto-patchability and send authentication, authorization and architectural issues to a human reviewer first.",
+    "As a practice to test, re-run variant sweeps on closed findings when you adopt a stronger model, and keep the history that makes that possible.",
+    "On one advisory's illustration, audit what your own advisories and security commits reveal before publishing, because attackers can use them as variant-hunting context."
   ],
   "limits": [
     "Speaker said he cannot disclose the types or number of bugs found in Rubrik's code.",
@@ -284,7 +284,8 @@
     "The Rubrik evidence is qualitative: no counts of reopened fixes, variant rates, patch success before versus after, or time to close, so the claim that variant analysis improved success is unsupported by numbers.",
     "The vm2 example is persuasive as a demo but shows one bypass; it does not measure how common such bypasses are across AI-written fixes, and the 41 of 101 figure comes from a single preprint not described in detail.",
     "The vm2 commit co-author count differs between speech (15) and slide (19), the slide figure is the one recorded.",
-    "The speaker works for Rubrik, which offers Code Guardian, a product built on this harness. The recommended practice (add a variant stage) applies an existing technique, variant analysis, to the patching pipeline, and the talk did not address which model finds variants if the same model wrote the fix.",
+    "The speaker's company, Rubrik, offers Code Guardian, a product built on this harness.",
+    "The talk did not address which model finds variants if the same model wrote the fix.",
     "The Q&A shows classification was by simple heuristics and a decision model whose details were not given, so the escalation design is hard to reproduce."
   ],
   "qa": [
@@ -325,12 +326,12 @@
   ],
   "signal": {
     "score": 3,
-    "reason": "The talk describes a practice with a recorded public demo and a cited preprint figure; results from Rubrik's own pipeline were given without numbers."
+    "reason": "The talk describes a practice with a recorded public demo and a cited preprint figure; results from the described pipeline were given without numbers."
   },
   "caveats": [
-    "Auto-captions garble names: K Nider (KNighter), Jev (not identified), GS GH GHSA, Mythos, Rubrik spelled correctly in the slide.",
-    "Speaker said Claude co-wrote 15 of 34 vm2 fixes; the slide says 19. The slide is used.",
-    "The speaker said P2Patch published last month and described 41 of 101 CVEs; the slide says P2Patch preprint, Oct 2026, 101 C/C++ and Java CVEs.",
+    "The captions say 'K Nider'; the slide path reads vm2-knighter, and this record uses the spelling KNighter.",
+    "The captions say Claude co-wrote 15 of 34 vm2 fixes; the slide says 19, and this record uses the slide.",
+    "The captions say P2Patch was published last month; the slide says P2Patch preprint, Oct 2026, and this record uses the slide.",
     "The slide commit co-author reads Claude Fable 5.1.",
     "The demo video appears at several moments in the recording; later appearances add the variant lines.",
     "The Q&A slide displays WiFi credentials, deliberately not copied here."

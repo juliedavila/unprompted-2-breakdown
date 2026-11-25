@@ -12,7 +12,7 @@
   "format": "talk",
   "duration_min": 23,
   "thesis": "Generating a plausible security patch and having enough evidence to trust it are different problems. OpenAnt Auto Patcher makes the trust decision explicit with an adversarial Challenger, a separate insufficient-evidence state, and stage-scoped context, and issues a green light on only 1 of 50 real CVEs, which matched the upstream fix.",
-  "summary": "Avrahami opens by arguing that AI patch generators look good on automated benchmarks but fall apart under deeper evidence checks. She cites PatchEval-Verified at 84 percent (193 of 230 CVEs passing basic security and functionality tests) and AutoPatchBench-Lite, where 65 percent of patches built without crashing, 11 percent survived fuzzing and differential testing, and 4 percent were accepted by humans. She contrasts automated checks (does it fix, do tests pass) with what a human reviewer asks: root cause, preserved behavior, repository fit, new risks, and what evidence exists. She then presents OpenAnt Auto Patcher, part of the open source OpenAnt project from Knostic, which takes a CVE or finding plus a repository and runs investigate, patch, challenge and check stages to produce a patch and a trust report with one of four fixed-policy recommendations: deploy after validation, manual review, do not apply, or no patch produced. A live demo failed on the venue network, so she showed a recorded run on urllib3 CVE-2023-43804 that ended in manual review with three unresolved concerns. She gives three lessons: try to prove the patch wrong with a Challenger, give uncertainty its own state, and control what context each stage inherits. On 50 real CVEs the result was 2 percent green, 68 percent manual review, 0 percent do not apply and 30 percent no patch. Against held-out upstream fixes, 40 percent of the 35 generated patches matched, the single green was correct, all 19 partial or divergent patches were held, and 13 of 14 good patches were also held.",
+  "summary": "Avrahami opens by arguing that AI patch generators look good on automated benchmarks but fall apart under deeper evidence checks. She cites PatchEval-Verified at 84 percent (193 of 230 CVEs passing basic security and functionality tests) and AutoPatchBench-Lite, where 65 percent of patches built without crashing, 11 percent survived fuzzing and differential testing, and 4 percent were accepted by humans. She contrasts automated checks (does it fix, do tests pass) with what a human reviewer asks: root cause, preserved behavior, repository fit, new risks, and what evidence exists. She then presents OpenAnt Auto Patcher, part of the open source OpenAnt project from Knostic, which takes a CVE or finding plus a repository and runs investigate, patch, challenge and check stages to produce a patch and a trust report with one of four fixed-policy recommendations: deploy after validation, manual review, do not apply, or no patch produced. A live demo failed on the venue network, so she showed a recorded run on urllib3 CVE-2023-43804 that ended in manual review with three unresolved concerns. She gives three lessons: try to prove the patch wrong with a Challenger, give uncertainty its own state, and control what context each stage inherits. She reports that on 50 real CVEs the result was 2 percent green, 68 percent manual review, 0 percent do not apply and 30 percent no patch. Against held-out upstream fixes, she reports, 40 percent of the 35 generated patches matched, the single green was correct, all 19 partial or divergent patches were held, and 13 of 14 good patches were also held.",
   "argument": [
     "Benchmarks that stop at tests passing overstate patch quality: the same patches lose most of their apparent success under fuzzing, differential testing and human review.",
     "A human decision to merge a patch rests on root cause, repository fit, regression risk and supporting evidence, so an autonomous system must output evidence and a recommendation rather than only a diff.",
@@ -275,8 +275,8 @@
   ],
   "takeaways": [
     "When adopting AI patching, require a trust report and treat green, orange, red and no-patch as policy outputs; measure how often green is right and how often good patches are withheld, not patch pass rates.",
-    "Put an adversarial reviewer and an explicit insufficient-evidence state into any agent pipeline that issues approvals, so that missing evidence blocks autonomy instead of being guessed over.",
-    "Scope what each pipeline stage can see; do not forward upstream model conclusions as facts.",
+    "As a design to test, put an adversarial reviewer and an explicit insufficient-evidence state into any agent pipeline that issues approvals. Missing evidence then blocks autonomy instead of being guessed over.",
+    "On one builder's account, scope what each pipeline stage can see; do not forward upstream model conclusions as facts.",
     "Do not read a high benchmark pass rate as readiness for autonomy: ask what the funnel looks like after fuzzing, differential testing and human review.",
     "Build a held-out comparison against maintainer fixes as a cheap calibration set before trusting a patching system's green light."
   ],
@@ -292,7 +292,7 @@
     "Using upstream fixes as ground truth treats divergence as error, though a different fix can be correct, and maintainers' fixes can also be incomplete; the speaker acknowledged it was a sanity check.",
     "The calibration figures reflect a policy that rarely issues green: 19 of 19 withheld is the expected result for a policy that withholds almost everything, and the matching false-negative figure is 13 of 14 good patches withheld.",
     "The three lessons are presented without ablation or numbers showing the Challenger, the insufficient-evidence state or context scoping improved outcomes.",
-    "The speaker presents work for Knostic as a founder and advisor; the code is open source and the reported results include the 2 percent green rate and the 13 of 14 good patches withheld.",
+    "The results were produced by Knostic, the company that builds OpenAnt.",
     "The trust report notes that its classification of Challenger concerns is of model-reported facts checked for citations, not independent verification, so the evidence for a green light still depends on model-produced claims.",
     "The published description cites experiments on which ideas failed to improve quality and on training from maintainer patches; the recording does not show them."
   ],
@@ -335,9 +335,8 @@
     "reason": "The talk presents a patch trust-report design with results on 50 CVEs, shows its design lessons without ablations, and bases its calibration claim on a single green-light case."
   },
   "caveats": [
-    "Auto-captions garble names: the organization was said as Nastic but the slides show Knostic; PatchEval was captioned Patch Evolve and AutoPatchBench-Lite as Auto Patch Bench Light; slide spellings used.",
-    "Speaker said there were six unverifiable patches while the slide gives 6 percent (about 2 of 35); the slide percentage is used.",
-    "The speaker said 40 percent of 35 patches; the slide gives 14 of 35, which is 40 percent.",
+    "The captions say Nastic, Patch Evolve and Auto Patch Bench Light; the slides say Knostic, PatchEval and AutoPatchBench-Lite, and this record uses the slides.",
+    "The speaker said there were six unverifiable patches; the slide says 6 percent (about 2 of 35, this record's arithmetic), and this record uses the slide.",
     "The speaker also said the 50 CVEs were random from one of the benchmarks without naming which.",
     "The model named in the demo terminal is claude-opus-4-8 as shown on screen; the speaker did not name it aloud."
   ]

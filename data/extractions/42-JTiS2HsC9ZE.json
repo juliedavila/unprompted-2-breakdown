@@ -12,7 +12,7 @@
   "format": "talk",
   "duration_min": 25,
   "thesis": "Benchmarks grade only a model's final output, but training a probe at every layer shows where a capability emerges, peaks and decays, so models with the same score, quantized copies, safety behaviors and even benchmark harnesses can be compared by how they internally process what they know.",
-  "summary": "Schulz, CEO and co-founder of Starseer, argues that security people should treat model internals as an open, hacker-shaped field. He frames benchmark scores as black-box grading of the last layer, then explains that a model is a small computational graph plus weights, so every layer's activations can be read. A contrastive pair of prompts (capital of Australia versus Austria) shows where answers diverge, and a linear probe trained per layer gives an AUROC curve (a score where 0.5 is a coin flip and 1.0 is clean separation) showing where a concept becomes readable. Applying this to MMLU on Gemma 4 31B, Qwen3.6-27B and Nemotron 3 Nano shows Gemma and Qwen tying at 0.90 with similar curves despite different architectures, while Nemotron tops out at 0.71. He then looks at quantization, showing 4-bit models keep scores while losing signal near peak layers in some models, and at refusal, arguing harm recognition and refusal are different, nearly orthogonal directions. Abliteration, which removes the refusal direction from a model's weights, strips refusal but leaves the model able to recognize harm, so monitoring harm is better than monitoring refusal. Probes beat LLM judges and even the model's own output at separating harmful from benign look-alikes. Finally he shows the same Gemma weights scoring 0.46, 0.72 and 0.86 on MMLU under three harnesses, and closes with a call to be curious.",
+  "summary": "Schulz, CEO and co-founder of Starseer, argues that security people should treat model internals as an open, hacker-shaped field. He frames benchmark scores as black-box grading of the last layer, then explains that a model is a small computational graph plus weights, so every layer's activations can be read. A contrastive pair of prompts (capital of Australia versus Austria) shows where answers diverge, and a linear probe trained per layer gives an AUROC curve (a score where 0.5 is a coin flip and 1.0 is clean separation) showing where a concept becomes readable. Applying this to MMLU on Gemma 4 31B, Qwen3.6-27B and Nemotron 3 Nano shows Gemma and Qwen tying at 0.90 with similar curves despite different architectures, while Nemotron tops out at 0.71. He then looks at quantization, showing 4-bit models keep scores while losing signal near peak layers in some models, and at refusal, arguing harm recognition and refusal are different, nearly orthogonal directions. He says abliteration, which removes the refusal direction from a model's weights, strips refusal but leaves the model able to recognize harm, and argues that monitoring harm is better than monitoring refusal. He reports that probes beat LLM judges and even the model's own output at separating harmful from benign look-alikes. Finally he shows the same Gemma weights scoring 0.46, 0.72 and 0.86 on MMLU under three harnesses, and closes with a call to be curious.",
   "argument": [
     "Benchmarks score only the final output, which is the last layer, so they say nothing about where in the model a capability lives or why one model beats another.",
     "A probe trained per layer on contrastive prompts yields a layerwise capability curve showing where information emerges, peaks and survives to the output.",
@@ -73,7 +73,7 @@
     },
     {
       "claim": "Probes on internals separate harmful from benign look-alike prompts far better than reply judges: on the same 200 prompts the best-layer probe scored 0.975 to 0.994 while the judge scored 0.525 for Qwen3.6 and 0.68 for Nemotron and the models' own outputs 0.473 to 0.837.",
-      "evidence": "AUROC comparison on Gemma 4 31B, Qwen3.6-27B and Nemotron 3 Nano; no judge was run for Gemma. Words alone score 0.88, so the probe's real edge over surface cues is about 0.1.",
+      "evidence": "AUROC comparison on Gemma 4 31B, Qwen3.6-27B and Nemotron 3 Nano; no judge was run for Gemma. Words alone score 0.88, so the probe's real edge over surface cues is about 0.1 (this record's arithmetic).",
       "grade": "measured",
       "t": "18:24",
       "source": "both"
@@ -298,11 +298,11 @@
     "Zeroing the instruction direction on user-supplied context is an example of using interpretability for defense against prompt injection."
   ],
   "takeaways": [
-    "Add a layerwise probe check to model selection and when approving a quantized variant, since 4-bit copies can keep scores while losing internal signal.",
+    "As a check to try, add a layerwise probe comparison to model selection and when approving a quantized variant; in the talk's measurements, 4-bit copies kept scores while losing internal signal.",
     "Ask your model providers which precision and harness they serve and evaluate with, and re-run your own tests if the answer is unclear.",
-    "Schulz's rule, monitor harm and not refusal: treat refusal-based safety measures as separate from harm recognition, since a harm probe is more robust to refusal ablation.",
+    "On four open-weight models, a harm probe stayed accurate after refusal ablation. Monitor harm rather than refusal, and treat refusal-based safety measures as separate from harm recognition.",
     "Test probe-based classifiers against LLM judges for detection tasks such as prompt injection, and compare cost and accuracy.",
-    "Consider building interpretability skill in the security team, since he says few security people work on it and no PhD is needed."
+    "On opinion rather than data, consider building interpretability skill in the security team, since few security people work on it and no PhD is needed."
   ],
   "limits": [
     "The speaker said that quantization results vary by model and that other models would show larger drops than Nemotron, so the curves are not universal.",
@@ -316,7 +316,6 @@
     "No uncertainty is shown on the AUROC curves, the probe sets are small (200 prompts for the judge comparison) and the probe is trained on the same distribution it is scored on, while the judge is zero-shot; the talk did not separate that supervised advantage from the probe versus judge gap.",
     "The judges tested scored 0.525 and 0.68; no stronger or calibrated judge was tested, and no judge was run for Gemma.",
     "The spoken description of Nemotron as dropping off much sooner differs from the slide, which says Nemotron lights up at about the same depth but at a lower level.",
-    "The speaker is CEO and co-founder of Starseer, a company that works on model interpretability.",
     "The abliteration results show which refusal direction choices leave refusal behind, and the slides describe the effective directions (chat-format) at a general level only.",
     "The slide labels the 4-bit change on Nemotron as moving the answer 0.02 while the numbers on the same slide show 0.70 to 0.69."
   ],
@@ -355,13 +354,11 @@
   ],
   "signal": {
     "score": 4,
-    "reason": "The talk reports measured results with numbers on each claim, covering layerwise probes, quantization, refusal ablation and harness effects on four open-weight models, presented by the CEO of a model-interpretability company."
+    "reason": "The talk reports measured results with numbers on each claim, covering layerwise probes, quantization, refusal ablation and harness effects on four open-weight models."
   },
   "caveats": [
-    "Auto-captions render model and method names inconsistently ('Neotron', 'Quen', 'obliteration'); slide spellings Nemotron 3 Nano, Qwen3.6-27B, Gemma 4 31B and abliteration are used.",
     "Most numbers on the quantization, ablation, judge and harness slides were not said aloud, because the speaker moved quickly through them; they come from the slides and their timestamps are the time each slide appeared.",
-    "The spoken claim that Nemotron's curve drops off sooner conflicts with the slide text that it lights up at about the same depth; the slide is used.",
-    "The slide gives 0.09 left unsaid for Nemotron and 0.02 output movement; slide figures are reported as shown.",
+    "The captions say Nemotron's curve drops off sooner; the slide says it lights up at about the same depth, and this record uses the slide.",
     "The Ethan Mollick anecdote and the NVIDIA instruction-direction work were mentioned from memory with no citation shown.",
     "The Q&A questioners are not identified."
   ]

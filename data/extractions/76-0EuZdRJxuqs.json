@@ -12,7 +12,7 @@
   "format": "talk",
   "duration_min": 25,
   "thesis": "Context for SOC agents (runbooks, skills, system prompts) must be measured by ablation and evaluated across models and harnesses, because hand-tuned or even automatically evolved context overfits its original model and harness and may be neutral or harmful on newer frontier models.",
-  "summary": "Dan Dye, a Google Cloud Security engineer, gives a first-hand account of building context for security operations agents. He started with Markdown AI runbooks and persona sub-agents on a local Cline harness, moved to Google's agent development kit with multi-agent delegation, and then found that platform knowledge bases now accept native Markdown in Drive. He sketches that context work briefly, then turns to what he calls the real problem: new frontier models arrive weekly, so he asks whether his skills help or hurt, and whether they will be in the next model's pre-training. He frames a skills ablation, 'does a skill earn its tokens?', and shows a table comparing prompt-only, monolithic runbooks, graph workflows and progressive-disclosure variants on one malware case. He says that embedding the grading rubric inside the runbooks contaminated later experiments. Evolving skills with GEPA (Genetic Pareto Prompt Evolution) looked like a miracle (99.8% lower simulated loss, 26.6% fewer tokens, 21.2% lower latency), but the gains vanished on another model or harness; he lists four failure modes such as literal environment-variable placeholders and Mermaid diagrams. On newer frontier models a threat-hunting benchmark showed no runbook scoring above his raw runbook, while newer harness-evolution frameworks (Harness squared) recovered nearly saturating scores. He closes by releasing a repo to deploy and benchmark open-weight Gemma and other models on Google Cloud, with GPU cost tables and an idle-GPU shutdown agent.",
+  "summary": "Dan Dye, a Google Cloud Security engineer, gives a first-hand account of building context for security operations agents. He started with Markdown AI runbooks and persona sub-agents on a local Cline harness, moved to Google's agent development kit with multi-agent delegation, and then found that platform knowledge bases now accept native Markdown in Drive. He sketches that context work briefly, then turns to what he calls the real problem: new frontier models arrive weekly, so he asks whether his skills help or hurt, and whether they will be in the next model's pre-training. He frames a skills ablation, 'does a skill earn its tokens?', and shows a table comparing prompt-only, monolithic runbooks, graph workflows and progressive-disclosure variants on one malware case. He says that embedding the grading rubric inside the runbooks contaminated later experiments. Evolving skills with GEPA (Genetic Pareto Prompt Evolution) looked like a miracle (99.8% lower simulated loss, 26.6% fewer tokens, 21.2% lower latency), but he reports the gains vanished on another model or harness; he lists four failure modes such as literal environment-variable placeholders and Mermaid diagrams. He reports that on newer frontier models a threat-hunting benchmark showed the no-runbook arm scoring above his raw runbook, while newer harness-evolution frameworks (Harness squared) recovered nearly saturating scores. He closes by releasing a repo to deploy and benchmark open-weight Gemma and other models on Google Cloud, with GPU cost tables and an idle-GPU shutdown agent.",
   "argument": [
     "Context engineering for SOC agents now includes mixed knowledge bases, skills, runbooks and system prompts, but the weekly cadence of frontier models means each piece may become unnecessary or harmful.",
     "Advice to delete prompts and see what happens is not scientific; a skill ablation that asks whether a skill earns its tokens is needed, with measured scores and token counts.",
@@ -403,8 +403,8 @@
   "takeaways": [
     "Before the next model upgrade, re-run your SOC agent skills with the skill removed; keep only those whose token cost is justified by a measured score gain.",
     "Do not treat automated prompt or skill evolution results as real until they hold on a second model and harness; require a transfer test in your acceptance criteria.",
-    "Separate rubric and evaluation data from the agent's context, and check your LLM judges for verbosity and string-matching bias.",
-    "Plan for the workflows you run repeatedly to harden into deterministic playbooks, with agents used to author and update them.",
+    "On one operator's account, separate rubric and evaluation data from the agent's context, and check your LLM judges for verbosity and string-matching bias.",
+    "As a speculation to check against your own runs, expect workflows you run repeatedly to harden into deterministic playbooks, with agents used to author and update them.",
     "Invest in harder, broader blue-team evals: the author's threat-hunt eval is nearly saturated and only about 15 of 50-plus runbooks are covered."
   ],
   "limits": [
@@ -417,14 +417,14 @@
   ],
   "critique": [
     "The ablation covers four cases with one score per variant and no repeat runs or variance; differences of 5 points on an LLM-judged letter grade should not be read as stable, though the token reductions are large and consistent across all four cases.",
-    "The headline GEPA gains are from simulated breach loss and a mean triage latency whose benchmark is not described; the speaker's later statement that rubrics were embedded in the runbooks and that the judge rewarded verbosity bears on all judge-based scores in the talk.",
+    "The main GEPA gains are from simulated breach loss and a mean triage latency whose benchmark is not described; the speaker's later statement that rubrics were embedded in the runbooks and that the judge rewarded verbosity bears on all judge-based scores in the talk.",
     "The threat-hunt result (no runbook 0.8554 vs raw runbook 0.8295) is a small difference with identical verdict accuracy and rates, and the speaker described the raw skills as harmful. The larger spread in the full table is between those two arms and the compressed and Harness-squared-evolved runbooks (0.9510 and 0.9813). The evolved arm is also the one the speaker describes as near-saturated, and the talk did not show whether it was tested on anything other than the benchmark it was evolved on, which is the overfitting risk he describes earlier.",
     "The Harbor collapse table (90 trials over three models) is the largest non-transfer test shown, and it covers only Gemini-family models; transfer to other vendors' models or to other harnesses was not shown.",
-    "The leaderboard compares a closed hosted model with open models on dedicated GPUs over 5 cases, so pass rates move in 20-point steps and rank order below the leader rests on small differences.",
-    "The talk is largely about agent engineering methodology; detection quality and investigation accuracy against real incidents were not shown, and the eval environments are simulated.",
+    "The leaderboard compares a closed hosted model with open models on dedicated GPUs over 5 cases, so pass rates move in 20-point steps (this record's arithmetic) and rank order below the leader rests on small differences.",
+    "Detection quality and investigation accuracy against real incidents were not shown, and the eval environments are simulated.",
     "Several recommendations (descriptive over prescriptive skills, weakest-theory principle) came from audience members and were agreed to rather than tested.",
     "The 'open weights equal six-month-old frontier models' thesis was asserted and only partly tested; the question about how it held up was answered by pointing to skills that hurt benchmarks rather than a size-by-size result.",
-    "The repo and talk use Google Cloud tooling (ADK, Vertex AI, Gemini), and the speaker works at Google Cloud Security; he said the talk is an inquiry with open questions."
+    "The leaderboard's top model, gemini-3.5-flash-lite, is sold by the speaker's company, Google."
   ],
   "qa": [
     "Q: How has the hypothesis that open-weight models act like six-month-old frontier models held up? A: He saw some of his skills actively harming his benchmarks, which makes him question the work given the model release cadence, but he thinks it still matters: there is value at smaller sizes, and regularized skills improved at small sizes also work better in larger models.",
@@ -469,10 +469,11 @@
   "caveats": [
     "Slides were captured about once every 30 to 90 seconds, so some slides in between were not captured.",
     "The three percentage columns in the graph-workflows table have their headers off frame, so their definitions are not recorded; item 6 to 10 of the ten best practices are not visible.",
-    "Auto-captions garble names: 'Jeppa' is GEPA, 'Harness II' is Harness squared, 'Aqua' is AQuA, 'D-Spy' is DSPy, 'SORE playbook' is a SOAR playbook, and 'dandai' is the GitHub user dandye per the slide.",
-    "The captions call the model that sets the baseline 'Gemma 3.5 Flash Light'; the leaderboard slide confirms it is gemini-3.5-flash-lite served as Google MaaS. The captions also say Gemma 2 comes in '3, 9 or 27 billion' parameters; the slide shows gemma-2-2b-it (2.6B), 9b (9.2B) and 27b (27.2B).",
-    "'Boris came for the skills in agents MD too' is second-hand and the person is not identified in the talk. The 80% system-prompt figure is now sourced to an article by Thariq Shihipar on a slide, about Claude Code's system prompt; the transcript attributes it only vaguely.",
-    "The names dandye/gusto-mcp-gepa and idle_compute_guard come from slides, not the transcript.",
+    "The captions say Jeppa, Harness II, Aqua, D-Spy and dandai; the slides say GEPA, Harness squared, AQuA, DSPy and dandye, and this record uses the slides.",
+    "The captions say Gemma 3.5 Flash Light; the leaderboard slide says gemini-3.5-flash-lite served as Google MaaS, and this record uses the slide.",
+    "The captions say Gemma 2 comes in 3, 9 or 27 billion parameters; the slide says gemma-2-2b-it (2.6B), 9b (9.2B) and 27b (27.2B), and this record uses the slide.",
+    "The captions attribute the 80% system-prompt figure only vaguely; the slide cites an article by Thariq Shihipar about Claude Code's system prompt, and this record uses the slide.",
+    "The captions do not give the names dandye/gusto-mcp-gepa and idle_compute_guard; the slides do, and this record uses the slides.",
     "The affiliation is taken from the video description (Google Cloud Security); the badge reads Daniel Dye and a browser bookmark folder reads Mandiant Training.",
     "The Fields-medalist social post is a machine-translated screenshot and is unverified."
   ]

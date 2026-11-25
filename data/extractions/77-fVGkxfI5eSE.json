@@ -12,7 +12,7 @@
   "format": "talk",
   "duration_min": 23,
   "thesis": "Reviewing third-party OAuth grants to Google Workspace and Slack is a corporate-security problem, not an AppSec one, and a multi-model AI review panel wrapped in deterministic inputs and outputs can clear a decade-old backlog cheaply. The failures that hurt were ordinary systems failures (missing data, loose policy), not model failures.",
-  "summary": "Bello opens by noting that most AI security-review agents target code and threat modeling, and points his team's panel at a different problem: employees authorizing SaaS marketplace apps (Google Workspace, Slack) that request scopes such as Drive and Gmail access. Twilio had more than ten years of unreviewed integration debt, and vendors, and Google itself, label the same app differently (suspicious, high risk, restricted scope). He describes the workflow: a Slack conversational agent handles intake and status for employees, then an AI review panel of three models from different providers, treated like blind conference reviewers, each assess the same payload. A critic checks the panelists for misses and misrepresentations, a synthesis step combines panel and critic, and results go to Aurora Postgres for observability. Output is a fixed contract of verdict, confidence, rule and reasoning. The goal is human-on-the-loop auditing, where people handle outcomes, spot checks and metrics, rather than human-in-the-loop decisions. He then covers two failure modes: a null enrichment field (a failed vendor-trust web scrape) that the panel treated as grounds to approve, and unstructured policy that let identical apps receive different verdicts. The fixes were explicit null-handling expectations and rule-set style policies with an escalate-if-unknown fallback. He reports that panel and single model agreed 95 percent of the time, that model choice changed 15 percent of outputs, and that the program reviewed over 4,000 apps at about 10 cents a run.",
+  "summary": "Bello opens by noting that most AI security-review agents target code and threat modeling, and points his team's panel at a different problem: employees authorizing SaaS marketplace apps (Google Workspace, Slack) that request scopes such as Drive and Gmail access. He says Twilio had more than ten years of unreviewed integration debt, and that vendors, and Google itself, label the same app differently (suspicious, high risk, restricted scope). He describes the workflow: a Slack conversational agent handles intake and status for employees, then an AI review panel of three models from different providers, treated like blind conference reviewers, each assess the same payload. A critic checks the panelists for misses and misrepresentations, a synthesis step combines panel and critic, and results go to Aurora Postgres for observability. Output is a fixed contract of verdict, confidence, rule and reasoning. The goal is human-on-the-loop auditing, where people handle outcomes, spot checks and metrics, rather than human-in-the-loop decisions. He then covers two failure modes: a null enrichment field (a failed vendor-trust web scrape) that the panel treated as grounds to approve, and unstructured policy that let identical apps receive different verdicts. The fixes were explicit null-handling expectations and rule-set style policies with an escalate-if-unknown fallback. He reports that panel and single model agreed 95 percent of the time, that model choice changed 15 percent of outputs, and that the program reviewed over 4,000 apps at about 10 cents a run.",
   "argument": [
     "Enterprise SaaS-integration risk is context-driven, and vendors and Google label the same grant inconsistently, so the organization needs its own consistent verdict.",
     "A panel of three models from different providers, refereed by a critic and combined by a synthesis step, produces a verdict matched to company policy, with fixed output fields that can be tracked.",
@@ -96,7 +96,7 @@
   "numbers": [
     {
       "figure": "95%",
-      "meaning": "agreement between panel and single-model designs in testing (5 percent disagreement)",
+      "meaning": "agreement between panel and single-model designs in testing (5 percent disagreement, this record's arithmetic)",
       "t": "13:03"
     },
     {
@@ -231,9 +231,9 @@
     "Keep humans in the loop on high-risk and new-pattern grants, moving toward human-on-the-loop auditing."
   ],
   "takeaways": [
-    "Treat OAuth and marketplace app grants as a reviewable backlog: a panel at about 10 cents a run makes clearing a decade of integration debt a small-budget project.",
-    "Resolve enrichment and preconditions in deterministic code and define null semantics before the model sees the data, since a null field was the silent failure in his pipeline.",
-    "Write review policy as a rule set with an escalate-if-unknown default, as Bello does, rather than a broad natural-language mandate, and measure verdict consistency on identical inputs.",
+    "On one company's figures, treat OAuth and marketplace app grants as a reviewable backlog: a panel at about 10 cents a run makes clearing a decade of integration debt a small-budget project.",
+    "On one pipeline's evidence, resolve enrichment and preconditions in deterministic code and define null semantics before the model sees the data, since a null field was the silent failure there.",
+    "As a test to run, write review policy as a rule set with an escalate-if-unknown default rather than a broad natural-language mandate, and measure verdict consistency on identical inputs.",
     "Justify multi-model panels by isolation properties and variance (15 percent output change by model choice), not by expected accuracy gains; test that claim on your own data.",
     "Decide whether approvals are per client ID or per user and use case, and plan to add usage telemetry so approvals reflect what an app actually does with its grant."
   ],
@@ -246,10 +246,9 @@
   "critique": [
     "The 95 percent agreement and 15 percent model-variance figures are given without sample size, ground truth or how disagreement was scored, and the talk does not reconcile the two numbers; the claim that both models were wrong when they disagreed implies a ground-truth set that was not described.",
     "The published description cites an audit that found stored verdicts disagreeing with shown reasoning, a model silently dropping out of the score and a service running for twelve days with no output; the recording does not show these, and presents only the two failure modes about null data and loose policy.",
-    "The headline metrics (95 percent coverage, 86 percent automated) lack denominators and error rates; no false-approval rate was shown, so cost and speed are reported but correctness is not.",
-    "Approving by client ID company-wide with self-attested intake answers leaves the grant-abuse and scope-creep cases largely to later work; the stated next step of usage telemetry is the part that would address them.",
+    "The main metrics (95 percent coverage, 86 percent automated) lack denominators and error rates; no false-approval rate was shown, so cost and speed are reported but correctness is not.",
     "The claim that the models were not the main failure point rests on two described cases; the talk also reports that model choice changed 15 percent of outputs.",
-    "No adversarial testing was described: a malicious app could place instructions in its name, description or publisher text that reach the panel, and the talk does not address that."
+    "No adversarial testing was described, such as an app that places instructions in its name, description or publisher text."
   ],
   "qa": [
     "Are approvals per app or per user and use case? Per app by client ID, as a crawl-walk-run MVP that clears common apps like Zoom; the inventory of who authorizes what lets them add per-user context later, such as sales staff authorizing a disfavored AI tool.",
@@ -289,8 +288,7 @@
     "reason": "The talk describes a review-panel architecture and a null-handling failure, reports its metrics without sample sizes, and does not show the audit findings cited in the published description."
   },
   "caveats": [
-    "Auto-captions; speaker described the third panel metric as a multi-day median while the slide says about 2d to 2h, slide used for the figure.",
-    "Slide says 95 percent coverage and more than 4k apps; the speaker said over 4,000 apps and 95 percent coverage, consistent.",
+    "The speaker described the time to resolution as a multi-day median and did not say two hours; the slide says about 2 days to about 2 hours, and this record uses the slide.",
     "The YouTube description mentions an audit finding stored verdicts disagreeing with reasoning, a model silently not counting toward the score, and a service producing nothing for twelve days; none of this was said in the recording or shown on slides.",
     "Panelist model names on the output sample slide (Haiku, Llama, Nova) are read from a small screenshot; the speaker did not name the models aloud.",
     "The wifi credentials and QR codes on the closing slide are conference logistics and were not recorded."

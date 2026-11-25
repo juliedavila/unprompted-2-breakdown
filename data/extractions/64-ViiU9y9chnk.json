@@ -9,7 +9,7 @@
   "format": "talk",
   "duration_min": 25,
   "thesis": "An agentic coding model can analyze closed firmware and produce testable binary-level repairs for known vulnerabilities, giving defenders a way to deploy interim fixes before the vendor ships, provided every claim is independently verified because the model's first patches were incomplete.",
-  "summary": "Tim de Waal, a security researcher at OpenAI speaking from a personal account, argued that AI can now reverse and repair binary firmware cheaply enough that defenders should do it themselves. He framed the problem first: one device contains several firmware layers, including third-party chip firmware that even the manufacturer cannot see; the time from disclosure to weaponized exploit has fallen from about 2.3 years in 2018 to about 10 hours; and vendors need weeks to months for triage, supplier fixes, QA, signing and rollout, after which users may never update. He then showed a lab experiment on an authorized ASUS RT-BE82U router running build 39099. Using one model in a bare Codex install, with no extra skills and no open-weight models, he had it download the firmware, set up an emulated lab, confirm two published authenticated vulnerabilities (a command injection, CVE-2025-15101, and a SQL injection, CVE-2026-11851), repair each in the binary, test on a real device, and build a flashable image. The whole exercise used about 7 percent of a weekly Pro allowance, roughly $48 at API rates. The model's first patches were incomplete: one dropped a stack-canary check and the SQL fix was bypassable, which independent testing and assembly comparison caught.",
+  "summary": "Tim de Waal, a security researcher at OpenAI speaking from a personal account, argued that AI can now reverse and repair binary firmware cheaply enough that defenders should do it themselves. He framed the problem first: one device contains several firmware layers, including third-party chip firmware that even the manufacturer cannot see; the time from disclosure to weaponized exploit has fallen from about 2.3 years in 2018 to about 10 hours; and vendors need weeks to months for triage, supplier fixes, QA, signing and rollout, after which users may never update. He then showed a lab experiment on an authorized ASUS RT-BE82U router running build 39099. Using one model in a bare Codex install, with no extra skills and no open-weight models, he had it download the firmware, set up an emulated lab, confirm two published authenticated vulnerabilities (a command injection, CVE-2025-15101, and a SQL injection, CVE-2026-11851), repair each in the binary, test on a real device, and build a flashable image. He reports the whole exercise used about 7 percent of a weekly Pro allowance, roughly $48 at API rates. He reports the model's first patches were incomplete: one dropped a stack-canary check and the SQL fix was bypassable, which independent testing and assembly comparison caught.",
   "argument": [
     "Firmware on critical and home devices is opaque to buyers, includes third-party code the vendor itself cannot see, and has relied on obscurity that AI-assisted reverse engineering removes.",
     "Weaponization time has collapsed while vendor fix and user update cycles remain slow, so defenders face a long exposure window.",
@@ -144,11 +144,11 @@
     "Inventory third-party firmware and chipsets in your estate, since they are shared attack surface."
   ],
   "takeaways": [
-    "Treat embedded and network-edge firmware as in scope for in-house analysis rather than waiting for vendor advisories, using an isolated lab and authorized devices.",
-    "Plan for much shorter exploit windows and decide in advance who can authorize an interim patch when no vendor fix exists.",
+    "On one lab run of two simple bugs, treat embedded and network-edge firmware as in scope for in-house analysis rather than waiting for vendor advisories, using an isolated lab and authorized devices.",
+    "Treating the 10-hour weaponization figure as indicative, plan for much shorter exploit windows and decide in advance who can authorize an interim patch when no vendor fix exists.",
     "Build a verification gate for any AI-produced patch, with independent tests, assembly diff, regression suite, and a human sign-off on accepted risks.",
     "Ask suppliers which chipsets and third-party firmware sit inside purchased devices and how fast they can ship signed updates.",
-    "Budget is not the barrier: a two-CVE repair exercise cost about $48 in usage, so effort should go into test harnesses and approval process."
+    "On one run's self-reported usage, cost was not the barrier: a two-CVE repair exercise cost about $48 in usage. Put effort into test harnesses and approval process."
   ],
   "limits": [
     "Only two known, authenticated, string-handling vulnerabilities were repaired on one consumer router, chosen on purpose to be simple.",
@@ -159,9 +159,9 @@
   "critique": [
     "The evidence is a single lab run on two simple, published bugs, so claims about repairing arbitrary firmware or scaling the approach are not supported by data in the talk.",
     "The cost figure is from the speaker's own allowance accounting, and the talk does not say whether it includes his time or the manual verification.",
-    "Hot-patching production devices with unsigned or self-built images raises supportability, warranty and update-chain questions that were not addressed.",
     "Both first patches were incomplete, which supports the case for verification gates rather than for model autonomy.",
-    "The speaker works at the company that makes the model and used a trusted-access program, so the workflow may not be reproducible without that access or on other models.",
+    "The model was made by the speaker's company, OpenAI.",
+    "The workflow used a trusted-access program, so it may not be reproducible without that access or on other models.",
     "The time-to-weaponization chart's methodology is not explained, so the 10-hour figure should be treated as indicative."
   ],
   "qa": [
@@ -182,10 +182,10 @@
   "signal": {"score": 3, "reason": "The talk shows a defender-side workflow in which a model repaired two known router vulnerabilities in binary firmware, with the model's incomplete first patches and a cost of about $48; the evidence is one lab run on two simple bugs."},
   "caveats": [
     "Summary-level record: exploit mechanics deliberately not recorded.",
-    "Auto-captions garble the speaker name as 'Tim Daval' and the model as 'GPT 6 Soul'; the slides give Tim de Waal and GPT-6 Sol.",
+    "The captions say 'Tim Daval' and 'GPT 6 Soul'; the slides say Tim de Waal and GPT-6 Sol, and this record uses the slides.",
     "The first-prompt slide names firmware build 39033 and a correction to 39099; the transcript does not mention the first number.",
     "The slide's chart attribution reads UK AI Safety Institute, April 2026, and the zerodayclock.com footer; the transcript says 'zero day clock' and that the graphic may have been removed from the site, which was not verified.",
-    "The transcript says the command-injection demo showed root access and that the ID command was missing; the slide screenshots show a privileged process listing rather than the missing command.",
+    "The captions say the command-injection demo showed root access and a missing ID command; the slide screenshots show a privileged process listing, and this record uses the slides.",
     "Final live demo of the patched router is only partly visible in the recording."
   ]
 }

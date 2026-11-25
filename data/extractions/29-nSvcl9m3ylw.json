@@ -20,7 +20,7 @@
   "format": "closing",
   "duration_min": 10,
   "thesis": "With vulnerability discovery now easy for agents, community is what is left as the differentiator in security, and the conference's scholarship program is one concrete way to build it.",
-  "summary": "Gadi Evron closes the day before the debates and the AI hacker jeopardy game. He uses the conference capture-the-flag as a representation of what is happening in security: many in the CTF world said agents had killed CTFs, and the organizers instead built one that thrives because of AI. He says the participants found dozens of zero days in a couple of days across the Linux kernel and elsewhere, and says that in about three hours they reached what he believes were 24 confirmed Linux kernel vulnerabilities. His reading is that vulnerabilities are no longer the focus because they are easy to find, and that the conversation is moving to exploitation and to hiding vulnerabilities. He then turns personal: he does not know whether people will still have jobs, hopes so, and says that with code ephemeral and technology easy, humans and community are what is left as a moat. He asks attendees to seek each other out and to take AI back from the marketers. Sounil Yu, a key sponsor, then explains the accessibility problem of an entry fee of about 500 dollars, or 850 if late, and thanks Decibel. John from Decibel describes the scholarship program: ten founder companies pooled 100,000 dollars, 25 senior practitioners formed the admissions committee, 150 applications were received and 85 accepted. He thanks the sponsors, notes that some recipients are already speakers, and the first [un]prompted scholarship class comes on stage for a photo.",
+  "summary": "Gadi Evron closes the day before the debates and the AI hacker jeopardy game. He uses the conference capture-the-flag as a representation of what is happening in security: many in the CTF world said agents had killed CTFs, and he says the organizers instead built one that thrives because of AI. He says the participants found dozens of zero days in a couple of days across the Linux kernel and elsewhere, and says that in about three hours they reached what he believes were 24 confirmed Linux kernel vulnerabilities. His reading is that vulnerabilities are no longer the focus because they are easy to find, and that the conversation is moving to exploitation and to hiding vulnerabilities. He then turns personal: he does not know whether people will still have jobs, hopes so, and says that with code ephemeral and technology easy, humans and community are what is left as a moat. He asks attendees to seek each other out and to take AI back from the marketers. Sounil Yu, a key sponsor, then says an entry fee of about 500 dollars, or 850 if late, is an accessibility problem, and thanks Decibel. John from Decibel describes the scholarship program: ten founder companies pooled 100,000 dollars, 25 senior practitioners formed the admissions committee, 150 applications were received and 85 accepted. He thanks the sponsors, notes that some recipients are already speakers, and the first [un]prompted scholarship class comes on stage for a photo.",
   "argument": [
     "The conference CTF shows that agents have revived rather than killed CTFs, and that agent-driven vulnerability discovery is now at scale.",
     "Because vulnerabilities are now easy to find, the focus moves to exploitation, hiding vulnerabilities, and what to do next.",
@@ -140,8 +140,8 @@
   "offense": [],
   "defense": [],
   "takeaways": [
-    "Plan on vulnerability discovery by agents being cheap and fast; the speaker's own CTF anecdote says dozens of kernel and other zero days were found in a couple of days, so shift staffing and process toward triage, exploitability assessment and remediation.",
-    "Invest in community and relationships with practitioners as a differentiator that AI does not replicate.",
+    "On one CTF anecdote with no sources (dozens of kernel and other zero days in a couple of days), plan on vulnerability discovery by agents being cheap and fast. Shift staffing and process toward triage, exploitability assessment and remediation.",
+    "On the speaker's opinion, with no evidence offered, invest in community and relationships with practitioners as a differentiator that AI does not replicate.",
     "Consider sponsoring or building early-career pathways: this program funded 85 accepted applicants from 150 with 100,000 dollars from ten companies.",
     "Treat the 24-in-three-hours kernel figure as an indicator to verify against the published CTF results before using it in internal planning."
   ],
@@ -150,9 +150,8 @@
     "He said he did not have his remarks fully prepared."
   ],
   "critique": [
-    "This is a closing session with conference announcements and presents no method; the CTF vulnerability counts were given without sources and with hedging, and what counted as a confirmed vulnerability was not defined.",
-    "The statement that vulnerabilities are no longer the focus is drawn from one CTF, and the talk does not address the day-to-day cost of remediation for most enterprises.",
-    "The 'take AI back from the marketers' line is a rhetorical statement offered without evidence. Gadi Evron is CEO of Knostic, a security vendor, and the sponsor and scholarship segment names the sponsoring companies."
+    "The CTF vulnerability counts were given without sources and with hedging, and what counted as a confirmed vulnerability was not defined.",
+    "The statement that vulnerabilities are no longer the focus is drawn from one CTF."
   ],
   "qa": [],
   "tags": [
@@ -183,8 +182,9 @@
   },
   "caveats": [
     "Almost camera-only: the only slide is the opening welcome and sponsor slide; the rest are stage shots.",
-    "The founder companies funding the scholarship are garbled in the transcript (census, Dropzone, Malory, Pixie, Nebulok, Sandera, SpecterOps, Sublime) and could not be confirmed; ten founders were said but only eight names appear.",
-    "The speaker names are partly garbled: the transcript spells Sounil Yu as Sunil or Seneil; his stage badge reads Sounil Yu. John's surname on his badge was not legible; the CTF organizers are named only as Jenny, Ad and Tim.",
+    "Only eight founder company names appear in the captions, garbled, and none could be confirmed; the claim of ten founder companies depends on what was said aloud.",
+    "The captions say \"Sunil\" and \"Seneil\"; the stage badge says Sounil Yu, and this record uses the badge.",
+    "John's surname on his badge was not legible.",
     "The end of the recording includes unnamed participants and a group photo with no speech content."
   ]
 }

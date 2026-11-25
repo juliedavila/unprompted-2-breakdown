@@ -11,8 +11,8 @@
   ],
   "format": "talk",
   "duration_min": 20,
-  "thesis": "Activity counts such as runs, API calls and thumbs-up ratings do not show that a security agent improved security; a security agent should be judged on adoption, coverage, accuracy and ROI, with a separate safety gate, and the measurement itself has to be tested before the numbers are trusted.",
-  "summary": "Najeeb works with Salesforce SOC analysts to build agents and automation. She opens with a security review where an impressive dashboard of runs, response times and thumbs-up ratings was met with the question of what actually improved. Her team went back and defined four lenses: adoption, coverage, accuracy and return on investment. Adoption is a fraction (18 of 40 intended users), and proving real use needs telemetry from ticketing and investigation tools: binding a recommendation ID to the analyst's approved action, comparing posted summaries to see whether they were edited or ghosted, and checking that a recommended query actually ran within ten minutes. Coverage asks which eligible cases, split by impact, the agent actually reached, and underpins the other lenses. Accuracy is split into recall and precision, the compounding loss across multi-step investigations (pass^k), and a study in which most correct final answers hid a missed step. She then asks who grades the grader and gives a ladder: state checks, code checks, a calibrated model judge and expert review of a sample. ROI is capacity value minus agent cost, and cost per reviewed correct outcome. A final safety gate covers authority, adversarial input and failure handoff, tested at intervals. The result feeds an expand, fix or keep supervision decision.",
+  "thesis": "Activity counts such as runs, API calls and thumbs-up ratings do not show that a security agent improved security; a security agent should be judged on adoption, coverage, accuracy and ROI (return on investment), with a separate safety gate, and the measurement itself has to be tested before the numbers are trusted.",
+  "summary": "Najeeb works with Salesforce SOC analysts to build agents and automation. She opens with a security review where an impressive dashboard of runs, response times and thumbs-up ratings was met with the question of what actually improved. Her team went back and defined four lenses: adoption, coverage, accuracy and return on investment. She says adoption is a fraction (18 of 40 intended users), and that proving real use needs telemetry from ticketing and investigation tools: binding a recommendation ID to the analyst's approved action, comparing posted summaries to see whether they were edited or ghosted, and checking that a recommended query actually ran within ten minutes. She says coverage asks which eligible cases, split by impact, the agent actually reached, and underpins the other lenses. She splits accuracy into recall and precision and the compounding loss across multi-step investigations (pass^k), and she cites a study in which most correct final answers hid a missed step. She then asks who grades the grader and gives a ladder: state checks, code checks, a calibrated model judge and expert review of a sample. She defines ROI as capacity value minus agent cost and says to report cost per reviewed correct outcome. Her final safety gate covers authority, adversarial input and failure handoff, tested at intervals. She says the result feeds an expand, fix or keep supervision decision.",
   "argument": [
     "Dashboards of runs, latency and thumbs-up ratings measure activity and sentiment, not security impact, and do not survive a basic question about what improved.",
     "Four lenses answer that question: adoption (are people using the outputs), coverage (does it reach the work that matters), accuracy (which mistakes could hurt) and ROI (does useful work justify the full cost).",
@@ -317,11 +317,11 @@
     "Decide expand, fix or keep supervision per action class: expand tested reversible low-impact actions, keep credential revocation, deletion and external notification human-gated."
   ],
   "takeaways": [
-    "Replace run counts and thumbs-up ratings in agent reviews with adoption measured against intended users, using telemetry that binds agent output to analyst action.",
+    "On one team's experience, replace run counts and thumbs-up ratings in agent reviews with adoption measured against intended users, using telemetry that binds agent output to analyst action.",
     "Track precision and recall separately and grade the steps of each investigation, since correct final verdicts often hide process errors.",
-    "Do not rely on an unvalidated LLM judge; add state and code checks and a blind expert sample, and test the grader with deliberately faulted runs.",
-    "Report cost per reviewed correct outcome next to accuracy, not total cost over total runs.",
-    "Make expansion decisions per action class and keep a safety gate, with re-testing after every model, prompt or tool change."
+    "Do not rely on an unvalidated LLM judge. As a grading ladder to try, add state and code checks and a blind expert sample, and test the grader with deliberately faulted runs.",
+    "As a metric to try, report cost per reviewed correct outcome next to accuracy, rather than total cost over total runs.",
+    "As a decision rule to try, make expansion decisions per action class and keep a safety gate, with re-testing after every model, prompt or tool change."
   ],
   "limits": [
     "The speaker said fleet-wide evaluation is fragmented, with some teams using Salesforce Analytics and others using skills, and hopes for one unified platform in the next 6 to 12 months.",
@@ -374,11 +374,11 @@
     "reason": "The talk presents a measurement framework with formulas and a grader ladder; the worked numbers are labeled hypothetical and the cited studies are named without detail."
   },
   "caveats": [
-    "Auto-captions garble some proper nouns; the Q&A questioner's affiliation was transcribed as 'louis.ai' and could not be confirmed.",
-    "The speaker's spoken job title was 'senior system design engineer'; the slide says Senior Agentic Security Engineer, Salesforce, and the slide is used.",
+    "The captions give the Q&A questioner's affiliation as 'louis.ai'; no other source confirms it, and the Q&A entry reports it as transcribed.",
+    "The captions say 'senior system design engineer'; the slide says Senior Agentic Security Engineer, Salesforce, and this record uses the slide.",
     "Slides 09 and 10 of 11 were not captured, so any content on them is unknown; slide numbers 1 to 8 and 11 appear.",
-    "Spoken description of the 240-run study and the transcript's phrasing about pass^k differ slightly from the slide; the slide's 162 of 175 and 92.6 percent are used.",
+    "The captions describe the 240-run study and pass^k slightly differently from the slide; the slide says 162 of 175 and 92.6 percent, and this record uses the slide.",
     "The 21,730-run and NIST CAISI statistics appear only on slides, and timestamps for them are approximate (the slide was on screen near those times).",
-    "Slide ROI percent: transcript says 100 dollars per hour for the agent, which the example treats as a flat 100 dollars of agent cost for the 100 cases."
+    "The captions say 100 dollars per hour for the agent; the slide's ROI example uses a flat 100 dollars of agent cost for the 100 cases, and this record uses the slide."
   ]
 }

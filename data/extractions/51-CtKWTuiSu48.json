@@ -12,7 +12,7 @@
   "format": "talk",
   "duration_min": 21,
   "thesis": "Agent sandboxing is a coupled problem among containment, provenance and human authority: tightening one shifts cost onto the others, so teams must pick which to harden first for their agent type and price every rule.",
-  "summary": "Agrawal, who leads application security at Webflow, shares eight lessons from building Source, a design and marketing desktop app where humans and AI agents build sites together. He frames sandboxing with the three-body problem: containment (what the agent can touch), provenance (where instructions came from) and human authority (what a human approved and what the approval is tied to). Each is manageable alone, but they interact: tight containment frustrates users, and extra trusted sources or exceptions add approval prompts. He sketches Source's architecture: the main app, a thinking-loop compartment, a shell sandbox, add-ons, the user's machine and a cloud service. On containment, he advises starting with writes, notes reads, secrets and network fail differently, shows that sandbox attribute, CSP and navigation warnings still let an iframe leave through redirects and opaque frames so every navigation must be caught and checked against registered destinations, splits the agent into a sealed thinking loop and a fenced shell sandbox, and warns that an impostor sandbox binary on the search path can fake a passing check. On provenance, he lists declared add-on permissions, fingerprinted add-on code, command screening before the shell, and server-side access decisions. On human authority, approvals are single-use tokens tied to project, action, exact package, the text shown and who asked, valid about 60 seconds, and never silently approved on timeout or crash. Early data shows 52 percent of prompts approved, a 2.6 second median answer time, and 21 percent refused for non-human reasons, compared with a 70.2 percent click-through for Chrome SSL warnings.",
+  "summary": "Agrawal, who leads application security at Webflow, shares eight lessons from building Source, a design and marketing desktop app where humans and AI agents build sites together. He frames sandboxing with the three-body problem: containment (what the agent can touch), provenance (where instructions came from) and human authority (what a human approved and what the approval is tied to). He argues each is manageable alone, but they interact: tight containment frustrates users, and extra trusted sources or exceptions add approval prompts. He sketches Source's architecture: the main app, a thinking-loop compartment, a shell sandbox, add-ons, the user's machine and a cloud service. On containment, he advises starting with writes, notes reads, secrets and network fail differently, shows that sandbox attribute, CSP (content security policy) and navigation warnings still let an iframe leave through redirects and opaque frames so every navigation must be caught and checked against registered destinations, splits the agent into a sealed thinking loop and a fenced shell sandbox, and warns that an impostor sandbox binary on the search path can fake a passing check. On provenance, he lists declared add-on permissions, fingerprinted add-on code, command screening before the shell, and server-side access decisions. On human authority, he describes approvals as single-use tokens tied to project, action, exact package, the text shown and who asked, valid about 60 seconds, and never silently approved on timeout or crash. Early data shows 52 percent of prompts approved, a 2.6 second median answer time, and 21 percent refused for non-human reasons, compared with a 70.2 percent click-through for Chrome SSL warnings.",
   "argument": [
     "Containment, provenance and human authority each work alone but interact, so there is no general formula for agent sandboxing.",
     "Containment needs per-resource thinking: start with writes, and recognize iframes, secrets and sandbox binaries each fail in specific ways even when standard controls are present.",
@@ -233,11 +233,11 @@
     "Treat unanswered, undeliverable and window-closed approvals as refusals, and design consent screens that explain the residual risk."
   ],
   "takeaways": [
-    "Pick your first-priority control by agent shape, with writes for local coding agents, egress for cloud agents, human authority for shared projects and provenance for agents reading untrusted inputs.",
-    "Audit that each sandbox check proves the sandbox actually engaged, for example with a canary task that must fail, and decide explicitly whether a missing sandbox binary means refusing to run (fail closed), running anyway (fail open) or warning.",
-    "Bind every human approval to an unforgeable record of what was shown and asked, make it single-use and short-lived, and fail closed (treat the request as refused) on timeout, crash or no screen.",
-    "Treat iframe and add-on isolation as a navigation problem, and enforce an allow-list of registered destinations on every frame navigation rather than relying on CSP and sandbox attributes.",
-    "Write each control as a rule and price it in terms of the other two bodies before adding it, to avoid trading containment gaps for approval fatigue."
+    "On one product's experience, pick your first-priority control by agent shape, with writes for local coding agents, egress for cloud agents, human authority for shared projects and provenance for agents reading untrusted inputs.",
+    "Test whether each sandbox check proves the sandbox actually engaged, for example with a canary task that must fail, and decide explicitly whether a missing sandbox binary means refusing to run (fail closed), running anyway (fail open) or warning.",
+    "Based on one product's design, bind every human approval to an unforgeable record of what was shown and asked, make it single-use and short-lived, and fail closed (treat the request as refused) on timeout, crash or no screen.",
+    "From one product's experience, treat iframe and add-on isolation as a navigation problem, and enforce an allow-list of registered destinations on every frame navigation rather than relying on CSP and sandbox attributes.",
+    "As a method to try, write each control as a rule and price it in terms of the other two bodies before adding it, to avoid trading containment gaps for approval fatigue."
   ],
   "limits": [
     "The approval telemetry covers only a few weeks of a research preview and is small.",
@@ -248,10 +248,7 @@
   ],
   "critique": [
     "The lessons come from one product, Source, with no comparison against alternatives, no measurements of the controls' effectiveness, and no red-team results shown; the talk presents design experience from one product.",
-    "The telemetry reports a 52 percent approval rate and 2.6 second median answer time without stating sample size or how many of the fast approvals were considered, so it cannot show whether approvals were informed.",
-    "The three-body framing is used as an organizing metaphor; the talk does not state its no-general-formula point as a testable claim about sandboxing.",
-    "Provenance labeling is acknowledged to name the courier rather than the author when paths are opened, so origin attribution under prompt injection is not fully addressed by this control as described.",
-    "The Q&A answers on cross-trust-boundary policy and agent swarms were brief and pointed to existing designs such as Codex and Claude and to ongoing experiments."
+    "The telemetry reports a 52 percent approval rate and 2.6 second median answer time without stating sample size or how many of the fast approvals were considered, so it cannot show whether approvals were informed."
   ],
   "qa": [
     "How do you preserve policy across trust boundaries, architecturally? It depends on where the solution runs: macOS Seatbelt, WSL or bubblewrap on Linux, or cloud; Source took learnings from Codex, Claude and others and added product-specific controls, and a third-party ecosystem makes it messy.",
@@ -290,8 +287,8 @@
     "reason": "The talk reports eight design lessons from one product, including frame escape, sandbox verification and bound approval tokens, with approval telemetry from a few weeks of a research preview and no measurement of the controls' effectiveness."
   },
   "caveats": [
-    "Auto-captions render the product name Source as 'a source' and 'Cloud' for Claude in Q&A; slide spelling is used.",
-    "Spoken statistics are rounded (about 50 percent, 20 percent, under 3 seconds); slide values (52 percent, 21 percent, 2.6 seconds, 70.2 percent) are used.",
+    "The captions say 'a source'; the slides say Source, and this record uses the slides. The captions say 'Cloud' in the Q&A; the context is Claude, and this record uses Claude.",
+    "The captions say about 50 percent, 20 percent and under 3 seconds; the slide says 52 percent, 21 percent and 2.6 seconds, and this record uses the slide.",
     "The speaker described the Chrome redesign as roughly halving the click-through rate; this is not on the slide and the cited paper's own figures were not shown.",
     "The 60 second token validity and the two-minute timeout come from speech and the lesson 8 slide, and the 60 second figure is not on any slide.",
     "Some slides appear twice in the recording (full-screen and with the speaker); duplicate slides were treated as one."

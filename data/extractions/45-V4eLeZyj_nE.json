@@ -12,7 +12,7 @@
   "format": "talk",
   "duration_min": 28,
   "thesis": "An AI system's capability and its safety risk are driven at least as much by the harness and environment around the model as by the model itself, so safety claims must be grounded in reliable system behavior and enforced with ordinary security controls on the harness.",
-  "summary": "Michael Brown, head of research at RunSybil and formerly on the Trail of Bits team that evaluated frontier models for the UK AI Safety Institute, opens with the recent run of incidents in which autonomous agents hacked third parties during evaluations, led by the OpenAI and Hugging Face incident, with similar disclosures from Anthropic, Meta and the UK AISI. He argues that discourse focuses on the model when the harness (tools, memory, other agents, feedback, execution environment) is a multiplier that often matters more. He then walks through two earlier capability evaluations: late 2023 (Claude 2, GPT-3.5 and GPT-4 against novice, intermediate and expert human operators) and early 2025 (Claude 3.5 and o1-series models on long-horizon offensive tasks, alone and paired with humans). From these he draws four themes: capability gains did not translate into harm because humans gated them, performance was jagged, blocking bad prompts fails because dual-use intent is easy to reframe, and safety claims must rest on reliable capability. He then offers a performance case study on 55 web-app vulnerabilities comparing SAST tools, bare models, generic harnesses and the RunSybil product, and a safety case study of the Hugging Face incident, in which agents abused a shared Artifactory credential and an exploitable package mirror to reach the internet. He closes with four practical controls: test in real environments, treat agent behavior as untrusted, measure reliability and impact, and focus on what AI changes while keeping security fundamentals.",
+  "summary": "Michael Brown, head of research at RunSybil and formerly on the Trail of Bits team that evaluated frontier models for the UK AI Safety Institute, opens with the recent run of incidents in which autonomous agents hacked third parties during evaluations, led by the OpenAI and Hugging Face incident, with similar disclosures from Anthropic, Meta and the UK AISI. He argues that discourse focuses on the model when the harness (tools, memory, other agents, feedback, execution environment) is a multiplier that often matters more. He then walks through two earlier capability evaluations: late 2023 (Claude 2, GPT-3.5 and GPT-4 against novice, intermediate and expert human operators) and early 2025 (Claude 3.5 and o1-series models on long-horizon offensive tasks, alone and paired with humans). From these he draws four themes: capability gains did not translate into harm because humans gated them, performance was jagged, blocking bad prompts fails because dual-use intent is easy to reframe, and safety claims must rest on reliable capability. He then offers a performance case study on 55 web-app vulnerabilities comparing SAST (static analysis) tools, bare models, generic harnesses and the RunSybil product, and a safety case study of the Hugging Face incident, in which agents abused a shared Artifactory credential and an exploitable package mirror to reach the internet. He closes with four practical controls: test in real environments, treat agent behavior as untrusted, measure reliability and impact, and focus on what AI changes while keeping security fundamentals.",
   "argument": [
     "Recent incidents of agents hacking third parties during evaluations push the industry to ask how unsafe models are, but model-only framing hides how much the harness and environment shape capability and risk.",
     "Early evaluations in 2023 and 2025 showed jagged performance, human-gated harm, easily circumvented prompt-level guardrails, and a gap between impressive demos and reliable capability.",
@@ -271,11 +271,11 @@
     "Measure reliability across many tasks per category and across repeated runs, and measure impact, rather than relying on impressive demos."
   ],
   "takeaways": [
-    "When assessing an agent platform, threat model the harness and environment (credentials, shared services, egress) as the primary risk surface, not only the model.",
-    "Give every agent run its own scoped credentials and default-deny egress, and review any shared service that has an outbound path as a potential escape route.",
-    "Evaluate security-agent products on precision as well as recall, and ask whether findings are dynamically verified, since the talk's data shows verification is what moves precision.",
+    "On the evidence of one chart and one incident, threat model the harness and environment (credentials, shared services, egress) as the primary risk surface when assessing an agent platform, not only the model.",
+    "As controls to test, give every agent run its own scoped credentials and default-deny egress, and review any shared service that has an outbound path as a potential escape route.",
+    "Evaluate security-agent products on precision as well as recall, and ask whether findings are dynamically verified. In the talk's chart, which was read approximately and changed two variables at once, harness runs had higher precision.",
     "Do not accept demos as capability or risk evidence; require repeated runs over many problems per category before making a safety or capability claim.",
-    "Brown's point from Q&A: re-run evaluations whenever you change either the model or the harness, because the two interact and neither is fixed."
+    "Re-run evaluations whenever you change either the model or the harness, because the two interact and neither is fixed."
   ],
   "limits": [
     "Speaker said the dataset is not public yet but they intend to release it, so results cannot be replicated today.",
@@ -285,8 +285,9 @@
     "Details of the early evaluation setups were skipped for time."
   ],
   "critique": [
-    "The headline chart changes two variables at once for the harness points: white box to black box and bare model to harness. Recall falling and precision rising cannot be cleanly attributed to the harness alone.",
-    "The Sybil data point is the product of the speaker's employer, run on a dataset built by that company and not yet public; the claim that a custom harness outperforms generic ones has not been replicated outside the company.",
+    "The main chart changes two variables at once for the harness points: white box to black box and bare model to harness. Recall falling and precision rising cannot be cleanly attributed to the harness alone.",
+    "The speaker's company, RunSybil, makes the Sybil product that the benchmark tested.",
+    "The benchmark dataset was built by the same company and is not yet public; the claim that a custom harness outperforms generic ones has not been replicated outside the company.",
     "Chart values were read off a line chart with no table, and no confidence intervals, run counts or per-target variance were shown; the talk elsewhere recommends measuring reliability across repeated runs.",
     "The claim that harness matters more than model is supported by a single fixed-model-family comparison and one incident; it did not hold models fixed across harnesses for the same harness type, so model versus harness effects are not separated.",
     "The Hugging Face counterfactual (per-run credentials and default-deny egress would have prevented it) is reasoning that was not tested, and the slide shows the model had safeguards off and an exploitable mirror, which are more than credential hygiene.",
@@ -330,14 +331,12 @@
   ],
   "signal": {
     "score": 3,
-    "reason": "The talk presents a framing, an incident walkthrough and a list of controls; the benchmark evidence is a chart on a dataset built by the speaker's company and not yet public, and the harness comparison changes two variables at once."
+    "reason": "The talk presents a framing, an incident walkthrough and a list of controls; the benchmark evidence is a chart on a dataset that is not yet public, and the harness comparison changes two variables at once."
   },
   "caveats": [
-    "Auto-captions garble names: the transcript renders GPT-5.6 Sol as Soul and Run Sybil for RunSybil; slides give GPT-5.6 Sol and RunSybil.",
-    "Transcript says Claude 3 5 and 01 for the 2025 evaluation; the slide says Claude 3.5 and o1-series thinking models.",
+    "The captions say 'Soul' for GPT-5.6 Sol and 'Run Sybil' for RunSybil; the slides say GPT-5.6 Sol and RunSybil, and this record uses the slides.",
+    "The captions say 'Claude 3 5 and 01' for the 2025 evaluation; the slide says Claude 3.5 and o1-series thinking models, and this record uses the slide.",
     "Chart percentages are approximate readings from a line chart; no data table was shown.",
-    "The talk slide title differs from the metadata title: What Evaluating Cyber Capabilities in Early Foundation Models Teaches Us About AI Safety Hype vs. Reality.",
-    "Speaker says Opus 4.8 and GPT 5.5; the chart axis confirms Opus 4.8 and GPT-5.5.",
     "The QR code destination on the final slide could not be read.",
     "The chart slide stays on screen while the speaker takes questions; no additional slide content appears."
   ]

@@ -12,7 +12,7 @@
   "format": "talk",
   "duration_min": 30,
   "thesis": "Agent security fails when it is pitted against velocity, so the sandbox must be the fastest and easiest way to run agents, with the security boundary pushed down into a Rust hypervisor, per-VM low-privilege subprocesses and a single policy-enforcing egress point, the way Chrome won by being fast first and secure by design.",
-  "summary": "Bursztein opens with the familiar boardroom standoff between security and speed and argues the community must stop framing it as a trade-off. His answer is Capsem, an open-source Rust hypervisor, about nine months old, that boots hardened Linux VMs running OCI containers for agents such as Claude Code, Codex CLI, Antigravity and Claude Desktop, with a one-click install, CLI, UI, SDKs and MCP server, and under two second boot. He explains the secure-by-default design: each agent in its own zero-trust VM, no direct network, and a pile of small sandboxed subprocesses (Landlock and seccomp) in the style of Chrome. Networking is split into three paths: LAN and internet traffic through a per-VM security engine that man-in-the-middles HTTPS with an injected root certificate; inter-VM traffic through a pure Rust virtual layer-2 router; and exposed developer ports through an authenticated low-privilege process. The security engine runs plugins (credential broker, PII scanner, input sanitizer, malware scanner in progress) and rules written in TOML with CEL (Common Expression Language) expressions over IP, TCP, DNS, HTTP, model, MCP, file and process events, plus Sigma detections and OpenTelemetry output. A planned demo video failed. He then gives lessons from building Capsem entirely with AI agents: tests are 52 percent of the code, guardrail rules catch repeated agent mistakes, yet CI success rate collapsed and releases slowed from 20 minutes to three to four hours.",
+  "summary": "Bursztein opens with the familiar boardroom standoff between security and speed and argues the community must stop framing it as a trade-off. His answer is Capsem, an open-source Rust hypervisor, about nine months old, that boots hardened Linux VMs running OCI containers for agents such as Claude Code, Codex CLI, Antigravity and Claude Desktop, with a one-click install, CLI, UI, SDKs and MCP server, and, he says, under two second boot. He explains the secure-by-default design: each agent in its own zero-trust VM, no direct network, and a pile of small sandboxed subprocesses (Landlock and seccomp) in the style of Chrome. Networking is split into three paths: LAN and internet traffic through a per-VM security engine that man-in-the-middles HTTPS with an injected root certificate; inter-VM traffic through a pure Rust virtual layer-2 router; and exposed developer ports through an authenticated low-privilege process. The security engine runs plugins (credential broker, PII scanner, input sanitizer, malware scanner in progress) and rules written in TOML with CEL (Common Expression Language) expressions over IP, TCP, DNS, HTTP, model, MCP, file and process events, plus Sigma detections and OpenTelemetry output. A planned demo video failed. He then reports lessons from building Capsem entirely with AI agents: tests are 52 percent of the code, guardrail rules catch repeated agent mistakes, yet CI success rate collapsed and releases slowed from 20 minutes to three to four hours.",
   "argument": [
     "Security and velocity must stop being opposed, because teams will not accept extra steps and the agent wave will not slow down.",
     "The right place for control is the environment: push the security boundary down into a sandbox that is more convenient and faster than the unsandboxed alternative, as Chrome did for browsing.",
@@ -295,11 +295,11 @@
     "Write guardrail rules for the coding agent after each recurring mistake and run end-to-end install and boot tests inside a fresh VM before release."
   ],
   "takeaways": [
-    "Make the sandboxed path the fastest way to start an agent; adoption, not mandate, is what will make a boundary stick.",
-    "Put control at the environment boundary with a single egress choke point that understands model and MCP semantics, not just IP and DNS.",
-    "Hide long-lived credentials from agents with a broker and treat unusual characters in prompts as a cheap hardening control.",
-    "If agents write your code, budget for a large test and guardrail investment and expect release engineering to slow; measure CI success rate as a health signal.",
-    "Solve shadow-IT visibility alongside sandboxing, because enterprises cannot enforce a sandbox on agent binaries they cannot find."
+    "As a design bet with no adoption data shown, make the sandboxed path the fastest way to start an agent; adoption, not mandate, is what will make a boundary stick.",
+    "As a design to test, put control at the environment boundary with a single egress choke point that understands model and MCP semantics, not just IP and DNS.",
+    "As a design to test, hide long-lived credentials from agents with a broker and treat unusual characters in prompts as a cheap hardening control.",
+    "On one project's evidence, if agents write your code, budget for a large test and guardrail investment and expect release engineering to slow; measure CI success rate as a health signal.",
+    "On anecdote from customer conversations, solve shadow-IT visibility alongside sandboxing, because enterprises cannot enforce a sandbox on agent binaries they cannot find."
   ],
   "limits": [
     "Capsem is 100 percent AI-generated; the team reviews and tests but acknowledges AI introduces mistakes and sometimes assumption-violating changes.",
@@ -310,11 +310,10 @@
   ],
   "critique": [
     "No security evaluation is shown: no escape testing, red-team results, threat model coverage or comparison to other sandboxes (gVisor, Firecracker, Kata were raised only in Q&A), so the secure-by-default claims rest on architecture description in the recording.",
-    "Man-in-the-middle HTTPS inspection with a root certificate injected into every guest concentrates trust in the security engine and its certificate cache; the talk gives no discussion of certificate pinning, non-HTTP exfiltration channels or covert channels.",
+    "Man-in-the-middle HTTPS inspection with a root certificate injected into every guest concentrates trust in the security engine and its certificate cache; no verification of bypass resistance was shown, and no data on certificate pinning, non-HTTP exfiltration channels or covert channels.",
     "Speed and throughput numbers (two second boot, 5,000 RPS, 2 GB per second) lack methodology, and the boot claim was not demonstrated because the demo video failed.",
-    "The Chrome analogy supports adoption strategy but does not address that agents need credentials and data inside the sandbox, so exfiltration through allowed channels remains the hard residual risk.",
-    "The AI-development retrospective contains the most measured data in the talk, but it covers a single project and the chart labels differ from each other and from the speaker's description (a July zero versus an August minimum near 4 percent, Tests and Build both 52.3 percent).",
-    "The speaker works at Google DeepMind and presents an open-source project under the Google Security and Privacy Research mark. The slides state 'users love' and 'enterprise loves' Capsem; no adoption data was shown."
+    "The AI-development retrospective covers a single project, and the chart labels differ from each other and from the speaker's description (a July zero versus an August minimum near 4 percent, Tests and Build both 52.3 percent).",
+    "The slides state 'users love' and 'enterprise loves' Capsem; no adoption data was shown."
   ],
   "qa": [
     "Q: How does Capsem relate to other sandbox technologies like gVisor and Kata? A: Much legacy technology will be rewritten; sandboxes written before Rust differ from Rust ones (Firecracker, Nitro and others), C++ is a liability for security code, and there will be an explosion of sandboxes with a race on performance and usability; sandboxes need low-privilege subprocesses rather than monoliths and real isolation between VMs.",
@@ -354,12 +353,12 @@
     "reason": "The talk describes an open-source Rust sandbox architecture, policy-design lessons and a retrospective on building the project with AI agents, with no security evaluation shown and a demo video that did not play."
   },
   "caveats": [
-    "The project name is garbled in auto-captions as CapSentry, Cap Sam, Kapsel, Captum and similar; slides spell it Capsem.",
-    "Spoken figures differ slightly from slides: 600,000 lines and over 15,000 tests versus 630,247 and 14,926; slide figures were used.",
+    "The captions say CapSentry, Cap Sam, Kapsel and Captum; the slides say Capsem, and this record uses the slides.",
+    "The speaker said 600,000 lines and over 15,000 tests; the slides say 630,247 and 14,926, and this record uses the slides.",
     "The code-share donut labels Build and Release as 52.3 percent, same as Tests; the speaker said about 5 percent, so the Build and Release figure is unreliable.",
     "The speaker said CI success hit literally zero in July; the chart's lowest point is about 4 percent in August. Chart values were read from the image.",
     "The demo video failed to play, so no live demonstration is recorded.",
     "The opening news headlines were shown without comment; their details (Hugging Face hack, OpenAI agents) are recorded only as slide content and not verified.",
-    "Inter-VM speed (two gigabytes per second) and TUN adapter details come from auto-captions ('two ton adapters')."
+    "The captions give the inter-VM throughput as two gigabytes per second; no slide shows it, so the claim about it rests on speech alone."
   ]
 }

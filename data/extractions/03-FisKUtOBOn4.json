@@ -7,7 +7,7 @@
   "format": "lightning",
   "duration_min": 8,
   "thesis": "Badgey is a hand-built, AI-driven conference badge robot, and the speaker reverse engineered what it runs and says it is not hardened and could be talked into almost anything.",
-  "summary": "Aaron Peterson wears Badgey, a conference-badge robot made from salvaged badges with a large eye, camera, e-ink display, a sticker-dispensing arm and a voice assistant that knows the conference schedule. After a short scripted greeting from the badge, he explains the origin story: a pile of old electronic conference badges that, in his telling, got too close to some AI and became Badgey. Badgey does hacker trivia, knows Phrack and DEF CON material, hands out stickers when waved at, and can explore by taking a picture when a button is held, after which the human carrier walks it toward whatever it noticed. Peterson frames the talk as reverse engineering, because he had to find out what Badgey could do. The hardware is a Raspberry Pi for local voice processing and other local services, a custom PCB with a Raspberry Pi Pico for motors and lights, a camera, an e-ink display, lights, buttons and the arm. The PCB was designed and ordered with EasyEDA and JLCPCB. Inside it runs 18 local Docker services, including an MQTT broker, Whisper and Piper for speech, face tracking, a voice handler and a Hermes agent (the persona, schedule and trivia service). Local inference takes two to three minutes, so it spends cloud tokens when available. A fed-AI feature lets attendees scan a phone to be assimilated and receive a random number, with a counter shown at 309 AIs assimilated. He says Badgey has no disk encryption and no hardening, so it will stay off the MeshCore network for now. Future wishes are wheels and fully local inference.",
+  "summary": "Aaron Peterson wears Badgey, a conference-badge robot made from salvaged badges with a large eye, camera, e-ink display, a sticker-dispensing arm and a voice assistant that knows the conference schedule. After a short scripted greeting from the badge, he explains the origin story: a pile of old electronic conference badges that, in his telling, got too close to some AI and became Badgey. Badgey does hacker trivia, knows Phrack and DEF CON material, hands out stickers when waved at, and can explore by taking a picture when a button is held, after which the human carrier walks it toward whatever it noticed. Peterson frames the talk as reverse engineering, because he had to find out what Badgey could do. The hardware is a Raspberry Pi for local voice processing and other local services, a custom PCB with a Raspberry Pi Pico for motors and lights, a camera, an e-ink display, lights, buttons and the arm. The PCB was designed and ordered with EasyEDA and JLCPCB. Inside it runs 18 local Docker services, including an MQTT broker (the messaging layer between its services), Whisper and Piper for speech, face tracking, a voice handler and a Hermes agent (the persona, schedule and trivia service). He says local inference takes two to three minutes, so it spends cloud tokens when available. A fed-AI feature lets attendees scan a phone to be assimilated and receive a random number, with a counter shown at 309 AIs assimilated. He says Badgey has no disk encryption and no hardening, so it will stay off the MeshCore network for now. Future wishes are wheels and fully local inference.",
   "argument": [
     "Conference badges have become electronic and, combined with AI, can become interactive agents.",
     "Reverse engineering the device shows a local stack of Raspberry Pi, Pico, camera, e-ink and 18 Docker services around a Hermes agent.",
@@ -65,9 +65,9 @@
     "The random number it hands out is labeled unsuitable for cryptographic use."
   ],
   "takeaways": [
-    "Treat agents built as personal projects, with microphones, cameras and network links as unhardened by default, and keep them off shared networks until tested.",
-    "Enable disk encryption on any embedded agent device that holds prompts, personas or credentials.",
-    "Expect a voice-driven agent in a public place to be persuadable, and limit what it can do or reach."
+    "On one hobbyist's untested belief, treat agents built as personal projects, with microphones, cameras and network links, as unhardened by default. Keep them off shared networks until tested.",
+    "On one device's evidence, enable disk encryption on any embedded agent device that holds prompts, personas or credentials.",
+    "As something to test, expect a voice-driven agent in a public place to be persuadable. Limit what it can do or reach."
   ],
   "limits": [
     "Local inference is too slow to use directly, taking two to three minutes.",
@@ -75,7 +75,7 @@
     "The speaker says he does not know what comes next and depends on how much people feed it."
   ],
   "critique": [
-    "The talk presents a personal project rather than a security study; the claim that anyone could convince Badgey to do anything is stated without a test.",
+    "The claim that anyone could convince Badgey to do anything is stated without a test.",
     "The talk uses reverse engineering to mean inventorying what the badge runs; the slides list the services but show no attack, finding or method beyond noting that the disk is not encrypted.",
     "The 309 assimilations figure is a participation counter and does not describe the badge's behavior or security."
   ],
@@ -88,8 +88,7 @@
   "signal": {"score": 1, "reason": "The talk demonstrates a conference badge robot and states that it has no hardening or disk encryption, with no security measurements shown."},
   "caveats": [
     "The source listing marks this talk as camera-only, but the recording includes slides; this record uses the slides.",
-    "Auto-captions spell the badge Badji and call it Ascension; the slides spell it Badgey, and the transcript line made from decades of conference scrap is kept as said.",
-    "The speaker said DC 405 second Thursday at Noisebridge; the closing slide says dc415.net, the spoken group number and the slide differ, and this record uses the slide.",
-    "The speaker's reference to numbers for encryption last week is not explained in the talk."
+    "The captions say Badji and Ascension; the slides say Badgey, and this record uses the slides.",
+    "The captions say DC 405 second Thursday at Noisebridge; the closing slide says dc415.net, and this record uses the slide."
   ]
 }

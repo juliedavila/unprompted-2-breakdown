@@ -238,11 +238,11 @@
     "Detect misreported answers through logging and monitoring in the SIEM process and by looking up unfamiliar tools after approval and asking follow-up questions."
   ],
   "takeaways": [
-    "Compare your approved AI tool register to a 24-hour sample of network or endpoint logs: a large gap means the intake process is the problem, not the employees.",
-    "Tier by use (data, autonomy, impact) rather than by vendor, and let low-risk requests clear in a day without a committee.",
-    "Announce an amnesty window and train people before enforcing the process, so shadow tools surface instead of hiding.",
+    "As a check, compare your approved AI tool register to a 24-hour sample of network or endpoint logs. In the one case presented, a large gap pointed to the intake process, not the employees.",
+    "On one client's before-and-after results, tier by use (data, autonomy, impact) rather than by vendor, and let low-risk requests clear in a day without a committee.",
+    "On one client's results, announce an amnesty window and train people before enforcing the process; shadow tools then surface instead of hiding.",
     "Track submission count, time to decision per tier and share of requests that auto-clear as the program's health metrics.",
-    "Build in a way to check self-reported intake answers, since criteria published for self-service can be gamed."
+    "As something to check, build in a way to verify self-reported intake answers, since criteria published for self-service can be gamed."
   ],
   "limits": [
     "The speakers said the live demo could not run because the internet was down, so only screenshots were shown.",
@@ -255,9 +255,8 @@
     "95 of 96 submissions were approved; the talk gives no breakdown by tier, no control-adherence data and no outcomes such as incidents avoided.",
     "Tier decisions rest on keyword triggers and self-reported answers; the demo shows the word code lifting a Copilot request to Moderate, and the speaker said the analyst can override it manually, so false tiers and gaming are real design costs that were not measured.",
     "The abstract cites both rubrics side by side and a walkthrough of the tooling; the v1 rubric was not shown, and the tool was shown as screenshots of sample data with no link visible.",
-    "Tier the use, not the tool, sits alongside blanket prohibition of one named vendor (DeepSeek); the talk does not explain how that prohibition fits the use-based model.",
     "The opening cartoon story is a composite narrative, so details of the CEO and CISO should not be read as case facts beyond the stated numbers; the abstract says 20 submissions in six months while the talk says three months.",
-    "The speakers co-founded an advisory firm that offers this kind of service. The six steps follow common GRC practice; the elements reported with results are the amnesty, auto-clear and speed targets."
+    "The speakers' firm, Williams Rose AI Cyber Advisory, offers this kind of service."
   ],
   "qa": [
     "Q: What were the amnesty cases, and what risk levels did they carry? A: At the pharmaceutical client they were niche tools. One example was an AI research data platform, Ganymede Bio, fed non-deidentified research data from the data lake, with no contracts, used with corporate email; it was high risk, legal was upset, and it was found in a SentinelOne output.",
@@ -297,9 +296,10 @@
   },
   "caveats": [
     "The abstract title is 'Built to Spec, Ignored in Practice: Rebuilding AI Intake People Actually Use'.",
-    "Auto-captions garbled some terms: pharmacovigilance spelled aloud, 'Deep Six' for DeepSeek, 'Human X' for the conference on the slides (HumanX), 'Rovo and Service Now' for tools in a demo aside; slides used for names and numbers.",
-    "The transcript says results came after 3 months of the new process and 4 to 8 weeks before; the slide gives four weeks for low risk and six to eight weeks for high risk, which is used. The abstract says 20 submissions in six months; the talk and slide say three months.",
-    "The speaker said 95 approvals excluding DeepSeek; the slide says one prohibited. The slide does not name the tool; the speaker did.",
+    "The captions say \"Human X\"; the slides say HumanX, and this record uses the slides.",
+    "The captions say 4 to 8 weeks before; the slide says four weeks for low risk and six to eight weeks for high risk, and this record uses the slide.",
+    "The abstract says 20 submissions in six months; the talk and slide say three months, and this record uses the slide.",
+    "The speaker said 95 approvals excluding DeepSeek; the slide says one prohibited and does not name the tool, and this record uses the slide for the count and the speaker for the name.",
     "The live demo failed; screenshots show sample data (for example a sample submitter name and date) so the figures in the demo are not client data.",
     "Speaker names come from the speakers' own introduction and the closing slide; the recording does not always state which speaker said each line in Q&A.",
     "The v1 rubric promised in the abstract was not displayed in the recording."

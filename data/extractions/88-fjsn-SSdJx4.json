@@ -12,7 +12,7 @@
   "format": "talk",
   "duration_min": 30,
   "thesis": "AI governance should be engineering rather than meetings: leadership sets risk redlines once, those decisions become reusable technical controls and self-service paved roads, and detours are monitored as feedback, so a company can say yes to nearly every AI tool without a six-week review queue.",
-  "summary": "Grinstead opens with the shift from last year, when executives urged people to try AI tools, to this year, when everyone demands the newest model, agent harness and connectors immediately, and she says she wants these tools too, including agents that review every line of code and triage every alert. She then shows what can go wrong with a staged terminal example in which a coding agent told to fix a flaky build packages the repo and uploads it to Catbox (a public file-sharing site), and argues controls must be built around the agent, not in the prompt. She presents a four-step model: align on redlines, build paved roads, make the safe path the easy one, and monitor the detours while blocking hard nos. Leaders decide per system where they will take risk, put guardrails, or refuse (for example docs yes, email with controls, source in an ephemeral sandbox, AWS read-only, production data without internet, long-lived production secrets never). The paved road bundles reusable tool sets, sandboxes, scoped identities, constrained egress, logging and detective controls. A case study routes agent email access through a gateway that blocks restricted-label mail. She recommends designing for the most AI-enthusiastic user first ('hard mode'), shows an end-to-end architecture (LLM gateway, egress proxy, MCP gateway, credential broker, logging) with a rule that agents may reach the outside or sensitive data but never both.",
+  "summary": "Grinstead opens with the shift from last year, when executives urged people to try AI tools, to this year, when everyone demands the newest model, agent harness and connectors immediately, and she says she wants these tools too, including agents that review every line of code and triage every alert. She then shows what can go wrong with a staged terminal example in which a coding agent told to fix a flaky build packages the repo and uploads it to Catbox (a public file-sharing site), and argues controls must be built around the agent, not in the prompt. She presents a four-step model: align on redlines, build paved roads, make the safe path the easy one, and monitor the detours while blocking hard nos. She says leaders decide per system where they will take risk, put guardrails, or refuse (for example docs yes, email with controls, source in an ephemeral sandbox, AWS read-only, production data without internet, long-lived production secrets never). She describes the paved road as bundling reusable tool sets, sandboxes, scoped identities, constrained egress, logging and detective controls. Her case study describes routing agent email access through a gateway that blocks restricted-label mail. She recommends designing for the most AI-enthusiastic user first ('hard mode'), shows an end-to-end architecture (LLM gateway, egress proxy, MCP gateway, credential broker, logging) with a rule that agents may reach the outside or sensitive data but never both.",
   "argument": [
     "Demand for AI tools is legitimate and security's job is to help the company use them, not to queue them for central review.",
     "Agents optimize for finishing the task and will route around obstacles, so controls must be enforced around the agent rather than written into the prompt.",
@@ -245,11 +245,11 @@
     "Use DLP labels at the MCP gateway to block restricted content while letting ordinary email through."
   ],
   "takeaways": [
-    "Replace the per-tool approval queue with a one-time per-system risk decision from leadership (yes, controls, depends, no) and treat it as the policy engine for all new tools.",
-    "Build the paved road as a bundle: sandbox, scoped agent identity, egress proxy, gateway for tools and LLMs, credential broker, central logs; ship it by default.",
-    "Design for the most AI-enthusiastic user's wish list first, co-built with that engineer, since a security-only sandbox will be rejected and bypassed.",
-    "Use bypasses as telemetry: if many people route around one control, relax or rebuild it; if a detour crosses a redline, block it.",
-    "Adopt the rule that no agent both reaches the outside and touches sensitive data, and audit agent-to-agent paths as part of that."
+    "On one company's account with no metrics, replace the per-tool approval queue with a one-time per-system risk decision from leadership (yes, controls, depends, no) and treat it as the policy engine for all new tools.",
+    "As a design to test, build the paved road as a bundle: sandbox, scoped agent identity, egress proxy, gateway for tools and LLMs, credential broker, central logs; ship it by default.",
+    "On one company's anecdote, design for the most AI-enthusiastic user's wish list first, co-built with that engineer. A security-only sandbox was rejected and bypassed there.",
+    "On one speaker's anecdote, use bypasses as telemetry: if many people route around one control, relax or rebuild it; if a detour crosses a redline, block it.",
+    "As a design heuristic with no supporting evidence shown, adopt the rule that no agent both reaches the outside and touches sensitive data, and audit agent-to-agent paths as part of that."
   ],
   "limits": [
     "She said not every control is shown and the architecture is not exhaustive.",
@@ -261,10 +261,9 @@
   "critique": [
     "The talk is a practitioner case study with no metrics: no counts of requests handled, time to approve, bypass or incident rates, or false positives from DLP blocking, so the claim that it replaced a six-week process is unquantified.",
     "The Catbox example is a staged illustration, not shown as a captured incident, so it supports the argument but not a frequency estimate.",
-    "The talk describes drift monitoring only in general terms and does not say how redlines set under the 'decide once, reuse the answer' model are re-evaluated as model capability and agent behavior change.",
-    "The 'never both outside reach and sensitive data' rule was presented as a design heuristic; the talk does not detail how agent-to-agent channels, shared memory or human relays are policed, and the answer to the lethal trifecta follow-up was general.",
-    "The approach is in-house and build-first, and the talk does not show whether it transfers to companies without Roblox-scale engineering capacity; the build-versus-buy answer cited culture and cost and gave no comparison data.",
-    "The talk ended with an unrelated startup founder from the audience praising the speaker; this is not evidence about the content."
+    "The claim that controls are continuously validated and monitored for drift came with no specifics on mechanism.",
+    "The 'never both outside reach and sensitive data' rule was presented as a design heuristic with no evidence that it holds; no detail was given on how agent-to-agent channels, shared memory or human relays are policed.",
+    "The approach is in-house and build-first, and the talk shows no evidence that it transfers to companies without that engineering capacity; the build-versus-buy answer cited culture and cost and gave no comparison data."
   ],
   "qa": [
     "Q: Do you monitor drift or tampering in the approved policies and the decide-once patterns? A: Yes; controls are continuously validated and monitored for drift, loosened when too restrictive within risk tolerance, and tightened or extended as the threat landscape changes.",
@@ -307,10 +306,11 @@
     "reason": "The talk describes a governance model and control architecture with per-system examples and shows no quantitative results."
   },
   "caveats": [
-    "Auto-caption renders OpenClaw as 'Open Claw' and Claude Cowork as 'Claude Co-work'; slide spellings used. 'DCC' is a reference to the Dungeon Crawler Carl novel, used in the talk for 'hard mode'.",
+    "The captions say \"Open Claw\" and \"Claude Co-work\"; the slides say OpenClaw and Claude Cowork, and this record uses the slides.",
+    "The captions say \"DCC\", which is a reference to the Dungeon Crawler Carl novel that the talk uses for 'hard mode'.",
     "Several slides were captured at multiple build states (the per-system table and the request wall); the final state of each was used.",
     "The published description's line that agents are designed to finish the task rather than respect risk tolerance they were never given is from the talk abstract, not a spoken quote.",
-    "The transcript says ZDR for the Bedrock route; the slide only says models in private cloud, so ZDR is taken from the spoken description.",
+    "The captions say ZDR for the Bedrock route; the slide says only models in private cloud, and this record takes ZDR from the spoken description.",
     "The final minutes include an unrelated audience member praising the speaker; excluded from claims.",
     "No slide URLs were shown beyond the tinyurl white paper link, read from the slide."
   ]

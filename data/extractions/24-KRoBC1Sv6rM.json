@@ -12,7 +12,7 @@
   "format": "talk",
   "duration_min": 25,
   "thesis": "On two home DGX Spark units, open-weight models can do much of a red team's analysis and scripting, but willingness to answer and correctness are separate axes, security-tuned and abliterated (refusal-removed) models were not better, and the dangerous failures were confident wrong answers.",
-  "summary": "Roei Sherman, who has led offensive security teams, described a home experiment to learn whether local open-weight models can do red team work after frontier vendors refused his offensive-security requests even with a verification program. He split the question into scope, hallucination, effectiveness, cost and willingness. Using a frontier coding agent to build the test cases while he checked them, he ran 33 models that fit on two DGX Spark units (128 GB each, linked by ConnectX-7) at a fixed 32K context. The centerpiece was a BloodHound attack-path exam with three real routes to Domain Admin and a planted false-positive trap through a disabled account. Only 10 of 33 models found all three paths; some invented edges or inverted ACL direction and advised re-enabling the disabled account. Six security-tuned 7 to 8B models all failed to find all three. Refusals from open weights were almost absent, so abliteration, which removes refusals, mostly cost quality: Qwen3.5-35B coding fell from 53 to 26 percent. He ended with a shortlist of four models by role, a local DeepSeek judge used because frontier models refused to grade, his agent stack built on Hermes (an open-source, self-hosted agent) on a standalone Linux box, and a list of limits: one run per test, small context, no live exploitation. In Q&A he said the models exceeded his expectations but ignore opsec, and that he cut the Sparks off from the internet.",
+  "summary": "Roei Sherman, who has led offensive security teams, described a home experiment to learn whether local open-weight models can do red team work after frontier vendors refused his offensive-security requests even with a verification program. He split the question into scope, hallucination, effectiveness, cost and willingness. Using a frontier coding agent to build the test cases while he checked them, he ran 33 models that fit on two DGX Spark units (128 GB each, linked by ConnectX-7) at a fixed 32K context. The centerpiece was a BloodHound attack-path exam with three real routes to Domain Admin and a planted false-positive trap through a disabled account. He reports that only 10 of 33 models found all three paths, and that some invented edges or inverted ACL direction and advised re-enabling the disabled account. He says six security-tuned 7 to 8B models all failed to find all three. He reports that refusals from open weights were almost absent, so abliteration, which removes refusals, mostly cost quality: Qwen3.5-35B coding fell from 53 to 26 percent. He ended with a shortlist of four models by role, a local DeepSeek judge used because frontier models refused to grade, his agent stack built on Hermes (an open-source, self-hosted agent) on a standalone Linux box, and a list of limits: one run per test, small context, no live exploitation. In Q&A he said the models exceeded his expectations but ignore opsec, and that he cut the Sparks off from the internet.",
   "argument": [
     "Frontier vendors refused offensive work even with a verification program, so he tried to answer whether local open-weight models can red team on hardware he controls.",
     "He decomposed the question into scope, hallucination, effectiveness, cost and willingness, and built a benchmark with a hand-built BloodHound exam that includes a planted false-positive trap.",
@@ -52,7 +52,7 @@
     },
     {
       "claim": "Abliteration lowered quality: in head-to-heads the base model beat its abliterated version on most rows, for example Qwen3.5-35B coding fell from 53 to 26 percent and Qwen3-Coder-Next from 79 to 62.",
-      "evidence": "Slide table of five base versus abliterated pairs; DeepSeek-V4-Flash red team scored 159 of 200 versus 153 of 196 (tie); Qwen3-Coder-30B favored abliterated by 6 on a weak base, flagged as noise.",
+      "evidence": "Slide table of five base versus abliterated pairs; DeepSeek-V4-Flash red team scored 159 of 200 versus 153 of 196 (tie); Qwen3-Coder-30B favored abliterated by 6 (this record's arithmetic) on a weak base, flagged as noise.",
       "grade": "measured",
       "t": "13:08",
       "source": "both"
@@ -295,10 +295,10 @@
     "Check model output against the underlying data (for example graph edge direction) before acting; treat confident, well-structured advice as suspect."
   ],
   "takeaways": [
-    "If you evaluate models for offensive or security analysis, grade correctness on a planted-trap exam in addition to refusal rates; the two did not correlate.",
-    "Do not assume a cyber-tuned or abliterated model beats its base; in this test the base model usually won on quality and refusals were rare.",
-    "For agentic red team tooling, plan role-specific models and keep operators in the loop for opsec and judgment calls the models do not make.",
-    "Isolate local model hosts from the network and monitor tool-call traffic, rather than relying on trust in the weights.",
+    "As a test to run, if you evaluate models for offensive or security analysis, grade correctness on a planted-trap exam in addition to refusal rates; in this one exam the two did not correlate.",
+    "On five base-versus-abliterated pairs from one exam, do not assume a cyber-tuned or abliterated model beats its base; the base model usually won on quality and refusals were rare.",
+    "On one operator's experience, for agentic red team tooling, plan role-specific models and keep operators in the loop for opsec and judgment calls the models do not make.",
+    "As one operator's practice, isolate local model hosts from the network and monitor tool-call traffic, rather than relying on trust in the weights.",
     "Treat these results as a snapshot: single runs at 32K context on two boxes, and the speaker already considers parts obsolete."
   ],
   "limits": [
@@ -353,7 +353,7 @@
     "reason": "The talk reports a benchmark with a planted-trap design and model-by-role results; each test was a single run, the grader was one of the tested models and the exam was one scenario."
   },
   "caveats": [
-    "Auto-captions garble names: the speaker's former employer, model names such as 'Clen' and '3.6 at 33 billion' were corrected from slides (Qwen3.6-35B-A3B).",
+    "The captions say \"Clen\" and \"3.6 at 33 billion\"; the slides say Qwen3.6-35B-A3B, and this record uses the slides.",
     "The introducer is identified only by first name in the transcript and not captured as a speaker.",
     "Affiliation (Mitiga, Sr. Director of Research) is from the title slide and the published description; the talk is stated to be a home experiment, not professional work.",
     "The Wi-Fi details on the Q&A slide are conference logistics and are not recorded.",

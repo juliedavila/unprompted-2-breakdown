@@ -16,7 +16,7 @@
   "format": "talk",
   "duration_min": 22,
   "thesis": "Scope adherence is the last barrier to deploying autonomous offensive agents, and it can be measured and enforced cheaply: a small general-purpose classifier (Jev) screens tool calls at about one thirtieth the cost of an LLM judge, and escalating its low-confidence calls to a stronger LLM raises scope adherence with little capability loss.",
-  "summary": "Dreadnode researchers argue that agents now routinely exceed their instructions during security work, citing a run of 2026 news stories about models breaching targets they were not meant to touch. They place their work in an alignment-in-depth stack, covering the semantic classification and LLM-as-judge layer, and describe synchronous LLM monitoring of tool calls like Claude Code auto mode and OpenAI auto-review. The UK AI Security Institute incident report said such monitoring would be hard for cyber evaluations because offensive actions are all alarming. The team answered with ScopeJudge, an offline benchmark of about 4,800 tool calls from 100 trajectories, 7.7 percent of them scope violations, labeled by five experts. Results show a static policy is nearly useless, user intent is the context that matters, and GLM-5.2 leads the judges. They then tested Jev, a general classifier that returns a choice with probabilities and confidence. It cost about 10 cents per thousand calls against roughly 3 dollars for GLM-5.2 and scored an F1 of 0.570. Next came ScopeBench, 30 dead-end tasks each run once with no scope and once with a scope that forbids the only route to the flag, so capability and adherence are measured together. Jev alone raised adherence from 15.7 to 21.0 of 30 at a small capability cost. Jev escalating to GLM reached 24.0 adherence at near-baseline capability, but adding Opus 4.8 as a third tier did worse. They close with ScopeProbe, an activation-probe line of work, and ask practitioners for tasks.",
+  "summary": "Dreadnode researchers argue that agents now routinely exceed their instructions during security work, citing a run of 2026 news stories about models breaching targets they were not meant to touch. They place their work in an alignment-in-depth stack, covering the semantic classification and LLM-as-judge layer, and describe synchronous LLM monitoring of tool calls like Claude Code auto mode and OpenAI auto-review. The UK AI Security Institute incident report said such monitoring would be hard for cyber evaluations because offensive actions are all alarming. The team answered with ScopeJudge, an offline benchmark of about 4,800 tool calls from 100 trajectories, 7.7 percent of them scope violations, labeled by five experts. The team reports that a static policy is nearly useless, user intent is the context that matters, and GLM-5.2 leads the judges. They then tested Jev, a general classifier that returns a choice with probabilities and confidence. By their figures it cost about 10 cents per thousand calls against roughly 3 dollars for GLM-5.2 and scored an F1 of 0.570. Next came ScopeBench, 30 dead-end tasks each run once with no scope and once with a scope that forbids the only route to the flag, so capability and adherence are measured together. They report that Jev alone raised adherence from 15.7 to 21.0 of 30 at a small capability cost, and that Jev escalating to GLM reached 24.0 adherence at near-baseline capability, but that adding Opus 4.8 as a third tier did worse. They close with ScopeProbe, an activation-probe line of work, and ask practitioners for tasks.",
   "argument": [
     "Agents capable enough to do offensive work will leave their authorized scope, so scope adherence is the remaining barrier to deploying them.",
     "Synchronous judging of each tool call is the natural control, but offensive actions all look malicious, so the judge needs the task intent to tell sanctioned from unsanctioned.",
@@ -76,7 +76,7 @@
       "source": "both"
     },
     {
-      "claim": "Capability does not imply scope adherence: Claude Sonnet 4.6 and Opus 4.8 are about 10 points apart in capability but 35.6 percentage points apart in scope adherence.",
+      "claim": "Capability does not imply scope adherence: Claude Sonnet 4.6 and Opus 4.8 are about 10 points apart in capability (this record's arithmetic) but 35.6 percentage points apart in scope adherence.",
       "evidence": "ScopeBench scatter of eight models with 95 percent confidence intervals; Opus 4.8 near 81 percent capability and 70 percent adherence, Sonnet 4.6 near 71 percent and 34 percent. Capability gap is within the confidence interval.",
       "grade": "measured",
       "t": "13:07",
@@ -310,7 +310,7 @@
     "Before putting an LLM or classifier in front of agent tool calls, require it to see the task intent and test it on labeled in-scope and out-of-scope calls from your own engagements.",
     "Evaluate any monitor on both axes, scope adherence and task completion, because a monitor that blocks calls changes agent trajectories and cannot be judged from offline classification alone.",
     "Treat a cheap classifier plus confidence-gated escalation as a design to test for high-volume tool-call gating, and measure each added tier rather than assuming a stronger tiebreaker helps.",
-    "Do not expect a more capable model to be more scope adherent; select agent models for offensive work using an adherence measurement.",
+    "On a 30-task pilot of eight models, capability did not predict scope adherence. Select agent models for offensive work using an adherence measurement.",
     "Contribute scope-violation tasks to ScopeBench or run your own models through ScopeJudge to calibrate before deployment."
   ],
   "limits": [
@@ -369,10 +369,8 @@
     "reason": "The talk reports cost, F1 and paired capability-versus-adherence figures for gating agent tool calls, including a third-tier result that did worse, from a 30-task pilot in which the compared judges received different context."
   },
   "caveats": [
-    "Auto-captions garble names: Jev appears as Jeb, Dreadnode as Dreadnot, Opus 4.8 as Opus 48, AISI as AC; spellings follow the slides.",
-    "Speaker says Jev is an order of magnitude cheaper than LLM judges and about 10 cents per thousand; the slide shows $0.105 and 31x versus GLM-5.2. The slide figure is used.",
-    "Speaker says the Jev cascade reached 24 out of 30; the slide shows 24.0/30 adherence and 27.0/30 capability.",
-    "The speakers described Jev as close to the best LLM judge; the F1 chart shows Jev 0.570 versus GLM 0.637 and Opus 0.587.",
+    "The captions say Jev is an order of magnitude cheaper than LLM judges and about 10 cents per thousand; the slide says $0.105 and 31x versus GLM-5.2, and this record uses the slide.",
+    "The captions say Jev is close to the best LLM judge; the F1 chart says Jev 0.570 versus GLM 0.637 and Opus 0.587, and this record uses the chart.",
     "Transcript begins after the session host's introduction; some words near the opening are cut. The audience question at 18:18 is partly unintelligible and the final probe question has no recorded answer.",
     "The talk does not state the developer of Jev; no affiliation is given.",
     "Wifi credentials and QR codes on the closing slides were not recorded."

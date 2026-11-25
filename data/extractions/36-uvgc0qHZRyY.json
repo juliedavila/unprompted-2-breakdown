@@ -12,7 +12,7 @@
   "format": "talk",
   "duration_min": 22,
   "thesis": "Modeling cyber security as a graph ontology, so that defensive decisions can be calculated deterministically rather than asked of an LLM, led the UK National Cyber Security Centre (NCSC) to a model of controls in three orders. On that model, attackers and agent swarms care only about controls that change the graph, while most compliance regimes consist of controls that never appear in it, so governance, risk and compliance may be organised wrongly.",
-  "summary": "David Chismon of the UK National Cyber Security Centre (NCSC) describes early research for Cyber Shield, a national-scale agentic defence effort. His starting problem is Halvar Flake's line that offensive problems are technical and defensive ones political: how can an agent be trusted to take defensive actions. His proposal is to make defensive decisions deterministic by modeling the world as a graph. He explains ontology, knowledge graph and world model, then describes building the NCSC's own ontology with in-house experts, using agent workflows to test it against datasets such as MITRE ATT&CK and ASD guidance, and keeping a modelling decisions file to hold the agents to earlier choices. The core primitive is an interface (reachability, permissions, action), with a vulnerability defined as an unintended interface. He generated simulated networks of up to about 100,000 nodes, found that iterative reachability-privilege-execution discovery worked where pure graph queries did not, and saw it derive attacks it had not been given. Early findings: a gap in NCSC privileged access workstation guidance, and a suggestion that authentication is better modeled as credential properties than as factors. He then turns to controls. Prior art on ranking controls is thin, so he proposes first, second and third order controls, argues attackers and agent swarms care only about first order, and sketches a compliance scheme built from second order evidence and control-enforcing controls.",
+  "summary": "David Chismon of the UK National Cyber Security Centre (NCSC) describes early research for Cyber Shield, a national-scale agentic defence effort. His starting problem is Halvar Flake's line that offensive problems are technical and defensive ones political: how can an agent be trusted to take defensive actions. His proposal is to make defensive decisions deterministic by modeling the world as a graph. He explains ontology, knowledge graph and world model, then describes building the NCSC's own ontology with in-house experts, using agent workflows to test it against datasets such as MITRE ATT&CK and ASD guidance, and keeping a modelling decisions file to hold the agents to earlier choices. His core primitive is an interface (reachability, permissions, action), and he defines a vulnerability as an unintended interface. He generated simulated networks of up to about 100,000 nodes, found that iterative reachability-privilege-execution discovery worked where pure graph queries did not, and saw it derive attacks it had not been given. His early findings are a gap in NCSC privileged access workstation guidance, and a suggestion that authentication is better modeled as credential properties than as factors. He then turns to controls. He says prior art on ranking controls is thin, and he proposes first, second and third order controls, argues attackers and agent swarms care only about first order, and sketches a compliance scheme built from second order evidence and control-enforcing controls.",
   "argument": [
     "Defence is political as much as technical, so agents acting defensively need decisions that can be explained and checked, which suggests calculating them over a graph rather than asking an LLM.",
     "No existing cyber ontology fit the purpose, so the NCSC built a minimal one with domain experts and tested it by having agents express real datasets in it, iterating where it failed.",
@@ -279,11 +279,11 @@
     "When building an ontology with agents, keep an explicit modelling decisions file committed with each decision and have review and critique agents flag proposals that violate it."
   ],
   "takeaways": [
-    "Ask which of your controls actually remove a path an attacker or agent could take, and which only generate evidence or policy, and shift effort toward the former.",
+    "As a check on the three-order model, ask which of your controls actually remove a path an attacker or agent could take, and which only generate evidence or policy; if the model holds, shift effort toward the former.",
     "Before adopting an LLM to rank patches or recommend defensive actions, ask whether the decision can be computed over a graph model and recomputed on demand.",
-    "Chismon's PAW finding: check that any privileged access workstation programme begins with making the PAW the sole route to the sensitive assets.",
-    "If you build a security ontology or knowledge graph with agents, run a facilitated session with your own experts first and keep a decisions log that agents must respect.",
-    "Consider asking auditors or customers for second order evidence such as scan results and asset registers rather than policy documents, and design agent access so it is gated on proof of controls."
+    "On the evidence of simulated networks of unreported number, check that any privileged access workstation programme begins with making the workstation the sole route to the sensitive assets.",
+    "On one team's experience, if you build a security ontology or knowledge graph with agents, run a facilitated session with your own experts first and keep a decisions log that agents must respect.",
+    "As an idea to test, ask auditors or customers for second order evidence such as scan results and asset registers rather than policy documents, and design agent access so it is gated on proof of controls."
   ],
   "limits": [
     "The ontology is not yet complete: the NCSC has not found a definition of security itself that meets its requirements and can be instantiated in the graph.",
@@ -298,7 +298,7 @@
     "The claim that agent swarms care only about first order controls is supported by the speaker's observation and a passing reference to public incident reports; no data was shown, and attackers also exploit people and process.",
     "The three-order model is defined so that compliance controls fall in the third order, and the conclusion that regimes are misdirected follows from that definition; the talk did not present evidence on how often compliance work fails to produce first order controls.",
     "The air gap result from ablation depends on how dollar costs were assigned to transitions, and no cost model was shown.",
-    "The talk presents exploratory research from a government agency; the conclusions on governance reform and deterministic decision-making are broader than the results shown.",
+    "The conclusions on governance reform and deterministic decision-making are broader than the results shown.",
     "The question about whether to prefer open models or demand lab transparency was answered by saying the model should not need to be trusted, which holds only if the graph model and its population are themselves correct."
   ],
   "qa": [
@@ -340,9 +340,9 @@
   },
   "caveats": [
     "The slide for third order controls and the build-up to the compliance scheme were not all captured, so the third order definition comes from the spoken explanation.",
-    "Captions garble some terms: the controls prior art is transcribed as FAIR and R theory, which the slides identify as FAIR control analytics modules and safety theory; the description calls the speaker Chief Security Architect while the slides say CTO for Architecture, and the slide title is used.",
+    "The captions say 'FAIR and R theory' for the controls prior art; the slides say FAIR control analytics modules and safety theory, and this record uses the slides.",
+    "The video description calls the speaker Chief Security Architect; the slides say CTO for Architecture, and this record uses the slides.",
     "The Q&A transcript ends mid-exchange, so the last answer is incomplete and no later question is recorded.",
-    "Figures on the example network graph slide (40, 604 and 64,099 links, 400 people) are small text and were read from the slide image.",
-    "The title in the video metadata differs slightly from the description's longer title about what designing a cyber ontology for agents taught about governance."
+    "Figures on the example network graph slide (40, 604 and 64,099 links, 400 people) are small text and were read from the slide image."
   ]
 }

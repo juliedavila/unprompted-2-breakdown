@@ -16,7 +16,7 @@
   "format": "talk",
   "duration_min": 25,
   "thesis": "Every model has a complexity point where its reliability falls off a cliff, mostly through omissions rather than hallucinations, and you can find that point with a small locked answer key before you trust the model. Error-correction wrappers help weak models but barely help strong ones, and the accuracy they buy comes from forcing the model to read, which is slow and expensive.",
-  "summary": "The speakers' analysts do documentation-heavy security work such as mapping vendor product features to MITRE ATT&CK techniques. Junior analysts fed this to Claude and got polished spreadsheets that were often wrong, which started a benchmark of open-weight models with Claude as reference. They define cognitive complexity as the number of data points that must be synthesized into verifiable atomic claims, and built five nodes from 2 questions over 283 documents to 4,672 questions over 5,676 documents. One locked answer key per node grades every run for precision (wrong yeses) and recall (missed real capabilities). In the naive 'prompt and dump' run, F1 (a single score combining precision and recall) falls as nodes grow, and the failure is overwhelmingly false negatives. Models also read only a small share of the documents. They then tested four correction methods: instructions (a skill-style procedure), code (scripts force reading in small batches), swarm (merge independent runs) and verification (exact quote plus a second verifying call). Instructions bought precision and cost recall; code and swarm raised recall but not precision; verification held precision near 1.0 at small nodes and broke at the item list for node 4. Weak models gained most; strong ones gained little. A case study shows deepseek v4.1 flash scoring best while reading 2 to 6 percent of lines, and a transplant test shows its page selection does not transfer. They close with advice to find each model's cliff, use small models for checkable steps and strong models for judgment, and build a small answer key as a proxy for a full one.",
+  "summary": "The speakers say their analysts do documentation-heavy security work such as mapping vendor product features to MITRE ATT&CK techniques. They report that junior analysts fed this to Claude and got polished spreadsheets that were often wrong, which started a benchmark of open-weight models with Claude as reference. They define cognitive complexity as the number of data points that must be synthesized into verifiable atomic claims, and built five nodes from 2 questions over 283 documents to 4,672 questions over 5,676 documents. One locked answer key per node grades every run for precision (wrong yeses) and recall (missed real capabilities). They report that in the naive 'prompt and dump' run, F1 (a single score combining precision and recall) falls as nodes grow, and the failure is overwhelmingly false negatives. They also report that models read only a small share of the documents. They then tested four correction methods: instructions (a skill-style procedure), code (scripts force reading in small batches), swarm (merge independent runs) and verification (exact quote plus a second verifying call). They report that instructions bought precision and cost recall; code and swarm raised recall but not precision; verification held precision near 1.0 at small nodes and broke at the item list for node 4. They say weak models gained most and strong ones gained little. A case study reports deepseek v4.1 flash scoring best while reading 2 to 6 percent of lines, and a transplant test in which its page selection did not transfer to another model. They close with advice to find each model's cliff, use small models for checkable steps and strong models for judgment, and build a small answer key as a proxy for a full one.",
   "argument": [
     "Security analysis work such as framework crosswalks is a natural LLM task, yet agent output on it is often confidently wrong, so reliability must be measured rather than assumed.",
     "Error in this work is mostly omission: as the number of data points per task grows, recall collapses while hallucinated claims stay a small share.",
@@ -98,7 +98,7 @@
     },
     {
       "claim": "Deepseek's accuracy is partly parametric: without any documents or web tools it still said yes to 142 of the 207 items it had answered right.",
-      "evidence": "Rerun of the same questions with no documents; about 70 percent of right answers kept. Its closed-book product quiz F1 was only 0.45, mid-table.",
+      "evidence": "Rerun of the same questions with no documents; about 70 percent (this record's arithmetic) of right answers kept. Its closed-book product quiz F1 was only 0.45, mid-table.",
       "grade": "measured",
       "t": "18:16",
       "source": "both"
@@ -136,7 +136,7 @@
     },
     {
       "figure": "59 of 61 / 70",
-      "meaning": "Opus 5.5 at node 3: 61 yeses said, 59 right, 70 on the key; precision 97 percent, recall 84 percent",
+      "meaning": "Opus 5.5 at node 3: 61 yeses said, 59 right, 70 on the key; precision 97 percent (this record's arithmetic), recall 84 percent (this record's arithmetic)",
       "t": "05:17"
     },
     {
@@ -294,9 +294,9 @@
   "takeaways": [
     "Find your model's cliff before you trust it. Before putting an AI analyst on a crosswalk, review or mapping task, measure recall on a locked key at several task sizes, not just accuracy of what it asserts.",
     "Choose model by task complexity: cheap models for narrow checkable steps, and expect large cost and latency if you force full reading.",
-    "Treat omission as the main risk in agent-produced analysis; add checks that look for what is missing, not only for false claims.",
-    "Build a roughly 100-item verified answer key once and reuse it to compare models and wrappers per task.",
-    "Audit harness telemetry, since failed tool calls can be reported as completed."
+    "On this benchmark's single task family, treat omission as the main risk in agent-produced analysis; add checks that look for what is missing, not only for false claims.",
+    "On the speaker's own practice, with no comparison shown, build a roughly 100-item verified answer key once and reuse it to compare models and wrappers per task.",
+    "One harness in this benchmark marked failed tool calls as completed. Audit your harness telemetry for the same."
   ],
   "limits": [
     "Speakers said the number of correction-method iterations was small for some models, and that some models could not complete verification because of context limits or guardrails.",
@@ -310,8 +310,7 @@
     "The claim that a 100-question subset proxies full-key performance was stated from practice and no comparison was displayed.",
     "Answer-key quality is itself a limit: the key was built from the vendor's own documentation, so it measures documented capabilities, which may differ from the truth about products.",
     "The 'RAG is broken' remark in Q&A was a brief answer and was not developed; the benchmark tests agents pointed at a folder, not retrieval systems.",
-    "Conclusions about deepseek reading little but scoring well, with 70 percent of answers reproducible from memory, suggest the task partly rewards parametric knowledge of public product facts, which weakens it as a test of document comprehension.",
-    "The published title and description cite an adversarial critic-and-fixer loop and a cost and regression measure; the recording covers a benchmark of four correction methods and does not show the critic-and-fixer harness."
+    "Conclusions about deepseek reading little but scoring well, with 70 percent (this record's arithmetic) of answers reproducible from memory, suggest the task partly rewards parametric knowledge of public product facts, which weakens it as a test of document comprehension."
   ],
   "qa": [
     "Q: How sensitive was precision versus recall under swarm deliberation; was it one to one? A: Not one to one. They merged all yeses across runs and models; precision stayed the same and recall rose, because each model only saw a different small subset of documents.",
@@ -351,10 +350,16 @@
   },
   "caveats": [
     "The slide title is 'Your AI Analyst Is Confidently Wrong'.",
-    "Auto-captions garbled names: Gamma is Gemma 4 31B, Nemo 3 Super is nemotron 3 super, JLM 53 is GLM 5.3 flash, DeepSeek 41 Flash is deepseek v4.1 flash, per slides; 'Open Opus' is Opus 5.5.",
-    "Transcript says nearly 5,000 questions and 1,000 questions; slide gives 4,672 and 1,016. Transcript says about 300 pages for deepseek; slide says 304 pages. Transcript says 2 to 6 percent of documents; the slide says lines. Slide figures used.",
+    "The captions say \"Gamma\"; the slides say Gemma 4 31B, and this record uses the slides.",
+    "The captions say \"Nemo 3 Super\"; the slides say nemotron 3 super, and this record uses the slides.",
+    "The captions say \"JLM 53\"; the slides say GLM 5.3 flash, and this record uses the slides.",
+    "The captions say \"DeepSeek 41 Flash\"; the slides say deepseek v4.1 flash, and this record uses the slides.",
+    "The captions say \"Open Opus\"; the slides say Opus 5.5, and this record uses the slides.",
+    "The captions say nearly 5,000 questions and 1,000 questions; the slide says 4,672 and 1,016, and this record uses the slide.",
+    "The captions say about 300 pages for deepseek; the slide says 304 pages, and this record uses the slide.",
+    "The captions say 2 to 6 percent of documents; the slide says lines, and this record uses the slide.",
     "The recording attributes parts of the work to 'I built' without naming which speaker built which method, so this record does not attribute them.",
-    "Transcript says 'precision stayed the same' for swarm in Q&A; the slide shows nemotron node 3 precision falling 0.81 to 0.76. Slide figure kept in claims.",
+    "The captions say precision stayed the same for swarm in Q&A; the slide says nemotron node 3 precision fell from 0.81 to 0.76, and this record uses the slide.",
     "Slide timestamps come from when each slide appears in the recording; the swarm version history numbers on slide 8 were partly unreadable at the chart level and are summarized only where legible.",
     "The published description says the talk covers an adversarial critic, fixer and ATT&CK benchmark from two builds; the recorded talk covers only the benchmark."
   ]

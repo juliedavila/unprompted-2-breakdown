@@ -12,7 +12,7 @@
   "format": "talk",
   "duration_min": 25,
   "thesis": "Instead of prescribing steps to a bug-hunting agent, give the model a short descriptive Security Constitution of how trust should be held in a multi-tenant platform, and it will generate novel design-flaw candidates that models miss out of the box.",
-  "summary": "Kat Traxler opens with her results: about 109 bugs filed with three major cloud providers over roughly three months, 11 ruled working as intended, 98 real issues, of which 53 were accepted and 45 were still in triage. All were found by reading public API specifications and documentation and then validating against live infrastructure. She separates bugs in code, which models already find well, from flaws in design such as missing authorization checks, unauditable actions and unrevocable credentials, which need a point of view to see. The talk is explicitly not about the bug-hunting harness or adjudication, only about novel candidate generation at the top of the funnel. She contrasts a prescriptive agent skill (Cloudflare's security-audit skill, a six-step procedure) with a descriptive Security Constitution of twelve principles, eleven lessons and thirteen anchors (points for rooting an understanding of trust), released on GitHub the day before. She walks through case studies, each tied to a principle: a Vertex AI confused deputy, the BigQuery Data Transfer Service network-attachment deputy that led to principles 11 and 12, an Azure Managed Grafana credential redirect, and a missing act-as check in Google Integration Connectors. Each confirmed finding is codified as a shape, a reusable pattern, then farmed across providers; her register holds 36 shapes and 40 discovery signals (API-documentation clues that route the model to a shape). A reasonable customer test separates feature abuse from insecure-by-design flaws. She closes with the claim that harnesses may need less scaffolding and more point of view.",
+  "summary": "Kat Traxler opens with her results: about 109 bugs filed with three major cloud providers over roughly three months, 11 ruled working as intended, 98 real issues, of which 53 were accepted and 45 were still in triage. She says all were found by reading public API specifications and documentation and then validating against live infrastructure. She separates bugs in code, which models already find well, from flaws in design such as missing authorization checks, unauditable actions and unrevocable credentials, which need a point of view to see. The talk is explicitly not about the bug-hunting harness or adjudication, only about novel candidate generation at the top of the funnel. She contrasts a prescriptive agent skill (Cloudflare's security-audit skill, a six-step procedure) with a descriptive Security Constitution of twelve principles, eleven lessons and thirteen anchors (points for rooting an understanding of trust), released on GitHub the day before. She walks through case studies, each tied to a principle: a Vertex AI confused deputy, the BigQuery Data Transfer Service network-attachment deputy that led to principles 11 and 12, an Azure Managed Grafana credential redirect, and a missing act-as check in Google Integration Connectors. She says each confirmed finding is codified as a shape, a reusable pattern, then farmed across providers, and that her register holds 36 shapes and 40 discovery signals (API-documentation clues that route the model to a shape). She presents a reasonable customer test that, she says, separates feature abuse from insecure-by-design flaws. She closes with the claim that harnesses may need less scaffolding and more point of view.",
   "argument": [
     "Models are good at code-level bugs such as SQL injection and XSS but weak at insecure-by-design flaws, which can only be seen if you know what should be there.",
     "A descriptive Security Constitution, a set of principles about how trust should be held, gives the model that point of view without telling it what steps to take.",
@@ -177,7 +177,7 @@
     },
     {
       "figure": "3 / 16 / 44 / 25 / 4 / 11",
-      "meaning": "filings per month, May through October; these sum to 103, not 109",
+      "meaning": "filings per month, May through October; these sum to 103 (this record's arithmetic), not 109",
       "t": "18:29"
     }
   ],
@@ -309,10 +309,10 @@
     "For a harness doing automated review of your own platform, load a descriptive constitution of what must be true and require each candidate to name the principle it violates."
   ],
   "takeaways": [
-    "Add a descriptive principles file (what must be true, with a reasonable customer test) as an input to any agent that reviews designs or APIs, rather than only procedural checklists.",
-    "When a design review finds a flaw, write it down as a reusable shape plus a discovery signal and run it across every service and provider you own; this was where most of her volume came from.",
+    "On one operator's evidence, add a descriptive principles file (what must be true, with a reasonable customer test) as an input to any agent that reviews designs or APIs, rather than only procedural checklists.",
+    "On one operator's evidence, when a design review finds a flaw, write it down as a reusable shape plus a discovery signal and run it across every service and provider you own; this was reported as where most of the volume came from.",
     "Audit your own managed services for the three recurring patterns shown: caller-named resources used with the service's identity, network attachments or references accepted without a caller permission check, and settings that let a write-only user redirect a stored secret.",
-    "Require a reasonable-customer filter before escalating agent-generated candidates, so feature abuse does not flood triage.",
+    "As a test to run, require a reasonable-customer filter before escalating agent-generated candidates, so feature abuse does not flood triage.",
     "Expect provider triage to be slow: 45 of 98 valid reports were unresolved, so plan disclosure and mitigation timelines around that."
   ],
   "limits": [
@@ -323,10 +323,10 @@
     "Transfer beyond cloud is expected rather than shown; a fourth domain was only just started."
   ],
   "critique": [
-    "The headline counts are vendor-side outcomes and are not severity-weighted; the talk gives no distribution of impact, no false-positive rate for the constitution-led candidates, and no baseline run without the constitution.",
+    "The main counts are vendor-side outcomes and are not severity-weighted; the talk gives no distribution of impact, no false-positive rate for the constitution-led candidates, and no baseline run without the constitution.",
     "The claim that descriptive steering beats prescriptive is based on the speaker's impression and a fall-off after a few weeks, which she said was not a formal comparison; no ablation was shown, so the effect cannot be separated from her own domain expertise and the shape and signal register.",
     "One finding was farmed into about 30 filings through the shape register, in addition to the principles themselves; the talk did not separate the yield of the two.",
-    "Monthly filings on the slide sum to 103 while the headline is 109, and the published description says 90+ valid versus 98 in the talk, so the counts need reconciling before being quoted.",
+    "Monthly filings on the slide sum to 103 (this record's arithmetic) while the main figure is 109, and the published description says 90+ valid versus 98 in the talk, so the counts need reconciling before being quoted.",
     "Accepted includes duplicates and rewarded issues per the slide label, and the confused deputy class is long-known, the talk does not separate new bug classes from new instances.",
     "According to the speaker, Google closed the BigQuery Data Transfer shape-level pattern as won't fix, and the accepted finding b/518828428 is not fixed."
   ],
@@ -370,12 +370,11 @@
     "reason": "The talk presents a method of principles, shapes, discovery signals and a reasonable customer test, with vendor-side counts and four named cases, and no baseline comparison."
   },
   "caveats": [
-    "Auto-captions garble the name Kat Traxler (Pat, cat track so dot cloud) and the site is kattraxler.cloud per the slide.",
+    "The captions say 'Pat' and 'cat track so dot cloud'; the slide says Kat Traxler and kattraxler.cloud, and this record uses the slide.",
     "Slide text is cropped at the right edge of several slides: principles 3, 6 and 9 and parts of the finding descriptions are incomplete.",
-    "Monthly filings on the slide sum to 103 while the headline says 109; the published description says 90+ valid issues while the talk says 98.",
+    "Monthly filings on the slide sum to 103 (this record's arithmetic) while the main figure says 109; the published description says 90+ valid issues while the talk says 98.",
     "Slide label for accepted includes accepted, rewarded and duplicates of a tracked bug.",
-    "Speaker said the shape 32 figure may be out of date and that Google closed the shape-level BigQuery pattern with a won't fix style response; the transcript wording is garbled ('said client to fix this').",
-    "Transcript has principle numbers spoken as 1, 2, 3 or 5 and the number of shapes as shape number 32; the slide confirms SHAPE-032.",
+    "The speaker said the shape 32 figure may be out of date. The captions say 'said client to fix this'; this record reads it as a won't-fix response from Google to the shape-level BigQuery pattern, and the claim about that response depends on this reading.",
     "Provider names other than Google and Azure are not given on the slides; the third provider is not identified."
   ]
 }

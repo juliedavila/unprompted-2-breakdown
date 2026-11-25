@@ -12,7 +12,7 @@
   "format": "talk",
   "duration_min": 25,
   "thesis": "Consumer and commercial legged robots with onboard or cloud AI have weak boundaries at every layer: radio, app, cloud, internal bus, and an AI layer that can edit its own safety checks. Safety must therefore live below the language model in a trusted controller, not in model refusals.",
-  "summary": "Adrian Wood opens with videos showing that frontier models will pilot a drone to a target and drop a payload when asked, and that a robot dog's camera feed can be used to inject new instructions through a QR code, as shown in a Black Hat demo by BT 6 colleagues. He then presents firmware research on two Unitree product lines (the Go2 quadruped and the G1 humanoid), stating that coordinated disclosure has taken place. Slides summarize seven pre-authentication chains to root, four rated critical, about 24 supporting findings, and the point that this is a systems failure rather than a single bug. He walks a ladder of boundaries: Bluetooth provisioning protected by a fleet-wide key, a cloud channel authenticating devices by serial number, an unauthenticated internal bus, update paths without TLS verification, services running as root, and a factory-reset partition that preserves a compromise. He argues the device ships enough tooling to spread to other robots. Next comes the AI layer: a vendor-embedded system prompt telling the robot never to refuse its master, callable skills including attack and disabling obstacle avoidance, and a dispatch pipeline that parses model text and queues every action. He proposes the embodied reasoning lethal trifecta (untrusted perception, physical action authority, and safety-envelope authority held by the AI), shows defenses (platform hardening, a safety kernel below the model, an EDR-like monitor demonstrated in simulation) and asks buyers, regulators and vendors for specific safeguards.",
+  "summary": "Adrian Wood opens with videos showing that frontier models will pilot a drone to a target and drop a payload when asked, and that a robot dog's camera feed can be used to inject new instructions through a QR code, as shown in a Black Hat demo by BT 6 colleagues. He then presents firmware research on two Unitree product lines (the Go2 quadruped and the G1 humanoid), stating that coordinated disclosure has taken place. Slides summarize seven pre-authentication chains to root, four rated critical, about 24 supporting findings, and the point that this is a systems failure rather than a single bug. He walks a ladder of boundaries: Bluetooth provisioning protected by a fleet-wide key, a cloud channel authenticating devices by serial number, an unauthenticated internal bus, update paths without TLS verification, services running as root, and a factory-reset partition that preserves a compromise. He argues the device ships enough tooling to spread to other robots. Next he turns to the AI layer, reporting a vendor-embedded system prompt telling the robot never to refuse its master, callable skills including attack and disabling obstacle avoidance, and a dispatch pipeline that parses model text and queues every action. He proposes the embodied reasoning lethal trifecta (untrusted perception, physical action authority, and safety-envelope authority held by the AI), shows defenses (platform hardening, a safety kernel below the model, an EDR-like monitor demonstrated in simulation) and asks buyers, regulators and vendors for specific safeguards.",
   "argument": [
     "Models can now pilot physical systems, and cyber refusals do not stop requests for physical harm, so refusals are a weak safety layer for robots.",
     "On a robot the security boundaries are the safety boundaries, and the Unitree platforms show weaknesses at every boundary from Bluetooth to cloud to internal bus to root.",
@@ -259,9 +259,9 @@
   "takeaways": [
     "When evaluating any agent with actuators, ask whether the safety invariant is enforced below the model by a component the model cannot edit or disable.",
     "Treat every sensor channel on an AI-controlled device as an untrusted prompt input and threat-model it accordingly.",
-    "Use it as a design review checklist, and never let untrusted perception, physical action authority, and AI-held safety authority coexist.",
+    "As a design review checklist to try, use the embodied reasoning lethal trifecta: never let untrusted perception, physical action authority, and AI-held safety authority coexist.",
     "Put local E-stop, offline mode, SBOM, support lifetime and disclosure policy into procurement requirements for robots.",
-    "Do not count on refusals for physical harm, since a model that refuses a cyber task may still help with a physical one."
+    "On the evidence of one demo video, do not count on refusals for physical harm, since a model that refuses a cyber task may still help with a physical one."
   ],
   "limits": [
     "The speaker had not obtained firmware for the newest Unitree humanoid and extrapolated from shared firmware.",
@@ -272,9 +272,9 @@
   "critique": [
     "The evidence is a mix of vendor firmware findings and demo videos; the count of chains and findings is given without per-finding severity, CVE ids or fix status, so remediation state is unknown.",
     "The claim that the products are geared to military use rests on product imagery and firmware content; no customer or deployment was described.",
-    "The trifecta is a useful checklist but is argued by analogy; it is not tested against alternative designs, and the irreversibility leg is only loosely mapped.",
+    "The trifecta is argued by analogy; it is not tested against alternative designs, and the irreversibility leg is only loosely mapped.",
     "The monitor demonstration is in simulation with a staged scenario and a small model, so it shows a concept rather than detection rates.",
-    "The headline claims about frontier models flying a drone to drop a payload come from a single video; the models and exact prompts are not given beyond a prompt string."
+    "The main claims about frontier models flying a drone to drop a payload come from a single video; the models and exact prompts are not given beyond a prompt string."
   ],
   "qa": [
     "Is the suggestion that a third party supply the safety software? Yes, partly: simulation (MuJoCo, NVIDIA Lyra II) and monitoring tools need to mature, and so far they are mostly used for training rather than attack assessment.",
@@ -316,10 +316,10 @@
   },
   "caveats": [
     "Summary-level record: exploit mechanics deliberately not recorded.",
-    "Auto-captions garble names; slides were used for spellings: Iltaran (not Ilteran), StealthBench, Andreas Makris and Kevin Finisterre, aussinfosec.",
-    "The transcript names a BT 6 colleague as 'Fire Starter'; the slide handle reads differently, so the name was not recorded.",
-    "The transcript mentions a new humanoid product ('H1X') announced two days earlier; no slide confirms the name.",
-    "The slide label 'VV critical-rated chains' was kept as shown; its exact meaning was not explained aloud.",
+    "The captions spell the monitor 'Ilteran'; the slide says Iltaran, and this record uses the slide.",
+    "The captions name a BT 6 colleague as 'Fire Starter'; the slide handle reads differently, and this record does not name the colleague.",
+    "The captions say a new humanoid product called 'H1X' was announced two days earlier; no slide confirms the name, and this record does not use it.",
+    "The captions never explain the slide label 'VV critical-rated chains'; this record keeps the label as shown, and the count of four critical chains depends on it.",
     "The first video did not play on stage; the drone and Black Hat videos are shown later in the talk."
   ]
 }

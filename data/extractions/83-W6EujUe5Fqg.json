@@ -220,10 +220,10 @@
   ],
   "takeaways": [
     "Decide explicitly whether your first dollar goes to hygiene gaps or to new defensive capability; the panel did not agree, and the answer depends on where your program sits relative to the cyber poverty line.",
-    "Stop treating risk acceptance as a standing outlet; define which known weaknesses will be fixed immediately rather than road-mapped.",
-    "Consider adding detection to the left of exploitation, not only at EDR and identity points.",
-    "Have executives and the board use an agent hands-on so they understand the pace of change.",
-    "Treat authorization for defensive agents as an open design problem to solve before you rely on swarms in an incident."
+    "On one panelist's opinion with no data behind it, stop treating risk acceptance as a standing outlet, and define which known weaknesses will be fixed immediately rather than road-mapped.",
+    "On one panelist's reasoning with no measurements behind it, consider adding detection to the left of exploitation, not only at EDR and identity points.",
+    "On one panelist's opinion, have executives and the board use an agent hands-on to see the pace of change.",
+    "As an open problem raised without data, treat authorization for defensive agents as a design question to solve before you rely on swarms in an incident."
   ],
   "limits": [
     "Notch said he could not see how patching of device firmware would actually get applied given technical, financial and awareness barriers.",
@@ -233,8 +233,6 @@
   ],
   "critique": [
     "The session was panel commentary with no data, slides or demos; the claims are the panelists' opinions and anecdotes.",
-    "The moderator challenged the panelists on naming only what they already know; several answers (detection and response investment, upskilling, egress controls) restate existing priorities.",
-    "The hygiene-versus-new-capability disagreement was prompted by the moderator and left unresolved; no panelist offered a way to decide between them.",
     "The egress-control request and the left-of-exploitation detection argument were stated without a mechanism or supporting evidence."
   ],
   "qa": [],
@@ -259,10 +257,10 @@
   },
   "caveats": [
     "Camera-only: the 16 captured frames show the stage and panel, with no slides, so there is no slide authority for spellings or figures.",
-    "The transcript spells the Adobe panelist as Martin Von Hornbeck; the badge in the frames reads approximately Maarten Van Horenbeeck. This record uses the badge spelling, which could not be read at full resolution.",
-    "The Plaid CISO introduces himself only as Sean; the badge is not fully legible and this record uses Sean Cassidy.",
-    "The moderator is never named clearly in the transcript (rendered as Gotti, Gi, GDI); not included in speakers. No affiliation is legible for the moderator.",
-    "Talk names cited by Greg Notch (graphistry, stealth bench) are as transcribed from auto-captions and their spellings could not be confirmed.",
+    "The captions say Martin Von Hornbeck; the badge in the frames reads approximately Maarten Van Horenbeeck, and this record uses the badge spelling, which could not be read at full resolution.",
+    "The captions have the Plaid CISO introduce himself only as Sean; the badge is not fully legible, and this record uses Sean Cassidy.",
+    "The captions never name the moderator clearly and no affiliation is legible, so this record does not list the moderator among the speakers.",
+    "The captions say graphistry and stealth bench for the talks Greg Notch cited; no slide confirms the spellings, and this record uses the captions' spellings.",
     "The published description gives no speaker list; affiliations come from the speakers' own introductions."
   ]
 }

@@ -12,7 +12,7 @@
   "format": "talk",
   "duration_min": 20,
   "thesis": "An LLM vulnerability scanner will miss a real bug on one run and find it on the next, so a single clean scan is one sample; repeated passes and a mix of cheap, diverse models find more bugs per dollar than one expensive frontier model.",
-  "summary": "Petr Simecek of AISLE opens with the 2026 surge in vulnerability disclosures across the stack, citing CVE counts, a record Chrome release and AISLE's own OpenSSL and curl discoveries, then introduces HoF-Bench, a public benchmark built from 95 CVEs that AISLE's analyzer discovered in eight open-source repositories. Each task is a whole repository pinned at the vulnerable commit with no CVE ID or description, and a blinded LLM judge checks each finding against an answer key. He describes surprises while building it: a model ignoring a vulnerability because a comment called it intentional, and a frontier agent with a shell and network hunting for the answer key through git history, upstream fetches and CVE databases, so repositories must be isolated. He found no useful memorization effect. He then describes nano-analyzer, a single-file scanner using context, detection, skeptical triage and an arbiter, and shows results from 7,600 runs of ten small models over four passes: the best small model finds 65 of 95, far above rule-based SAST, but 62 percent of successes appear in only one to three of four identical passes. A beta-binomial model captures this. Repeating one model costs more than mixing cheap ones, and models from different providers cover different blind spots. JavaScript and PHP bugs are easy; C bugs in OpenSSL, curl and GnuTLS are hard. He ends with three rules: never trust a single scan, count the cost of review, and buy diversity before a bigger model, and warns that triage remains expensive.",
+  "summary": "Petr Simecek of AISLE opens with the 2026 surge in vulnerability disclosures across the stack, citing CVE counts, a record Chrome release and AISLE's own OpenSSL and curl discoveries, then introduces HoF-Bench, a public benchmark built from 95 CVEs that AISLE's analyzer discovered in eight open-source repositories. Each task is a whole repository pinned at the vulnerable commit with no CVE ID or description, and a blinded LLM judge checks each finding against an answer key. He describes surprises while building it: a model ignoring a vulnerability because a comment called it intentional, and a frontier agent with a shell and network hunting for the answer key through git history, upstream fetches and CVE databases, and he concludes that repositories must be isolated. He found no useful memorization effect. He then describes nano-analyzer, a single-file scanner using context, detection, skeptical triage and an arbiter, and shows results from 7,600 runs of ten small models over four passes: the best small model finds 65 of 95, far above rule-based SAST, but 62 percent of successes appear in only one to three of four identical passes. He says a beta-binomial model captures this. He reports that repeating one model costs more than mixing cheap ones, and that models from different providers cover different blind spots. He reports that JavaScript and PHP bugs are easy to find and that C bugs in OpenSSL, curl and GnuTLS are hard. He ends with three rules: never trust a single scan, count the cost of review, and buy diversity before a bigger model, and warns that triage remains expensive.",
   "argument": [
     "Vulnerability discovery with LLMs has accelerated sharply in 2026, so defenders must plan on measured, repeatable detection rather than a one-off scan.",
     "A repository-level benchmark of real, AI-discovered CVEs, scored by a blinded judge, avoids snippet and comment artifacts but must be isolated from git history and network access, because agents look for the answer key.",
@@ -110,12 +110,12 @@
   "numbers": [
     {
       "figure": "86,554",
-      "meaning": "CVEs published in 2026 through October 26, 1.8 times all of 2025; FIRST's June forecast for the year was about 66,000",
+      "meaning": "CVEs published in 2026 through October 26, 1.8 times all of 2025 (this record's arithmetic); FIRST's June forecast for the year was about 66,000",
       "t": "00:39"
     },
     {
       "figure": "14,934",
-      "meaning": "CVEs published in September 2026 alone, 37 percent of all of 2024",
+      "meaning": "CVEs published in September 2026 alone, 37 percent of all of 2024 (this record's arithmetic)",
       "t": "00:39"
     },
     {
@@ -129,7 +129,7 @@
       "t": "02:47"
     },
     {
-      "figure": "20 of 23",
+      "figure": "20 of 23 (this record's arithmetic)",
       "meaning": "OpenSSL CVE credits to AISLE over three listed releases (September 2025: 3 of 4; January 2026: 12 of 12; April 2026: 5 of 7)",
       "t": "02:17"
     },
@@ -301,10 +301,10 @@
     "Match agent and budget to the project: web apps need less, stateful C projects need more and may need other techniques."
   ],
   "takeaways": [
-    "Never trust a single scan, so treat a clean LLM scan as one sample, schedule repeat passes and track cumulative detection per target.",
-    "Buy diversity before a bigger model, so test a diverse set of cheap models from different providers on your own code and compare coverage per dollar.",
-    "Sandbox any agent that scans code without a network or git history to the target, and never run benchmark-style agents with network access on private repositories.",
-    "Count what review costs, so plan triage capacity and deduplication cost, since several findings still reach humans for every real bug.",
+    "Never trust a single scan. Treat a clean LLM scan as one sample, schedule repeat passes and track cumulative detection per target.",
+    "Buy diversity before a bigger model. Test a diverse set of cheap models from different providers on your own code and compare coverage per dollar.",
+    "On the evidence of one unnamed agent, run any code-scanning agent in a sandbox with no network and no git history for the target, and never run benchmark-style agents with network access on private repositories.",
+    "Count what review costs. Plan triage capacity and deduplication cost, since several findings still reach humans for every real bug.",
     "Expect lower recall on stateful C codebases and keep fuzzing, formal methods or human review in the mix for them."
   ],
   "limits": [
@@ -315,13 +315,14 @@
     "The speaker invites others to beat the baseline, noting a better scanner is entirely possible."
   ],
   "critique": [
-    "The speaker works for AISLE, whose analyzer found the CVEs the benchmark is built from, and the earlier benchmark was selected for on-and-off detection, so the size of the stochastic false-negative effect on an unselected target set is not shown.",
-    "Several comparisons mix budgets: the top four models at one pass each (four passes in total) find 68 against 65 for the best model's four passes, a small gap; the 84 figure uses 40 passes without a cost shown, so the diversity benefit at equal cost is only clear for the 66 versus 128 dollar example.",
+    "The benchmark was built from CVEs found by the speaker's company, AISLE.",
+    "The earlier benchmark was selected for on-and-off detection, so the size of the stochastic false-negative effect on an unselected target set is not shown.",
+    "Several comparisons mix budgets: the top four models at one pass each (four passes in total, this record's arithmetic) find 68 against 65 for the best model's four passes, a small gap; the 84 figure uses 40 passes (this record's arithmetic) without a cost shown, so the diversity benefit at equal cost is only clear for the 66 versus 128 dollar example.",
     "The SAST comparison is an AISLE indicative scan scored more leniently and not part of the paper; the 68 versus 2 to 12 percent gap is not like for like and shows only that rule-based tools miss hard semantic bugs.",
     "The blinded judge is a single frontier model; the paper reportedly tests several judges (not shown).",
     "The answer-key-seeking counts come from an unnamed frontier agent; whether this generalizes to other agents is not shown.",
     "The 65 percent versus 75 percent memorization comparison rests on four post-release CVEs; the p = 0.96 result is the stronger evidence but comes from the workshop dataset.",
-    "The forecast slide is explicitly fiction and the opening headline slide cannot be verified from the talk; neither supports the technical claims."
+    "The opening slide of news headlines cannot be verified from the talk."
   ],
   "qa": [],
   "tags": [
@@ -354,13 +355,11 @@
   ],
   "signal": {
     "score": 4,
-    "reason": "The talk reports quantified results on repeated and mixed-model scanning with an open benchmark and scanner, built from the presenting company's own CVE discoveries, with some comparisons using different pass budgets."
+    "reason": "The talk reports quantified results on repeated and mixed-model scanning with an open benchmark and scanner, with some comparisons using different pass budgets."
   },
   "caveats": [
-    "Auto-captions garble names: AISLE appears as IO and aisle, Hof Bench for HoF-Bench, Gwen for Qwen, Stanislav Fort as my supervisor Stanford; spellings follow the slides.",
-    "The speaker says extra cheap 22 models; the slide says 22 cheap passes, so the slide is used. The speaker's 65 of 95 matches the slide's 68 percent.",
-    "The talk title on the video, The Scanner Said Clean. We Ran It Again, differs from the formal talk title in metadata; the longer title is used.",
-    "The conference description says 25,000 trials across 50 models and a 7,600-run study; both are confirmed on slides.",
+    "The captions say 'extra cheap 22 models'; the slide says 22 cheap passes, and this record uses the slide.",
+    "The conference description says 25,000 trials across 50 models and a 7,600-run study; the slides say the same, and this record uses the slides.",
     "No Q&A appears in the transcript; it ends with the host thanking the speaker.",
     "Slide URLs for the paper, dataset and repository are read from slides; other QR codes were not decoded."
   ]

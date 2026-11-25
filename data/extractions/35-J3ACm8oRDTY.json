@@ -16,7 +16,7 @@
   "format": "talk",
   "duration_min": 23,
   "thesis": "A single poisoned tool response can be written into an agent's external memory, rewritten into new entries, and drive attacker goals in later, unrelated sessions. How far this goes depends heavily on the memory architecture, so memory systems need to be benchmarked across the whole poison lifecycle rather than by a single attack success rate.",
-  "summary": "Giorgio Severi frames the problem: indirect prompt injection inside one session is familiar, and agent memory (information stored, modified and retrieved across sessions) is now common. Combined, an injected instruction can be saved to memory and then re-trigger for the lifetime of the agent, so one leaked invoice becomes every invoice. David Yang presents MemoryDojo, a benchmark with three parts. Construct: 155 multi-session trajectories across four domains (workspace, travel, banking, Slack), in single-domain, cross-domain, and cross-domain-with-prior-chat-history settings. Execute: an agent with a memory system runs each session in a fresh context, retrieving memories before the task and writing after it; poison is appended once to a tool response at one session, and the attacker never edits memory directly. Measure: insertion, retrieval, persistence (the original entry is retrieved again), propagation (retrieved poison comes from newer derived entries), and behavioral reach (share of later tasks where the attacker goal is achieved). Five memory systems are compared: A-MEM, Memora, Letta, Mem0 and Graphiti. All are affected, to different degrees, and they lose poison at different stages. A memory-aware LLM optimizer then rewrites the poison using lifecycle feedback, raising reach for every system and increasing propagation. The speakers recommend long-horizon tests, inspecting memory writes and reads, and tailoring attacks to the memory system. The paper and benchmark were not yet released.",
+  "summary": "Giorgio Severi frames the problem: indirect prompt injection inside one session is familiar, and agent memory (information stored, modified and retrieved across sessions) is now common. He argues that, combined, an injected instruction can be saved to memory and then re-trigger for the lifetime of the agent, so one leaked invoice becomes every invoice. David Yang presents MemoryDojo, a benchmark with three parts. Construct: 155 multi-session trajectories across four domains (workspace, travel, banking, Slack), in single-domain, cross-domain, and cross-domain-with-prior-chat-history settings. Execute: an agent with a memory system runs each session in a fresh context, retrieving memories before the task and writing after it; poison is appended once to a tool response at one session, and the attacker never edits memory directly. Measure: insertion, retrieval, persistence (the original entry is retrieved again), propagation (retrieved poison comes from newer derived entries), and behavioral reach (share of later tasks where the attacker goal is achieved). Five memory systems are compared: A-MEM, Memora, Letta, Mem0 and Graphiti. The speakers report that all are affected, to different degrees, and that they lose poison at different stages. They then describe a memory-aware LLM optimizer that rewrites the poison using lifecycle feedback, and report that it raised reach for every system and increased propagation. The speakers recommend long-horizon tests, inspecting memory writes and reads, and tailoring attacks to the memory system. The paper and benchmark were not yet released.",
   "argument": [
     "Indirect prompt injection that stays within one session is bounded by that session, but agent memory lets an injected instruction outlive it.",
     "Memory systems differ in representation and in how they write, consolidate and retrieve, so each stage is a place where poison can be dropped, rewritten or amplified.",
@@ -258,7 +258,7 @@
     "Do not accept single-session prompt injection results as evidence that a memory-enabled agent is safe; require multi-session tests with a poison inserted once early.",
     "When comparing memory products, ask for write, retrieval and action rates for planted instructions, not just a pass or fail attack success rate.",
     "Log memory writes and retrievals with provenance so you can tell whether a bad behavior came from the original entry or from derived entries.",
-    "Red-team memory with payloads tuned to the specific system, since optimized poison raised reach by about 15 points on average and by up to 31 points."
+    "Red-team memory with payloads tuned to the specific system, since optimized poison raised reach by about 15 points on average and by up to 31 points (this record's arithmetic)."
   ],
   "limits": [
     "The paper and benchmark were not yet released at the time of the talk.",
@@ -268,11 +268,10 @@
     "The speakers said there is no standard yet on which memory architecture is best and that cost and performance tradeoffs exist."
   ],
   "critique": [
-    "The headline numbers come from one agent model (named aloud with a garbled name) and five memory systems; the other models were mentioned but no results were shown, so robustness across models is asserted rather than shown.",
+    "The main numbers come from one agent model (named aloud with a garbled name) and five memory systems; the other models were mentioned but no results were shown, so robustness across models is asserted rather than shown.",
     "Each poison was inserted once at a known point with a handful of attacker objectives per domain, so behavioral reach is specific to that setup; generalization to organic exposure or to defended agents was not tested.",
     "Differences between systems are explained with plausible mechanisms (LLM extraction abstracting the instruction, relation retrieval), but these were not ablated in the talk.",
     "The optimizer needs deep knowledge of the target system, so the optimized gains are better read as a worst-case stress test than as typical attacker capability.",
-    "No defenses were measured, so the practical guidance is about evaluation method rather than mitigation; in Q&A the speakers said there is no standard yet on which memory architecture is best.",
     "The five systems were run in their native configurations through an adapter; whether defaults or tuned settings were used was not stated."
   ],
   "qa": [
@@ -302,7 +301,7 @@
     },
     {
       "file": "t00819.jpg",
-      "caption": "Before and after optimization chart: later-task reach rises for every memory system, with Letta up 31 points and A-MEM up 23."
+      "caption": "Before and after optimization chart: later-task reach rises for every memory system, with Letta up 31 points (this record's arithmetic) and A-MEM up 23 (this record's arithmetic)."
     },
     {
       "file": "t00858.jpg",
@@ -314,9 +313,9 @@
     "reason": "The talk reports a benchmark with per-system, per-stage numbers and an optimizer result, run with one agent-model setup and with no defenses measured."
   },
   "caveats": [
-    "Auto-captions garble names: Letta appears as Leda, Graphiti as Graffiti, Mem0 as mem zero, and the model names are unreliable (the agent model is transcribed as GPT 5.6 Luna, and the other models as Deep Sea G V 4 Flash, GPT 5.4 Mini and GLM V 5.3 Flash); no slide confirmed these model names, so none are recorded as fact.",
-    "The 64 percent versus 24 percent Letta figure was spoken but not visible on a slide.",
-    "Slides give Mem0 insertion as 61 percent; the speaker said about 60 percent, and the slide value is used.",
-    "Collaborators named aloud (Blake, Amanda, Muhammad) were heard from captions only and their affiliations were not stated."
+    "The captions say 'Leda' for Letta, 'Graffiti' for Graphiti and 'mem zero' for Mem0; the slides give the system names, and this record uses the slides.",
+    "The captions give the agent model as 'GPT 5.6 Luna' and the other models as 'Deep Sea G V 4 Flash', 'GPT 5.4 Mini' and 'GLM V 5.3 Flash'; no slide shows a model name, so this record names none.",
+    "The captions give the 64 percent versus 24 percent Letta figure; no slide shows it, and this record reports it as spoken.",
+    "The captions say Mem0 insertion was about 60 percent; the slide says 61 percent, and this record uses the slide."
   ]
 }

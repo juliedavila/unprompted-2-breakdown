@@ -91,16 +91,15 @@
   "offense": [],
   "defense": [],
   "takeaways": [
-    "Encourage and sponsor your engineers to give talks, since communication skill affects how far their ideas travel.",
-    "Treat comfort with silence as a trainable speaking skill and review your own transcripts for fillers.",
-    "Use conference speaking as a promotion and visibility path for security staff."
+    "On one speaker's career experience, encourage and sponsor your engineers to give talks, since communication skill affects how far their ideas travel.",
+    "As a practice to try, treat comfort with silence as a trainable speaking skill and review your own transcripts for fillers.",
+    "On one speaker's career experience, use conference speaking as a promotion and visibility path for security staff."
   ],
   "limits": [
     "The talk was described as impromptu; Hardy joked that the airfare would have been cheaper with more notice."
   ],
   "critique": [
-    "Career advice, not a technical talk; no evidence beyond personal experience.",
-    "The talk covers professional development rather than AI security topics, and no technical claims were made."
+    "No evidence beyond the speaker's personal experience was given for the claims about speaking."
   ],
   "qa": [],
   "tags": [
@@ -122,7 +121,7 @@
   },
   "caveats": [
     "Camera-only video with no slides.",
-    "Auto-caption garbles: 'Gm Mark' is 'G Mark'; 'ROC' is ROTC; 'ASUS' is the spelling as heard and the organisation name could not be confirmed; the captions 'Gotti' and 'Gar' could not be matched to names.",
+    "The captions say ASUS and the organisation name could not be confirmed; the claim and the August 1986 figure about his first conference talk depend on it.",
     "Hardy's affiliation comes from the video description and his badge, not from the speech."
   ]
 }

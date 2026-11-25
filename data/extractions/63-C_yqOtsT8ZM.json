@@ -12,7 +12,7 @@
   "format": "talk",
   "duration_min": 23,
   "thesis": "A sandbox for an agent that runs untrusted code is much harder than it looks: the RAPTOR team's own sandbox shipped fail-open fallbacks and leaked credentials, and the fix is to refuse to run when a requested protection cannot be enforced, then verify with real-host tests.",
-  "summary": "After an introduction by the RAPTOR project lead, Cuthbert presents RAPTOR, an open-source agentic security harness that has an LLM find bugs in unvetted repositories, binaries and mobile apps, write proof-of-concepts through an eight-stage mechanical process, and execute them on the researcher's machine. Because prompt injection makes an instruction like 'do not read ~/.ssh' worthless, the team built an agent-specific sandbox starting in April. He sketches the lineage (chroot, jails, namespaces, seccomp, Landlock, Seatbelt) and the Linux design: namespaces, a private filesystem with a fake home, Landlock, seccomp and a guarded proxy, built by forking twice so the parent keeps credentials, the child builds the box and the grandchild runs the payload. A fallback ladder degrades from the full Linux stack down to no sandbox. The middle of the talk is a list of the team's own bugs: a failed /proc mount that warned and carried on and let the payload read the session credential, API keys that could not be shown to be unexposed, a network block that failed open, a port allow-list that disabled the block, bypassed startup checks, and a signing key the target could read and use to forge evidence logs. He then covers the fix pattern (a floor below which untrusted work is refused), a Mac refusal with a misleading error, GitHub Actions tests that passed on models but failed on real runners, growth of the suite from 250 to 3,656 tests, shared-storage risk between agents, and planned work: whole-job cgroup budgets, run receipts, SandboxCheckr (a prototype that reports what a host can do for sandboxing) with canary-style bait credentials, and throwaway VMs.",
+  "summary": "After an introduction by the RAPTOR project lead, Cuthbert presents RAPTOR, an open-source agentic security harness that has an LLM find bugs in unvetted repositories, binaries and mobile apps, write proof-of-concepts through an eight-stage mechanical process, and execute them on the researcher's machine. Because, he argues, prompt injection makes an instruction like 'do not read ~/.ssh' worthless, the team built an agent-specific sandbox starting in April. He sketches the lineage (chroot, jails, namespaces, seccomp, Landlock, Seatbelt) and the Linux design: namespaces, a private filesystem with a fake home, Landlock, seccomp and a guarded proxy, built by forking twice so the parent keeps credentials, the child builds the box and the grandchild runs the payload. A fallback ladder degrades from the full Linux stack down to no sandbox. The middle of the talk is his account of the team's own bugs: a failed /proc mount that warned and carried on and let the payload read the session credential, API keys that could not be shown to be unexposed, a network block that failed open, a port allow-list that disabled the block, bypassed startup checks, and a signing key the target could read and use to forge evidence logs. He then covers the fix pattern (a floor below which untrusted work is refused), a Mac refusal with a misleading error, GitHub Actions tests that passed on models but failed on real runners, growth of the suite from 250 to 3,656 tests, shared-storage risk between agents, and planned work: whole-job cgroup budgets, run receipts, SandboxCheckr (a prototype that reports what a host can do for sandboxing) with canary-style bait credentials, and throwaway VMs.",
   "argument": [
     "Agents that build and execute untrusted code on a researcher's machine need a sandbox because a prompt asking the model not to touch secrets is not a control.",
     "A graceful-degradation ladder of fallbacks sounds sensible but each rung has different gaps, and the lower rungs silently gave the payload more access than the caller asked for.",
@@ -285,10 +285,10 @@
   ],
   "takeaways": [
     "Audit your agent-execution sandbox for fail-open paths (degraded modes that silently drop a requested protection); for every degraded mode, ask whether the control the caller requested is still enforced, and if not, make it refuse.",
-    "Make the sandbox report the protection that actually ran for each job, and treat any gap between requested and applied as a failure.",
-    "Test the real launcher on the real runners (CI images, AppArmor hosts, a Mac already inside another sandbox); modelled checks can pass while real launches fail.",
+    "As a design to test, since run receipts are still planned, make the sandbox report the protection that actually ran for each job, and treat any gap between requested and applied as a failure.",
+    "On one project's CI experience, test the real launcher on the real runners (CI images, AppArmor hosts, a Mac already inside another sandbox); modelled checks can pass while real launches fail.",
     "Inventory secrets and signing keys reachable from the payload's namespace, including from setup helpers that still hold the parent's environment.",
-    "Map storage that agents share, and consider bait credentials per agent as cheap detection of cross-agent reuse."
+    "Map storage that agents share, and try bait credentials per agent as a possible cheap detection of cross-agent reuse."
   ],
   "limits": [
     "The speaker says the team does not think anything here is novel and that the sandbox will be broken again when it is upgraded.",
@@ -300,13 +300,12 @@
     "SandboxCheckr is a local prototype and not yet released."
   ],
   "critique": [
-    "The bug narrative is specific, with commit IDs and dated code comments, but the talk gives no counts of total bugs found, no severity ranking, and no data on how many were reachable by an actual payload versus found by review.",
+    "The talk gives no counts of total bugs found, no severity ranking, and no data on how many were reachable by an actual payload versus found by review.",
     "The credential leak and evidence-forging chain are described as possible; no run of an agent actually exploiting them is shown, so the chaining claim rests on the speaker's account.",
     "The 10 failures in 3 runs figure is not defined clearly (failures per run or in total), and the 500-test spoken figure and 250-test slide figure do not obviously agree.",
     "The OpenAI agent-messaging comparison appears only as a slide and the spoken part is garbled, so it should be checked against the primary source before reuse.",
     "The 'refuse rather than degrade' approach costs availability on hosts that sit below the floor; the talk does not say how many real hosts clear the floor.",
-    "Planned items (cgroup budgets, receipts, VMs) are roadmap items, not results, and the receipts only cover attempts RAPTOR can observe.",
-    "The speaker presents on behalf of the RAPTOR project, which is open source."
+    "Planned items (cgroup budgets, receipts, VMs) are roadmap items, not results, and the receipts only cover attempts RAPTOR can observe."
   ],
   "qa": [
     "How were the sandbox tests written, by hand or with agents? A mix: a normal threat model of what an agent could do, then LLMs to help write the tests, all kept in the repo and still growing.",
@@ -347,10 +346,9 @@
     "reason": "The talk reports a post-mortem of the team's own fail-open sandbox bugs and a refuse-below-the-floor rule, with commit references and a few counts as evidence."
   },
   "caveats": [
-    "Auto-captions garble several passages: the symlink bypass was transcribed unclearly and read from the slide, and the OpenAI shared-cache section is garbled in the transcript.",
-    "The intro speaker is introduced by first name only in the transcript; the repo URL on the closing slide shows gadievron/raptor.",
+    "The captions garble the symlink bypass; the slide says a symlink repointed the output directory, and this record uses the slide. The captions also garble the OpenAI shared-cache section, so the claim about it rests on the slide alone.",
     "The speaker's affiliation is not given on a slide, in the published description or in his own words beyond the title 'Security Researcher, Dinosaur Wrangler', so it is left empty.",
-    "Transcript says 'Raptor... April' with about 250 tests and elsewhere about 500 tests at the start; the slide shows 250 on 26 April, which this record uses.",
+    "The captions say about 500 tests at the start; the slide says 250 on 26 April, and this record uses the slide.",
     "Transcript says the Mac test ran 'just before this talk'; slide 17 describes it as running RAPTOR from an agent tool."
   ]
 }

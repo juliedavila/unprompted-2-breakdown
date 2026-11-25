@@ -12,7 +12,7 @@
   "format": "talk",
   "duration_min": 25,
   "thesis": "Hallucinations and indirect prompt injections are the same failure, a model attending to the wrong thing, and both can be caught for free by reading attention traces during open-weights inference and propagating taint along strong attention links.",
-  "summary": "Shintre opens by asking how an LLM answers a factual question. Facts in the weights, like the capital of France, need no context. Anything else, like the dates of this conference, must be looked up in the prompt at generation time, and that lookup runs through attention. He argues that the model cannot store a specific fact or instruction permanently, so it must look back at the source span each time it emits one, and that look-back survives translation and multi-hop reasoning. He frames hallucination as the model not attending to any context (the Air Canada chatbot inventing a policy) and indirect prompt injection as the model attending to an untrusted source it should ignore (EchoLeak, a zero-click attack on Microsoft Copilot). The method, which the slides call TaintTrace, seeds taint on source spans, then for each new token finds the earlier tokens it attends to above a threshold, passes taint only along those links, repeats until the answer or tool call is reached, and decides whether the output inherited taint. He shows a benchmark table with F1 gains over prior attribution methods on two injection datasets and two grounding datasets, then a live demo of Realm Labs' RealmGuard playground: a grounded Eiffel Tower answer, an ungrounded one, an altered context, and a send_money tool call whose recipient is traced to the trusted source rather than an injected one. The method needs no extra LLM call and works only with open weights.",
+  "summary": "Shintre opens by asking how an LLM answers a factual question. He says facts in the weights, like the capital of France, need no context, and that anything else, like the dates of this conference, must be looked up in the prompt at generation time, through attention. He argues that the model cannot store a specific fact or instruction permanently, so it must look back at the source span each time it emits one, and that look-back survives translation and multi-hop reasoning. He frames hallucination as the model not attending to any context (the Air Canada chatbot inventing a policy) and indirect prompt injection as the model attending to an untrusted source it should ignore (EchoLeak, a zero-click attack on Microsoft Copilot). The method, which the slides call TaintTrace, seeds taint on source spans, then for each new token finds the earlier tokens it attends to above a threshold, passes taint only along those links, repeats until the answer or tool call is reached, and decides whether the output inherited taint. He shows a benchmark table with F1 gains over prior attribution methods on two injection datasets and two grounding datasets, then a live demo of Realm Labs' RealmGuard playground: a grounded Eiffel Tower answer, an ungrounded one, an altered context, and a send_money tool call whose recipient is traced to the trusted source rather than an injected one. He says the method needs no extra LLM call and works only with open weights.",
   "argument": [
     "An LLM cannot permanently store a specific fact or instruction from its context, so each time it uses one it must perform a just-in-time lookup through attention.",
     "That lookup leaves a trace in attention weights that survives rewording, translation and multi-hop transformation.",
@@ -297,8 +297,8 @@
     "Extend the same check to instructions: an instruction picked from an untrusted source is a problem even if not malicious."
   ],
   "takeaways": [
-    "If you self-host open-weights models in an agent, ask whether your inference stack can expose attention traces and use them as a detector that adds no model calls.",
-    "Treat tool-call arguments as the enforcement point, attribute each argument to its source span and gate on provenance, not on whether the text looks malicious.",
+    "If you self-host open-weights models in an agent, check whether your inference stack can expose attention traces, and test them as a detector that adds no model calls.",
+    "As an approach to test, treat tool-call arguments as the enforcement point, attribute each argument to its source span and gate on provenance, not on whether the text looks malicious.",
     "Build a source-trust labeling step now (which tools return untrusted data), since the method depends on it and it is useful for any taint approach.",
     "Do not rely on this for hosted closed-weights models or for direct prompt injection; keep other controls for those cases.",
     "Ask vendors for multi-hop injection results, since the public benchmarks shown are mostly single hop."
@@ -312,12 +312,12 @@
     "Does not decide whether a detected dependence is good or bad for the application; the application owner must judge that."
   ],
   "critique": [
-    "The results table was produced by the presenting company for its own method on four datasets, and the paper was not yet published, so the numbers could not be checked from the recording; F1 on OfficeQA-full is 0.47.",
+    "The results table was produced by the speaker's company, Realm Labs, for its own method.",
+    "The method was scored on four datasets and the paper was not yet published, so the numbers could not be checked from the recording; F1 on OfficeQA-full is 0.47.",
     "The strongest claim, that multi-hop cases are tracked reliably while other schemes fail, was stated in Q&A, and no multi-hop data was shown.",
-    "The title is broader than the method shown: it catches data and instructions picked up from labeled untrusted spans and depends on the trust labels being correct, so content an attacker places in a span labeled trusted would not be flagged.",
     "Attention-based attribution is a debated interpretability signal; the talk gives no ablation or causal test, apart from the demo's nats-per-token dependence readout, that high attention means the model relied on the span.",
     "The comparison to residual-stream probes was never run, as the speaker said in Q&A, so the choice of attention over probing is untested.",
-    "The speaker is founder and CEO of the company that sells RealmGuard; the demo ran on prefilled single-turn examples rather than a real agent loop."
+    "The demo ran on prefilled single-turn examples rather than a real agent loop."
   ],
   "qa": [
     "How do you define a trusted source when it is a third-party system? Answer: you must first decide what to taint; this is a limitation but easier than it sounds, because you know which tools return untrusted data (external-domain email) and can use named-entity recognition to taint context before it enters the system.",
@@ -362,10 +362,10 @@
   },
   "caveats": [
     "The recording covers the full talk: slides through about 10:36, the playground screen share from about 10:43 to 14:11, and camera-only shots for the rest including the Q&A.",
-    "Auto-captions garble names: the company is Realm Labs (captions say Rume Labs), the product on screen is RealmGuard, and the first line of the transcript misspells the speaker's name; the benchmark and method names are taken from the slides.",
+    "The captions say 'Rume Labs'; the slides say Realm Labs, and this record uses the slides.",
     "The title slide and the published description list Akash Mukherjee, Head of Engineering, as co-presenter, but he did not arrive in time and did not speak in the recording, so only Shintre is listed as a speaker.",
     "The name TaintTrace appears only on the results slide and was not spoken; the benchmark model is never named, and the only model named on a slide is Qwen 3.5 9B for the demo traces.",
     "The attacker account number in the demo is partly obscured by a text selection; read as AT6854532054.",
-    "The transcript says MT rag and Office QA; the slide spells them MTRAG and OfficeQA-full."
+    "The captions say 'MT rag' and 'Office QA'; the slides say MTRAG and OfficeQA-full, and this record uses the slides."
   ]
 }

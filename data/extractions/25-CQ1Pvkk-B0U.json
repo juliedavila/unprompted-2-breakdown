@@ -12,7 +12,7 @@
   "format": "talk",
   "duration_min": 23,
   "thesis": "Coding agents given a ported decompiler, a large scored dataset and a deterministic distance-to-source metric can autonomously improve a decompiler past IDA Pro on C exactness in five months, but through many small local improvements, not foundational ones.",
-  "summary": "Zion Basque opened with a motivating result: an LLM agent found all 14 inserted vulnerabilities in the Nginx source from the 2024 DARPA AIxCC competition, but only 5 of 14 when given a stripped binary and IDA Pro, and 1 of 14 with Ghidra, so decompiler quality limits binary vulnerability discovery. He showed how badly a switch statement decompiles and noted that decompilation is full of NP-hard graph problems. His experiment had two steps. First, he had an agent port Ghidra's roughly 200,000 lines of C++ to about 350,000 lines of Rust, borrowing ideas from his angr work, to make an agent-friendly base called Kuna. Second, he ran hill climbing on a dataset of about 34,000 C samples with a deterministic score of distance to the original source (DecBench), letting Claude make targeted pull requests for five months with him as uninvolved as possible. By the exact source recovery metric Kuna passed Ghidra, angr and IDA Pro, a 37 percent improvement over its starting point. He demoed the CLI and a WebAssembly web interface, a parallelized decompile of an 18 MB Windows DLL (35,829 functions in about two minutes), and a recorded race where an agent using Kuna finished a crackme 47 percent faster and with 77 percent fewer tokens than with the IDA Pro MCP. Kuna has over 300 features, mostly small, so he asks where the fundamental wins are and points to formalization as the next phase.",
+  "summary": "Zion Basque opened with a motivating result: an LLM agent found all 14 inserted vulnerabilities in the Nginx source from the 2024 DARPA AIxCC competition, but only 5 of 14 when given a stripped binary and IDA Pro, and 1 of 14 with Ghidra, which he argues shows that decompiler quality limits binary vulnerability discovery. He showed how badly a switch statement decompiles and noted that decompilation is full of NP-hard graph problems. His experiment had two steps. First, he had an agent port Ghidra's roughly 200,000 lines of C++ to about 350,000 lines of Rust, borrowing ideas from his angr work, to make an agent-friendly base called Kuna. Second, he ran hill climbing on a dataset of about 34,000 C samples with a deterministic score of distance to the original source (DecBench), letting Claude make targeted pull requests for five months with him as uninvolved as possible. He reports that by the exact source recovery metric Kuna passed Ghidra, angr and IDA Pro, a 37 percent improvement over its starting point. He demoed the CLI and a WebAssembly web interface, a parallelized decompile of an 18 MB Windows DLL (35,829 functions in about two minutes), and a recorded race where an agent using Kuna finished a crackme 47 percent faster and with 77 percent fewer tokens than with the IDA Pro MCP. He says Kuna has over 300 features, mostly small, and asks where the fundamental wins are, pointing to formalization as the next phase.",
   "argument": [
     "LLMs find vulnerabilities in source far better than in compiled binaries, and the gap tracks decompiler quality: 14 of 14 on source, 5 of 14 with IDA Pro, 1 of 14 with Ghidra.",
     "Decompilation is hard because compilation loses information and the structuring problems are NP-hard, so decades of expert heuristics still produce goto-ridden output.",
@@ -137,7 +137,7 @@
       "t": "16:44"
     },
     {
-      "figure": "326 (217/44/39/24/2)",
+      "figure": "326 (this record's arithmetic; 217/44/39/24/2)",
       "meaning": "features attributed to Self, Ghidra, angr, Hex-Rays and Binja respectively; the speaker rounds to over 300",
       "t": "18:15"
     },
@@ -284,10 +284,10 @@
     "Give agents an editable, compiler-checked codebase plus a metric to hill-climb, and keep the human uninvolved in the loop only where independence of invention is the goal."
   ],
   "takeaways": [
-    "If your security program assumes closed-source binaries are hard for AI to find bugs in, note that the gap is mostly decompiler quality, and it is closing: vendors and researchers are now improving decompilers with agents.",
+    "If your security program assumes closed-source binaries are hard for AI to find bugs in, check that assumption: on one 14-bug dataset the gap was mostly decompiler quality, and decompilers are now being improved with agents.",
     "When evaluating AI-assisted binary analysis, compare against a source baseline and compare tool choices, since the same agent found 14 of 14, 5 of 14 and 1 of 14 bugs depending on the input.",
-    "For your own agent-driven improvement loops, build an agent-editable base in a compiler-checked language, run it over a large ground-truth dataset and score it with a deterministic metric.",
-    "Expect agent-driven improvement to yield many small wins before foundational ones, and budget for human direction when you need structural changes.",
+    "As an approach to try, for your own agent-driven improvement loops, build an agent-editable base in a compiler-checked language, run it over a large ground-truth dataset and score it with a deterministic metric.",
+    "On one project's evidence, expect agent-driven improvement to yield many small wins before foundational ones, and budget for human direction when you need structural changes.",
     "Treat adoption and quality claims for new agent-built tools as self-reported until independently reproduced on your own binaries, including C++ and optimized builds."
   ],
   "limits": [
@@ -301,9 +301,9 @@
     "The benchmark, metric and tool all come from the same researcher, and Kuna was hill-climbed against the dataset it is scored on; the talk does not show a held-out split, although the speaker says Kuna also beat IDA on two other benchmarks.",
     "The motivating claim is that better decompilation improves binary vulnerability finding, but the talk never reruns the Nginx experiment with Kuna, so the link from exactness to bugs found is assumed.",
     "The agent race is one run on one crackme at 5x playback, and differences in tokens and time depend heavily on the MCP tools exposed, so the 47 and 77 percent figures should not be generalized.",
-    "Adoption figures are self-reported and the unnamed organizations cannot be checked; decompile.run and the lab's repository are listed on the closing slide.",
+    "Adoption figures are self-reported and the unnamed organizations cannot be checked.",
     "Feature attribution comes from the agent's own reporting, and the speaker said not all claimed inventions are novel, so the 217 self-invented figure is not independent evidence of autonomous invention.",
-    "Cost of the experiment is stated loosely (the transcript gives about 12,000 for tokens) and the human effort in directing the PRs, review and infrastructure is not quantified."
+    "Cost of the experiment was not stated clearly, and the human effort in directing the PRs, review and infrastructure is not quantified."
   ],
   "qa": [
     "Can this be applied to Rust binaries to build a Rust decompiler in a few months? Answer: yes, Kuna already supports Rust output; the speaker asked for it explicitly and the agent did not invent it.",
@@ -341,11 +341,10 @@
     "reason": "The talk presents a method for agent-driven tool improvement with a large scored dataset and an account of small wins and limits; the benchmark was authored by the same researcher and the link to vulnerability discovery was not re-tested."
   },
   "caveats": [
-    "The published description says Kuna reached a 33.7 percent perfect rate on C control flow structure versus Hex-Rays at 32.2 percent on DecBench (33k samples) in three months; neither those figures nor three months were stated or shown in the talk, which presents about 34k samples, five months and a different exactness chart, so the published description's figures are not recorded as claims.",
-    "The transcript says a link is given to 150 papers on decompilation; the slide says about 15 other papers from more researchers and links a wiki paper list, so the count is unresolved.",
-    "The cost caption 'about $12,000 tokens' in the transcript is garbled and was not confirmed on a slide.",
-    "The speaker's name appears as Zion Basque in the title and as Zion Leonahenahe Basque on slides; the latter is used. Handle mahaloz is visible in terminal prompts and the slide sign-off.",
-    "The early author team credited at the end appears as Artificial in the transcript and as Artiphishell on the closing slide; the slide spelling is used.",
+    "The published description says Kuna reached a 33.7 percent perfect rate on C control flow structure versus Hex-Rays at 32.2 percent on DecBench (33k samples) in three months; the talk presents about 34k samples, five months and a different exactness chart, and this record uses the talk.",
+    "The captions say \"about $12,000 tokens\"; no slide confirms it, and this record does not use it as a figure.",
+    "The title says Zion Basque; the slides say Zion Leonahenahe Basque, and this record uses the slides.",
+    "The captions say \"Artificial\"; the closing slide says Artiphishell, and this record uses the slide.",
     "Bar values on the exact recovery chart are read from the axis and are approximate; the slide has no data labels.",
     "The crackme output on screen includes text such as hacking instructions for a puzzle scenario; this is crackme content."
   ]

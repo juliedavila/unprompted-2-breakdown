@@ -16,7 +16,7 @@
   "format": "talk",
   "duration_min": 24,
   "thesis": "AI client builders (Claude Code, Cursor, Copilot, Codex) should not each have to build their own security; they should emit standard lifecycle events and honor standard policy checkpoints so that security teams own detection and policy across all clients.",
-  "summary": "The speakers open with why AI clients differ from classic software: the risk sits in the data the agent ingests, instructions can arrive from READMEs, skills or any loaded file, and knowing which user sent a request does not tell you where an instruction came from. They argue autonomy sharpens two requirements, a record of what the agent did and a gate that can allow, block or ask before a risky action. Today every client names hooks differently, sends different data for the same event, and decides for itself what a defender may stop, so defenders maintain N integrations (Frazer says he maintains about 16 clients with hooks and sees a long tail of 60 or more without hooks). MCP interceptors cover only a single tool call and code signing proves only provenance. Inckot then lists the parties in one agent action and proposes five key elements: actor, delegation, event, checkpoint and source. A mocked-up demo runs the same README prompt-injection attack with no standard (credentials are exfiltrated) and with the proposed events (the tainted sub-agent call is blocked while the fix proceeds). They propose reusing OPA or Cedar (policy engines), OCSF (an event standard SIEMs can read), RFC 8693 token exchange and MCP interceptors, list what is missing, name trade-offs (latency, always-allow fatigue, false sense of security), and call for neutral ownership, suggesting the Agentic AI Foundation (AAIF).",
+  "summary": "The speakers open by arguing that AI clients differ from classic software because the risk sits in the data the agent ingests, instructions can arrive from READMEs, skills or any loaded file, and knowing which user sent a request does not tell you where an instruction came from. They argue autonomy sharpens two requirements, a record of what the agent did and a gate that can allow, block or ask before a risky action. They report that today every client names hooks differently, sends different data for the same event, and decides for itself what a defender may stop, so defenders maintain N integrations (Frazer says he maintains about 16 clients with hooks and sees a long tail of 60 or more without hooks). They say MCP interceptors cover only a single tool call and code signing proves only provenance. Inckot then lists the parties in one agent action and proposes five key elements: actor, delegation, event, checkpoint and source. A mocked-up demo runs the same README prompt-injection attack with no standard (credentials are exfiltrated) and with the proposed events (the tainted sub-agent call is blocked while the fix proceeds). They propose reusing OPA or Cedar (policy engines), OCSF (an event standard SIEMs can read), RFC 8693 token exchange and MCP interceptors, list what is missing, name trade-offs (latency, always-allow fatigue, false sense of security), and call for neutral ownership, suggesting the Agentic AI Foundation (AAIF).",
   "argument": [
     "In AI clients the risk is in the data rather than the code, so authenticating the requester does not reveal which input caused an action.",
     "As autonomy grows, defenders need both a record of what the agent did and a gate that can allow, block or ask before a risky action runs.",
@@ -146,7 +146,7 @@
       "t": "16:20"
     },
     {
-      "figure": "3 to 8 ms",
+      "figure": "3 to 8 ms (this record's arithmetic)",
       "meaning": "policy decision point (PDP) latencies shown on the allow decisions in the after demo (allow 8, 4, 5, 3, 5, 6 ms)",
       "t": "12:47"
     },
@@ -303,10 +303,10 @@
   ],
   "takeaways": [
     "Inventory which of your agent clients expose hooks, what each event contains and what each lets you block; that gap is the real coverage limit of any agent control.",
-    "Treat event streams and gates as separate requirements: logging without an inline decision point is detection after the fact.",
-    "Require source attribution (which input caused this action) in agent telemetry, not just user identity.",
-    "Write policy as behavioral rules about untrusted content and egress rather than per-file or per-site rules.",
-    "Set an explicit latency budget and timeout for inline checkpoints before adopting them, and avoid LLM calls on the hot path."
+    "On the evidence of one mocked-up demo, treat event streams and gates as separate requirements: logging without an inline decision point is detection after the fact.",
+    "As a test to run, require source attribution (which input caused this action) in agent telemetry, not just user identity.",
+    "On an analogy to endpoint detection, with no data shown, write policy as behavioral rules about untrusted content and egress rather than per-file or per-site rules.",
+    "Since the speakers gave no measurements, treat their numbers as a starting point: set an explicit latency budget and timeout for inline checkpoints before adopting them, and avoid LLM calls on the hot path."
   ],
   "limits": [
     "The demo is mocked up and vibe coded, shown to demonstrate the concept rather than a finished implementation.",
@@ -316,13 +316,12 @@
     "The checkpoint mechanism must itself be verified and centrally managed so it does not become a new malware surface."
   ],
   "critique": [
-    "The speakers work for Runlayer, a company that sells a product which would sit at the proposed checkpoint. The 50 to 100 ms budget and the cost claims were given without measurements.",
+    "The 50 to 100 ms budget and the cost claims were given without measurements.",
     "The demo is a single scripted injection with a fake-secret target; it does not show detection quality, false positive rates or evasion, and the taint mechanism (how source labels survive model reasoning) is not explained.",
     "Taint tracking across LLM turns is the hard part: once content is summarized or paraphrased by the model, labels may be lost, and the talk gives no design for this.",
     "The proposal depends on client builders cooperating while the speaker acknowledges each client currently decides for itself what can be stopped; no adoption evidence or client commitment is given.",
-    "The reuse list (OPA/Cedar, OCSF, RFC 8693) is sensible but untested for agent events; the closing slide points to a paper but no schema or draft spec was shown in the talk.",
-    "In the after demo every later action in the session stays marked tainted yet allowed, so the policy is a single egress rule; how the label would carry across a real model's paraphrasing and which behaviors beyond egress would be blocked is not shown.",
-    "The shared-responsibility model leaves open who is accountable when a client honors checkpoints incorrectly."
+    "The reuse list (OPA/Cedar, OCSF, RFC 8693) was not tested for agent events in the talk; the closing slide points to a paper but no schema or draft spec was shown.",
+    "In the after demo every later action in the session stays marked tainted yet allowed, so the policy is a single egress rule; how the label would carry across a real model's paraphrasing and which behaviors beyond egress would be blocked is not shown."
   ],
   "qa": [
     "Q: Doesn't tracing already track information from source through the tree of execution? A: Tracing is not enough; the goal is identity (who did it) plus the influencing input, which needs all five elements, and tracing is fire and forget whereas a checkpoint is an inline decision that can stop the action before it happens (Frazer, Inckot).",
@@ -362,8 +361,9 @@
     "reason": "The talk proposes a framing (record plus gate, source and delegation attribution) that reuses existing standards; the evidence shown is a mocked-up demo, and the latency figures were given without measurements."
   },
   "caveats": [
-    "Auto-captions garbled some names: the transcript spells the vendor 'Run Layer', Cedar as 'CEDA', and Frazer's name; spellings here follow the slides and badges (Runlayer, Cedar, Alex Frazer, Alvaro).",
-    "The surname Inckot and Frazer's first name Alexander come from the published description; badges show Alvaro and Alex Frazer.",
+    "The captions say \"Run Layer\"; the slides say Runlayer, and this record uses the slides.",
+    "The captions say \"CEDA\"; the slides say Cedar, and this record uses the slides.",
+    "The badges give only Alvaro and Alex Frazer; the published description gives Alvaro Inckot and Alexander Frazer, and this record uses the description.",
     "The title slide was not captured; the client-comparison table and both demo runs are captured and were used as the authority.",
     "From about 19:46 onward the recording shows only the camera during Q&A, with no slide content; the closing Questions slide appears at about 18:13.",
     "The injected-README text on the demo slide is attack content shown as an example."

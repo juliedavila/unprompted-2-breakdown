@@ -12,7 +12,7 @@
   "format": "talk",
   "duration_min": 26,
   "thesis": "A single in-house threat-model agent, fed by a structured 50-question owner survey and wrapped in deterministic ticketing automation, can run first-pass security reviews for an entire application portfolio in a month, but the real cost moves downstream to quality control and remediation.",
-  "summary": "Karimi, Deputy CISO at Moderna, describes a summer mission to threat model every application in the enterprise in one month. His team built a custom agent in Copilot Studio running Claude Opus 4.8, and ran 687 first-pass reviews in August 2026, producing 2,807 risk tickets in Jira. He opens with the refrigerator that landed in scope through the intake process, then shows the production agent live on a lab freezer: vendor brochures go in, risks and a conditional-approval decision come out in about 15 minutes. He walks the five-step pipeline: establish system owners through the CMDB (the system of record for applications), give every owner a 50-question survey instead of asking for data-flow diagrams, run the agent, force output into a JSON schema contract, and let Power Automate write Jira tickets, followed by human quality control (QC) and remediation. He shows excerpts of the production prompt, including the rule that a standard existing is not evidence of implementation. He then gives a ticket-level error breakdown: two thirds of tickets were valid, 16.8 percent were agent error, and 1,605 tickets were canceled, which cost him goodwill with developers. The bottleneck moved from finding to fixing, so the team paused manual threat models for a quarter and is hiring. He closes with V2, codenamed Lysis, an open-source five-pass agent with code-enforced checks that generates an interactive threat-model diagram with attack chains, plus plans to hook reviews into coding agents and the developer platform.",
+  "summary": "Karimi, Deputy CISO at Moderna, describes a summer mission to threat model every application in the enterprise in one month. His team built a custom agent in Copilot Studio running Claude Opus 4.8, and ran 687 first-pass reviews in August 2026, producing 2,807 risk tickets in Jira. He opens with the refrigerator that landed in scope through the intake process, then shows the production agent live on a lab freezer: vendor brochures go in, risks and a conditional-approval decision come out in about 15 minutes. He walks the five-step pipeline: establish system owners through the CMDB (the system of record for applications), give every owner a 50-question survey instead of asking for data-flow diagrams, run the agent, force output into a JSON schema contract, and let Power Automate write Jira tickets, followed by human quality control (QC) and remediation. He shows excerpts of the production prompt, including the rule that a standard existing is not evidence of implementation. He then gives a ticket-level error breakdown: two thirds of tickets were valid, 16.8 percent were agent error, and 1,605 tickets were canceled, which he says cost him goodwill with developers. He says the bottleneck moved from finding to fixing, so the team paused manual threat models for a quarter and is hiring. He closes with V2, codenamed Lysis, an open-source five-pass agent with code-enforced checks that generates an interactive threat-model diagram with attack chains, plus plans to hook reviews into coding agents and the developer platform.",
   "argument": [
     "Threat modeling at portfolio scale is blocked less by model capability than by missing system and ownership data, so ownership must be established first through a CMDB with attested owners.",
     "Replacing data-flow diagrams with a structured, mostly multiple-choice owner survey gives the agent reliable inputs even for OT and equipment owners who know little about what they manage.",
@@ -37,7 +37,7 @@
       "source": "both"
     },
     {
-      "claim": "The run produced 2,807 risk tickets, of which 1,870 (66.6 percent) were valid and 937 (33.4 percent) were not.",
+      "claim": "The run produced 2,807 risk tickets, of which 1,870 (66.6 percent) were valid and 937 (33.4 percent) (this record's arithmetic) were not.",
       "evidence": "Ticket-level breakdown slide: 1,202 standing or remediated, 490 requirement changed after the run, 178 duplicates of human-led findings; not valid: 471 agent inaccuracy, 236 no active gap after clarification, 212 bad input data, 18 app retired.",
       "grade": "measured",
       "t": "10:28",
@@ -51,7 +51,7 @@
       "source": "both"
     },
     {
-      "claim": "1,605 of 2,807 tickets (57.2 percent) were canceled, but 668 of those were valid findings canceled because requirements changed or they duplicated human findings.",
+      "claim": "1,605 of 2,807 tickets (57.2 percent) were canceled, but 668 (this record's arithmetic) of those were valid findings canceled because requirements changed or they duplicated human findings.",
       "evidence": "Slide splits canceled tickets into 23.8 percent valid, 16.8 percent agent error and 16.6 percent not the agent.",
       "grade": "measured",
       "t": "12:34",
@@ -175,7 +175,7 @@
     },
     {
       "figure": "1,605 (57.2%)",
-      "meaning": "tickets canceled; 668 of them were valid findings",
+      "meaning": "tickets canceled; 668 (this record's arithmetic) of them were valid findings",
       "t": "12:34"
     },
     {
@@ -303,27 +303,27 @@
   ],
   "takeaways": [
     "Fix system ownership data first; a CMDB with attested owners and a mandated, tracked survey is the prerequisite for routing agent output at scale.",
-    "Karimi's principle, model proposes and code enforces: let the model reason over artifacts and put severity, scoring, decisions and ticket creation in deterministic code, with a schema contract between them.",
+    "Let the model reason over artifacts and put severity, scoring, decisions and ticket creation in deterministic code, with a schema contract between them. The talk shows no evaluation results for the version that enforces this in code, so test it as a design.",
     "Measure and publish your agent's ticket-level validity and cancellation taxonomy, separating agent error from changed requirements and bad input data, so QC feedback can be turned into instruction updates.",
-    "Freeze requirements before a mass run or expect large-scale cancellations that burn developer trust.",
-    "Plan remediation staffing and QC capacity as part of the business case; the saved review hours reappear as downstream work."
+    "On one company's experience, freeze requirements before a mass run or expect large-scale cancellations that burn developer trust.",
+    "On one company's August workload, plan remediation staffing and QC capacity as part of the business case; the saved review hours reappear as downstream work."
   ],
   "limits": [
     "Scope is tier-one reviews only; tier-two analysis, QC, validation and remediation are outside the agent's work.",
-    "Surveys depend on owners' accuracy; some owners know little about the equipment they manage, and 7.6 percent of tickets were invalid because of bad CMDB or survey data.",
+    "Surveys depend on owners' accuracy; some owners know little about the equipment they manage, and 7.6 percent (this record's arithmetic) of tickets were invalid because of bad CMDB or survey data.",
     "Compensating controls such as OT network segmentation are not yet modeled and are handled by human validation; planned for V2 and V3.",
     "Unit economics per threat model and token cost are unknown to the speaker.",
     "Endpoint hooks and the central developer platform integration are roadmap, not deployed; reason-code feedback to the instructions is in progress.",
     "Model-agnostic design is the goal, with newer frontier models for cyber under evaluation, but no stability plan for model end-of-life was given."
   ],
   "critique": [
-    "The headline time savings compare a two-to-three day manual review with 15 minutes of agent time; the downstream QC and cancellation labor is excluded from the 14,000 hours and 6.7 FTE figures, which the speaker scoped to tier-one reviews.",
+    "The main time savings compare a two-to-three day manual review with 15 minutes of agent time; the downstream QC and cancellation labor is excluded from the 14,000 hours and 6.7 FTE figures, which the speaker scoped to tier-one reviews.",
     "Validity was judged by the same security engineering team that built the agent, and no independent adjudication or sampling method was stated, so the two-thirds valid rate is an internal label rather than an externally adjudicated precision figure.",
     "Only 42.8 percent of tickets were still standing at the end; 17.5 percent were counted valid although canceled because requirements changed, and the 66.6 percent valid figure includes them.",
     "The 16.8 percent error rate uses all tickets as the denominator and excludes a further 16.6 percent of canceled tickets attributed to inputs (no active gap after clarification, bad survey data); the speaker described the error rate as acceptable at scale.",
     "The 98 percent completion rate and 96.6 percent owner attestation rate come from an executive-mandated deadline, so they measure participation and do not measure answer quality.",
     "No evaluation results for V2's described controls (planted bugs, decoy, second reviewer) were shown; the V2 enforcement statements are design descriptions.",
-    "The pipeline uses Copilot Studio and Power Automate; the design principles (structured intake, schema contract, deterministic enforcement) are not specific to those products. The refrigerator demo uses public vendor documents, so it does not show performance on bespoke internal systems."
+    "The refrigerator demo uses public vendor documents, so it does not show performance on bespoke internal systems."
   ],
   "qa": [
     "Is the survey mandatory? Yes: once the CMDB existed, executive sponsorship required every system owner to submit by a deadline (run Aug 1 to 31), with a dashboard of who had not submitted.",
@@ -366,11 +366,11 @@
     "reason": "The talk reports ticket-level accounting of an agentic threat-modeling program run at production scale, with pipeline detail, prompt excerpts, an open-source release and remediation-cost figures; validity was judged by the team that built the agent."
   },
   "caveats": [
-    "Auto-captions garble names: the speaker's 'Appendorf' is Eppendorf per slides; 'Nastic' could not be confirmed (Knostic is a conference sponsor); 'Entropic' is Anthropic; 'Daybreak' is unclear and was not identified; 'cloud' for hooks is Claude.",
-    "The speaker said about 1,200 system owners; the slide shows 1,220 of 1,263 CMDB application CIs (96.6 percent) attested. This record uses the slide figures.",
-    "The speaker said about 2,800 tickets and 'around 2/3'; slides give 2,807 and 66.6 percent. This record uses the slide figures.",
+    "The captions say Appendorf and cloud hooks; the slides say Eppendorf, and this record reads cloud as Claude.",
+    "The captions say about 1,200 system owners; the slide shows 1,220 of 1,263 CMDB application CIs (96.6 percent) attested, and this record uses the slide.",
+    "The captions say about 2,800 tickets and 'around 2/3'; the slides give 2,807 and 66.6 percent, and this record uses the slides.",
     "Speaker said 6,000 or 5,000 bugs per engineer as a hypothetical; it is not a measured figure.",
-    "Model named in speech and slide as Claude Opus 4.8; Q&A transcript renders model names inconsistently (Sonnet 46, 55, Opus 48).",
+    "The Q&A captions say Sonnet 46, 55 and Opus 48; the slide says Claude Opus 4.8, and this record uses the slide.",
     "Some V2 slides are numbered out of 24 and V1 slides out of 23; the deck was edited between versions. The slide repository URL was read from the slide text and not independently verified."
   ]
 }

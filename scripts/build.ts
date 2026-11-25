@@ -2,13 +2,14 @@
 // Images come from crop.ts (run it first when key frames change). Usage: bun build.ts
 import { readdirSync, readFileSync, writeFileSync, existsSync, mkdirSync } from "node:fs";
 import { join, dirname } from "node:path";
+import { evidenceBar, controlChart, incidentNarrow } from "./figs.ts";
 
 const ROOT = dirname(Bun.main);
 const KIT = join(process.env.HOME!, "Projects/html-house-style/html-house-style/base.css");
 const SITE = join(ROOT, "site");
 mkdirSync(join(SITE, "img"), { recursive: true });
 
-const esc = (s: unknown) => String(s ?? "").replace(/(\d) percent\b/g, "$1%").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+const esc = (s: unknown) => String(s ?? "").replace(/(\d) percent\b/g, "$1%").replace(/\b(\d[\d,.]*) dollars?\b/g, (_, n) => "$" + n).replace(/\b(\d+(?:\.\d+)?)x(?=[\s.,;:)]|$)/g, "$1 times").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 const secs = (t: string) => { const [m, s] = (t || "0:00").split(":").map(Number); return (m || 0) * 60 + (s || 0); };
 const mmss = (n: number) => `${Math.floor(n / 60)}:${String(n % 60).padStart(2, "0")}`;
 
@@ -38,7 +39,14 @@ const PROVENANCE = /\s*\((?=[^)]*\b(stated|slide|said|describes|described|introd
 const aff = (s: string) => (s || "").replace(PROVENANCE, "").replace(/\s+\($/, "").trim();
 const who = (r: Rec) => (r.speakers ?? []).map((s: any) => aff(s.affiliation) ? `${s.name} (${aff(s.affiliation)})` : s.name).join(", ");
 const whoShort = (r: Rec) => (r.speakers ?? []).map((s: any) => s.name).join(", ");
-const tlink = (r: Rec, t: string) => t ? `<a class="ts" href="${esc(r.url)}&amp;t=${secs(t)}s" target="_blank" rel="noopener">${esc(t)}</a>` : "";
+const tlink = (r: Rec, t: string) => t ? `<a class="ts" href="${esc(r.url)}&amp;t=${secs(t)}s" target="_blank" rel="noopener">${mmss(secs(t))}</a>` : "";
+// Key slides in time order, numbered, with the claims each one backs (nearest slide within 90 seconds).
+function slidesFor(r: Rec) {
+  const kf = (r.key_frames ?? []).filter((k: any) => hasImg(r, k)).map((k: any) => ({ ...k, sec: parseInt(k.file.slice(1), 10) })).sort((a: any, b: any) => a.sec - b.sec).map((k: any, i: number) => ({ ...k, n: i + 1, id: `s${r.nn}-${i + 1}`, backs: [] as string[] }));
+  const of = (t: string) => { const s = secs(t); let best: any = null; for (const k of kf) if (Math.abs(k.sec - s) <= 90 && (!best || Math.abs(k.sec - s) < Math.abs(best.sec - s))) best = k; return best; };
+  for (const c of r.claims ?? []) { const k = of(c.t); if (k && c.source !== "said") { c._slide = k; if (!k.backs.includes(mmss(secs(c.t)))) k.backs.push(mmss(secs(c.t))); } }
+  return kf;
+}
 const list = (title: string, items: string[]) => items?.length ? `<h4>${title}</h4><ul>${items.map((x) => `<li>${esc(x)}</li>`).join("")}</ul>` : "";
 const hasImg = (r: Rec, k: any) => existsSync(join(SITE, "img", `${r.nn}-${k.file}`));
 const counts = (r: Rec) => Object.fromEntries(GRADES.map((g) => [g, (r.claims ?? []).filter((c: any) => c.grade === g).length])) as Record<string, number>;
@@ -55,10 +63,12 @@ function miniBar(r: Rec): string {
 
 function talk(r: Rec): string {
   const sc = r.signal?.score ?? 0;
+  const kf = slidesFor(r);
   const claims = (r.claims ?? []).map((c: any) =>
-    `<tr><td>${esc(c.claim)}</td><td>${esc(c.evidence)}</td><td><span class="chip g-${esc(c.grade)}">${GRADE_LABEL[c.grade] ?? esc(c.grade)}</span></td><td class="num">${tlink(r, c.t)}</td></tr>`).join("");
+    `<tr><td class="c-claim">${esc(c.claim)}</td><td class="c-ev">${esc(c.evidence)}${c._slide ? ` <a class="sl" href="#${c._slide.id}">Slide ${c._slide.n}</a>` : ""}</td><td class="c-grade"><span class="chip g-${esc(c.grade)}">${GRADE_LABEL[c.grade] ?? esc(c.grade)}</span></td><td class="c-at num">${tlink(r, c.t)}</td></tr>`).join("");
   const numbers = (r.numbers ?? []).map((n: any) => `<tr><th scope="row" class="fig">${esc(n.figure)}</th><td>${esc(n.meaning)}</td><td class="num">${tlink(r, n.t)}</td></tr>`).join("");
-  const frames = (r.key_frames ?? []).filter((k: any) => hasImg(r, k)).map((k: any) => { const t = mmss(parseInt(k.file.slice(1), 10)); return `<figure class="slide"><a href="img/${r.nn}-${esc(k.file)}" target="_blank" rel="noopener"><img loading="lazy" src="img/${r.nn}-${esc(k.file)}" alt="Slide at ${t}"></a><figcaption>${esc(k.caption)} ${tlink(r, t)}</figcaption></figure>`; }).join("");
+  const frames = kf.map((k: any) => `<figure class="slide" id="${k.id}"><a href="img/${r.nn}-${esc(k.file)}" target="_blank" rel="noopener"><img loading="lazy" src="img/${r.nn}-${esc(k.file)}" alt="Slide ${k.n}, at ${mmss(k.sec)}"></a><figcaption><span class="sn">Slide ${k.n}.</span> ${esc(k.caption)} ${tlink(r, mmss(k.sec))}${k.backs.length ? ` <span class="backs">Backs the claim${k.backs.length > 1 ? "s" : ""} at ${k.backs.join(", ")}.</span>` : ""}</figcaption></figure>`).join("");
+  const cc = counts(r);
   const frameworks = (r.frameworks ?? []).map((f: any) => `<li><strong>${esc(f.name)}.</strong> ${esc(f.description)}</li>`).join("");
   const artifacts = (r.artifacts ?? []).map((a: any) => `<li><strong>${esc(a.name)}</strong> <span class="chip">${esc(a.kind)}</span> ${esc(a.note)}${a.url ? ` <span class="url">${esc(a.url)}</span>` : ""}</li>`).join("");
   const quotes = (r.quotes ?? []).map((q: any) => `<blockquote><p>${esc(q.text)}</p><footer>${esc(q.speaker)} ${tlink(r, q.t)}</footer></blockquote>`).join("");
@@ -76,11 +86,11 @@ function talk(r: Rec): string {
   <p class="sig"><span class="signal s${sc}" title="Signal ${sc} of 5">${"●".repeat(sc)}${"○".repeat(5 - sc)}</span> <strong>${SIGNAL_WORD[sc] ?? ""}.</strong> ${esc(r.signal?.reason)}</p>
   <p class="answer"><span class="lead">The talk's thesis:</span> ${esc(r.thesis)}</p>
   <p class="tags">${(r.tags ?? []).map((t: string) => `<span class="chip">${esc(TAG_LABEL[t] ?? t)}</span>`).join(" ")}</p>
-  <details><summary>Full breakdown: ${(r.claims ?? []).length} claims, ${(r.numbers ?? []).length} numbers, ${(r.key_frames ?? []).filter((k: any) => hasImg(r, k)).length} slides</summary><div class="body">
+  <details><summary>Full breakdown: ${(r.claims ?? []).length} claims (${cc.measured} measured, ${cc.demo + cc.case} demo or case, ${cc.anecdote + cc.assertion} anecdote or assertion), ${(r.numbers ?? []).length} numbers, ${kf.length} slides</summary><div class="body">
     <p>${esc(r.summary)}</p>
     ${list("What to do with it (this breakdown's reading)", r.takeaways)}
     ${discount}
-    ${claims ? `<h4>Claims and evidence</h4><div class="table-wrap"><table><thead><tr><th scope="col">Claim</th><th scope="col">Evidence shown</th><th scope="col">Grade</th><th scope="col">At</th></tr></thead><tbody>${claims}</tbody></table></div>` : ""}
+    ${claims ? `<h4>Claims and evidence</h4><div class="table-wrap claims"><table><thead><tr><th scope="col">Claim</th><th scope="col">Evidence shown</th><th scope="col">Grade</th><th scope="col">At</th></tr></thead><tbody>${claims}</tbody></table></div>` : ""}
     ${frames ? `<h4>Key slides</h4><div class="slides">${frames}</div>` : ""}
     ${numbers ? `<h4>Numbers</h4><div class="table-wrap"><table><thead><tr><th scope="col">Figure</th><th scope="col">What it measures</th><th scope="col">At</th></tr></thead><tbody>${numbers}</tbody></table></div>` : ""}
     ${rest ? `<details class="record"><summary>The full record: argument, frameworks, tools, attacks, defenses, demos, quotes, Q&amp;A, notes</summary><div class="body">${rest}</div></details>` : ""}
@@ -92,7 +102,7 @@ function talk(r: Rec): string {
 const fattrs = (r: Rec) => { const search = [r.title, who(r), r.thesis, r.summary, ...(r.tags ?? []), ...(r.artifacts ?? []).map((a: any) => a.name), ...(r.frameworks ?? []).map((f: any) => f.name)].join(" ").toLowerCase(); return `data-signal="${r.signal?.score ?? 0}" data-tags="${esc((r.tags ?? []).join(" "))}" data-search="${esc(search)}"`; };
 
 const indexRows = recs.map((r) => { const c = counts(r), n = (r.claims ?? []).length, sc = r.signal?.score ?? 0;
-  return `<tr class="irow" data-nn="${r.nn}" data-min="${r.duration_min}" data-sig="${sc}" data-measured="${n ? (c.measured / n).toFixed(3) : 0}" data-title="${esc(r.title.toLowerCase())}" ${fattrs(r)}><td class="num">${r.nn}</td><th scope="row"><a href="#talk-${r.nn}">${esc(r.title)}</a><br><span class="sub">${esc(whoShort(r))}</span></th><td class="num">${r.duration_min}</td><td><span class="signal s${sc}" title="Signal ${sc} of 5: ${SIGNAL_WORD[sc]}">${"●".repeat(sc)}${"○".repeat(5 - sc)}</span></td><td>${miniBar(r)}</td></tr>`; }).join("");
+  return `<tr class="irow" data-nn="${r.nn}" data-min="${r.duration_min}" data-sig="${sc}" data-measured="${n ? (c.measured / n).toFixed(3) : 0}" data-title="${esc(r.title.toLowerCase())}" ${fattrs(r)}><td class="num">${r.nn}</td><th scope="row"><a href="#talk-${r.nn}">${esc(r.title)}</a><br><span class="sub">${esc(whoShort(r))}</span></th><td class="num">${r.duration_min}</td><td><span class="signal s${sc}" title="Signal ${sc} of 5: ${SIGNAL_WORD[sc]}">${"●".repeat(sc)}${"○".repeat(5 - sc)}</span></td><td class="ebcell">${miniBar(r)}<span class="ebn">${n}</span></td></tr>`; }).join("");
 
 // Tools and papers: grouped by kind, duplicate names merged.
 const byKind = new Map<string, Map<string, { name: string; notes: string[]; url: string; talks: string[] }>>();
@@ -118,16 +128,12 @@ const pct = (v: number) => Math.round(100 * v / nCl);
 const noM = recs.filter((r) => r.format === "talk" && !(r.claims ?? []).some((c: any) => c.grade === "measured")).length;
 const words = ["Zero", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten", "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen"];
 const top = recs.filter((r) => (r.signal?.score ?? 0) >= 4).length;
-function evidenceBar(): string {
-  const W = 760, x0 = 10, w = W - 20, u = w / nCl; let x = x0;
-  const cls: Record<string, string> = { measured: "eb-m", demo: "eb-s", case: "eb-s", anecdote: "eb-u", assertion: "eb-u" };
-  const segs = GRADES.map((k) => { const sw = g[k] * u, cx = x + sw / 2; const out = `<rect class="${cls[k]}" x="${x.toFixed(1)}" y="12" width="${(sw - 2).toFixed(1)}" height="34"/><text class="c-label" x="${cx.toFixed(1)}" y="68" text-anchor="middle">${GRADE_LABEL[k]}</text><text class="c-tick" x="${cx.toFixed(1)}" y="86" text-anchor="middle">${g[k]} · ${pct(g[k])}%</text>`; x += sw; return out; }).join("");
-  return `<figure><div class="figure-frame"><svg viewBox="0 0 ${W} 96" style="--fig-min: ${W}px" role="img" aria-labelledby="evb-t evb-d" xmlns="http://www.w3.org/2000/svg"><title id="evb-t">All ${nCl} claims by the evidence shown</title><desc id="evb-d">${GRADES.map((k) => `${GRADE_LABEL[k]} ${g[k]}`).join("; ")}.</desc>${segs}</svg></div><figcaption><strong>Three claims in ten came with the speaker's own measurements, and nearly as many were stated with no evidence shown in the talk.</strong> All ${nCl.toLocaleString("en-US")} recorded claims, by the evidence the talk showed for each. Measured means the speaker's own data or experiment. A demo was shown working. A case is a specific real incident or deployment. An anecdote is a story without checkable detail. An assertion was stated without support in the talk.</figcaption></figure>`;
-}
-const sub: Record<string, string> = { CLAIMS: String(nCl), SESSIONS: String(recs.length), TOP: String(top), NO_MEASURED: words[noM] ?? String(noM), EVIDENCE_BAR: evidenceBar() };
+const sub: Record<string, string> = { CLAIMS: String(nCl), SESSIONS: String(recs.length), TOP: String(top), NO_MEASURED: words[noM] ?? String(noM), EVIDENCE_BAR: evidenceBar(g, nCl), CONTROL_CHART: controlChart(), INCIDENT_NARROW: incidentNarrow() };
 const fill = (s: string) => s.replace(/\{\{(\w+)\}\}/g, (_, k) => sub[k] ?? `[missing ${k}]`);
 
-const synthesis = fill(readFileSync(join(ROOT, "synthesis.html"), "utf8"));
+const synthesisRaw = fill(readFileSync(join(ROOT, "synthesis.html"), "utf8"));
+let lead = ""; { const m = synthesisRaw.match(/^\s*<p class="purpose">[\s\S]*?<\/p>\s*(<p class="jump">[\s\S]*?<\/p>)?/); if (m) lead = m[0]; }
+const synthesis = synthesisRaw.slice(lead.length);
 const synthToc = [...synthesis.matchAll(/<h2 id="([^"]+)"[^>]*>(.*?)<\/h2>/g)].map((m) => `<li><a href="#${m[1]}">${m[2].replace(/<[^>]+>/g, "")}</a></li>`).join("");
 const gaps = fill(readFileSync(join(ROOT, "gaps.html"), "utf8"));
 const totalMin = recs.reduce((s, r) => s + (r.duration_min || 0), 0);
@@ -175,6 +181,37 @@ svg.eb { display: block; }
 .talkrefs a { margin-right: 6px; white-space: nowrap; }
 details.kind, details.record { margin-top: var(--s4); }
 .trail td:nth-child(2) { white-space: normal; min-width: 12ch; }
+.lead .jump { font: 400 var(--fs-sm)/1.6 var(--font-ui); color: var(--fg-muted); margin-top: var(--s3); max-width: var(--measure); }
+.lead .jump a { white-space: nowrap; }
+@media (min-width: 1100px) { .with-toc > .toc { grid-row: 1 / span 3; } }
+.figure-frame > svg.fig-narrow { display: none; }
+svg .c-bar.warn { fill: var(--warn); }
+@media (max-width: 640px) {
+  .figure-frame > svg.fig-wide { display: none; }
+  .figure-frame > svg.fig-narrow { display: block; min-width: 0; max-width: 420px; }
+  /* Claims: one stacked block per claim, so the claim reads at full width and its grade and time stay visible. */
+  .claims table, .claims tbody { display: block; }
+  .claims thead { display: none; }
+  .claims tr { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px; padding: 12px 12px; border-top: 1px solid var(--hairline); }
+  .claims td { display: block; padding: 0; border: 0; }
+  .claims td.c-claim { order: 1; flex: 1 1 100%; font-weight: 600; }
+  .claims td.c-grade { order: 2; } .claims td.c-at { order: 3; }
+  .claims td.c-ev { order: 4; flex: 1 1 100%; color: var(--fg-muted); }
+  .claims td.c-ev::before { content: "Evidence shown: "; font-weight: 600; }
+  .index-wrap th:nth-child(1), .index-wrap td:nth-child(1), .index-wrap th:nth-child(3), .index-wrap td:nth-child(3) { display: none; }
+  .index-wrap th, .index-wrap td { padding-left: 8px; padding-right: 8px; }
+  .index-wrap th .lg { display: none; } .index-wrap th .sm { display: inline; }
+  svg.eb { width: 64px; height: 12px; }
+  .signal { letter-spacing: 0; font-size: 11px; }
+}
+a.sl { font: 600 var(--fs-xs) var(--font-ui); white-space: nowrap; margin-left: 4px; }
+figure.slide { scroll-margin-top: var(--s6); }
+figure.slide:target img { outline: 2px solid var(--accent); outline-offset: 2px; }
+figure.slide .sn { font-weight: 650; color: var(--fg); }
+figure.slide .backs { display: block; margin-top: 2px; color: var(--fg-subtle); }
+.index-wrap .sm { display: none; }
+.ebcell { white-space: nowrap; } .ebcell svg.eb { display: inline-block; vertical-align: middle; }
+.ebn { font: 400 var(--fs-xs) var(--font-mono); color: var(--fg-subtle); margin-left: 6px; }
 .talk .answer .lead { font: 600 var(--fs-sm) var(--font-ui); color: var(--fg-muted); }
 .lit-h { font: 650 var(--fs-xs) var(--font-ui); letter-spacing: 0.06em; text-transform: uppercase; color: var(--accent-2); margin-top: var(--s5); }
 ul.lit { font: 400 var(--fs-sm)/1.55 var(--font-ui); color: var(--fg-muted); padding-left: 1.1em; }
@@ -198,6 +235,7 @@ ${extra}
   </header>
   <main>
     <div class="with-toc">
+      <div class="lead">${lead}</div>
       <nav class="toc" aria-label="Contents">
         <details open>
           <summary>Contents</summary>
@@ -213,7 +251,7 @@ ${extra}
         ${synthesis}
 
         <h2 id="talks">Every talk</h2>
-        <p>The index shows all ${recs.length} sessions on one scale; choose a column heading to sort it. Below it, each talk has an entry with its claims table, slides and assessment. The filters narrow both.</p>
+        <p>The index shows all ${recs.length} sessions on one scale; choose a column heading to sort it, and the entries below follow the same order. Each entry has the talk's claims table, slides and assessment. The filters narrow both.</p>
         <div class="filter" role="search" aria-label="Filter the talks">
           <div class="field"><label for="talk-q">Search talks</label><input id="talk-q" type="search" autocomplete="off" placeholder="speaker, tool, topic"></div>
           <div class="field"><label for="talk-sig">Minimum signal</label><select id="talk-sig"><option value="1">Any</option><option value="3">3 and up</option><option value="4">4 and up</option><option value="5">5 only</option></select></div>
@@ -223,7 +261,7 @@ ${extra}
         <p class="filter-sentence" id="talk-sentence" aria-live="polite">All ${recs.length} sessions</p>
         <p class="filter-empty" id="talk-empty" hidden>No sessions match. Clear a filter to see more.</p>
         <div class="table-wrap index-wrap wide"><table id="talk-index">
-          <thead><tr><th scope="col"><button type="button" data-sort="nn" aria-sort="ascending">#</button></th><th scope="col"><button type="button" data-sort="title">Talk</button></th><th scope="col"><button type="button" data-sort="min">Min</button></th><th scope="col"><button type="button" data-sort="sig">Signal</button></th><th scope="col"><button type="button" data-sort="measured">Claims, by evidence shown</button></th></tr></thead>
+          <thead><tr><th scope="col"><button type="button" data-sort="nn" aria-sort="ascending">#</button></th><th scope="col"><button type="button" data-sort="title">Talk</button></th><th scope="col"><button type="button" data-sort="min">Min</button></th><th scope="col"><button type="button" data-sort="sig">Signal</button></th><th scope="col"><button type="button" data-sort="measured"><span class="lg">Claims by evidence shown (sorts by share measured)</span><span class="sm">Evidence</span></button></th></tr></thead>
           <tbody>${indexRows}</tbody>
         </table></div>
         <div id="talk-list">
@@ -268,7 +306,9 @@ ${extra}
     const dir = was ? (was === "ascending" ? -1 : 1) : (text ? 1 : -1);
     sorters.forEach((x) => x.removeAttribute("aria-sort")); b.setAttribute("aria-sort", dir === 1 ? "ascending" : "descending");
     [...tbody.children].sort((a, c) => dir * (text ? a.dataset[k].localeCompare(c.dataset[k]) : (+a.dataset[k] - +c.dataset[k]) || a.dataset.nn.localeCompare(c.dataset.nn))).forEach((r) => tbody.appendChild(r));
+    const list = document.getElementById("talk-list"); [...tbody.children].forEach((r) => { const t = document.getElementById("talk-" + r.dataset.nn); if (t) list.appendChild(t); });
   }));
+  const tocBox = document.querySelector(".toc details"); if (tocBox && matchMedia("(max-width: 1099.98px)").matches) tocBox.open = false;
   const links = [...document.querySelectorAll(".toc a")], secs = links.map((a) => document.getElementById(a.getAttribute("href").slice(1))).filter(Boolean);
   if ("IntersectionObserver" in window) { const io = new IntersectionObserver((es) => { for (const e of es) if (e.isIntersecting) links.forEach((a) => a.getAttribute("href") === "#" + e.target.id ? a.setAttribute("aria-current", "true") : a.removeAttribute("aria-current")); }, { rootMargin: "0px 0px -70% 0px" }); secs.forEach((s) => io.observe(s)); }
 })();

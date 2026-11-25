@@ -12,7 +12,7 @@
   "format": "talk",
   "duration_min": 21,
   "thesis": "Integrity, the neglected third leg of the CIA triad, becomes the central security property once systems act on the world rather than just process data, and trustworthy AI requires treating integrity as one coherent system property across input, processing, storage and contextual use.",
-  "summary": "Schneier opens by arguing that integrity has always taken a backseat to confidentiality and availability, and that this stops working when AI agents, IoT devices and infrastructure act autonomously in the physical world: an integrity failure becomes the wrong thing happening at scale. He revives the obsolete word integrous for a system with integrity. He widens the NIST definition (preventing improper modification) into a list of facets: accuracy, completeness, consistency, freshness, provenance, semantics, accountability and recoverability, and says correctness is an envelope of constraints rather than one value. He names three kinds of integrity failure: corporations using AI against you, the AI doing the wrong thing, and an adversary manipulating it. He then splits integrity into four parts, input, processing, storage and contextual, giving attacks and defenses for each and mapping prompt injection, data poisoning, hallucination and memory-propagated attacks onto them. Contextual integrity, borrowed from Helen Nissenbaum (data flows should respect contextual norms), covers AI that breaks context boundaries, which he calls genie-like behavior (the Midas genie that grants a wish literally but wrongly, and the golem of Prague that does the right thing but tramples everything in its path). He lists design needs: composition of integrity, rethinking recovery, integrity service objectives, and a zero-trust analog, plus lessons from human systems such as double-entry bookkeeping and surgical checklists, and a governance and policy component. He frames Web 1.0, 2.0 and 3.0 as availability, confidentiality and integrity, and poses the research question of building an integrity system from non-integrous parts. In Q&A he separates security of AI, with AI, and from AI.",
+  "summary": "Schneier opens by arguing that integrity has always taken a backseat to confidentiality and availability, and that this stops working when AI agents, IoT devices and infrastructure act autonomously in the physical world: an integrity failure becomes the wrong thing happening at scale. He revives the obsolete word integrous for a system with integrity. He widens the NIST definition (preventing improper modification) into a list of facets: accuracy, completeness, consistency, freshness, provenance, semantics, accountability and recoverability, and says correctness is an envelope of constraints rather than one value. He names three kinds of integrity failure: corporations using AI against you, the AI doing the wrong thing, and an adversary manipulating it. He then splits integrity into four parts, input, processing, storage and contextual, giving attacks and defenses for each and mapping prompt injection, data poisoning, hallucination and memory-propagated attacks onto them. He says contextual integrity, borrowed from Helen Nissenbaum (data flows should respect contextual norms), covers AI that breaks context boundaries, which he calls genie-like behavior (the Midas genie that grants a wish literally but wrongly, and the golem of Prague that does the right thing but tramples everything in its path). He lists design needs: composition of integrity, rethinking recovery, integrity service objectives, and a zero-trust analog, plus lessons from human systems such as double-entry bookkeeping and surgical checklists, and a governance and policy component. He frames Web 1.0, 2.0 and 3.0 as availability, confidentiality and integrity, and poses the research question of building an integrity system from non-integrous parts. In Q&A he separates security of AI, with AI, and from AI.",
   "argument": [
     "AI agents, IoT and infrastructure act on the world, so integrity failures now mean the wrong thing happening at scale and faster than humans can stop it.",
     "Integrity is broader than anti-tampering: accuracy, completeness, consistency, freshness, provenance, semantics, accountability and recoverability, and correctness is an envelope of acceptable behavior, not a single value.",
@@ -207,11 +207,11 @@
     "Borrow human integrity mechanisms: double-entry bookkeeping, audits, copy editing, checklists."
   ],
   "takeaways": [
-    "Audit agent and IoT designs against all four integrity parts, not just input filtering: ask what covers storage and contextual integrity.",
-    "Add provenance, freshness and recoverability to requirements for agent data, including a defined path back to a known good state after an integrity failure.",
-    "Treat plausible but wrong output as a security event even with no attacker, and monitor for silent drift.",
-    "Say which of security of AI, with AI or from AI a given program addresses, since the controls and owners differ.",
-    "Look to human integrity systems, such as dual control, audit and checklists, as patterns for agent verification."
+    "The talk shows no data for this framing, so check whether your agent and IoT designs cover all four integrity parts, not just input filtering: ask what covers storage and contextual integrity.",
+    "As something to test, add provenance, freshness and recoverability to requirements for agent data, including a defined path back to a known good state after an integrity failure.",
+    "The talk shows no data for this, so try treating plausible but wrong output as a security event even with no attacker, and monitor for silent drift.",
+    "On the speaker's reasoning alone, say which of security of AI, with AI or from AI a given program addresses, since the controls and owners differ.",
+    "As an analogy to test, look to human integrity systems, such as dual control, audit and checklists, as patterns for agent verification."
   ],
   "limits": [
     "Schneier says that whether an integrity system can be built from non-integrous parts is not obviously yes or no and is the real research question.",
@@ -219,11 +219,7 @@
     "He leaves the corporate-misuse failure type and the regulation work stream largely aside, calling it a policy problem."
   ],
   "critique": [
-    "The talk is a conceptual framing; no data, demo or measured result was shown, and the statements rest on stated reasoning and analogy.",
-    "The four-part decomposition groups known controls (signing, sandboxing, audit logs) under integrity; the talk does not say how to prioritize among them or how to test the composed property.",
-    "Integrity service objectives and a zero trust analog are posed as questions, and no metric or design was proposed.",
-    "The Midas and golem genie taxonomy is offered as vocabulary and is not tied to a detection or prevention mechanism.",
-    "The talk places hallucination under processing integrity; its cause is model behavior rather than tampering, which differs from the other processing examples given."
+    "The talk is a conceptual framing; no data, demo or measured result was shown, and the statements rest on stated reasoning and analogy."
   ],
   "qa": [
     "Question: how do you think of defenses against AI attacks in this framework, do we need integrous defenses? Answer: he separates security of AI, with AI and from AI; defending against attackers using AI is security from AI and falls outside AI integrity, which is about whether AI itself can be trustworthy. Untrustworthy humans will keep using AI to attack, and organizations should want trustworthy AI for their own data and use."
@@ -245,8 +241,9 @@
   },
   "caveats": [
     "The video is camera-only: the recording shows the speaker at the podium with no slides, so every statement in this record comes from the transcript.",
-    "Auto-captions garbled several words: the transcript says Dionysus grants King Midas a wish, which the story attributes to Dionysus but the speaker called a genie; 'Gini coefficient' in the transcript is unclear and is not used in this record; 'Integra' and 'Integra system design' were normalized to integrous.",
-    "One caption sentence near 04:52 ('Pretty much everything is conference, an integrity attack') is garbled; this record reads it as pretty much everything being an integrity attack.",
+    "The captions say Dionysus grants King Midas a wish; the speaker called the figure a genie, and this record follows the speaker.",
+    "The captions say 'Integra' and 'Integra system design'; the speaker's term is integrous, and this record uses integrous.",
+    "The captions say 'Pretty much everything is conference, an integrity attack' near 04:52; this record reads it as pretty much everything being an integrity attack, and the claim that most attacks on AI systems are integrity attacks depends on that reading.",
     "Schneier's affiliation comes from the published description."
   ]
 }

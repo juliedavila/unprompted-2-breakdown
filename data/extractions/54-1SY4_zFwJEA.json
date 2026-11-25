@@ -16,7 +16,7 @@
   "format": "talk",
   "duration_min": 22,
   "thesis": "As AI-driven attackers make TTP-based attribution meaningless, defenders can fingerprint the model and the agent harness behind an attack by designing honeypot services (shibboleths) that force high-entropy, model-specific answers without injecting the attacker or changing its goal.",
-  "summary": "Epp opens with the biblical shibboleth story and argues that attribution used to rest on TTPs, but any model can now play APT29 because every playbook is in the weights. He proposes an Obelisk of Pain: above TTPs, defenders should attribute the behavior of the harness, the accent of the model and the operator's intent. Prompt-injecting the attacker fights the agent's goal, so aligned models refuse and attackers can filter it, and passive fingerprints from shell commands carry little entropy. Pasquini then presents shibboleths, environmental traps that look like normal services but require a specific act: a declaration of model, a written text, or a timed behavior. His example is an MCP honeypot where the handshake is modified so sampling and a model name are mandatory, with hard-regex, forced-error and blacklist tricks that raise honest declarations. Behavioral traps ask the agent to write operator-log tickets, and character n-gram classification of the prose identifies the model. In a lab matrix of 150 runs across 15 LLMs, declaration plus behavior reaches 92 percent; when agents are told to lie, comparing claim and behavior catches 95 percent of lies. Harnesses leave little accent, so the team probes timeouts, parallel tool calls, masking and other tells. The work is being open sourced.",
+  "summary": "Epp opens with the biblical shibboleth story and argues that attribution used to rest on TTPs, but any model can now play APT29 because every playbook is in the weights. He proposes an Obelisk of Pain: above TTPs, defenders should attribute the behavior of the harness, the accent of the model and the operator's intent. He says prompt-injecting the attacker fights the agent's goal, so aligned models refuse and attackers can filter it, and passive fingerprints from shell commands carry little entropy. Pasquini then presents shibboleths, environmental traps that look like normal services but require a specific act: a declaration of model, a written text, or a timed behavior. His example is an MCP honeypot where the handshake is modified so sampling and a model name are mandatory, with hard-regex, forced-error and blacklist tricks that, he reports, raise honest declarations. Behavioral traps ask the agent to write operator-log tickets, and, he says, character n-gram classification of the prose identifies the model. He reports that in a lab matrix of 150 runs across 15 LLMs, declaration plus behavior reaches 92 percent, and that when agents are told to lie, comparing claim and behavior catches 95 percent of lies. He says harnesses leave little accent, so the team probes timeouts, parallel tool calls, masking and other tells. They say the work is being open sourced.",
   "argument": [
     "Attribution matters beyond the SOC for control priorities, insurance, ransom legality and sanctions, but TTPs no longer tell defenders who is behind an attack because every playbook is in the model weights.",
     "Attribution should climb above the pyramid of pain to behavior (the harness), accent (the model) and intent (the operator).",
@@ -125,7 +125,7 @@
     },
     {
       "figure": "56%",
-      "meaning": "accuracy of the behavioral reading on the remaining 18 percent of runs",
+      "meaning": "accuracy of the behavioral reading on the remaining 18 percent of runs (this record's arithmetic)",
       "t": "15:41"
     },
     {
@@ -297,9 +297,9 @@
   ],
   "takeaways": [
     "Stop assuming TTP matching identifies an AI-driven attacker, and add model, harness and intent as attribution dimensions in incident records.",
-    "Add at least one high-interaction decoy service in internal networks that requires an agent to write free text or declare its identity, and log the full text.",
-    "Epp's rule, a claim and not evidence: treat a self-declared model name as a claim to cross-check, and compare it with a behavioral reading.",
-    "Record harness-level tells in telemetry (timeouts, tool-call timing, user agents, environment variable names) for clustering campaigns even when IPs rotate weekly.",
+    "As a test to run, add at least one high-interaction decoy service in internal networks that requires an agent to write free text or declare its identity, and log the full text.",
+    "Treat a self-declared model name as a claim, not evidence: cross-check it, and compare it with a behavioral reading.",
+    "On lab evidence only, record harness-level tells in telemetry (timeouts, tool-call timing, user agents, environment variable names) for clustering campaigns even when IPs rotate weekly.",
     "Pilot the open-source Shibboleth kit as a telemetry layer, and consider using it to check agents calling your own production services."
   ],
   "limits": [
@@ -310,14 +310,11 @@
     "The speakers said they present where the method fails; the open limits mentioned were harness fingerprinting and lying agents."
   ],
   "critique": [
-    "Evaluation is a lab matrix of 150 runs across 15 models, so about 10 runs per model, with a single scenario theme (substation change tickets); generalization to real attackers, other tasks and unseen models is not shown.",
+    "Evaluation is a lab matrix of 150 runs across 15 models, so about 10 runs per model (this record's arithmetic), with a single scenario theme (substation change tickets); generalization to real attackers, other tasks and unseen models is not shown.",
     "The published description cites results from a live honeypot deployment and where the method fails; the recording presents mainly the controlled matrix, and no live attacker results or false-positive rates were shown.",
-    "The classifier is closed-set: it matches against enrolled models, so a new or fine-tuned or self-hosted model with no template would be forced onto the nearest label, and an attacker could paraphrase output through another model.",
-    "Once the traps and tricks are open-sourced, attackers can detect the signature behaviors (mandatory model field, forced errors, blacklist) and script around them; the talk does not address adaptive attackers.",
-    "The 92 percent headline is mostly declaration (82 of 92 points); honest declaration is easy to defeat by instruction, and the lie-detection result of 95 percent rests on three traces of the same caller and eight models.",
+    "The 92 percent main figure is mostly declaration (82 of 92 points); honest declaration is easy to defeat by instruction, and the lie-detection result of 95 percent rests on three traces of the same caller and eight models.",
     "The 89 percent honest-declaration figure and the 82 percent valid-declaration figure come from different slides and conditions and are not clearly reconciled.",
-    "The production use case (who is holding the key) raises privacy, false positive and enforcement questions that were not discussed.",
-    "One presenter works for a security vendor (Cracken) and the other leads a threat research project; no cost or operating-burden data was given for adopting the tool."
+    "No cost or operating-burden data was given for adopting the tool."
   ],
   "qa": [],
   "tags": [
@@ -353,10 +350,9 @@
     "reason": "The talk presents a technique for fingerprinting the model and harness behind an agentic attack, with quantified lab results from a controlled matrix and no live-honeypot data."
   },
   "caveats": [
-    "Auto-captions garble names: the speakers appear as Sergey Epp, Dario Pasquini; Opus 5 is heard as Opus V, DeepSeek V4 Pro as DeepSeek 4 Pro and similar; model and harness names were taken from the slides.",
+    "The captions say 'Sergey Epp', 'Opus V' and 'DeepSeek 4 Pro'; the slides say Sergej Epp, Opus 5 and DeepSeek V4 Pro, and this record uses the slides.",
     "The spoken figure of 82 percent accuracy across 15 LLMs after tricks matches the slide's 82 percent valid declaration, whereas the 89 percent honest declaration with tricks appears on a different slide; both are recorded as shown.",
-    "The speaker said about 50 to 60 percent of models still reveal themselves when told to lie; the slide instead gives a minus 40 percent accuracy drop, and the slide figure was used.",
-    "The closing live test URL near the end is garbled in the transcript (rendered as App Horizon) and could not be confirmed from a slide.",
+    "The captions say about 50 to 60 percent of models still reveal themselves when told to lie; the slide says a minus 40 percent accuracy drop, and this record uses the slide.",
     "No Q&A was recorded; the session ended with an organizer remark about the Slack.",
     "Co-contributors from the title slide: Reworr R (MATS), Manish Bhatt (IEEE), Giuseppe Ateniese (GMU)."
   ]

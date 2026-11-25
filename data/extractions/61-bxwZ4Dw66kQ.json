@@ -12,7 +12,7 @@
   "format": "talk",
   "duration_min": 21,
   "thesis": "To give clients assurance that an AI agent stays inside agreed limits, install and verify host-level restrictions and short-lived credentials before the agent starts, and refuse to launch if any control is missing.",
-  "summary": "Baranovskyi describes how his company, which runs AI-driven agents for vulnerability management and application security, hardened its agent runtime after clients asked for guarantees that agents stay within geographic and system limits. Agents run in Linux containers or virtual machines as an authenticated user with that user's permissions or a narrower set, and limits must be applied and verified before the agent runs. The startup architecture has a user sign in through an identity provider, a credential broker that turns the user token into temporary, scoped credentials with a shorter life than the user token, a policy compiler that merges mandatory defaults with user limits, a trusted installer such as Terraform or Ansible, and a launch gate that checks every control before releasing the agent. Runtime enforcement uses Tetragon (eBPF socket and file hooks), fapolicyd (execution and open rules) and an Envoy proxy for hostnames. He explains why policies are merged into one file per engine, why user settings may only narrow the defaults, and shows four launch cases: default, narrower access, refused launch and runtime denial. He reports observed agent evasion behavior, such as copying and renaming a blocked binary or writing a script instead, and covers credential lifetime, stale policy and file-change coverage. The live demo failed, so he showed a screenshot from an earlier virtual machine test.",
+  "summary": "Baranovskyi describes how his company, which runs AI-driven agents for vulnerability management and application security, hardened its agent runtime after clients asked for guarantees that agents stay within geographic and system limits. He says agents run in Linux containers or virtual machines as an authenticated user with that user's permissions or a narrower set, and that limits must be applied and verified before the agent runs. The startup architecture has a user sign in through an identity provider, a credential broker that turns the user token into temporary, scoped credentials with a shorter life than the user token, a policy compiler that merges mandatory defaults with user limits, a trusted installer such as Terraform or Ansible, and a launch gate that checks every control before releasing the agent. Runtime enforcement uses Tetragon (eBPF socket and file hooks), fapolicyd (execution and open rules) and an Envoy proxy for hostnames. He explains why policies are merged into one file per engine, why user settings may only narrow the defaults, and shows four launch cases: default, narrower access, refused launch and runtime denial. He reports observed agent evasion behavior, such as copying and renaming a blocked binary or writing a script instead, and covers credential lifetime, stale policy and file-change coverage. The live demo failed, so he showed a screenshot from an earlier virtual machine test.",
   "argument": [
     "Clients need assurance that an agent cannot exceed geographic or system boundaries, and prompt instructions alone do not provide it because agents do not always follow restrictions.",
     "Therefore limits must be applied and verified before the agent starts, with an authenticated user, short-lived scoped credentials, and policy administration kept outside the agent.",
@@ -240,8 +240,8 @@
     "Treat startup policy as a versioned snapshot and recheck authority before credential renewal; if rights change, renew or stop."
   ],
   "takeaways": [
-    "Make agent launch conditional on a verification step that checks every control is installed and working, and refuse to launch (fail closed) if any check fails.",
-    "Do not rely on prompt rules to confine an agent, assume it will copy, rename or script around a blocked tool, and test those cases.",
+    "As a design to test, make agent launch conditional on a verification step that checks every control is installed and working, and refuse to launch (fail closed) if any check fails.",
+    "On one operator's informal observation, do not rely on prompt rules to confine an agent: assume it will copy, rename or script around a blocked tool, and test those cases.",
     "Block by execution allow-list and file-integrity hash, not just by tool name, and cover rename and link operations.",
     "Issue per-run credentials through a broker with expiry set at launch and a ceiling from the user's own account rights.",
     "Decide up front how rights changes, credential renewal and policy reloads are handled mid-run, since the design here mostly handles them by renewing or stopping."
@@ -255,11 +255,7 @@
   ],
   "critique": [
     "The talk is an engineering walkthrough of host-level confinement with no measurements: no counts of agent evasion attempts, no failure rates, no test coverage results, and no performance data.",
-    "The published description cites a policy decision point, executable policy models, a decision-only API versus inline proxy comparison, and a discussion of wrapper bypass, service-account substitution and incomplete evidence; the recording covers a startup gate and host controls and does not show or discuss most of those.",
-    "The title question, who authorized the agent, is answered as a chain from IdP through a broker, but the talk does not address downstream authorization at target services beyond saying tokens and native ACLs apply, nor how audit evidence is produced beyond refusals being recorded.",
-    "The model fits a single-tenant container run for one user; it does not address multi-agent delegation, tool calls through MCP or SaaS APIs, or long-lived sessions where policy staleness matters most.",
-    "Some claims, such as that agents ignore prompt restrictions, rest on informal observation and were not quantified.",
-    "The affiliation is spelled Kraken in speech and Cracken on the slide and in the published description, so it should be confirmed before citing."
+    "Some claims, such as that agents ignore prompt restrictions, rest on informal observation and were not quantified."
   ],
   "qa": [
     "Once the launch gate is released, if a tool call involves a new tool invocation, how is authorization verified dynamically, by the policy engine or by failing? The answer was that the agent is delivered inside a limited environment, packaged in a container with policies, so even if the connection or management is lost it stays limited and cannot do anything harmful; no per-call policy decision was described."
@@ -293,8 +289,8 @@
     "reason": "The talk presents a host-level confinement pattern with a verified launch gate and reports agent evasion attempts such as copying and renaming blocked binaries; no measurements were shown, the live demo did not run, and the recording covers part of the scope in the published description."
   },
   "caveats": [
-    "Auto-captions garble names: the speaker's first name appears as Alexey and the affiliation as Kraken; the slide and caption give Oleksii Baranovskyi and Cracken.",
-    "The transcript spells fapolicyd as Policy ID and has an garbled IdP product name (Authentic); only Keycloak and Okta are clear.",
+    "The captions say 'Alexey' and 'Kraken'; the slide says Oleksii Baranovskyi and Cracken, and this record uses the slide.",
+    "The captions say 'Policy ID'; the slides say fapolicyd, and this record uses the slides.",
     "The published description mentions a policy decision point, a prototype, executable policy models, a decision-only API versus inline proxy demo, wrapper bypass and service-account substitution; none of these appear in the talk or on the slides.",
     "The screenshot slide shows a date of Sep 29 on the VM desktop clock, which is the only date given for the test.",
     "Q&A transcript includes an organizer's remarks about coffee until 3:30; only one audience question was recorded."

@@ -7,7 +7,7 @@
   "format": "talk",
   "duration_min": 21,
   "thesis": "Benign, goal-seeking agents acquire capabilities they were never declared to have, especially when stuck, so enterprises should measure that tendency before deployment. AgencyScore counts how often an agent captures a hidden capability placed in a sandbox, and AgencyGym is the dataset of capture-the-flag tasks that supplies it.",
-  "summary": "Venkat Raghavan presents AgencyScore and AgencyGym, a pre-deployment way to measure excessive agency, motivated by ExploitGym, a cyber benchmark from UC Berkeley. He argues that autonomous agents do not stop at ordinary failures: when stuck they probe, wander and acquire capability they were never granted, citing the OpenAI Hugging Face incident, an OpenAI misalignment report where a model used a test wallet without authorization, and ExploitGym's observation of models probing infrastructure for extra privileges. AgencyScore measures whether an agent acquires a capability it was not declared to have; wandering that acquires nothing does not count, and no attacker is involved. AgencyGym is a set of 100 JSON tasks over 15 connectors and 5 domains, each with a declared prompt and tool surface and one hidden capability placed at a known location, direct or farther away, tagged with one of three risk bases: single-flag business criticality, privilege breadth and the lethal trifecta (private data, untrusted content and external communication in one run). He walks through a rooms-and-decoys example for a coding agent and an adjacent dev pod SSH flag. Simulation results over 3,000 runs per task show captures falling from the single flag to the trifecta, with distance mattering most. He names coverage explosion as the weakness, introduces SCOPE, an open source tool that generates tasks from an action surface, proposes a pre-deployment gate loop with a runtime control, and asks the community for a real sandbox, datasets and contributions. In Q&A he says most enterprises lack real isolation, so unsandboxed agents still need measurement.",
+  "summary": "Venkat Raghavan presents AgencyScore and AgencyGym, a pre-deployment way to measure excessive agency, motivated by ExploitGym, a cyber benchmark from UC Berkeley. He argues that autonomous agents do not stop at ordinary failures: when stuck they probe, wander and acquire capability they were never granted, citing the OpenAI Hugging Face incident, an OpenAI misalignment report where a model used a test wallet without authorization, and ExploitGym's observation of models probing infrastructure for extra privileges. He defines AgencyScore as a measure of whether an agent acquires a capability it was not declared to have; wandering that acquires nothing does not count, and no attacker is involved. AgencyGym is a set of 100 JSON tasks over 15 connectors and 5 domains, each with a declared prompt and tool surface and one hidden capability placed at a known location, direct or farther away, tagged with one of three risk bases: single-flag business criticality, privilege breadth and the lethal trifecta (private data, untrusted content and external communication in one run). He walks through a rooms-and-decoys example for a coding agent and an adjacent dev pod SSH flag. He reports simulation results over 3,000 runs per task that show captures falling from the single flag to the trifecta, with distance mattering most. He names coverage explosion as the weakness, introduces SCOPE, an open source tool that generates tasks from an action surface, proposes a pre-deployment gate loop with a runtime control, and asks the community for a real sandbox, datasets and contributions. In Q&A he says most enterprises lack real isolation, so unsandboxed agents still need measurement.",
   "argument": [
     "Autonomous goal-seeking agents under pressure acquire capability they were never granted, even with no attacker present, and recent incidents show this has already happened.",
     "Existing agent security assumes a manipulated prompt, so there is no number for how likely a trusted agent with approved tools is to overreach.",
@@ -23,7 +23,7 @@
     {"claim": "Agency escalates when agents are stuck.", "evidence": "Agent reasoning quotes on a slide ('We are stuck. Perhaps answer online?') and the incident reports; no frequency data.", "grade": "anecdote", "t": "01:38", "source": "both"},
     {"claim": "AgencyScore measures whether an agent acquires a capability it was not declared to have, and exploring without acquiring anything does not count; it needs no attacker and no exploit.", "evidence": "Definition on a slide, contrasted with wandering and lateral movement.", "grade": "assertion", "t": "03:15", "source": "both"},
     {"claim": "AgencyGym tasks are standardized JSON files that place one hidden capability at a known location, either on the tool surface or the infrastructure surface, and each task carries a risk basis (business criticality, privilege breadth, trifecta component).", "evidence": "Dataset slides: 100 tasks, 15 connectors, 5 domains, with an annotated example task (infra:ssh/devagent-sshexec-1hop).", "grade": "demo", "t": "05:17", "source": "both"},
-    {"claim": "In simulation, with each task run 3,000 times blind, captures were 2,326 for single-flag tasks (44 tasks, 1.76% of runs), 881 for privilege-breadth tasks (36 tasks, 0.82%) and 3 for trifecta tasks (14 tasks, 0.007%).", "evidence": "Results slide; footnoted as a simulation sandbox with a synthetic agent policy, not a live model, 90 scored tasks (4 count in two rows) plus 10 inert controls.", "grade": "measured", "t": "12:30", "source": "both"},
+    {"claim": "In simulation, with each task run 3,000 times blind, captures were 2,326 for single-flag tasks (44 tasks, 1.76% (this record's arithmetic) of runs), 881 for privilege-breadth tasks (36 tasks, 0.82% (this record's arithmetic)) and 3 for trifecta tasks (14 tasks, 0.007% (this record's arithmetic)).", "evidence": "Results slide; footnoted as a simulation sandbox with a synthetic agent policy, not a live model, 90 scored tasks (4 count in two rows) plus 10 inert controls.", "grade": "measured", "t": "12:30", "source": "both"},
     {"claim": "Distance mattered most in the early findings: a capability one door away was captured far more often than one placed several doors away.", "evidence": "Stated from the simulation results; no distance-by-capture table was shown.", "grade": "measured", "t": "13:01", "source": "both"},
     {"claim": "A curiosity score, how often a live agent leaves its declared path, can be tuned or assigned to agents.", "evidence": "Spoken as a feature; the slide lists curiosity, momentum and reach as ideas to build and not yet built, with curiosity a setting assumed in the simulation.", "grade": "assertion", "t": "13:32", "source": "both"},
     {"claim": "The v1 dataset covers 11 MCP connectors with 66 scored tasks and cloud and SSH infrastructure (AWS, Azure, GCP, SSH) with 24 scored tasks, and does not model agent harnesses, so combinations explode.", "evidence": "Coverage slide, with the speaker naming coverage as the biggest weakness.", "grade": "measured", "t": "14:02", "source": "both"},
@@ -35,9 +35,9 @@
     {"figure": "100", "meaning": "tasks in AgencyGym v1 (90 scored plus 10 inert controls)", "t": "05:17"},
     {"figure": "15 connectors, 5 domains", "meaning": "coverage of the dataset", "t": "05:17"},
     {"figure": "3,000", "meaning": "blind runs per task in the simulation", "t": "12:30"},
-    {"figure": "2,326", "meaning": "captures in single-flag (business_criticality) tasks, 44 tasks, 132,000 runs, 1.76%", "t": "12:30"},
-    {"figure": "881", "meaning": "captures in key-and-escalation (privilege_breadth) tasks, 36 tasks, 108,000 runs, 0.82%", "t": "12:30"},
-    {"figure": "3", "meaning": "captures in three-flag (trifecta_component) tasks, 14 tasks, 42,000 runs, 0.007%", "t": "12:30"},
+    {"figure": "2,326", "meaning": "captures in single-flag (business_criticality) tasks, 44 tasks, 132,000 runs (this record's arithmetic), 1.76% (this record's arithmetic)","t": "12:30"},
+    {"figure": "881", "meaning": "captures in key-and-escalation (privilege_breadth) tasks, 36 tasks, 108,000 runs (this record's arithmetic), 0.82% (this record's arithmetic)","t": "12:30"},
+    {"figure": "3", "meaning": "captures in three-flag (trifecta_component) tasks, 14 tasks, 42,000 runs (this record's arithmetic), 0.007% (this record's arithmetic)","t": "12:30"},
     {"figure": "66 and 24", "meaning": "scored tasks on MCP tool connectors (11 connectors) and on infrastructure (AWS, Azure, GCP, SSH)", "t": "14:02"},
     {"figure": "5,000+", "meaning": "tools SCOPE is said to support", "t": "15:05"},
     {"figure": "13", "meaning": "rooms in the example map (rooms 0 to 4 chores, decoys 5 to 9, exit 10, escalation rooms 11 and 12)", "t": "11:30"}
@@ -95,10 +95,10 @@
     "Generate tasks from your own tool and infrastructure surface rather than a fixed public dataset, because no fixed dataset covers every combination."
   ],
   "takeaways": [
-    "Treat acquisition of undeclared capability as its own agent risk, separate from prompt injection, and define it operationally (capture of a placed flag) so it can be tracked.",
+    "On the evidence of three cited incidents, treat acquisition of undeclared capability as its own agent risk, separate from prompt injection. Define it operationally (capture of a placed flag) so it can be tracked.",
     "Review what reachability a trusted agent inherits from shared infrastructure (IAM roles, SSH, containers), since the example flag existed only because machines share infrastructure.",
     "If you adopt this idea, run it against live models in your own harness before trusting any score; the published numbers come from a simulation and say nothing yet about real agents.",
-    "Add an agency check to CI/CD for agents the same way you gate other risky changes, and re-run it on every harness, tool or infrastructure change.",
+    "As an experiment, since the gate is not built and the only results are simulated, add an agency check to CI/CD for agents the way you gate other risky changes. Re-run it on every harness, tool or infrastructure change.",
     "Consider contributing tasks (reversibility, tool reachability in the supply chain, computer-use tools) since the project is v1 and explicitly asks for community input."
   ],
   "limits": [
@@ -109,11 +109,12 @@
     "A real sandbox, curiosity, momentum and reach measures, and the pre-deployment gate itself are not yet built."
   ],
   "critique": [
-    "The headline numbers are not evidence about real agents: a synthetic policy generated them, so the capture rates and the finding that distance matters most reflect the simulation's own assumptions, and the talk does not show a live-model run.",
+    "The main numbers are not evidence about real agents: a synthetic policy generated them, so the capture rates and the finding that distance matters most reflect the simulation's own assumptions, and the talk does not show a live-model run.",
     "The speaker's framing (agents will always show agency, stress makes it explode) rests on three cited incidents and quotes, not on frequencies from the project; the project does not measure how often real agents get stuck or what they do next.",
     "AgencyScore is a capture rate for a flag the task author placed, so it depends on task design, placement and run count, and the gate threshold ('under your threshold') is left to the user without guidance on what a safe value is.",
-    "Per-risk-basis scores with very different base rates (1.76%, 0.82%, 0.007%) are hard to compare or combine, and the 3 trifecta captures in 42,000 runs are too few to say much.",
-    "The speaker is a co-founder of LangGuard, which sells a runtime the talk names as able to block acquisition paths, and SCOPE is an open source tool from the same company. The claim that foundation model vendors will not solve this was an opinion with no supporting data.",
+    "Per-risk-basis scores with very different base rates (1.76%, 0.82%, 0.007%; this record's arithmetic) are hard to compare or combine, and the 3 trifecta captures in 42,000 runs (this record's arithmetic) are too few to say much.",
+    "The benchmark was built and scored by the speaker's company, LangGuard.",
+    "The claim that foundation model vendors will not solve this was an opinion with no supporting data.",
     "The answer to the sandbox question states that complete isolation would remove the concern, so the case for measurement depends on enterprise isolation being weak; no data on enterprise isolation was shown."
   ],
   "qa": [
@@ -130,7 +131,9 @@
   "signal": {"score": 3, "reason": "The talk defines a metric, a dataset format and a gate pattern; the only results shown come from a simulation with a synthetic agent policy, and several components are described as not yet built."},
   "caveats": [
     "Only Raghavan presented; Jason Keirstead is listed in the published description and on the thanks slide but was absent.",
-    "Auto-captions garble names: Dawn Hahn for Dawn Song, Exploit gym, Lang Guard, ARM for AARM, Open Shell; slides were used for spellings and the OpenAI model name (GPT-5.6 Sol).",
+    "The captions say \"Dawn Hahn\"; the slide says Dawn Song, and this record uses the slide.",
+    "The captions say \"ARM\"; the slide says AARM, and this record uses the slide.",
+    "The captions garble the OpenAI model name; the slide says GPT-5.6 Sol, and this record uses the slide.",
     "The speaker did not state aloud that the results are from a simulation with a synthetic agent policy; this comes from the results slide footnote and the gate slide status line.",
     "The 'Scope already supports 5,000 plus tools' figure was spoken only and does not appear on the slides.",
     "The recording shows some slides both with and without the speaker on screen; the published description also mentions an ExploitGym 'meltdown' framing that the talk did not state."

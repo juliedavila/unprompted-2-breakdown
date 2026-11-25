@@ -16,7 +16,7 @@
   "format": "talk",
   "duration_min": 23,
   "thesis": "Asking a human to approve every coding-agent tool call trains people to rubber-stamp or disable the check, so permission fatigue is itself a security bug. Meta replaced static gates with a layered runtime (identity, profile ceiling, session-aware dynamic guardrails) that decides allow, ask or deny per tool call from accumulated session taint (a running measure of how much untrusted content the session has read), and reports an 80 percent drop in permission prompts at 100 percent rollout.",
-  "summary": "Chris Puderbaugh opens with three facts: coding agents act as the developer with delegated credentials, every action is a tool call, and tool output feeds back into the model so injected content can steer the next call. Per-action human approval is the instinctive control, but people rubber-stamp, build suppress flags or turn checks off, so the control fails past a volume threshold. He maps a security versus friction grid and names context-aware runtime permissioning as the target, resting on three primitives: a delegated agent identity (a short-lived certificate marked as an agent), an agent profile that sets an upper bound on capability fixed before the session, and dynamic guardrails. Sahana Chennabasappa then walks the runtime. Policies are static (invariants such as never read or move credentials) or dynamic (judge intent, such as sudo not traceable to the user's request). Signal collectors hook the agent lifecycle and write to an append-only session store the agent cannot edit, recording user intent, whether external content was ingested and a taint level (how much untrusted content the session has read). Before every tool call a decision engine evaluates call, store and policy to return allow, ask or deny, enforced by the framework outside the agent loop. Risk rises as the session reads untrusted content. She covers three scaling problems: latency (a cheapest-first four-tier cascade resolves about 90 percent of calls without a model), false positives (a nightly cluster-and-fix loop) and portability (a standalone sidecar bound to five hook events). Results: about 80 percent fewer prompts, 0.5 percent added latency, recall (the share of known attacks still caught) gated by red-team replay.",
+  "summary": "Chris Puderbaugh opens with three premises: coding agents act as the developer with delegated credentials, every action is a tool call, and tool output feeds back into the model so injected content can steer the next call. He argues that per-action human approval is the instinctive control, but people rubber-stamp, build suppress flags or turn checks off, so the control fails past a volume threshold. He maps a security versus friction grid and names context-aware runtime permissioning as the target, resting on three primitives: a delegated agent identity (a short-lived certificate marked as an agent), an agent profile that sets an upper bound on capability fixed before the session, and dynamic guardrails. Sahana Chennabasappa then walks the runtime. Policies are static (invariants such as never read or move credentials) or dynamic (judge intent, such as sudo not traceable to the user's request). Signal collectors hook the agent lifecycle and write to an append-only session store the agent cannot edit, recording user intent, whether external content was ingested and a taint level (how much untrusted content the session has read). Before every tool call a decision engine evaluates call, store and policy to return allow, ask or deny, enforced by the framework outside the agent loop. She says risk rises as the session reads untrusted content. She covers three scaling problems: latency (she says a cheapest-first four-tier cascade resolves about 90 percent of calls without a model), false positives (a nightly cluster-and-fix loop) and portability (a standalone sidecar bound to five hook events). She reports about 80 percent fewer prompts, 0.5 percent added latency, and recall (the share of known attacks still caught) gated by red-team replay.",
   "argument": [
     "Coding agents hold the developer's delegated identity, act only through tool calls, and read untrusted content back into their own context, so every tool call is a privileged action chosen by a model that may be reading attacker input.",
     "Prompting on every action produces rubber-stamping and then suppressed or disabled checks, so past a volume threshold friction stops being a security control and becomes a control failure.",
@@ -230,10 +230,10 @@
   ],
   "takeaways": [
     "Treat approval prompt volume as a security metric: measure prompts per user and the share approved quickly, and treat high volume as a control defect, not a user problem.",
-    "Puderbaugh's rule, bound first and then relax: reduce what authorization has to police by issuing agents a marked identity and a role-based profile ceiling, then relax inside it.",
-    "Prefer session-aware decisions over flat allowlists: track user intent and exposure to untrusted content, and let the same command be allowed early and challenged after taint.",
-    "Keep the decision point and the session state outside the agent loop so the agent cannot edit them, and decide deliberately whether to let the guardrail fail open (allow the call when the guardrail itself errors), as the speakers' sidecar does so that an infrastructure error never blocks a developer.",
-    "Do not ship a rule change that lowers recall on a red-team replay set, so tuning for fewer prompts cannot silently lower recall."
+    "On one deployment's evidence, bound first and then relax: reduce what authorization has to police by issuing agents a marked identity and a role-based profile ceiling, then relax inside it.",
+    "As a test to run, prefer session-aware decisions over flat allowlists: track user intent and exposure to untrusted content, and let the same command be allowed early and challenged after taint.",
+    "Keep the decision point and the session state outside the agent loop so the agent cannot edit them. Decide deliberately whether to let the guardrail fail open (allow the call when the guardrail itself errors); the sidecar described in the talk fails open so that an infrastructure error never blocks a developer.",
+    "As a gate to try, since no recall figures were shown, do not ship a rule change that lowers recall on a red-team replay set. Otherwise tuning for fewer prompts can silently lower recall."
   ],
   "limits": [
     "The speakers said they are still working on reducing false positives, making the solution more robust and handling multi-agent workflows (the abstract adds subagent propagation as open).",
@@ -243,13 +243,11 @@
     "Hardware-backed signing of agent actions has not been explored."
   ],
   "critique": [
-    "The headline numbers (80 percent fewer prompts, 0.5 percent latency) come from one agent population with no baseline counts, time window or confidence interval, and the opening >93 percent rubber-stamp figure has no stated source.",
+    "The main numbers (80 percent fewer prompts, 0.5 percent latency) come from one agent population with no baseline counts, time window or confidence interval, and the opening >93 percent rubber-stamp figure has no stated source.",
     "Recall is described as gated, but no recall, precision or red-team set size is given, so the claim that security was retained cannot be checked from the talk. A friction metric alone rewards allowing more.",
     "Taint is one scalar that only accumulates and a single web fetch sets 0.50 in the example; the talk does not say how much legitimate work (doc lookups, package installs) trips it or how the prompt-injection classifier performs.",
     "The identity layer is described as short-lived certificates with an agent marking, but the slide says tainted certificates while the abstract says a signed X509 attribute; the mechanism and how marking survives token exchange are not detailed.",
-    "The enforcement point is the agent framework's own hooks; the Q&A answer on isolation was that it varies by environment, and a sidecar in the same container could be disabled by the agent, which leaves its tamper resistance dependent on deployment.",
-    "Subagent propagation of taint, named as open in the abstract, was only mentioned in passing; the speakers said multi-agent workflows are still being worked on.",
-    "Largely an internal Meta design with no code or policy set released; useful as an architecture pattern, hard to adopt directly."
+    "The enforcement point is the agent framework's own hooks; the Q&A answer on isolation was that it varies by environment, and a sidecar in the same container could be disabled by the agent, which leaves its tamper resistance dependent on deployment."
   ],
   "qa": [
     "Q: Isolation model for agents in a multi-tenant system, given hypervisor-escape concerns? A: Not uniform; it could be a corp laptop or a container in prod. The control was packaged to port across harnesses and execution environments because there is no single cross-cutting environment for agents.",
@@ -289,11 +287,12 @@
   ],
   "signal": {
     "score": 4,
-    "reason": "The talk describes a deployed architecture with a marked identity, a profile ceiling, a taint store and a cheapest-first cascade; the headline results were shown without baseline counts or recall figures."
+    "reason": "The talk describes a deployed architecture with a marked identity, a profile ceiling, a taint store and a cheapest-first cascade; the main results were shown without baseline counts or recall figures."
   },
   "caveats": [
     "The slide and abstract title is 'Permission Fatigue Is a Security Bug: Dynamic Guardrails for Coding Agents'.",
-    "Auto-captions garbled some phrases: the captions say 'tainted certificate' (the slide says tainted certificates, the abstract says signed X509 attribute); the captions 'cut almost 94 90% of the traffic' are read as about 90 percent per the slide.",
+    "The captions say \"tainted certificate\"; the slide says tainted certificates and the abstract says signed X509 attribute, and this record uses the slide.",
+    "The captions say \"cut almost 94 90% of the traffic\"; the slide says about 90 percent, and this record uses the slide.",
     "Slide text partly small or truncated in the recording: the results-slide line about time the agent sat waiting on a human and the session hash on the certificate slide could not be read in full.",
     "Puderbaugh said industry-wide numbers would be shown; the slide percentages were not read aloud, and their source is not stated.",
     "The Q&A questioners are not identified; the end of the recording shows only the speakers."

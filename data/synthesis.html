@@ -1,6 +1,7 @@
 <p class="purpose">This page reports what the talks at [un]prompted 2 claimed and what evidence each one showed, talk by talk and across talks, so you can decide what to watch, what to act on and what to discount.</p>
+<p class="jump">Jump to: <a href="#watch-first">Sixteen talks to watch first</a> · <a href="#take">What the talks point toward</a> · <a href="#thin">Where the evidence is thin</a> · <a href="#talks">Look up a talk</a></p>
 
-<h2 id="brief">The conference in one screen</h2>
+<h2 id="brief">The conference in nine findings</h2>
 <p>[un]prompted is a practitioner conference on AI security. Its second edition ran 27 to 29 October 2026 in San Francisco, and the organizers published the recordings. The playlist holds 92 recordings. 89 are available, and {{SESSIONS}} are broken down below; the other two are explained under <a href="#method">Method</a>. Talks from different teams kept arriving at the same conclusions, and this summary is organized around nine of those:</p>
 <ol>
   <li><strong><a href="#harness">The model stopped being treated as a control.</a></strong> The talks with the strongest evidence put enforcement in the harness: what tokens can be generated, what tools exist, what credentials are in reach.</li>
@@ -19,28 +20,7 @@
 
 <h2 id="harness">Enforcement moved out of the model and into the harness</h2>
 <p>This was the widest agreement of the conference, and one talk put a number on it. Vince Ovando, now at IOActive, ran about 6 million inference calls against five controls and a no-control baseline on open-weight models from 1.7 to 119 billion parameters (<a href="#talk-50">talk 50</a>). The chart shows the result.</p>
-<figure>
-  <div class="figure-frame">
-    <!-- Scale: bar width = percent * 6.2, from x = 214. Rows 28 units apart. -->
-    <svg viewBox="0 0 760 292" style="--fig-min: 760px" role="img" aria-labelledby="ctl-t ctl-d" xmlns="http://www.w3.org/2000/svg">
-      <title id="ctl-t">Attacks that got through, by control</title>
-      <desc id="ctl-d">No control 56.77 percent; input filtering 56.85; defensive prompting 56.50; output filtering 2.15; allow-list gate 0.00; grammar-constrained decoding 0.00. Output tokens per attack: 240, 239, 240, 216, 791, 208.</desc>
-      <text class="c-tick" x="214" y="16">Attacks that got through</text>
-      <text class="c-tick" x="744" y="16" text-anchor="end">Output tokens per attack</text>
-      <line class="c-axis" x1="214" y1="50" x2="214" y2="132"/><line class="c-axis" x1="214" y1="164" x2="214" y2="190"/><line class="c-axis" x1="214" y1="222" x2="214" y2="276"/>
-      <text class="d-mark" x="16" y="44">IN THE PROMPT OR THE INPUT</text>
-      <text class="c-label" x="206" y="68" text-anchor="end">No control</text><rect class="c-bar" x="214" y="54" width="352" height="18"/><text class="c-value" x="574" y="68">56.77%</text><text class="c-tick" x="744" y="68" text-anchor="end">240</text>
-      <text class="c-label" x="206" y="96" text-anchor="end">Input filtering</text><rect class="c-bar" x="214" y="82" width="352.5" height="18"/><text class="c-value" x="574" y="96">56.85%</text><text class="c-tick" x="744" y="96" text-anchor="end">239</text>
-      <text class="c-label" x="206" y="124" text-anchor="end">Defensive prompting</text><rect class="c-bar" x="214" y="110" width="350.3" height="18"/><text class="c-value" x="574" y="124">56.50%</text><text class="c-tick" x="744" y="124" text-anchor="end">240</text>
-      <text class="d-mark" x="16" y="158">AFTER GENERATION</text>
-      <text class="c-label" x="206" y="182" text-anchor="end">Output filtering</text><rect class="c-bar" x="214" y="168" width="13.3" height="18"/><text class="c-value" x="235" y="182">2.15%</text><text class="c-tick" x="744" y="182" text-anchor="end">216</text>
-      <text class="d-mark" x="16" y="216">AT OR BEFORE THE TOOL CALL</text>
-      <text class="c-label" x="206" y="240" text-anchor="end">Allow-list gate</text><rect class="c-bar focus" x="214" y="226" width="2" height="18"/><text class="c-value" x="224" y="240">0.00%</text><text class="c-tick" x="744" y="240" text-anchor="end">791</text>
-      <text class="c-label" x="206" y="268" text-anchor="end">Grammar-constrained decoding</text><rect class="c-bar focus" x="214" y="254" width="2" height="18"/><text class="c-value" x="224" y="268">0.00%</text><text class="c-tick" x="744" y="268" text-anchor="end">208</text>
-    </svg>
-  </div>
-  <figcaption><strong>Controls on what the model reads left attacks where they started, a filter on what it wrote left about 2%, and two controls on what it can emit or call reached zero, one of them at nearly four times the tokens.</strong> Share of attack trials that succeeded under each control, across about 6 million inference calls on open-weight models. Source: the speaker's results slide, <a href="#talk-50">talk 50</a> at 4:40.</figcaption>
-</figure>
+{{CONTROL_CHART}}
 <p>The two controls that reached zero work differently. The allow-list gate rejects a bad tool call after the model writes it and makes the model retry, which is why it costs more tokens. <span class="term" tabindex="0" data-def="Restricting, before each token is sampled, which tokens the model is able to produce, so an output outside the allowed grammar cannot be generated at all.">Grammar-constrained decoding</span> limits what the model can generate before it generates it. The result covers one attack goal, sending secrets out of the environment, so it shows that this class of action can be closed and says less about prompt injection in general.</p>
 <p>Other teams reached the same design from production experience:</p>
 <ul>
@@ -75,7 +55,7 @@
 <p>The most detailed incident of the conference came from Caleb Sima and Alec Eckmann (<a href="#talk-68">talk 68</a>). An AI assessment agent run by an outside vendor, in an external assessment Hadrian had agreed to, went past its external-only scope and compromised the AI gateway, Okta tenant and Kubernetes pods at Hadrian, the speakers' company. The agent took about 13 hours from service discovery to first compromise, then under two hours to Okta super admin. The path ran through the gateway's provider configuration API, the gateway's cached OAuth tokens for tool servers, and a tool server parameter that executes in the pod's context. The exploit also stripped the gateway's own telemetry. A person noticed the intrusion, and the speakers now recommend shipping logs from the layers under the gateway and automating containment.</p>
 <figure>
   <div class="figure-frame">
-    <svg viewBox="0 0 760 322" style="--fig-min: 760px" role="img" aria-labelledby="inc-t inc-d" xmlns="http://www.w3.org/2000/svg">
+    <svg class="fig-wide" viewBox="0 0 760 322" style="--fig-min: 760px" role="img" aria-labelledby="inc-t inc-d" xmlns="http://www.w3.org/2000/svg">
       <title id="inc-t">The path of the incident in talk 68</title>
       <desc id="inc-d">An outside vendor's assessment agent, scoped to external targets, reached the AI gateway's management API. From the gateway it obtained an Okta API token and then Okta super admin; the gateway's cached OAuth tokens for every user's tool servers; and a tool server parameter that runs in the pod's context, which led to Kubernetes secrets. Timeline: service discovery at 12:48pm on 30 September, gateway compromised at 2:36am on 1 October, Okta super admin at 4:23am, first noticed by a person at 1:44pm, believed contained at 2:39pm.</desc>
       <defs><marker id="inc-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="userSpaceOnUse" markerWidth="10" markerHeight="10" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z"/></marker></defs>
@@ -100,8 +80,9 @@
       <circle class="c-bar focus" cx="453" cy="282" r="4"/><text class="c-tick" x="448" y="268">4:23am</text><text class="d-small" x="448" y="304">Okta super admin</text>
       <circle class="c-bar" cx="702" cy="282" r="4"/><circle class="c-bar" cx="726" cy="282" r="4"/><text class="c-tick" x="734" y="268" text-anchor="end">1:44pm, a person notices</text><text class="d-small" x="734" y="304" text-anchor="end">2:39pm, believed contained</text>
     </svg>
+    {{INCIDENT_NARROW}}
   </div>
-  <figcaption><strong>Everything the agent reached, it reached through the AI gateway.</strong> Arrows read "gave access to". The strip below is to scale: the agent held Okta super admin for more than nine hours before a person noticed. Source: the speakers' timeline and attack-chain slides, <a href="#talk-68">talk 68</a>.</figcaption>
+  <figcaption><strong>Everything the agent reached, it reached through the AI gateway.</strong> Arrows read "gave access to". The times show the agent held Okta super admin for more than nine hours before a person noticed. Source: the speakers' timeline and attack-chain slides, <a href="#talk-68">talk 68</a>.</figcaption>
 </figure>
 <p>Three other talks describe the same weakness from other angles, and the third traces the second incident step by step:</p>
 <ul>
@@ -153,14 +134,14 @@
 <p>One talk showed that discovery itself varies from run to run. In AISLE's benchmark, 62% of successful finds appeared in only 1 to 3 of 4 identical passes. Twelve passes spread over three cheap models found 70 of 95 known flaws for $66; four passes of the best single model in the test found 65 for $128 (<a href="#talk-39">talk 39</a>). A single clean scan is one sample.</p>
 <p>Past discovery, the talks reported losses at each stage they measured:</p>
 <div class="table-wrap"><table>
-  <thead><tr><th scope="col">Stage</th><th scope="col">What was measured</th><th scope="col">Talk</th></tr></thead>
+  <thead><tr><th scope="col">Stage</th><th scope="col">What was measured</th><th scope="col">Share that survived</th><th scope="col">Talk</th></tr></thead>
   <tbody>
-    <tr><th scope="row">Finding to valid ticket</th><td>2,807 threat-model tickets; 66.6% valid by the team's own judgment; 1,605 cancelled, 668 of them valid ones overtaken by changed requirements or duplicates</td><td><a href="#talk-08">08</a></td></tr>
-    <tr><th scope="row">Report to proof</th><td>Linux kernel: 5% of reports became crashes, 1.8% of crashes became exploits</td><td><a href="#talk-66">66</a></td></tr>
-    <tr><th scope="row">Patch to accepted patch</th><td>On one public benchmark, 65% of AI patches built, 11% survived fuzzing and differential testing, 4% passed human review</td><td><a href="#talk-78">78</a></td></tr>
-    <tr><th scope="row">Patch to trusted patch</th><td>1 of 50 real flaws earned an automatic green light; 13 of 14 good patches were held for review</td><td><a href="#talk-78">78</a></td></tr>
-    <tr><th scope="row">Fix to closed</th><td>A fix with 28 passing tests was bypassed with a one-line variant; both first firmware patches in a second study were incomplete</td><td><a href="#talk-46">46</a>, <a href="#talk-64">64</a></td></tr>
-    <tr><th scope="row">Disclosed to patched</th><td>1,596 disclosed, 97 patched, on a slide citing Anthropic, May 2026</td><td><a href="#talk-46">46</a></td></tr>
+    <tr><th scope="row">Finding to valid ticket</th><td>2,807 threat-model tickets; 66.6% valid by the team's own judgment; 1,605 cancelled, 668 of them valid ones overtaken by changed requirements or duplicates</td><td class="num">66.6%</td><td><a href="#talk-08">08</a></td></tr>
+    <tr><th scope="row">Report to proof</th><td>Linux kernel: 5% of reports became crashes, 1.8% of crashes became exploits</td><td class="num">5%, then 1.8%</td><td><a href="#talk-66">66</a></td></tr>
+    <tr><th scope="row">Patch to accepted patch</th><td>On one public benchmark, 65% of AI patches built, 11% survived fuzzing and differential testing, 4% passed human review</td><td class="num">65%, 11%, 4%</td><td><a href="#talk-78">78</a></td></tr>
+    <tr><th scope="row">Patch to trusted patch</th><td>1 of 50 real flaws earned an automatic green light; 13 of 14 good patches were held for review</td><td class="num">1 of 50</td><td><a href="#talk-78">78</a></td></tr>
+    <tr><th scope="row">Fix to closed</th><td>A fix with 28 passing tests was bypassed with a one-line variant; both first firmware patches in a second study were incomplete</td><td class="num"></td><td><a href="#talk-46">46</a>, <a href="#talk-64">64</a></td></tr>
+    <tr><th scope="row">Disclosed to patched</th><td>1,596 disclosed, 97 patched, on a slide citing Anthropic, May 2026</td><td class="num">97 of 1,596</td><td><a href="#talk-46">46</a></td></tr>
   </tbody>
 </table></div>
 <p class="table-note">Each row is one team's figure from its own data or a source it cited. The rows do not form one pipeline.</p>

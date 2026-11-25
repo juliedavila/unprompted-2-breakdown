@@ -12,7 +12,7 @@
   "format": "talk",
   "duration_min": 25,
   "thesis": "Refusal can be suppressed at inference time by projecting a single direction out of the residual stream with a megabyte-sized, auditable control file, so users keep the vendor's stock weights untouched instead of downloading third-party abliterated copies.",
-  "summary": "Suiche, an AI security researcher at Tolmo, opens with an anecdote of a pedestrian gesturing at a self-driving car, to argue that everything is now a prompt and that securing access to intelligence is the key concern. He argues guardrails also limit what security researchers may think about, which led him to abliteration (removing a model's refusal direction) and a small eval of propaganda requests across countries, where stock model behavior shows refusal, deflection or self-caution. Third-party abliterated models create a supply-chain risk and force terabyte downloads for every variant, so he built Weightless: an extension of GGUF (a model file format) called GLP that stores a refusal direction, a hook point and a dose, and a runtime that projects activations at the end of each transformer block while the checkpoint stays unchanged. The projection subtracts the component along the direction, scaled by a dose alpha, and works for mixture-of-experts models where a LoRA addition cannot. Captain Vector, a tool in the repo, derives a GLP from contrasting good and bad prompts. Measurements include 29 of 32 propaganda prompts answered stock versus 32 of 32 steered, dose calibration per model, and a 0.6 percent throughput cost on DeepSeek V4.1 Flash on four DGX Spark. He credits related work (GCD for grammar-constrained decoding, hf2q for inference on Mac, phantom-kv for the attention and KV cache, and heretic, an abliteration tool) and closes with the line that the weights are the vendor's and the activations are yours.",
+  "summary": "Suiche, an AI security researcher at Tolmo, opens with an anecdote of a pedestrian gesturing at a self-driving car, to argue that everything is now a prompt and that securing access to intelligence is the key concern. He argues guardrails also limit what security researchers may think about, which led him to abliteration (removing a model's refusal direction) and a small eval of propaganda requests across countries, where stock model behavior shows refusal, deflection or self-caution. He says third-party abliterated models create a supply-chain risk and force terabyte downloads for every variant, so he built Weightless: an extension of GGUF (a model file format) called GLP that stores a refusal direction, a hook point and a dose, and a runtime that projects activations at the end of each transformer block while the checkpoint stays unchanged. The projection subtracts the component along the direction, scaled by a dose alpha, and he says it works for mixture-of-experts models where a LoRA addition cannot. Captain Vector, a tool in the repo, derives a GLP from contrasting good and bad prompts. Measurements include 29 of 32 propaganda prompts answered stock versus 32 of 32 steered, dose calibration per model, and a 0.6 percent throughput cost on DeepSeek V4.1 Flash on four DGX Spark. He credits related work (GCD for grammar-constrained decoding, hf2q for inference on Mac, phantom-kv for the attention and KV cache, and heretic, an abliteration tool) and closes with the line that the weights are the vendor's and the activations are yours.",
   "argument": [
     "Models are becoming the thing we depend on, so securing access to inference and controlling model behavior matter, and guardrails limit what researchers can investigate.",
     "Third-party abliterated models are a supply-chain risk like malicious JavaScript packages, and each variant, quantization and release costs terabytes to redistribute.",
@@ -332,8 +332,8 @@
     "Measure the cost of steering on your own stack and still validate behavior, since constrained does not mean proven safe."
   ],
   "takeaways": [
-    "Treat third-party abliterated or fine-tuned open-weight models as a supply-chain input; his alternative is a small runtime overlay on a stock checkpoint (Weightless, which suppresses refusal) that the user can audit.",
-    "Expect refusal and other behaviors to be controllable at inference by anyone who runs a model locally, so guardrails that live only in the weights are removable.",
+    "On an argument by analogy, with no compromised model cited, treat third-party abliterated or fine-tuned open-weight models as a supply-chain input. A small runtime overlay on a stock checkpoint, such as Weightless (which suppresses refusal), is an alternative the user can audit.",
+    "On the evidence of one self-made 32-prompt evaluation, expect refusal and other behaviors to be controllable at inference by anyone who runs a model locally, which would make guardrails that live only in the weights removable.",
     "If you serve local models, plan to own or inspect the inference engine, since hooks on activations are where this class of control lives.",
     "Calibrate and measure any activation steering per model and per architecture before relying on it, because dose and hook point vary and new architectures can break a hook."
   ],
@@ -349,7 +349,6 @@
     "Fail-closed is stated for serving integrations but no demonstration or failure case was shown.",
     "The supply-chain framing is an argument by analogy; no malicious or backdoored abliterated model was cited, and the stock model plus an overlay from the same author still asks the user to trust the overlay file and the runtime that applies it.",
     "The measured 0.6 percent overhead is on one model and one four-node setup; the speaker said under 1 percent in general.",
-    "The talk presents the method in terms of researcher access to model behavior; the method removes refusals from open-weight models at low cost, and the recording does not discuss misuse beyond the argument against guardrails.",
     "Spoken and slide figures differ (about 1.7 TB spoken versus 1.56 TB on the slide; under 1 percent spoken versus 0.6 percent on the slide); the slide figures are the ones recorded.",
     "Where the speaker says a single directional axis, the slide says a dial; whether refusal is truly one direction across the models listed was asserted, not tested in the talk."
   ],
@@ -389,11 +388,10 @@
     "reason": "The talk describes a steering mechanism with a released tool; the measured evidence is a 32-prompt evaluation built by the speaker and one throughput measurement."
   },
   "caveats": [
-    "Auto-captions garble names: the speaker is Matt Suiche (captioned 'Swish', his nickname on the slide), 'heretic' appears as 'erratic', phantom-kv as 'KV Phantom' and Mark Dowd as the contributor 'mgdowd'; slide spellings are used.",
-    "The slide labels related work by GCD (Vince Ovando, Tantalus), hf2q (Robert E. Lee, IOActive); the transcript names 'Vince' and 'Rob from IO Active' only.",
+    "The captions say 'erratic' for heretic and 'KV Phantom' for phantom-kv; the slides say heretic and phantom-kv, and this record uses the slides.",
+    "The captions name 'Vince' and 'Rob from IO Active' only; the slide says Vince Ovando of Tantalus and Robert E. Lee of IOActive, and this record uses the slide.",
     "The 478 KB DeepSeek V4 Flash vector appears only in the description, not in the talk or slides.",
     "Slide-only figures carry no on-screen duration; timestamps mark when each slide first appeared, and the speaker's narration lagged on some (the equation slides appeared while he discussed other work).",
-    "The deck has 44 slides; the video shows about 23 main slides plus one annex slide shown during Q&A.",
-    "The transcript attributes Q&A questions to unnamed audience members."
+    "The deck has 44 slides; the video shows about 23 main slides plus one annex slide shown during Q&A."
   ]
 }

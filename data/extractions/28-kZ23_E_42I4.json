@@ -186,10 +186,10 @@
     "Civil liability as the default accountability lever for corporations."
   ],
   "takeaways": [
-    "Assign a named human owner to every agent that can take offensive or high-impact actions, and stop using 'the agent did it' in incident write-ups and policies.",
-    "Require egress filtering and scope enforcement on any environment where agents run offensive tooling or capability benchmarks, so an error cannot reach third parties.",
-    "Keep records showing executives and engineers took reasonable steps to prevent misuse, because some legal systems and civil claims turn on that showing.",
-    "Separate criminal, civil and professional responsibility when setting policy; most near-term accountability will be civil or professional rather than criminal."
+    "As a practice to try, since the debaters gave no data, assign a named human owner to every agent that can take offensive or high-impact actions, and stop using 'the agent did it' in incident write-ups and policies.",
+    "As something to check in your own environments, require egress filtering and scope enforcement wherever agents run offensive tooling or capability benchmarks, so an error cannot reach third parties.",
+    "On one uncited Italian example, keep records showing executives and engineers took reasonable steps to prevent misuse, because some legal systems and civil claims may turn on that showing.",
+    "On the debaters' arguments alone, separate criminal, civil and professional responsibility when setting policy; most near-term accountability may be civil or professional rather than criminal."
   ],
   "limits": [
     "The proposers say they are not discussing law, and that the strong wording of the motion is for debate purposes.",
@@ -199,9 +199,7 @@
   "critique": [
     "This is argument and anecdote with no data, case names or evidence on any lab incident; the claim that labs know their tools have gotten out before is asserted, not shown.",
     "The analogy of a student with a scanner differs from general-purpose models, which are not purpose-built attack tools; the speakers did not address this difference, and the audience objections on intent and the chain of instruction were answered with 'we are not talking about law'.",
-    "In closing both proposers said they do not think anyone should go to jail, so the practical takeaway (deployers are accountable, civil liability exists) is narrower than the wording of the motion.",
-    "Part of the discussion is political or rhetorical (runaway capitalism, one law for the rich and one for the poor) rather than a security finding.",
-    "The Italian executive-liability example is useful but uncited, and the audience comment that Morris was convicted because intent was proved cuts against Moussouris's use of the case for negligence."
+    "The Italian executive-liability example is uncited, and the audience comment that Morris was convicted because intent was proved cuts against Moussouris's use of the case for negligence."
   ],
   "qa": [
     "Audience objection 1: criminal liability needs intent, which cannot be shown for labs, and calling for jail sets a precedent that chills researchers. Response: Zanero says the debate is not about law and civil liability exists; Moussouris asks at what point negligence applies and says humans are responsible even for unintended consequences of a tool.",
@@ -237,7 +235,8 @@
   "caveats": [
     "The recording is camera-only apart from the opening Fight Night title card, which confirms the pairing Katie Moussouris vs. Stefano Zanero; there is no other slide text.",
     "Audience speakers were mostly unnamed; two attributions rest on the speakers' own references (Bruce Schneier named by Zanero, Tom thanked by Moussouris), and the auto-captions leave these unconfirmed.",
-    "Auto-captions garble some phrases, including the moderator's remarks and the date phrase May, June, and July; the speakers' affiliations were not shown or said, and no affiliation is given for Moussouris.",
+    "The captions garble the date phrase \"May, June, and July\", which the closing claim about an unnoticed experiment depends on; no slide confirms it.",
+    "The speakers' affiliations were not shown or said, and no affiliation is given for Moussouris.",
     "The published description's title adds 'Do human attackers also get misalignment and act rogue?' which was not spoken in the recorded debate."
   ]
 }

@@ -12,7 +12,7 @@
   "format": "talk",
   "duration_min": 21,
   "thesis": "A census of about 145 million GitHub items finds that real attacks on coding agents exist but are very rare, while most hidden agent-directed text is projects configuring and coordinating their own agents, which is the faster-growing and likelier next attack surface.",
-  "summary": "Nakibly asks whether anyone is actually prompt-injecting coding agents on GitHub, given that proofs of concept are plentiful but no census existed for the platform agents read most. He cites a web study that found about 12 injections per million URLs and shows one real injection: an HTML comment hidden in a Gemini CLI bug report, instructing the triage agent to run a shell command that leaks the GitHub token. Keyword search produced mostly false positives, so the team searched by visibility, meaning text a human cannot see but an agent can: HTML comments, invisible Unicode, white LaTeX and CSS hiding. The first pass covered the READMEs of the top 2 million starred repos, yielding 106 repos with real agent-directed text, of which only four were attacks, and 94 percent of the LLM-flagged repos were false positives caused by documentation tooling. Because READMEs are written by maintainers, they then scanned issues, PRs and comments, where anyone can write and the maintainer's own bots read. Of 143 million items, 2,281 were real agent-directed findings, 16 per million, but only 1.8 percent were attacks. Two thirds were first-party orchestration, agents coordinating through hidden comments.",
+  "summary": "Nakibly asks whether anyone is actually prompt-injecting coding agents on GitHub, given that proofs of concept are plentiful but no census existed for the platform agents read most. He cites a web study that found about 12 injections per million URLs and shows one real injection: an HTML comment hidden in a Gemini CLI bug report, instructing the triage agent to run a shell command that leaks the GitHub token. He reports that keyword search produced mostly false positives, so the team searched by visibility, meaning text a human cannot see but an agent can: HTML comments, invisible Unicode, white LaTeX and CSS hiding. In the first pass, which covered the READMEs of the top 2 million starred repos, he reports 106 repos with real agent-directed text, of which only four were attacks, and says 94 percent of the LLM-flagged repos were false positives caused by documentation tooling. Because READMEs are written by maintainers, they then scanned issues, PRs and comments, where anyone can write and the maintainer's own bots read. He reports that of 143 million items, 2,281 were real agent-directed findings, 16 per million, but only 1.8 percent were attacks, and that two thirds were first-party orchestration, agents coordinating through hidden comments.",
   "argument": [
     "Prompt injection against coding agents is demonstrably possible, but its prevalence on GitHub had not been measured, unlike the open web.",
     "Keyword matching on phrases like ignore previous instructions does not work at scale, so searching for text hidden from humans is a better filter.",
@@ -308,9 +308,9 @@
   "takeaways": [
     "Inventory every bot or agent that reads issues, PRs or comments in your repos, and give each no secrets and no write scopes it does not need.",
     "If your teams use hidden HTML comments as agent control markers, check who wrote the marker, and treat them as unauthenticated input that needs an author-association or permission check before an agent acts on it.",
-    "Do not add a blanket HTML-comment stripping control as an injection fix; scope the bot's authority instead.",
-    "Use the speaker's prevalence data, about one attack in 3.3 million items but mostly aimed at maintainer bots, to prioritize triage and review bots over general repo readers.",
-    "Plan to detect forged workflow markers, since orchestration markers are rising fastest and no forgery has yet been seen."
+    "Before adding a blanket HTML-comment stripping control as an injection fix, check what it would break in your own workflows, and weigh it against scoping the bot's authority.",
+    "Treating about one attack in 3.3 million items as a lower bound, prioritize triage and review bots over general repo readers, since the attacks counted were mostly aimed at maintainer bots.",
+    "As a precaution against an attack not yet observed, plan to detect forged workflow markers, since orchestration markers are rising fastest and no forgery has yet been seen."
   ],
   "limits": [
     "The scan covers only text that is hidden from humans; plain-text injections and attacks hidden in other ways are outside the method, and the speaker noted detection blind spots in the published description.",
@@ -319,13 +319,12 @@
     "No forgery of first-party markers has been observed yet; the next-attack-surface claim is a prediction."
   ],
   "critique": [
-    "The headline attack rate is a lower bound under a visibility-only method: visible injections, injections in code files and obfuscations the filters miss are not counted, so one in 3.3 million should not be read as the overall rate.",
+    "The main attack rate is a lower bound under a visibility-only method: visible injections, injections in code files and obfuscations the filters miss are not counted, so one in 3.3 million should not be read as the overall rate.",
     "The 47 attacks come from a classifier plus manual review by the authors; no inter-rater check or sample audit of the 2,281 label decisions was presented.",
     "Growth claims rest on four monthly points over a period when AI agent adoption and GitHub volume were both rising, and the 5x orchestration trend comes from 1,519 findings across 178 projects, and the talk did not say how concentrated they are.",
     "The recommendation not to strip HTML comments is not measured against the harm from the attacks; the 1.8 percent figure is about prevalence, not impact.",
     "The talk gives no data on how many attacks succeeded, only an anecdote that some were blocked by the harness.",
-    "The published description gives different headline figures (86 million items and about 2.5 per 100K) than the slides (145 million and 16 per million); this record uses the slide figures.",
-    "The pipeline and findings were released for inspection."
+    "The published description gives different main figures (86 million items and about 2.5 per 100K) than the slides (145 million and 16 per million); this record uses the slide figures."
   ],
   "qa": [
     "Q: How did you tell agents talking to agents from malicious text and from workflows? A: Not by a classifier alone: when they saw a coordination marker they inspected the repo's code and searched for what consumes the marker, whether the workflow, the model or the harness."
@@ -363,10 +362,10 @@
     "reason": "The talk reports a census of about 145 million GitHub items for hidden agent-directed text, with prevalence figures by category, and releases its scanning pipeline."
   },
   "caveats": [
-    "Auto-captions garble the speaker's name (rendered as Gabbi Akhibli); the slides give Gabi Nakibly, with co-author Zvika Babo, Senior AI Security Researcher, Radware, who did not present.",
-    "Several spoken numbers are garbled or approximate and were replaced by slide values (for example 128,000 repos vs 127,995 regions, 1,500 vs 1,528, 1 in 3 million vs 1 in 3.3M, 7 per million vs 7.0).",
+    "The captions say 'Gabbi Akhibli'; the slides say Gabi Nakibly, and this record uses the slides. The slides also name co-author Zvika Babo, Senior AI Security Researcher, Radware, who did not present.",
+    "The captions say 128,000, 1,500, 1 in 3 million and 7 per million; the slides say 127,995, 1,528, 1 in 3.3M and 7.0, and this record uses the slides.",
     "The published description gives 86 million items and 2.5 per 100K, while the slides give 145 million items and 16 per million; slides were used.",
-    "The speaker said hidden-instruction rate doubled in four months; the slide shows 2.2x, and the 5x figure applies to first-party orchestration markers.",
+    "The captions say the hidden-instruction rate doubled in four months; the slide says 2.2x, and this record uses the slide. The 5x figure applies to first-party orchestration markers.",
     "The opening slide's author line and the slide's tool URL come from slides; the GitHub account handle in the URL is as shown on the slide and was not independently confirmed."
   ]
 }

@@ -12,7 +12,7 @@
   "format": "talk",
   "duration_min": 20,
   "thesis": "Most AI inference today gives users no privacy or confidentiality guarantee, but running the whole serving stack inside hardware trusted execution environments with remote attestation already works in production at low single-digit GPU overhead, so there is no excuse not to offer it.",
-  "summary": "Romailler frames confidentiality as the neglected leg of the CIA triad for AI and compares today's state to the era before end-to-end encrypted messaging. He argues most providers offer no guarantees while people confide medical, psychological and work material to chatbots, and cites two examples: OpenAI's statement that it cannot rule out de-identified usage data improving its models in the dispute with an NYU mathematician, and a 22.7 TB aggregator breach exposing chat logs and corporate documents. He then walks through a typical inference pipeline (load balancers, API gateway, inference router, prefill and decode nodes, secret weight shards) and a messier real one with multiple routers and providers where nothing is verifiably private. He lists inference threats: prompt and response privacy, harvest-now-decrypt-later, targeted serving of custom responses to a specific user (non-targetability), weight leakage, and trojanized models. He asks where to draw the trust boundary. His answer is TEEs (trusted execution environments) and confidential VMs with remote attestation rooted in hardware manufacturers, with the trust boundary drawn around Kubernetes rather than including it. A table of NVIDIA Blackwell GPU overheads (about 2 percent, under 1 percent, about 1.5 percent on four GPUs, 10 to 13 percent for training) supports the cost claim.",
+  "summary": "Romailler frames confidentiality as the neglected leg of the CIA triad for AI and compares today's state to the era before end-to-end encrypted messaging. He argues most providers offer no guarantees while people confide medical, psychological and work material to chatbots, and cites two examples: OpenAI's statement that it cannot rule out de-identified usage data improving its models in the dispute with an NYU mathematician, and a 22.7 TB aggregator breach exposing chat logs and corporate documents. He then walks through a typical inference pipeline (load balancers, API gateway, inference router, prefill and decode nodes, secret weight shards) and a messier real one with multiple routers and providers where, he says, nothing is verifiably private. He lists inference threats: prompt and response privacy, harvest-now-decrypt-later, targeted serving of custom responses to a specific user (non-targetability), weight leakage, and trojanized models. He asks where to draw the trust boundary. His answer is TEEs (trusted execution environments) and confidential VMs with remote attestation rooted in hardware manufacturers, with the trust boundary drawn around Kubernetes rather than including it. He shows a table of NVIDIA Blackwell GPU overheads (about 2 percent, under 1 percent, about 1.5 percent on four GPUs, 10 to 13 percent for training) in support of the cost claim.",
   "argument": [
     "Confidentiality of user prompts and responses matters and is not guaranteed by most AI providers, as shown by the aggregator breach and the training-data uncertainty.",
     "Real inference pipelines span gateways, routers and multiple providers, so TLS hops alone give no end-to-end privacy assurance.",
@@ -261,9 +261,9 @@
   "takeaways": [
     "Assume prompts sent to a provider without verifiable attestation are readable by operators and possibly retained; classify what you send accordingly.",
     "When buying or building inference, ask for remote attestation evidence and published launch measurements, not just a policy statement.",
-    "Do not accept performance as a reason to skip confidential inference: published Blackwell numbers show roughly 1 to 3 percent overhead for inference with a configured stack, though training is 10 to 13 percent.",
+    "On the evidence of one cited benchmark paper and a vendor blog, do not accept performance as a reason to skip confidential inference: the Blackwell numbers show roughly 1 to 3 percent overhead for inference with a configured stack (the eight-GPU figure is an extrapolation), though training is 10 to 13 percent.",
     "Draw and document the trust boundary for each AI workload separately for user data versus model weights; keep orchestration such as Kubernetes outside it.",
-    "Add non-targetability and trojanized-model risk to AI threat models, especially when using routers or aggregators."
+    "On reasoning alone, with no data shown, add non-targetability and trojanized-model risk to AI threat models, especially when using routers or aggregators."
   ],
   "limits": [
     "TEE threat modeling is daunting with many extra moving pieces, and some TEE technology is not yet quantum safe.",
@@ -274,10 +274,11 @@
   ],
   "critique": [
     "The performance table rests on a single cited benchmark paper (and a vendor blog) on Blackwell hardware; the talk gives no own measurements, model sizes, batch sizes or latency tail results, and the eight-GPU inference figure is an extrapolation.",
-    "The speaker works for a company that sells confidential AI inference; the remaining costs (attestation operations, side-channel attacks on TEEs, key management, supply of enclave-ready stacks) were not addressed in detail.",
+    "The speaker's company, Confidential AI, sells confidential AI inference.",
+    "No data was given on the remaining costs (attestation operations, side-channel attacks on TEEs, key management, supply of enclave-ready stacks).",
     "Known TEE attack classes (side channels, physical and firmware attacks, attestation bugs) were mentioned only through the phrase 'paranoid threat model', and the talk did not present evidence on whether today's technology withstands them.",
     "The 'many companies in production' claim names no deployments except Apple in Q&A, and the claim about Meta not yet running in a TEE is opinion.",
-    "Non-targetability is raised as a headline new threat, yet the talk names no concrete mitigation inside the TEE design beyond oblivious HTTP, and the connection of the 26 percent AI-summary statistic to the threat was not explained.",
+    "The connection of the 26 percent AI-summary statistic to the non-targetability threat was not explained.",
     "The OpenAI example is explicitly not tied to a confidentiality failure, so it is evidence of uncertainty rather than harm."
   ],
   "qa": [
@@ -318,9 +319,9 @@
     "reason": "The talk presents TEE-based confidential inference with an overhead table drawn from one cited benchmark and does not cover attacks on TEEs in detail."
   },
   "caveats": [
-    "Auto-caption garbles: speaker's name appears as Yolan Romayer; the slide spells Romailler. Moxie Marlinspike appears as Maxi Marlinspike.",
-    "In the Q&A an audience member said an organizer of the Confidential Computing Summit was acquired by a lab the captions render as 'Entropic'; the acquirer and the organizer name are not confirmed on any slide and are not recorded as fact. The first question's opening remark was partly garbled.",
-    "The transcript says 22 terabytes and 'users and sex dolls' as a joke about the breach contents; the slide says 22.7 terabytes and lists chat logs, prompts, responses and confidential corporate documents.",
+    "The captions say \"Yolan Romayer\"; the slide says Romailler, and this record uses the slide.",
+    "The captions say an audience member named a lab \"Entropic\" as the acquirer of an organizer of the Confidential Computing Summit; no slide confirms the acquirer or the organizer, and this record does not state either as fact.",
+    "The captions say 22 terabytes; the slide says 22.7 terabytes and lists chat logs, prompts, responses and confidential corporate documents, and this record uses the slide.",
     "The speaker's 8 GPU inference overhead (about 3 percent) was spoken as an extrapolation and is not in the table.",
     "Arxiv ID 2608.26575 and the version date are legible only in small footer text on the slide.",
     "No live demos; the recording after the contact slide shows only Q&A camera shots with no slide content."

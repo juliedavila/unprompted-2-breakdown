@@ -12,7 +12,7 @@
   "format": "talk",
   "duration_min": 21,
   "thesis": "Honeypots that emulate production AI stacks show attackers are already fingerprinting AI backends at scale, exploiting new CVEs within days, stealing secrets through the agents' own tools, and hijacking exposed inference endpoints as free compute for their own, increasingly autonomous, campaigns.",
-  "summary": "Takahashi starts from the gap that AI security research lives in labs and defenders lack threat intelligence from real incidents. His team, with colleagues Avishai Efrat and Ayush RoyChowdhury, deployed decoy AI servers and agents built on LangChain, OpenClaw, LiteLLM and Ollama in various locations, and attackers arrived almost immediately. The first phase was fingerprinting and discovery: a spike of 400,000 requests in an hour hitting inference endpoints with benign prompts like respond with pong, focusing on GLM, DeepSeek and Qwen, and probing for system prompts and tool lists; over about six months there were more than 22 million requests from thousands of IPs. He then walks through three LiteLLM CVE exploitation cases: a config update local file inclusion that reads the .env file, tested one day after disclosure; a guardrails test endpoint abused with default key spraying and a fragmented-keyword sandbox bypass to run code as root; and a health test-connection endpoint that sends the server's own master key to an attacker server. Canary tokens planted on the honeypots were used within about 30 minutes, including AWS calls testing AI model access. He shows a Strix autonomous pentest agent prompt of 140,000 characters and an AIRecon bug-bounty agent payload, which leaked intent and tooling.",
+  "summary": "Takahashi starts from what he calls a gap: AI security research lives in labs and defenders lack threat intelligence from real incidents. His team, with colleagues Avishai Efrat and Ayush RoyChowdhury, deployed decoy AI servers and agents built on LangChain, OpenClaw, LiteLLM and Ollama in various locations, and attackers arrived almost immediately. The first phase, he says, was fingerprinting and discovery: a spike of 400,000 requests in an hour hitting inference endpoints with benign prompts like respond with pong, focusing on GLM, DeepSeek and Qwen, and probing for system prompts and tool lists; over about six months there were more than 22 million requests from thousands of IPs. He then walks through three LiteLLM CVE exploitation cases: a config update local file inclusion that reads the .env file, tested one day after disclosure; a guardrails test endpoint abused with default key spraying and a fragmented-keyword sandbox bypass to run code as root; and a health test-connection endpoint that sends the server's own master key to an attacker server. He reports that canary tokens planted on the honeypots were used within about 30 minutes, including AWS calls testing AI model access. He shows a Strix autonomous pentest agent prompt of 140,000 characters and an AIRecon bug-bounty agent payload, which, he says, leaked intent and tooling.",
   "argument": [
     "AI security knowledge is lab-derived and defenders lack real threat intelligence about what attackers do to production AI systems.",
     "Decoy AI stacks attract huge volumes of automated fingerprinting and discovery traffic that is used to find free inference, models and tools.",
@@ -300,10 +300,10 @@
     "Run your own honeypots to gather threat intelligence about attacks on AI systems."
   ],
   "takeaways": [
-    "Audit every internet-reachable LLM gateway, Ollama or agent endpoint for default keys and exposed admin and test endpoints, and put LiteLLM-class patches on a one-day SLA.",
+    "Audit every internet-reachable LLM gateway, Ollama or agent endpoint for default keys and exposed admin and test endpoints, and put LiteLLM-class patches on a one-day SLA, a target set by one CVE tested a day after disclosure.",
     "Treat guardrail and connection-test features as privileged code paths; restrict them to the management plane and remove master keys from process environments reachable by them.",
     "Seed canary credentials where agents can read them, and alert on any use, since stolen secrets were exercised within about 30 minutes.",
-    "Include inference abuse (free compute for attacker agents) and downstream liability in your risk register, with outbound egress controls on agent hosts.",
+    "On two captured agent prompts, include inference abuse (free compute for attacker agents) and downstream liability in your risk register, with outbound egress controls on agent hosts.",
     "Stand up a small AI honeypot to collect IOCs from your own region and infrastructure rather than relying on lab research."
   ],
   "limits": [
@@ -314,12 +314,11 @@
     "The speaker deliberately withheld honeypot details to avoid attackers detecting it."
   ],
   "critique": [
-    "Almost no counts beyond the headline volumes: the number of distinct exploitation attempts, successful key thefts, canary triggers and unique IPs are given as thousands or not at all, so the prevalence of each technique is unclear.",
+    "Almost no counts beyond the main volumes: the number of distinct exploitation attempts, successful key thefts, canary triggers and unique IPs are given as thousands or not at all, so the prevalence of each technique is unclear.",
     "Only two of the three LiteLLM cases carry a CVE identifier on the slides (35029 and 40217); the guardrails code-execution case has none shown, and affected versions and patch details are missing, so defenders must go to the blog for the IOCs.",
     "The claim that attackers target GLM, DeepSeek and Qwen because they are less restrictive is the speaker's inference, and the talk leaves it as a question to the audience.",
     "A 30-minute lag to first testing of a planted key is presented as evidence of automation, but a short delay is also consistent with simple scripted credential checkers rather than agentic AI.",
     "A honeypot that emulates specific stacks sees opportunistic internet-wide scanning, and the sample may not represent targeted attacks on real enterprises.",
-    "The published description mentions Ollama SSRF, backdoored model uploads and telemetry exfiltration; the recording does not cover them.",
     "The evidence for AI-operated attacks is two captured agent prompts and signal-based inference; the strongest evidence shown is for opportunistic exploitation and key abuse rather than autonomous campaigns."
   ],
   "qa": [
@@ -369,7 +368,7 @@
   },
   "caveats": [
     "Slides cover the whole talk; the Q&A portion is speaker camera only and carries no slide content.",
-    "Auto-captions garble names: Zenity appears as Zannity or Zenyte, OpenClaw as OpenCall, LiteLLM as light LLM, and Avishai Efrat's first name as Abishai; names were taken from slides.",
+    "The captions say 'Zannity' or 'Zenyte', 'OpenCall', 'light LLM' and 'Abishai'; the slides say Zenity, OpenClaw, LiteLLM and Avishai, and this record uses the slides.",
     "The Thanks slide titles Takahashi as AI Red Team Researcher; the Senior AI Security Researcher titles come from a team slide that is not among the captured slides and could not be verified.",
     "The graph's y-axis has no unit on the slide and peaks near 440K, whereas the speaker said 400,000 requests in an hour.",
     "The campaign graph dates (Sep 17 to Sep 20) are shown without a year; the CVE identifiers on the case slides carry 2026.",

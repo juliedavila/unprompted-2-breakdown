@@ -7,7 +7,7 @@
   "format": "talk",
   "duration_min": 27,
   "thesis": "AI vulnerability discovery has moved from a research demonstration (DARPA's AI Cyber Challenge, AIxCC) to production at hyperscale (Microsoft's multi-model agentic scanning harness, MDASH), and the hard problems are now cost per audit, deciding when to stop spending tokens, and feeding the expensive validation and remediation stages back into finding, which is why Microsoft's FORGE Lab (Frontier Offensive Research and Generative Exploitation) is pivoting to exploitability as the organizing signal.",
-  "summary": "Kim opens with the DARPA AI Cyber Challenge as the ChatGPT moment for security: a $30 million competition his Team Atlanta won, with the winning system, a long technical report, a systematization-of-knowledge paper and the OSS-CRS (open-source cyber reasoning system) code and CRSBench benchmark all released. He says AIxCC showed AI can do professional-level cyber tasks at about $150 per task, and that frontier labs then productized the idea (Big Sleep, CodeMender, Aardvark, Claude Code Security, Codex Security Review). He shows open source skepticism (curl's Daniel Stenberg) turning into acceptance and Microsoft's monthly Patch Tuesday CVE count climbing sharply after March 2026. Five Team Atlanta members joined Microsoft and, within five months, shipped MDASH, a multi-model, multi-agent scanning harness with five stages: prepare, scan, validate, dedup, prove. He explains four design ideas: turn search into decision problems, use the function as the orchestration unit, funnel candidates through increasingly expensive validation, and enrich source with LLM-written taint and bounds annotations. He reports 229 Windows and Hyper-V CVEs fixed, including 38 remote code execution bugs, and a Linux kernel exploit-generation experiment. He closes with three shifts (scale and cost, reasoning economics, a continuous learning loop), all pushing toward exploitability.",
+  "summary": "Kim opens with the DARPA AI Cyber Challenge (AIxCC) as the ChatGPT moment for security: a $30 million competition his Team Atlanta won, with the winning system, a long technical report, a systematization-of-knowledge paper and the OSS-CRS (open-source cyber reasoning system) code and CRSBench benchmark all released. He says AIxCC showed AI can do professional-level cyber tasks at about $150 per task, and that frontier labs then productized the idea (Big Sleep, CodeMender, Aardvark, Claude Code Security, Codex Security Review). He shows open source skepticism (curl's Daniel Stenberg) turning into acceptance and Microsoft's monthly Patch Tuesday CVE count climbing sharply after March 2026. He says five Team Atlanta members joined Microsoft and, within five months, shipped MDASH, a multi-model, multi-agent scanning harness with five stages: prepare, scan, validate, dedup, prove. He explains four design ideas: turn search into decision problems, use the function as the orchestration unit, funnel candidates through increasingly expensive validation, and enrich source with LLM-written taint and bounds annotations. He reports 229 Windows and Hyper-V CVEs fixed, including 38 remote code execution bugs, and a Linux kernel exploit-generation experiment. He closes with three shifts (scale and cost, reasoning economics, a continuous learning loop), all pushing toward exploitability.",
   "argument": [
     "DARPA AIxCC showed that LLM-driven systems can find and patch real vulnerabilities at professional level for roughly $150 per task, and the frontier labs productized that within about a year.",
     "Skepticism from open source maintainers and the security community flipped to adoption, visible in a steep rise in Microsoft CVEs fixed per Patch Tuesday after March 2026.",
@@ -98,10 +98,10 @@
     "Coordinate disclosure of upstream findings through community channels such as LF Akrites rather than posting to public lists."
   ],
   "takeaways": [
-    "Budget AI code scanning by stage: spend cheaply on broad per-function discovery and reserve expensive models and dynamic proving for candidates that survive static debate.",
-    "Measure and plan for cost per audit and for when to stop, since the talk argues token spend is becoming the proxy for assurance.",
-    "Expect patch-to-exploit time for your shipped software to shrink and plan patch rollout speed and customer update enforcement accordingly.",
-    "Invest in ranking and exploitability triage, because validation and deployment, not finding, are the dominant cost and the point where false positives hurt most.",
+    "As a design to test, budget AI code scanning by stage: spend cheaply on broad per-function discovery and reserve expensive models and dynamic proving for candidates that survive static debate.",
+    "Measure cost per audit and when to stop, and check in your own runs whether token spend tracks assurance, which the talk argues without cost data.",
+    "On an assertion with no timing data, expect patch-to-exploit time for your shipped software to shrink, and plan patch rollout speed and customer update enforcement accordingly.",
+    "Check whether validation and deployment, not finding, dominate your cost and are where false positives hurt most; if so, invest in ranking and exploitability triage. The talk asserts this without cost data.",
     "Do not assume frontier-model access for offensive-adjacent security work; test open-weight models and keep your pipeline model-agnostic."
   ],
   "limits": [
@@ -116,8 +116,8 @@
     "The CVE counts include only fixed, shipped Windows and Hyper-V bugs by cohort; there is no denominator for scanned code, triage effort, rejected findings or how many findings were severe versus low value.",
     "The Patch Tuesday chart is attributed to AI-driven discovery in general, not just MDASH, and the speaker's spoken figure (about 1600) conflicts with the slide (1,142).",
     "The $150 per task figure is repeated without definition of task, success or how it generalizes beyond the AIxCC challenge projects.",
-    "The speaker works for Microsoft, which ships MDASH and runs FORGE Lab. The Q&A answer on pipeline erosion argues for staged control; no comparison against simpler agent-plus-strong-model setups was shown.",
-    "The audience question on verifying generated patches was not answered; the response covered only variant analysis."
+    "MDASH is a product of the speaker's company, Microsoft.",
+    "The Q&A answer on pipeline erosion argues for staged control; no comparison against simpler agent-plus-strong-model setups was shown."
   ],
   "qa": [
     "Q: How long to reverse engineer a Windows patch, and can open models do this locally? A: Binary diffing used to be slow; with AI the time to analyze and exploit drops drastically, so even large vendors must be careful pushing updates to customers. Open-weight models such as Kimi and GLM work very well, and many people use them because frontier models block binary analysis plus exploitation.",
@@ -134,10 +134,10 @@
     {"file": "t00647.jpg", "caption": "Funnel of increasingly expensive validation from static self-dispute to dynamic PoC."},
     {"file": "t00820.jpg", "caption": "Three shifts framing the hybrid static and dynamic future: scale, reasoning economics, continuous learning loop."}
   ],
-  "signal": {"score": 4, "reason": "The talk reports production figures (229 Windows and Hyper-V CVEs fixed, a Linux kernel exploit-generation experiment) and a five-stage scanning pipeline design, with no ablations or rates for several design claims, from a speaker who works for the company that ships the product."},
+  "signal": {"score": 4, "reason": "The talk reports production figures (229 Windows and Hyper-V CVEs fixed, a Linux kernel exploit-generation experiment) and a five-stage scanning pipeline design, with no ablations or rates for several design claims."},
   "caveats": [
-    "Auto-captions garble names: Entropy means Anthropic, Mithos means Mythos, R Vark means Aardvark, and the moderator's name is unclear.",
-    "Speaker said about 200 vulnerabilities and about 1600 Patch Tuesday fixes; slides show 229 MDASH CVEs and 1,142 for July 2026, so slide values were used.",
+    "The captions say Entropy, Mithos and R Vark; the slides say Anthropic, Mythos and Aardvark, and this record uses the slides.",
+    "The speaker said about 200 vulnerabilities and about 1600 Patch Tuesday fixes; the slides say 229 MDASH CVEs and 1,142 for July 2026, and this record uses the slides.",
     "Speaker said the Windows team adopted MDASH in CI/CD since April; the CVE chart labels the first cohort May launch.",
     "The Linux kernel chart text is small and values were read from a mid-resolution slide capture; the 11 LPE count is from the slide and speech while the right chart shows 6 mitigated LPE cases.",
     "The benchmark in the model-comparison chart is not named, and chart values are estimated from point positions.",

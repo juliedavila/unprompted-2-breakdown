@@ -12,7 +12,7 @@
   "format": "talk",
   "duration_min": 21,
   "thesis": "An acting agent must be secured by invariants enforced outside the model: no credentials in the pod, cryptographic identity at every hop, and behavior fixed in the pod spec rather than the prompt, so every property holds whatever the model decides.",
-  "summary": "Finol describes how Felix Pago runs roughly 500 OpenClaw (open-source agent) gateways, one per employee, on GKE under gVisor (a user-space kernel sandbox), a platform they call Maestro. He starts from an early mistake: a single shared OpenClaw gateway on a GCE VM for about ten users, which the OpenClaw creator told him to shut down because there was no isolation. That experience produced the security invariants the rest of the talk walks through. The architecture splits into a control plane (Cortex web UI and the Stem Kubernetes operator), a comms plane (Thalamus, the only holder of Slack tokens, with Llama Guard screening inbound instructions), and a credentials plane (Synapse resolves identity and mints just-in-time tokens, Hippocampus vaults refresh tokens, Axon is the relay that injects real tokens into outbound provider calls). Tools run through vendored skills with CLI shims so no real token ever enters the pod. Every request records a requester, an actor and a persona, and four actAs modes decide whose token is minted. Identity is proven with Istio mTLS, SPIFFE IDs and short-lived signed JWTs checked in the sidecar. Agent instructions, tool set and model provider are rendered from a Kubernetes resource and mounted read-only. An automated red team using an uncensored model scored the setup a B minus; data exfiltration over HTTPS and writable memory remain open.",
+  "summary": "Finol describes how Felix Pago runs roughly 500 OpenClaw (open-source agent) gateways, one per employee, on GKE under gVisor (a user-space kernel sandbox), a platform they call Maestro. He starts from an early mistake: a single shared OpenClaw gateway on a GCE VM for about ten users, which the OpenClaw creator told him to shut down because there was no isolation. He says that experience produced the security invariants the rest of the talk walks through. The architecture splits into a control plane (Cortex web UI and the Stem Kubernetes operator), a comms plane (Thalamus, the only holder of Slack tokens, with Llama Guard screening inbound instructions), and a credentials plane (Synapse resolves identity and mints just-in-time tokens, Hippocampus vaults refresh tokens, Axon is the relay that injects real tokens into outbound provider calls). He says tools run through vendored skills with CLI shims so no real token ever enters the pod. He says every request records a requester, an actor and a persona, and that four actAs modes decide whose token is minted. He says identity is proven with Istio mTLS, SPIFFE IDs and short-lived signed JWTs checked in the sidecar. He says agent instructions, tool set and model provider are rendered from a Kubernetes resource and mounted read-only. He reports that an automated red team using an uncensored model scored the setup a B minus, with data exfiltration over HTTPS and writable memory still open.",
   "argument": [
     "A tool-using agent can do real damage with real credentials, so the model has to be treated as untrusted and every security property must hold regardless of what it decides.",
     "A shared gateway for many users failed because there was no isolation, which led to defining invariants from observed gateway behavior: no credentials in the pod, no self-mutation, identities always recorded.",
@@ -251,11 +251,11 @@
     "Emit infrastructure-attributed audit telemetry keyed by request ID for detection."
   ],
   "takeaways": [
-    "Write each security property for agents as an invariant with a named deterministic enforcement point, and treat prompt instructions as advisory only.",
-    "Move credential handling into a relay outside the agent runtime so a compromised agent cannot leak a token it never held.",
-    "Make the requester, actor and persona distinction explicit in your authorization model before agents act on behalf of people with different entitlements.",
-    "Fix agent capabilities in the deployment spec (read-only mounts, tool shims present or absent) rather than in the system prompt.",
-    "Plan egress control and agent memory integrity early, since credential isolation alone leaves exfiltration open."
+    "On one company's deployment, write each security property for agents as an invariant with a named deterministic enforcement point, and treat prompt instructions as advisory only.",
+    "On one company's deployment and one red-team run, move credential handling into a relay outside the agent runtime. A compromised agent cannot leak a token it never held.",
+    "On one company's design, make the requester, actor and persona distinction explicit in your authorization model before agents act on behalf of people with different entitlements.",
+    "On one company's design, fix agent capabilities in the deployment spec (read-only mounts, tool shims present or absent) rather than in the system prompt.",
+    "On the speaker's own account of open gaps, plan egress control and agent memory integrity early. Credential isolation alone leaves exfiltration open."
   ],
   "limits": [
     "Data exfiltration over HTTPS is only partially mitigated: port 443 is open and allow-listing plus SOC agent integration are in progress.",
@@ -265,11 +265,11 @@
   ],
   "critique": [
     "The B minus comes from a single seven-hour run by a vendor-provided uncensored model; the methodology and findings were not shown, so the result gives evidence of resilience only for that one run.",
-    "The architecture is specific to GKE, Istio and gVisor and assumes a platform team able to run a custom operator and several internal services; the talk does not cover the cost or staffing.",
-    "The productivity claim of 90 minutes to 2-3 minutes is anecdotal and from a single workflow.",
+    "The architecture is specific to GKE, Istio and gVisor and assumes a platform team able to run a custom operator and several internal services; the talk gave no data on cost or staffing.",
+    "The productivity claim of an hour and a half to 2-3 minutes is anecdotal and from a single workflow.",
     "The sandbox protects the pod and credentials but the agent still acts with a user's real token through Axon, so an injected agent can misuse any action that user is entitled to within scope; scope-down policy detail was not shown.",
     "Llama Guard is mentioned in one sentence with no data on detection performance.",
-    "The failed live demo means the colleague-agent feature, which raises its own cross-user disclosure questions, was not demonstrated."
+    "The colleague-agent feature was not demonstrated because the live demo failed."
   ],
   "qa": [
     "Question: how were the safety invariants derived, from a standard or otherwise? Answer: they came from the experience of running one shared gateway for ten people and watching the gateway's behavior; for example the gateway must not touch credentials and must not self-mutate, so instructions are mounted read-only."
@@ -307,10 +307,11 @@
     "reason": "The talk describes a production credential-isolation and identity architecture, states its open gaps, and reports one automated red-team run as the effectiveness evidence."
   },
   "caveats": [
-    "Transcript says Axon-style relay names and Vertex pieces with garbles (for example Open Clog, Hinoki, divisor for gVisor); spellings taken from slides.",
-    "Speaker said 600 gateways; slide says approximately 500 user pods.",
-    "Speaker said SOC agents migration from Sumo Logic to XDR; the slide names Exaforce SOC Agent.",
-    "Transcript calls the credential relay and others by garbled names (Talos for Thalamus); slide names used.",
+    "The captions say \"Open Clog\" and \"divisor\"; the slides say OpenClaw and gVisor, and this record uses the slides.",
+    "The attack claim names Hinoki Security as the captions render it; no slide confirms the spelling.",
+    "The captions say 600 gateways; the slide says approximately 500 user pods, and this record uses the slide.",
+    "The captions say the SOC agents migrate from Sumo Logic to XDR; the slide says Exaforce SOC Agent, and this record uses the slide.",
+    "The captions say \"Talos\"; the slides say Thalamus, and this record uses the slides.",
     "The live demo failed, so no visuals exist for the Ask their agent feature."
   ]
 }

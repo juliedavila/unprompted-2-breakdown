@@ -12,7 +12,7 @@
   "format": "lightning",
   "duration_min": 7,
   "thesis": "People outside the field understand AI poorly, so Delve Group built a glass-topped, fully offline GPU machine called LOAD (Local Offline AI Demonstration) that shows how AI works on real hardware, and he urges the audience to build something similar to explain AI to their neighbours.",
-  "summary": "Kyle Easterly of Delve Group in Anchorage, Alaska, says the customers his AI deployment software company meets in oil and gas, healthcare and telecom see AI as a chat box and a data center. To fix that, he and an intern named Brian built LOAD, a rackmount machine laid flat on a table with a plexiglass lid, running models entirely offline. A 3D digital twin of every part lets visitors tour the machine with a Stream Deck or by voice. Easterly describes the build: two GPUs, an EPYC CPU, 256 GB of ECC memory, a custom water loop, and open models served with vLLM, assembled in about a month using SSDs he already owned. It debuted on Sep 28, 2026 and has since been shown at a leadership summit, a university computer science class and industry trade shows, and he hopes to take it to the state capital. Demos include watching a small model pick its next word layer by layer, a fleet of 21 agents building a town in the style of the Stanford generative agents paper, handwritten fuel tickets turned into structured data, and a live fine-tune in which a Llama model learns who built it. Hardware failures happened in public and he treats that as part of the lesson. He closes by asking the audience to help the people around them understand AI. The talk has no security content.",
+  "summary": "Kyle Easterly of Delve Group in Anchorage, Alaska, says the customers his AI deployment software company meets in oil and gas, healthcare and telecom see AI as a chat box and a data center. To fix that, he and an intern named Brian built LOAD, a rackmount machine laid flat on a table with a plexiglass lid, running models entirely offline. A 3D digital twin of every part lets visitors tour the machine with a Stream Deck or by voice. Easterly describes the build: two GPUs, an EPYC CPU, 256 GB of ECC memory, a custom water loop, and open models served with vLLM, assembled in about a month using SSDs he already owned. It debuted on Sep 28, 2026 and has since been shown at a leadership summit, a university computer science class and industry trade shows, and he hopes to take it to the state capital. Demos include watching a small model pick its next word layer by layer, a fleet of 21 agents building a town in the style of the Stanford generative agents paper, handwritten fuel tickets turned into structured data, and a live fine-tune in which a Llama model learns who built it. He says hardware failures happened in public and treats that as part of the lesson. He closes by asking the audience to help the people around them understand AI. The talk has no security content.",
   "argument": [
     "Non-specialists see AI only as a chat box and a data center, and lack a basic model of how it works.",
     "Showing the real hardware, running offline, in front of people makes AI concrete and removes the sense that it lives somewhere else.",
@@ -166,9 +166,9 @@
   "offense": [],
   "defense": [],
   "takeaways": [
-    "Where non-technical stakeholders struggle with AI literacy, build a tangible offline demo, as Easterly urges the audience to do.",
-    "Show training and inference on real hardware, including failures, to build trust with customers and policymakers.",
-    "Run demos on offline local models so customer data is not sent to external services, which matters for sensitive sectors."
+    "On one team's experience, with no measured effect, build a tangible offline demo where non-technical stakeholders struggle with AI literacy.",
+    "As an approach to test, show training and inference on real hardware, including failures, to build trust with customers and policymakers.",
+    "Run demos on offline local models. Customer data is then not sent to external services, which matters for sensitive sectors."
   ],
   "limits": [
     "Easterly said he had seen the slides only once, and that he had more slides than time.",
@@ -176,9 +176,9 @@
     "No evidence was presented on whether the demo changes audience understanding."
   ],
   "critique": [
-    "This is an AI literacy talk built around the speaker's company's demo machine, with no security content; the educational effect was not measured.",
+    "The educational effect of the demo was not measured.",
     "The fine-tune timing differs between speech (about a minute, and about 3 minutes per visitor) and the slide (15 to 30 seconds), so the two figures differ.",
-    "The speaker's company sells AI deployment software, and the demos use small models whose behaviour was not compared with frontier systems."
+    "The demos use small models whose behaviour was not compared with frontier systems."
   ],
   "qa": [],
   "tags": [
@@ -208,8 +208,8 @@
     "reason": "The talk presents an offline GPU demo machine for AI literacy, with its hardware specification and build timeline, and has no security content or measured results on audience understanding."
   },
   "caveats": [
-    "Auto-caption garbles: 'Dove Group' is Delve Group; 'Stanford generative agents' and 'Gemma 4' were taken from the slide and speech; 'Telecom Show' is as heard.",
-    "The speaker said an A6000 GPU died and he fried one GPU; the slide says the GPU that stopped answering was replaced by an RTX 3090, and the slide build lists an A6000 plus a 3090.",
+    "The captions say Dove Group; the slide says Delve Group, and this record uses the slide.",
+    "The speaker said an A6000 GPU died and that he fried one GPU; the slide says the GPU that stopped answering was replaced by an RTX 3090 and lists an A6000 plus a 3090 in the build, and this record uses the slide.",
     "Slides skip numbers (3, 4, 5, 7, 8, 12, 13, 14, 17 appear), so the deck was shown at pace and not all slides are captured.",
     "Easterly said Brian was a University of Alaska Anchorage intern; no surname was given."
   ]

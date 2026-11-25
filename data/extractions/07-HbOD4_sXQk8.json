@@ -290,10 +290,9 @@
     "Some results are unpatched, so details are held back until the Phrack article."
   ],
   "critique": [
-    "Several demos use a single known class of failure (the checker accepting a false statement); the new content is the CVE filings and the policy and process gap rather than a new technique.",
     "The statement that a forgery could stay hidden for weeks in nested dependencies is argued from reasoning; it was not tested against reviewers or against tooling that reports the axioms a theorem depends on.",
     "The 95 percent Eurocrypt figure is Aumasson's account of an April run; no data was shown and the recording does not define what counted as incorrect.",
-    "The talk combines research results with a policy recommendation; the call for lab funding is a recommendation, and the impact on real deployments of Fiat-Crypto code is argued by analogy to supply-chain compromise and was not demonstrated.",
+    "The impact on real deployments of Fiat-Crypto code is argued by analogy to supply-chain compromise and was not demonstrated.",
     "Slide and speech differ on the status of the runtime bug (said to be fixed in the next version, shown as fixed in v4.34.1), so status details need checking against advisories."
   ],
   "qa": [
@@ -334,8 +333,8 @@
   },
   "caveats": [
     "Summary-level record: exploit mechanics deliberately not recorded.",
-    "Auto-captions garble names: 'Frac' is Phrack, 'Roc' is Rocq, 'Entropic' is Anthropic, 'Blake' is BLAKE3; slides were used for spellings.",
-    "The transcript says the Lean runtime bug will be fixed in the next version, while the slide lists it as fixed in v4.34.1.",
+    "The captions say Frac, Roc, Entropic and Blake; the slides say Phrack, Rocq, Anthropic and BLAKE3, and this record uses the slides.",
+    "The captions say the Lean runtime bug will be fixed in the next version; the slide lists it as fixed in v4.34.1, and this record uses the slide.",
     "The 1911-line figure comes from the published description, not the talk."
   ]
 }

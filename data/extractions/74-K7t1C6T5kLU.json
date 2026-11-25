@@ -12,7 +12,7 @@
   "format": "talk",
   "duration_min": 26,
   "thesis": "When a coding agent runs as the same Unix user as its human, an Approve click is only input the agent may be able to produce, so sensitive capabilities need a separately protected proof of human presence that the agent cannot read, write, replay or route around. Even then, per-session grants are not isolation: the surrounding environment is part of the boundary.",
-  "summary": "McMillin runs 20 to 30 coding-agent sessions at once on his personal workstation, some started by hand and some by cron jobs, and wanted only specific sessions to hold privileged capabilities such as Kubernetes access or a logged-in browser. His starting point was a kubeconfig file and a skill pointing at it, which any agent could discover. He built an MCP permission broker: each session gets an OAuth client identity held in memory, requests a named capability, and a human approves with a six-digit one-time code from a phone authenticator that never enters agent context. Grants name a session, a capability and an expiry, usually two hours, and can be revoked. He states the attacker position up front: the agent has his UID, admin group membership, broker-operator group membership, admin-socket access, a writable source checkout and a valid session, but no root and no passwordless sudo. He then walks three attack routes (steal or write the verifier state, replace policy or bypass enforcement, forge an approval), shows each is refused, and cites a historical evaluation of 15 defined checks. A twist follows: all checks were green while a database migration had broken the human approval path, locking him out. The talk closes with a live demo that a new terminal multiplexer, Rex, let one session drive another session's tab and borrow its browser grant, which erased the per-session guarantee. He offers a five-step repeatable boundary test and reference code.",
+  "summary": "McMillin runs 20 to 30 coding-agent sessions at once on his personal workstation, some started by hand and some by cron jobs, and wanted only specific sessions to hold privileged capabilities such as Kubernetes access or a logged-in browser. His starting point was a kubeconfig file and a skill pointing at it, which, he says, any agent could discover. He built an MCP permission broker: each session gets an OAuth client identity held in memory, requests a named capability, and a human approves with a six-digit one-time code from a phone authenticator that never enters agent context. Grants name a session, a capability and an expiry, usually two hours, and can be revoked. He states the attacker position up front: the agent has his UID, admin group membership, broker-operator group membership, admin-socket access, a writable source checkout and a valid session, but no root and no passwordless sudo. He then walks three attack routes (steal or write the verifier state, replace policy or bypass enforcement, forge an approval), shows each is refused, and cites a historical evaluation of 15 defined checks. He then reports a twist: all checks were green while a database migration had broken the human approval path, locking him out. The talk closes with a live demo that a new terminal multiplexer, Rex, let one session drive another session's tab and borrow its browser grant, which he says erased the per-session guarantee. He offers a five-step repeatable boundary test and reference code.",
   "argument": [
     "Hiding a credential file or leaving it out of a prompt is not an access-control boundary, because agents discover config files and skills and will use any access that makes the task easier.",
     "If the agent shares the human's UID, an approval response is just agent-reachable input, so the broker must verify a separately protected factor (a TOTP code from an enrolled phone) rather than trust the answer, and must protect the verifier's seed, database, policy and socket as well as its API.",
@@ -207,7 +207,7 @@
     }
   ],
   "slide_only": [
-    "Slide 02 headline: 'Not mentioning a credential is not an access-control boundary.' The slide lists what the speaker needed: one session, one capability, bounded revocable authority.",
+    "Slide 02 title: 'Not mentioning a credential is not an access-control boundary.' The slide lists what the speaker needed: one session, one capability, bounded revocable authority.",
     "Slide 03 footer: 'Same UID is not a sandbox. Cross-session control can borrow existing authority.'",
     "Approval page shown in the demo lists profiles agent-runner, coding, default, personal-trusted (marked fail-open: allows everything not explicitly denied), review and ui-coding, and a warning that the client's display name ('Pi Coding Agent') is chosen by the client itself and is not verified. Callback was http://127.0.0.1:53787/callback.",
     "Coding-profile policy on the approval page: an allow list of agents.get_*, agents.spawn_* and many nexus.* task, memory, wiki and milestone operations; deny list agents.admin_*, nexus.admin_* and nexus.delete_*; fail_open false; servers agents and nexus. Optional shared coding work period, 4h deadline preview.",
@@ -265,8 +265,8 @@
   ],
   "takeaways": [
     "On your own agent platform, let the agent answer its own approval request and check whether new authority appears.",
-    "If agents share a UID with humans, stop treating UI approvals as a boundary; require a factor held by a verifier the agent UID cannot read or write, and prefer a separate agent user or sandbox.",
-    "Add success-path and upgrade-from-old-schema tests to security control suites so a broken human path is caught, not only a permissive one.",
+    "On one operator's home-lab evidence, if agents share a UID with humans, stop treating UI approvals as a boundary; require a factor held by a verifier the agent UID cannot read or write, and prefer a separate agent user or sandbox.",
+    "On one incident's evidence, add success-path and upgrade-from-old-schema tests to security control suites. Then a broken human path is caught, not only a permissive one.",
     "Inventory developer-host tooling (terminal multiplexers, IDE agents, session managers) for features that cross trust boundaries between agent sessions.",
     "Be explicit about what a human-presence factor proves (presence) and does not (consent, comprehension), and design grants with narrow scope and short expiry accordingly."
   ],
@@ -281,8 +281,7 @@
   "critique": [
     "The attack results are a single-author, single-machine evaluation with no adversarial agent trial counts shown; '15 of 15' counts defined checks the author designed, which the slide itself says are not 15 techniques.",
     "The attacks tested were file-permission and API-misuse attempts; no results were shown for a goal-directed agent searching for TOCTOU, process-level (ptrace, same-UID signals) or clipboard and screen-reading routes to the code, which same-UID separation does not obviously stop.",
-    "The Rex cross-tab bypass and the migration lockout are the two failures shown, and both point to environment and success-path testing alongside refusal tests. The talk's title claim is supported by reasoning and demonstrations, not by measured data.",
-    "He said a separate OS user or sandbox may be the better answer; the broker as presented is built for same-UID setups.",
+    "The talk's title claim is supported by reasoning and demonstrations, not by measured data.",
     "The live demo of the human path failed on an SSL error, so the successful end-to-end result relied on an earlier recording shown in a replay frame."
   ],
   "qa": [
@@ -323,9 +322,9 @@
     "reason": "The talk presents a threat model and test plan for coding agents that share the user's UID, shows two failures (passing tests with a broken human approval path, and an environment bypass), and rests on a single-user home-lab evaluation."
   },
   "caveats": [
-    "The video description gives McMillin's affiliation as Dropbox, but the title slide shows The Browser Company and he says he left Dropbox about four months before; affiliation taken from the slide.",
-    "Auto-captions garble names: 'Rex' is correct per the slide and the speaker (terminal multiplexer); 'PI' is the Pi coding agent; 'cloud code' means Claude Code; the session host calls the speaker 'Brooke' once.",
-    "The speaker says the one-time code lives 30 seconds and the grant default is 2 hours; slides show 'each code works once', a 5-failure lockout and a 4-hour coding-profile deadline preview; the repo's exact lifetimes were not shown.",
+    "The video description says Dropbox; the title slide says The Browser Company and he says he left Dropbox about four months before, and this record uses the slide.",
+    "The captions say PI and cloud code; the slides and the speaker say the Pi coding agent and Claude Code, and this record uses those.",
+    "The speaker said the one-time code lives 30 seconds and the grant default is 2 hours; the slides say each code works once, with a 5-failure lockout and a 4-hour coding-profile deadline preview, and this record keeps both because the repo's exact lifetimes were not shown.",
     "Appendix slides A1 to A4 are referenced but were not shown; the evaluation matrix and dated sources are not available from the video.",
     "The replay of the earlier successful browser run is visible only in part, as terminal output; the page title text '[un]prompted III' is read from it as shown."
   ]
