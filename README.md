@@ -10,7 +10,7 @@ For each of 87 sessions the page gives the thesis, each claim with the evidence 
 
 This is a secondary source. It reports what speakers said and showed, and it has not been reviewed by the speakers or the organizers. Watch the talk before relying on a record; every claim links to its moment in the video.
 
-The records were written by an AI model (Anthropic's Claude) from each talk's automatic captions and slide frames, then checked by script for completeness. The figures the summary relies on were checked against the transcript or the slide. Nothing was checked against sources outside the talks. The page's Method section has the detail and the known gaps.
+The records were written by an AI model (Anthropic's Claude) from each talk's automatic captions and slide frames, then checked by script for completeness. No person reviewed each record before publication, so expect errors in individual records. The figures the summary relies on were checked a second time by the same AI system against the transcript or the slide. No talk's claims were checked against outside sources; the summary's notes on published research come from an Elicit literature search read at abstract level. The page's Method section has the detail and the known gaps.
 
 ## Corrections
 
@@ -22,8 +22,8 @@ If a record misstates your talk or your work, [open an issue](https://github.com
 |---|---|
 | `index.html`, `img/` | The published page and its slide excerpts |
 | `data/extractions/` | One JSON record per talk, the page's source of truth |
-| `data/synthesis.html`, `data/gaps.html` | The hand-edited summary and method text |
-| `scripts/` | The extraction brief given to the model, the validator, the tone check, and the page builder |
+| `data/synthesis.html`, `data/gaps.html` | The summary and method text, drafted with Claude and edited after review |
+| `scripts/` | The extraction brief given to the model, the two wording briefs, the validator, the tone check, and the page builder |
 
 The builder inlines a stylesheet from [html-house-style](https://github.com/juliedavila/html-house-style) and expects it beside this repository.
 

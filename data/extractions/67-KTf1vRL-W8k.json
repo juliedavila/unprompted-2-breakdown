@@ -3,11 +3,16 @@
   "id": "KTf1vRL-W8k",
   "url": "https://www.youtube.com/watch?v=KTf1vRL-W8k",
   "title": "Taming AI Agents with Capsem: Hardware Sandboxing That Doesn't Kill Productivity",
-  "speakers": [{"name": "Elie Bursztein", "affiliation": "Distinguished Research Scientist, Google DeepMind (slides carry the Google Security and Privacy Research mark)"}],
+  "speakers": [
+    {
+      "name": "Elie Bursztein",
+      "affiliation": "Distinguished Research Scientist, Google DeepMind (slides carry the Google Security and Privacy Research mark)"
+    }
+  ],
   "format": "talk",
   "duration_min": 30,
   "thesis": "Agent security fails when it is pitted against velocity, so the sandbox must be the fastest and easiest way to run agents, with the security boundary pushed down into a Rust hypervisor, per-VM low-privilege subprocesses and a single policy-enforcing egress point, the way Chrome won by being fast first and secure by design.",
-  "summary": "Bursztein opens with the familiar boardroom standoff between security and speed and argues the community must stop framing it as a trade-off. His answer is Capsem, an open-source Rust hypervisor, about nine months old, that boots hardened Linux VMs running OCI containers for agents such as Claude Code, Codex CLI, Antigravity and Claude Desktop, with a one-click install, CLI, UI, SDKs and MCP server, and under two second boot. He explains the secure-by-default design: each agent in its own zero-trust VM, no direct network, and a pile of small sandboxed subprocesses (Landlock and seccomp) in the style of Chrome. Networking is split into three paths: LAN and internet traffic through a per-VM security engine that man-in-the-middles HTTPS with an injected root certificate; inter-VM traffic through a pure Rust virtual layer-2 router; and exposed developer ports through an authenticated low-privilege process. The security engine runs plugins (credential broker, PII scanner, input sanitizer, malware scanner in progress) and rules written in TOML with CEL expressions over IP, TCP, DNS, HTTP, model, MCP, file and process events, plus Sigma detections and OpenTelemetry output. A planned demo video failed. He then gives lessons from building Capsem entirely with AI agents: tests are 52 percent of the code, guardrail rules catch repeated agent mistakes, yet CI success rate collapsed and releases slowed from 20 minutes to three to four hours. Q&A covers other sandbox technologies, shadow IT in enterprises, and policy language design.",
+  "summary": "Bursztein opens with the familiar boardroom standoff between security and speed and argues the community must stop framing it as a trade-off. His answer is Capsem, an open-source Rust hypervisor, about nine months old, that boots hardened Linux VMs running OCI containers for agents such as Claude Code, Codex CLI, Antigravity and Claude Desktop, with a one-click install, CLI, UI, SDKs and MCP server, and under two second boot. He explains the secure-by-default design: each agent in its own zero-trust VM, no direct network, and a pile of small sandboxed subprocesses (Landlock and seccomp) in the style of Chrome. Networking is split into three paths: LAN and internet traffic through a per-VM security engine that man-in-the-middles HTTPS with an injected root certificate; inter-VM traffic through a pure Rust virtual layer-2 router; and exposed developer ports through an authenticated low-privilege process. The security engine runs plugins (credential broker, PII scanner, input sanitizer, malware scanner in progress) and rules written in TOML with CEL (Common Expression Language) expressions over IP, TCP, DNS, HTTP, model, MCP, file and process events, plus Sigma detections and OpenTelemetry output. A planned demo video failed. He then gives lessons from building Capsem entirely with AI agents: tests are 52 percent of the code, guardrail rules catch repeated agent mistakes, yet CI success rate collapsed and releases slowed from 20 minutes to three to four hours.",
   "argument": [
     "Security and velocity must stop being opposed, because teams will not accept extra steps and the agent wave will not slow down.",
     "The right place for control is the environment: push the security boundary down into a sandbox that is more convenient and faster than the unsandboxed alternative, as Chrome did for browsing.",
@@ -16,47 +21,217 @@
     "Building such a system with AI agents is feasible but costly in testing and release engineering, and the AI's repeated rule violations make release speed collapse."
   ],
   "claims": [
-    {"claim": "Capsem boots fully configured agent VMs in about two seconds and supports multiple concurrent sessions.", "evidence": "Stated by the speaker and on the Ship fast slide (under 2 secs); a dashboard screenshot shows running sessions but no timing was demonstrated because the demo video did not play.", "grade": "assertion", "t": "04:14", "source": "both"},
-    {"claim": "Capsem is about 630,000 lines of Rust-centered code with 14,926 tests.", "evidence": "Key numbers on the architecture slide (speaker said about 600,000 lines and over 15,000 tests).", "grade": "measured", "t": "05:46", "source": "both"},
-    {"claim": "The security engine sustains about 5,000 requests per second from inside the VM with sub-1ms event processing including reconstruction.", "evidence": "Benchmark figure stated and shown on the Security engine slide; no methodology, hardware or payload size given.", "grade": "measured", "t": "12:00", "source": "both"},
-    {"claim": "Every VM gets its own security engine process as the single egress point, so a compromised engine cannot relay traffic across VMs.", "evidence": "Architecture description and diagram of per-VM processes with security engine A and B.", "grade": "assertion", "t": "10:58", "source": "both"},
-    {"claim": "HTTPS can be inspected transparently because Capsem controls the patched VM and injects a root certificate, forging certificates on demand and caching them.", "evidence": "Design explanation; no verification of bypass resistance shown.", "grade": "assertion", "t": "08:21", "source": "said"},
-    {"claim": "Inter-VM networking uses a pure Rust virtual layer-2 switch that avoids the host kernel, reaching about 2 GB per second.", "evidence": "Speaker's description (ARP routing and broadcast in a low-privilege process); throughput figure spoken only and unverified.", "grade": "assertion", "t": "09:24", "source": "said"},
-    {"claim": "Exposing a VM port to the host browser creates a same-origin risk between VMs and a local-file access risk; a not fully exploitable local-file bug was found in that component.", "evidence": "Speaker's account of bugs found; this subsystem was where they found the most bugs.", "grade": "case", "t": "09:57", "source": "said"},
-    {"claim": "A credential broker replaces real credentials with placeholder values so the agent in the VM never sees them.", "evidence": "Plugin described and listed on the Key security plugins slide.", "grade": "assertion", "t": "12:00", "source": "both"},
-    {"claim": "Rules can be written as TOML with CEL expressions over ip, tcp, udp, dns, http, model, mcp, files and process events, with actions allow, ask, deny and rewrite.", "evidence": "Rule examples shown: a block rule on a model response containing London, and an allow rule for local Ollama on 127.0.0.1:11434.", "grade": "demo", "t": "13:02", "source": "both"},
-    {"claim": "Sigma detection rules compile to Capsem rules, enabling real-time detection and blocking on file, process and network events visible to the hypervisor.", "evidence": "Example rule for logging when a SKILL.md file is read; stated as compiled and marked to log.", "grade": "demo", "t": "14:37", "source": "both"},
-    {"claim": "Hypervisor code is about 2 percent of the codebase, tests are 52 percent and guardrail rules about 6 to 7 percent, with the rest including build and release.", "evidence": "Donut chart from docs.capsem.org/architecture/statistics; the chart labels both Tests and Build and Release as 52.3 percent, an apparent slide error, and the speaker said build system was about 5 percent.", "grade": "measured", "t": "17:41", "source": "both"},
-    {"claim": "The AI-driven development process eroded release reliability: the CI successful-run rate fell from roughly 24 to 26 percent in spring 2026 to about 4 percent in August, and releases slowed from about 20 minutes to three to four hours in the best case.", "evidence": "Line chart of successful rate by month labeled release system collapse; the speaker said July success was literally zero while the chart minimum is about 4 percent in August.", "grade": "measured", "t": "19:12", "source": "both"},
-    {"claim": "The coding agent repeatedly makes violating changes, such as switching a required binary protocol to JSON (collapsing performance and adding vulnerability), duplicating file I/O abstractions, forgetting to push binaries, and a fork path where some events skipped the security system.", "evidence": "Anecdotes from development; guardrail rules were written after each mistake.", "grade": "case", "t": "18:11", "source": "said"},
-    {"claim": "Enterprise customers' hardest problem is shadow IT: they are unsure what agents and tokens are running, and creating a new agent binary takes about 20 minutes of vibe coding, so binaries explode.", "evidence": "Feedback from the speaker's conversations with large Google Cloud clients; no data.", "grade": "anecdote", "t": "24:23", "source": "said"}
+    {
+      "claim": "Capsem boots fully configured agent VMs in about two seconds and supports multiple concurrent sessions.",
+      "evidence": "Stated by the speaker and on the Ship fast slide (under 2 secs); a dashboard screenshot shows running sessions but no timing was demonstrated because the demo video did not play.",
+      "grade": "assertion",
+      "t": "04:14",
+      "source": "both"
+    },
+    {
+      "claim": "Capsem is about 630,000 lines of Rust-centered code with 14,926 tests.",
+      "evidence": "Key numbers on the architecture slide (speaker said about 600,000 lines and over 15,000 tests).",
+      "grade": "measured",
+      "t": "05:46",
+      "source": "both"
+    },
+    {
+      "claim": "The security engine sustains about 5,000 requests per second from inside the VM with sub-1ms event processing including reconstruction.",
+      "evidence": "Benchmark figure stated and shown on the Security engine slide; no methodology, hardware or payload size given.",
+      "grade": "measured",
+      "t": "12:00",
+      "source": "both"
+    },
+    {
+      "claim": "Every VM gets its own security engine process as the single egress point, so a compromised engine cannot relay traffic across VMs.",
+      "evidence": "Architecture description and diagram of per-VM processes with security engine A and B.",
+      "grade": "assertion",
+      "t": "10:58",
+      "source": "both"
+    },
+    {
+      "claim": "HTTPS can be inspected transparently because Capsem controls the patched VM and injects a root certificate, forging certificates on demand and caching them.",
+      "evidence": "Design explanation; no verification of bypass resistance shown.",
+      "grade": "assertion",
+      "t": "08:21",
+      "source": "said"
+    },
+    {
+      "claim": "Inter-VM networking uses a pure Rust virtual layer-2 switch that avoids the host kernel, reaching about 2 GB per second.",
+      "evidence": "Speaker's description (ARP routing and broadcast in a low-privilege process); throughput figure spoken only and unverified.",
+      "grade": "assertion",
+      "t": "09:24",
+      "source": "said"
+    },
+    {
+      "claim": "Exposing a VM port to the host browser creates a same-origin risk between VMs and a local-file access risk; a not fully exploitable local-file bug was found in that component.",
+      "evidence": "Speaker's account of bugs found; this subsystem was where they found the most bugs.",
+      "grade": "case",
+      "t": "09:57",
+      "source": "said"
+    },
+    {
+      "claim": "A credential broker replaces real credentials with placeholder values so the agent in the VM never sees them.",
+      "evidence": "Plugin described and listed on the Key security plugins slide.",
+      "grade": "assertion",
+      "t": "12:00",
+      "source": "both"
+    },
+    {
+      "claim": "Rules can be written as TOML with CEL expressions over ip, tcp, udp, dns, http, model, mcp, files and process events, with actions allow, ask, deny and rewrite.",
+      "evidence": "Rule examples shown: a block rule on a model response containing London, and an allow rule for local Ollama on 127.0.0.1:11434.",
+      "grade": "demo",
+      "t": "13:02",
+      "source": "both"
+    },
+    {
+      "claim": "Sigma detection rules compile to Capsem rules, enabling real-time detection and blocking on file, process and network events visible to the hypervisor.",
+      "evidence": "Example rule for logging when a SKILL.md file is read; stated as compiled and marked to log.",
+      "grade": "demo",
+      "t": "14:37",
+      "source": "both"
+    },
+    {
+      "claim": "Hypervisor code is about 2 percent of the codebase, tests are 52 percent and guardrail rules about 6 to 7 percent, with the rest including build and release.",
+      "evidence": "Donut chart from docs.capsem.org/architecture/statistics; the chart labels both Tests and Build and Release as 52.3 percent, while the speaker said the build system was about 5 percent.",
+      "grade": "measured",
+      "t": "17:41",
+      "source": "both"
+    },
+    {
+      "claim": "The AI-driven development process eroded release reliability: the CI successful-run rate fell from roughly 24 to 26 percent in spring 2026 to about 4 percent in August, and releases slowed from about 20 minutes to three to four hours in the best case.",
+      "evidence": "Line chart of successful rate by month labeled release system collapse; the speaker said July success was literally zero while the chart minimum is about 4 percent in August.",
+      "grade": "measured",
+      "t": "19:12",
+      "source": "both"
+    },
+    {
+      "claim": "The coding agent repeatedly makes violating changes, such as switching a required binary protocol to JSON (collapsing performance and adding vulnerability), duplicating file I/O abstractions, forgetting to push binaries, and a fork path where some events skipped the security system.",
+      "evidence": "Anecdotes from development; guardrail rules were written after each mistake.",
+      "grade": "case",
+      "t": "18:11",
+      "source": "said"
+    },
+    {
+      "claim": "Enterprise customers' hardest problem is shadow IT: they are unsure what agents and tokens are running, and creating a new agent binary takes about 20 minutes of vibe coding, so binaries explode.",
+      "evidence": "Feedback from the speaker's conversations with large Google Cloud clients; no data.",
+      "grade": "anecdote",
+      "t": "24:23",
+      "source": "said"
+    }
   ],
   "numbers": [
-    {"figure": "630,247 lines, 14,926 tests", "meaning": "Capsem code size and test count (key numbers slide)", "t": "05:46"},
-    {"figure": "nine months", "meaning": "development time of Capsem since October of the prior year", "t": "02:11"},
-    {"figure": "under 2 seconds", "meaning": "time to boot a configured agent VM", "t": "04:14"},
-    {"figure": "5,000 RPS, sub-1ms", "meaning": "security engine throughput and per-event processing time including reconstruction", "t": "12:00"},
-    {"figure": "2 GB per second", "meaning": "claimed inter-VM virtual switch throughput", "t": "09:24"},
-    {"figure": "2%, 52.3%, 6.7%", "meaning": "share of codebase that is hypervisor, tests, and guardrails", "t": "18:11"},
-    {"figure": "about 4% (August 2026)", "meaning": "lowest CI successful-run rate on the chart after a decline from about 26 percent in April", "t": "19:12"},
-    {"figure": "20 minutes to 3 to 4 hours", "meaning": "release time before and after AI-generated churn", "t": "19:46"},
-    {"figure": "62.1K tokens, $0.01", "meaning": "example dashboard totals for six sessions in the UI screenshot", "t": "16:08"}
+    {
+      "figure": "630,247 lines, 14,926 tests",
+      "meaning": "Capsem code size and test count (key numbers slide)",
+      "t": "05:46"
+    },
+    {
+      "figure": "nine months",
+      "meaning": "development time of Capsem since October of the prior year",
+      "t": "02:11"
+    },
+    {
+      "figure": "under 2 seconds",
+      "meaning": "time to boot a configured agent VM",
+      "t": "04:14"
+    },
+    {
+      "figure": "5,000 RPS, sub-1ms",
+      "meaning": "security engine throughput and per-event processing time including reconstruction",
+      "t": "12:00"
+    },
+    {
+      "figure": "2 GB per second",
+      "meaning": "stated inter-VM virtual switch throughput",
+      "t": "09:24"
+    },
+    {
+      "figure": "2%, 52.3%, 6.7%",
+      "meaning": "share of codebase that is hypervisor, tests, and guardrails",
+      "t": "18:11"
+    },
+    {
+      "figure": "about 4% (August 2026)",
+      "meaning": "lowest CI successful-run rate on the chart after a decline from about 26 percent in April",
+      "t": "19:12"
+    },
+    {
+      "figure": "20 minutes to 3 to 4 hours",
+      "meaning": "release time before and after AI-generated churn",
+      "t": "19:46"
+    },
+    {
+      "figure": "62.1K tokens, $0.01",
+      "meaning": "example dashboard totals for six sessions in the UI screenshot",
+      "t": "16:08"
+    }
   ],
   "frameworks": [
-    {"name": "Fast, usable, secure triangle", "description": "Design goal that Capsem must satisfy all three; insight is a specialized agent environment, think Chrome for agents."},
-    {"name": "Secure by default pillars", "description": "Four cards: zero-trust environment (each agent in an isolated hardened VM), air-gapped (all traffic through the security engine), policy engine (HTTP, DNS, model, MCP, file, process detection and rule enforcement), security plugins (API to intercept, block, ask and rewrite events)."},
-    {"name": "Split networking subsystem", "description": "Three isolated paths: LAN and internet through the per-VM security engine process; inter-VM through a sandboxed pure Rust virtual router; exposed ports through an authenticated sandboxed low-privilege process."},
-    {"name": "Fine-grained sandboxed subprocesses", "description": "Components colored by host permission: minimum (granted connections only), limited (assigned files, credentials or upstream connections), elevated (VM control), maximum (launching-user permissions), with a VM hardware boundary around the OCI container and guest helpers, and a per-VM ownership boundary."},
-    {"name": "Policy design problems", "description": "Three decisions every policy system faces: expressivity (including quantifying over history), the stack level to enforce at (IP and TCP, DNS, HTTP via man-in-the-middle, model bodies, MCP semantics), and the authoring system (a typed programming-language DSL that agents can autocomplete and compile-check)."}
+    {
+      "name": "Fast, usable, secure triangle",
+      "description": "Design goal that Capsem must satisfy all three; insight is a specialized agent environment, think Chrome for agents."
+    },
+    {
+      "name": "Secure by default pillars",
+      "description": "Four cards: zero-trust environment (each agent in an isolated hardened VM), air-gapped (all traffic through the security engine), policy engine (HTTP, DNS, model, MCP, file, process detection and rule enforcement), security plugins (API to intercept, block, ask and rewrite events)."
+    },
+    {
+      "name": "Split networking subsystem",
+      "description": "Three isolated paths: LAN and internet through the per-VM security engine process; inter-VM through a sandboxed pure Rust virtual router; exposed ports through an authenticated sandboxed low-privilege process."
+    },
+    {
+      "name": "Fine-grained sandboxed subprocesses",
+      "description": "Components colored by host permission: minimum (granted connections only), limited (assigned files, credentials or upstream connections), elevated (VM control), maximum (launching-user permissions), with a VM hardware boundary around the OCI container and guest helpers, and a per-VM ownership boundary."
+    },
+    {
+      "name": "Policy design problems",
+      "description": "Three decisions every policy system faces: expressivity (including quantifying over history), the stack level to enforce at (IP and TCP, DNS, HTTP via man-in-the-middle, model bodies, MCP semantics), and the authoring system (a typed programming-language DSL that agents can autocomplete and compile-check)."
+    }
   ],
   "artifacts": [
-    {"name": "Capsem", "kind": "tool", "note": "Open-source Rust hypervisor and VM system for sandboxing coding agents, with CLI, UI, SDKs (Python, TypeScript, Rust) and MCP; available for Mac and Linux. Contributions welcomed.", "url": "https://capsem.org"},
-    {"name": "Capsem security architecture documentation", "kind": "paper", "note": "Public diagram of the process and permission model.", "url": "https://docs.capsem.org/architecture/security/"},
-    {"name": "Capsem code statistics", "kind": "dataset", "note": "Source of the codebase breakdown and CI success chart.", "url": "https://docs.capsem.org/architecture/statistics/"},
-    {"name": "Common Expression Language (CEL)", "kind": "standard", "note": "Google open-source expression language used for rule match conditions.", "url": ""},
-    {"name": "Sigma", "kind": "standard", "note": "Detection rule format Capsem supports for real-time detection and blocking.", "url": ""},
-    {"name": "OpenTelemetry", "kind": "standard", "note": "Default telemetry export; the speaker said it has not been tested much.", "url": ""},
-    {"name": "NVIDIA OpenShell", "kind": "tool", "note": "Mentioned as another project taking the push-security-down approach.", "url": ""}
+    {
+      "name": "Capsem",
+      "kind": "tool",
+      "note": "Open-source Rust hypervisor and VM system for sandboxing coding agents, with CLI, UI, SDKs (Python, TypeScript, Rust) and MCP; available for Mac and Linux. Contributions welcomed.",
+      "url": "https://capsem.org"
+    },
+    {
+      "name": "Capsem security architecture documentation",
+      "kind": "paper",
+      "note": "Public diagram of the process and permission model.",
+      "url": "https://docs.capsem.org/architecture/security/"
+    },
+    {
+      "name": "Capsem code statistics",
+      "kind": "dataset",
+      "note": "Source of the codebase breakdown and CI success chart.",
+      "url": "https://docs.capsem.org/architecture/statistics/"
+    },
+    {
+      "name": "Common Expression Language (CEL)",
+      "kind": "standard",
+      "note": "Google open-source expression language used for rule match conditions.",
+      "url": ""
+    },
+    {
+      "name": "Sigma",
+      "kind": "standard",
+      "note": "Detection rule format Capsem supports for real-time detection and blocking.",
+      "url": ""
+    },
+    {
+      "name": "OpenTelemetry",
+      "kind": "standard",
+      "note": "Default telemetry export; the speaker said it has not been tested much.",
+      "url": ""
+    },
+    {
+      "name": "NVIDIA OpenShell",
+      "kind": "tool",
+      "note": "Mentioned as another project taking the push-security-down approach.",
+      "url": ""
+    }
   ],
   "slide_only": [
     "Disclaimer slide: Capsem is 100% AI code generated.",
@@ -78,11 +253,31 @@
     "A planned demo video of the UI booting a graphical or terminal agent session did not play; the speaker moved on, so only a static dashboard screenshot was shown."
   ],
   "quotes": [
-    {"text": "We need to stop pitting security and velocity.", "speaker": "Elie Bursztein", "t": "01:40"},
-    {"text": "No shift left, no shift right, pushing down where you push the security control at the environment level.", "speaker": "Elie Bursztein", "t": "02:11"},
-    {"text": "AI makes a ton of mistakes and it trips tens and dozens of tests at every release.", "speaker": "Elie Bursztein", "t": "19:46"},
-    {"text": "If you write security code at that point in time, C++ is a liability.", "speaker": "Elie Bursztein", "t": "22:18"},
-    {"text": "Shadow IT and how you make sure that everyone should follow one process is probably the hardest part of compliance and deployment than building the tech.", "speaker": "Elie Bursztein", "t": "25:25"}
+    {
+      "text": "We need to stop pitting security and velocity.",
+      "speaker": "Elie Bursztein",
+      "t": "01:40"
+    },
+    {
+      "text": "No shift left, no shift right, pushing down where you push the security control at the environment level.",
+      "speaker": "Elie Bursztein",
+      "t": "02:11"
+    },
+    {
+      "text": "AI makes a ton of mistakes and it trips tens and dozens of tests at every release.",
+      "speaker": "Elie Bursztein",
+      "t": "19:46"
+    },
+    {
+      "text": "If you write security code at that point in time, C++ is a liability.",
+      "speaker": "Elie Bursztein",
+      "t": "22:18"
+    },
+    {
+      "text": "Shadow IT and how you make sure that everyone should follow one process is probably the hardest part of compliance and deployment than building the tech.",
+      "speaker": "Elie Bursztein",
+      "t": "25:25"
+    }
   ],
   "offense": [
     "Prompt injection and agents acting beyond their remit are the motivating threats; the talk names sandbox escapes by models as a recent proof that weak environments fail.",
@@ -114,7 +309,7 @@
     "The speaker does not claim Capsem has the best policy solution, only a list of the hard problems."
   ],
   "critique": [
-    "No security evaluation is shown: no escape testing, red-team results, threat model coverage or comparison to other sandboxes (gVisor, Firecracker, Kata were raised only in Q&A), so the secure-by-default claims rest on architecture description in the recording (the project documentation may hold further testing detail).",
+    "No security evaluation is shown: no escape testing, red-team results, threat model coverage or comparison to other sandboxes (gVisor, Firecracker, Kata were raised only in Q&A), so the secure-by-default claims rest on architecture description in the recording.",
     "Man-in-the-middle HTTPS inspection with a root certificate injected into every guest concentrates trust in the security engine and its certificate cache; the talk gives no discussion of certificate pinning, non-HTTP exfiltration channels or covert channels.",
     "Speed and throughput numbers (two second boot, 5,000 RPS, 2 GB per second) lack methodology, and the boot claim was not demonstrated because the demo video failed.",
     "The Chrome analogy supports adoption strategy but does not address that agents need credentials and data inside the sandbox, so exfiltration through allowed channels remains the hard residual risk.",
@@ -126,21 +321,44 @@
     "Q: What enterprise feedback have you had, and is it painful to move a working directory into a sandbox? A: Through talks with large Google Cloud customers the main concern is not knowing what agents and token spend exist in the organization (shadow IT); enforcing a single environment on Mac and Windows is hard, agent binaries multiply because a new one takes about 20 minutes of vibe coding, and compliance and deployment are harder than the technology.",
     "Q: How do you manage policies so users can just get work done? A: Policy systems hit three problems: expressivity (needing to quantify over the history of tools and model calls, with CEL as a sweet spot between regex and formal logic, relevant to the no private data plus internet access plus destruction combination), enforcement level (IP and TCP are easy, then DNS, then HTTP needing man-in-the-middle, then model bodies and MCP with differing provider formats), and authoring (use a programming-language-based thin DSL such as JavaScript objects so agents can autocomplete and compilers can check). Easiness, speed and expressivity form the trade-off triangle."
   ],
-  "tags": ["sandboxing-isolation", "guardrails-runtime-controls", "coding-agent-security", "mcp-tools-skills"],
-  "key_frames": [
-    {"file": "t00350.jpg", "caption": "Capsem stack: clients, SDKs, Rust hypervisor and per-VM containers, with key numbers of 630,247 lines and 14,926 tests."},
-    {"file": "t00445.jpg", "caption": "Fine-grained sandboxed subprocess architecture colored by host permission level with per-VM security engine, MCP aggregator and log writer."},
-    {"file": "t00488.jpg", "caption": "Split networking subsystem: security engine for internet, virtual Rust router for inter-VM, authenticated process for exposed ports."},
-    {"file": "t00809.jpg", "caption": "TOML plus CEL enforcement rules over ip, tcp, udp, dns, http, model, mcp, files and process events."},
-    {"file": "t01198.jpg", "caption": "Developing with AI: codebase share by area and the CI successful-rate collapse."}
+  "tags": [
+    "sandboxing-isolation",
+    "guardrails-runtime-controls",
+    "coding-agent-security",
+    "mcp-tools-skills"
   ],
-  "signal": {"score": 3, "reason": "A concrete open-source architecture with policy-design lessons and an AI-development retrospective; no security evaluation was shown and the demo video did not play."},
+  "key_frames": [
+    {
+      "file": "t00350.jpg",
+      "caption": "Capsem stack: clients, SDKs, Rust hypervisor and per-VM containers, with key numbers of 630,247 lines and 14,926 tests."
+    },
+    {
+      "file": "t00445.jpg",
+      "caption": "Fine-grained sandboxed subprocess architecture colored by host permission level with per-VM security engine, MCP aggregator and log writer."
+    },
+    {
+      "file": "t00488.jpg",
+      "caption": "Split networking subsystem: security engine for internet, virtual Rust router for inter-VM, authenticated process for exposed ports."
+    },
+    {
+      "file": "t00809.jpg",
+      "caption": "TOML plus CEL enforcement rules over ip, tcp, udp, dns, http, model, mcp, files and process events."
+    },
+    {
+      "file": "t01198.jpg",
+      "caption": "Developing with AI: codebase share by area and the CI successful-rate collapse."
+    }
+  ],
+  "signal": {
+    "score": 3,
+    "reason": "The talk describes an open-source Rust sandbox architecture, policy-design lessons and a retrospective on building the project with AI agents, with no security evaluation shown and a demo video that did not play."
+  },
   "caveats": [
     "The project name is garbled in auto-captions as CapSentry, Cap Sam, Kapsel, Captum and similar; slides spell it Capsem.",
     "Spoken figures differ slightly from slides: 600,000 lines and over 15,000 tests versus 630,247 and 14,926; slide figures were used.",
     "The code-share donut labels Build and Release as 52.3 percent, same as Tests; the speaker said about 5 percent, so the Build and Release figure is unreliable.",
     "The speaker said CI success hit literally zero in July; the chart's lowest point is about 4 percent in August. Chart values were read from the image.",
-    "The demo video failed to play, so the demos field has no live demonstration.",
+    "The demo video failed to play, so no live demonstration is recorded.",
     "The opening news headlines were shown without comment; their details (Hugging Face hack, OpenAI agents) are recorded only as slide content and not verified.",
     "Inter-VM speed (two gigabytes per second) and TUN adapter details come from auto-captions ('two ton adapters')."
   ]

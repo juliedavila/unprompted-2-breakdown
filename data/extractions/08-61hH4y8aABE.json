@@ -3,11 +3,16 @@
   "id": "61hH4y8aABE",
   "url": "https://www.youtube.com/watch?v=61hH4y8aABE",
   "title": "Threat Model Impossible: 687 Security Reviews",
-  "speakers": [{"name": "Farzan Karimi", "affiliation": "Moderna (Deputy CISO)"}],
+  "speakers": [
+    {
+      "name": "Farzan Karimi",
+      "affiliation": "Moderna (Deputy CISO)"
+    }
+  ],
   "format": "talk",
   "duration_min": 26,
   "thesis": "A single in-house threat-model agent, fed by a structured 50-question owner survey and wrapped in deterministic ticketing automation, can run first-pass security reviews for an entire application portfolio in a month, but the real cost moves downstream to quality control and remediation.",
-  "summary": "Karimi, Deputy CISO at Moderna, describes a summer mission to threat model every application in the enterprise in one month. His team built a custom agent in Copilot Studio running Claude Opus 4.8, and ran 687 first-pass reviews in August 2026, producing 2,807 risk tickets in Jira. He opens with the refrigerator that landed in scope through the intake process, then shows the production agent live on a lab freezer: vendor brochures go in, risks and a conditional-approval decision come out in about 15 minutes. He walks the five-step pipeline: establish system owners through the CMDB, give every owner a 50-question survey instead of asking for data-flow diagrams, run the agent, force output into a JSON schema contract, and let Power Automate write Jira tickets, followed by human QC and remediation. He shows excerpts of the production prompt, including the rule that a standard existing is not evidence of implementation. He then gives a ticket-level error breakdown: two thirds of tickets were valid, 16.8 percent were agent error, and 1,605 tickets were canceled, which cost him goodwill with developers. The bottleneck moved from finding to fixing, so the team paused manual threat models for a quarter and is hiring. He closes with V2, codenamed Lysis, an open-source five-pass agent with code-enforced checks that generates an interactive threat-model diagram with attack chains, plus plans to hook reviews into coding agents and the developer platform. Q&A covers survey mandates, false-positive credibility, validation, compensating controls and cost.",
+  "summary": "Karimi, Deputy CISO at Moderna, describes a summer mission to threat model every application in the enterprise in one month. His team built a custom agent in Copilot Studio running Claude Opus 4.8, and ran 687 first-pass reviews in August 2026, producing 2,807 risk tickets in Jira. He opens with the refrigerator that landed in scope through the intake process, then shows the production agent live on a lab freezer: vendor brochures go in, risks and a conditional-approval decision come out in about 15 minutes. He walks the five-step pipeline: establish system owners through the CMDB (the system of record for applications), give every owner a 50-question survey instead of asking for data-flow diagrams, run the agent, force output into a JSON schema contract, and let Power Automate write Jira tickets, followed by human quality control (QC) and remediation. He shows excerpts of the production prompt, including the rule that a standard existing is not evidence of implementation. He then gives a ticket-level error breakdown: two thirds of tickets were valid, 16.8 percent were agent error, and 1,605 tickets were canceled, which cost him goodwill with developers. The bottleneck moved from finding to fixing, so the team paused manual threat models for a quarter and is hiring. He closes with V2, codenamed Lysis, an open-source five-pass agent with code-enforced checks that generates an interactive threat-model diagram with attack chains, plus plans to hook reviews into coding agents and the developer platform.",
   "argument": [
     "Threat modeling at portfolio scale is blocked less by model capability than by missing system and ownership data, so ownership must be established first through a CMDB with attested owners.",
     "Replacing data-flow diagrams with a structured, mostly multiple-choice owner survey gives the agent reliable inputs even for OT and equipment owners who know little about what they manage.",
@@ -17,51 +22,230 @@
     "Next steps are feeding QC reason codes back into the instructions and running the review earlier, inside coding agents and the developer platform."
   ],
   "claims": [
-    {"claim": "The agent completed 687 first-pass security reviews in 30 days (Aug 1 to 31, 2026).", "evidence": "Reported production run; slide shows 687 reviews, 98 percent completion rate of owner questionnaires processed, 30 days.", "grade": "measured", "t": "02:42", "source": "both"},
-    {"claim": "Each review shrank from two to three business days of work to about 15 minutes of agent time, equal to roughly 14,000 hours saved or about 6.7 FTE-years.", "evidence": "Stated as a calculation from the review count; scoped explicitly to tier-one reviews, excluding tier-two QC, validation and remediation.", "grade": "measured", "t": "02:42", "source": "both"},
-    {"claim": "The run produced 2,807 risk tickets, of which 1,870 (66.6 percent) were valid and 937 (33.4 percent) were not.", "evidence": "Ticket-level breakdown slide: 1,202 standing or remediated, 490 requirement changed after the run, 178 duplicates of human-led findings; not valid: 471 agent inaccuracy, 236 no active gap after clarification, 212 bad input data, 18 app retired.", "grade": "measured", "t": "10:28", "source": "both"},
-    {"claim": "Agent error accounted for 16.8 percent of tickets (471 tickets), mostly controls judged not applicable.", "evidence": "Cancellation slide: 424 control not applicable plus 47 unsupported or hypothetical findings.", "grade": "measured", "t": "11:31", "source": "both"},
-    {"claim": "1,605 of 2,807 tickets (57.2 percent) were canceled, but 668 of those were valid findings canceled because requirements changed or they duplicated human findings.", "evidence": "Slide splits canceled tickets into 23.8 percent valid, 16.8 percent agent error and 16.6 percent not the agent.", "grade": "measured", "t": "12:34", "source": "slide"},
-    {"claim": "A requirement change after the run caused mass cancellation: an incident-response kill-switch requirement for every application was narrowed to tier-one applications, so those tickets were canceled and the run repeated.", "evidence": "Described as an example of the 490 requirement-changed tickets; reasoning was that universal IR API keys was too much god-mode power.", "grade": "case", "t": "11:01", "source": "said"},
-    {"claim": "96.6 percent of CMDB application configuration items (1,220 of 1,263) had an attested owner and survey evidence by Sep 4.", "evidence": "Slide statistic for step 1; the speaker said roughly 1,200 system owners.", "grade": "measured", "t": "06:22", "source": "slide"},
-    {"claim": "A 50-question survey, about 30 minutes of owner input per system, substitutes for DFDs and architecture diagrams as agent input.", "evidence": "Survey design described and shown with sample questions across five sections; the full survey is released.", "grade": "case", "t": "07:23", "source": "both"},
-    {"claim": "Running the agent on a lab freezer's vendor documentation surfaced a hard-coded default password and HTTP exposed by default, chained into credential sniffing and tampering with freezer temperature.", "evidence": "Shown in the V1 and V2 (Lysis) live demos on Eppendorf VisioNize / CryoCube documents.", "grade": "demo", "t": "05:20", "source": "both"},
-    {"claim": "AI moved the bottleneck from finding to fixing: manual threat models were paused for a quarter, the team moved to QC and remediation, and the org is hiring six security engineers and one remediation TPM.", "evidence": "Slide statement plus speaker's account of the team's August workload; no remediation throughput numbers given.", "grade": "case", "t": "13:04", "source": "both"},
-    {"claim": "Executive sponsorship made the survey mandatory with a deadline and a dashboard of who had and had not submitted, which ended the pushback.", "evidence": "Answered in Q&A from the speaker's own experience.", "grade": "anecdote", "t": "18:45", "source": "said"},
-    {"claim": "V2 (Lysis) enforces judgments in code: quotes verified word-for-word against artifacts, fabricated quotes stripped and findings downgraded, missing documentation alone capped at Medium, CVSS computed from the vector, go-live decision applied by rubric.", "evidence": "Design slide; evals described as planted bugs scored on recall and severity, a decoy where flagging it is a false positive, and a second reviewer that critiques first.", "grade": "assertion", "t": "09:27", "source": "slide"}
+    {
+      "claim": "The agent completed 687 first-pass security reviews in 30 days (Aug 1 to 31, 2026).",
+      "evidence": "Reported production run; slide shows 687 reviews, 98 percent completion rate of owner questionnaires processed, 30 days.",
+      "grade": "measured",
+      "t": "02:42",
+      "source": "both"
+    },
+    {
+      "claim": "Each review shrank from two to three business days of work to about 15 minutes of agent time, equal to roughly 14,000 hours saved or about 6.7 FTE-years.",
+      "evidence": "Stated as a calculation from the review count; scoped explicitly to tier-one reviews, excluding tier-two QC, validation and remediation.",
+      "grade": "measured",
+      "t": "02:42",
+      "source": "both"
+    },
+    {
+      "claim": "The run produced 2,807 risk tickets, of which 1,870 (66.6 percent) were valid and 937 (33.4 percent) were not.",
+      "evidence": "Ticket-level breakdown slide: 1,202 standing or remediated, 490 requirement changed after the run, 178 duplicates of human-led findings; not valid: 471 agent inaccuracy, 236 no active gap after clarification, 212 bad input data, 18 app retired.",
+      "grade": "measured",
+      "t": "10:28",
+      "source": "both"
+    },
+    {
+      "claim": "Agent error accounted for 16.8 percent of tickets (471 tickets), mostly controls judged not applicable.",
+      "evidence": "Cancellation slide: 424 control not applicable plus 47 unsupported or hypothetical findings.",
+      "grade": "measured",
+      "t": "11:31",
+      "source": "both"
+    },
+    {
+      "claim": "1,605 of 2,807 tickets (57.2 percent) were canceled, but 668 of those were valid findings canceled because requirements changed or they duplicated human findings.",
+      "evidence": "Slide splits canceled tickets into 23.8 percent valid, 16.8 percent agent error and 16.6 percent not the agent.",
+      "grade": "measured",
+      "t": "12:34",
+      "source": "slide"
+    },
+    {
+      "claim": "A requirement change after the run caused mass cancellation: an incident-response kill-switch requirement for every application was narrowed to tier-one applications, so those tickets were canceled and the run repeated.",
+      "evidence": "Described as an example of the 490 requirement-changed tickets; reasoning was that universal IR API keys was too much god-mode power.",
+      "grade": "case",
+      "t": "11:01",
+      "source": "said"
+    },
+    {
+      "claim": "96.6 percent of CMDB application configuration items (1,220 of 1,263) had an attested owner and survey evidence by Sep 4.",
+      "evidence": "Slide statistic for step 1; the speaker said roughly 1,200 system owners.",
+      "grade": "measured",
+      "t": "06:22",
+      "source": "slide"
+    },
+    {
+      "claim": "A 50-question survey, about 30 minutes of owner input per system, substitutes for DFDs and architecture diagrams as agent input.",
+      "evidence": "Survey design described and shown with sample questions across five sections; the full survey is released.",
+      "grade": "case",
+      "t": "07:23",
+      "source": "both"
+    },
+    {
+      "claim": "Running the agent on a lab freezer's vendor documentation surfaced a hard-coded default password and HTTP exposed by default, chained into credential sniffing and tampering with freezer temperature.",
+      "evidence": "Shown in the V1 and V2 (Lysis) live demos on Eppendorf VisioNize / CryoCube documents.",
+      "grade": "demo",
+      "t": "05:20",
+      "source": "both"
+    },
+    {
+      "claim": "AI moved the bottleneck from finding to fixing: manual threat models were paused for a quarter, the team moved to QC and remediation, and the org is hiring six security engineers and one remediation TPM.",
+      "evidence": "Slide statement plus speaker's account of the team's August workload; no remediation throughput numbers given.",
+      "grade": "case",
+      "t": "13:04",
+      "source": "both"
+    },
+    {
+      "claim": "Executive sponsorship made the survey mandatory with a deadline and a dashboard of who had and had not submitted, which ended the pushback.",
+      "evidence": "Answered in Q&A from the speaker's own experience.",
+      "grade": "anecdote",
+      "t": "18:45",
+      "source": "said"
+    },
+    {
+      "claim": "V2 (Lysis) enforces judgments in code: quotes verified word-for-word against artifacts, fabricated quotes stripped and findings downgraded, missing documentation alone capped at Medium, CVSS computed from the vector, go-live decision applied by rubric.",
+      "evidence": "Design slide; evals described as planted bugs scored on recall and severity, a decoy where flagging it is a false positive, and a second reviewer that critiques first.",
+      "grade": "assertion",
+      "t": "09:27",
+      "source": "slide"
+    }
   ],
   "numbers": [
-    {"figure": "687", "meaning": "AI-assisted first-pass security reviews completed Aug 1 to 31", "t": "02:42"},
-    {"figure": "98%", "meaning": "completion rate of owner questionnaires processed", "t": "02:42"},
-    {"figure": "2-3 business days to 15 minutes", "meaning": "per-review effort before versus agent time", "t": "02:42"},
-    {"figure": "about 14,000 hours / 6.7 FTEs", "meaning": "labor saved, stated as roughly 6.5 to 7 FTE-years", "t": "02:42"},
-    {"figure": "1,220 / 1,263 (96.6%)", "meaning": "CMDB application CIs with an attested owner and survey evidence by Sep 4", "t": "06:22"},
-    {"figure": "50 questions, 30 minutes", "meaning": "owner survey size and owner time per system", "t": "07:23"},
-    {"figure": "2,807", "meaning": "risk tickets created (speaker said about 2,800)", "t": "10:28"},
-    {"figure": "1,870 (66.6%)", "meaning": "valid tickets", "t": "11:01"},
-    {"figure": "1,202 (42.8%)", "meaning": "valid tickets still standing, open or remediated", "t": "11:01"},
-    {"figure": "490 (17.5%)", "meaning": "valid tickets canceled because requirements changed after the run", "t": "11:01"},
-    {"figure": "178 (6.3%)", "meaning": "tickets duplicating human-led findings", "t": "11:31"},
-    {"figure": "471 (16.8%)", "meaning": "agent error tickets (424 control not applicable, 47 unsupported or hypothetical)", "t": "12:03"},
-    {"figure": "236 / 212 / 18", "meaning": "not-valid tickets from no active gap after clarification, bad CMDB or survey input, and app retired", "t": "12:03"},
-    {"figure": "1,605 (57.2%)", "meaning": "tickets canceled; 668 of them were valid findings", "t": "12:34"},
-    {"figure": "6 + 1", "meaning": "security engineers and a remediation TPM being hired", "t": "13:04"},
-    {"figure": "50 to 75/80", "meaning": "static survey questions versus the internal collapsible version's range", "t": "20:21"}
+    {
+      "figure": "687",
+      "meaning": "AI-assisted first-pass security reviews completed Aug 1 to 31",
+      "t": "02:42"
+    },
+    {
+      "figure": "98%",
+      "meaning": "completion rate of owner questionnaires processed",
+      "t": "02:42"
+    },
+    {
+      "figure": "2-3 business days to 15 minutes",
+      "meaning": "per-review effort before versus agent time",
+      "t": "02:42"
+    },
+    {
+      "figure": "about 14,000 hours / 6.7 FTEs",
+      "meaning": "labor saved, stated as roughly 6.5 to 7 FTE-years",
+      "t": "02:42"
+    },
+    {
+      "figure": "1,220 / 1,263 (96.6%)",
+      "meaning": "CMDB application CIs with an attested owner and survey evidence by Sep 4",
+      "t": "06:22"
+    },
+    {
+      "figure": "50 questions, 30 minutes",
+      "meaning": "owner survey size and owner time per system",
+      "t": "07:23"
+    },
+    {
+      "figure": "2,807",
+      "meaning": "risk tickets created (speaker said about 2,800)",
+      "t": "10:28"
+    },
+    {
+      "figure": "1,870 (66.6%)",
+      "meaning": "valid tickets",
+      "t": "11:01"
+    },
+    {
+      "figure": "1,202 (42.8%)",
+      "meaning": "valid tickets still standing, open or remediated",
+      "t": "11:01"
+    },
+    {
+      "figure": "490 (17.5%)",
+      "meaning": "valid tickets canceled because requirements changed after the run",
+      "t": "11:01"
+    },
+    {
+      "figure": "178 (6.3%)",
+      "meaning": "tickets duplicating human-led findings",
+      "t": "11:31"
+    },
+    {
+      "figure": "471 (16.8%)",
+      "meaning": "agent error tickets (424 control not applicable, 47 unsupported or hypothetical)",
+      "t": "12:03"
+    },
+    {
+      "figure": "236 / 212 / 18",
+      "meaning": "not-valid tickets from no active gap after clarification, bad CMDB or survey input, and app retired",
+      "t": "12:03"
+    },
+    {
+      "figure": "1,605 (57.2%)",
+      "meaning": "tickets canceled; 668 of them were valid findings",
+      "t": "12:34"
+    },
+    {
+      "figure": "6 + 1",
+      "meaning": "security engineers and a remediation TPM being hired",
+      "t": "13:04"
+    },
+    {
+      "figure": "50 to 75/80",
+      "meaning": "static survey questions versus the internal collapsible version's range",
+      "t": "20:21"
+    }
   ],
   "frameworks": [
-    {"name": "Enterprise review pipeline", "description": "Five automated steps then humans: establish owners (CMDB), owner survey, run threat agent (risk reasoning), JSON schema contract, automation (Power Automate or skill) into Jira with risk and decision; then human QC (cancel, adjust, escalate) and remediation (validate and fix)."},
-    {"name": "Model proposes, code enforces", "description": "V1: the agent only outputs structured JSON. V2: every judgment is checked in code after each review (quote verification, severity caps, computed CVSS, rubric go-live decision, code-built Risk Assessment Story), with evals of planted bugs, a decoy and a second reviewer."},
-    {"name": "Lysis five-pass agent (V2)", "description": "extract, draft, verify, critique, finalize; a second reviewer argues with the first before anything ships; context from previous risk tickets, Slack or Teams conversations, and real-time KB and source code access."},
-    {"name": "JSON contract routing", "description": "Findings carry attacker_path, severity, confidence, actionability, stride_category, evidence, suggested_owner, plus review_context assumptions; actionability routes to CreateTicket (high-confidence with evidence), NeedsReview (implementation detail unverified) or Informational (low confidence or policy note)."},
-    {"name": "Mandatory control gates", "description": "Five yes/no/unknown gates in the prompt: protected API key available to IR for account termination, security logs forwarded to SIEM, RBAC enforced for sensitive data and actions, unique CMDB ID assigned, SSO enforced. A no creates a separate risk ticket with evidence; a yes without evidence also creates one."},
-    {"name": "Field manual summary", "description": "Attest system owners; ask structured questions with an explicit Unknown (unknown is itself a finding); run the threat model agent; run quality control separating bad findings from changed requirements and data gaps; budget for remediation."}
+    {
+      "name": "Enterprise review pipeline",
+      "description": "Five automated steps then humans: establish owners (CMDB), owner survey, run threat agent (risk reasoning), JSON schema contract, automation (Power Automate or skill) into Jira with risk and decision; then human QC (cancel, adjust, escalate) and remediation (validate and fix)."
+    },
+    {
+      "name": "Model proposes, code enforces",
+      "description": "V1: the agent only outputs structured JSON. V2: every judgment is checked in code after each review (quote verification, severity caps, computed CVSS, rubric go-live decision, code-built Risk Assessment Story), with evals of planted bugs, a decoy and a second reviewer."
+    },
+    {
+      "name": "Lysis five-pass agent (V2)",
+      "description": "extract, draft, verify, critique, finalize; a second reviewer argues with the first before anything ships; context from previous risk tickets, Slack or Teams conversations, and real-time KB and source code access."
+    },
+    {
+      "name": "JSON contract routing",
+      "description": "Findings carry attacker_path, severity, confidence, actionability, stride_category, evidence, suggested_owner, plus review_context assumptions; actionability routes to CreateTicket (high-confidence with evidence), NeedsReview (implementation detail unverified) or Informational (low confidence or policy note)."
+    },
+    {
+      "name": "Mandatory control gates",
+      "description": "Five yes/no/unknown gates in the prompt: protected API key available to IR for account termination, security logs forwarded to SIEM, RBAC enforced for sensitive data and actions, unique CMDB ID assigned, SSO enforced. A no creates a separate risk ticket with evidence; a yes without evidence also creates one."
+    },
+    {
+      "name": "Field manual summary",
+      "description": "Attest system owners; ask structured questions with an explicit Unknown (unknown is itself a finding); run the threat model agent; run quality control separating bad findings from changed requirements and data gaps; budget for remediation."
+    }
   ],
   "artifacts": [
-    {"name": "Lysis threat model agent (V2)", "kind": "repo", "note": "Open-source version of the agent, including the interactive threat-model diagram generator; speaker posted it just before the session.", "url": "https://github.com/jumpycastle/lysis"},
-    {"name": "50-question system owner survey", "kind": "dataset", "note": "Sanitized owner survey released with the talk.", "url": ""},
-    {"name": "Interactive threat model diagram generator", "kind": "tool", "note": "Generates an HTML diagram with entities, trust zones, findings and attack chains whose risks can be toggled and closed.", "url": ""},
-    {"name": "Copilot Studio threat modeling agent", "kind": "product", "note": "V1 production agent on Claude Opus 4.8 with knowledge sources of internal KBs and security policies.", "url": ""},
-    {"name": "Power Automate Jira flow", "kind": "tool", "note": "Validates the agent JSON, normalizes Jira fields and types, assigns CI, owner, relationships and tags, creates risk and assessment records, routes failures.", "url": ""}
+    {
+      "name": "Lysis threat model agent (V2)",
+      "kind": "repo",
+      "note": "Open-source version of the agent, including the interactive threat-model diagram generator; speaker posted it just before the session.",
+      "url": "https://github.com/jumpycastle/lysis"
+    },
+    {
+      "name": "50-question system owner survey",
+      "kind": "dataset",
+      "note": "Sanitized owner survey released with the talk.",
+      "url": ""
+    },
+    {
+      "name": "Interactive threat model diagram generator",
+      "kind": "tool",
+      "note": "Generates an HTML diagram with entities, trust zones, findings and attack chains whose risks can be toggled and closed.",
+      "url": ""
+    },
+    {
+      "name": "Copilot Studio threat modeling agent",
+      "kind": "product",
+      "note": "V1 production agent on Claude Opus 4.8 with knowledge sources of internal KBs and security policies.",
+      "url": ""
+    },
+    {
+      "name": "Power Automate Jira flow",
+      "kind": "tool",
+      "note": "Validates the agent JSON, normalizes Jira fields and types, assigns CI, owner, relationships and tags, creates risk and assessment records, routes failures.",
+      "url": ""
+    }
   ],
   "slide_only": [
     "Mission slide: 687 reviews across the enterprise application portfolio, 30 days, one agent; most systems have no DFDs, no architecture diagrams and no documented owners.",
@@ -81,10 +265,26 @@
     "V2 Lysis demo from a terminal: documents placed in a subdirectory, scan expedited, findings.json produced, and an interactive HTML threat model rendered with actors, internet, third-party, vendor cloud and on-prem lab network zones, findings with severity markers, and highlightable attack chains such as admin-capture, default credential access and temperature manipulation. Risks can be toggled and opened or closed."
   ],
   "quotes": [
-    {"text": "Standard existence is not evidence of implementation.", "speaker": "Farzan Karimi", "t": "08:55"},
-    {"text": "It moved the bottleneck from finding to fixing.", "speaker": "Farzan Karimi", "t": "13:04"},
-    {"text": "When you have one security engineer trying to now help quality control over 6,000 bugs or 5,000 bugs, that doesn't scale. You have to plan for that work.", "speaker": "Farzan Karimi", "t": "13:34"},
-    {"text": "When you cut 1,600 tickets and cancel 1,600 tickets in the same month, all your developer friends are no longer friendly.", "speaker": "Farzan Karimi", "t": "12:34"}
+    {
+      "text": "Standard existence is not evidence of implementation.",
+      "speaker": "Farzan Karimi",
+      "t": "08:55"
+    },
+    {
+      "text": "It moved the bottleneck from finding to fixing.",
+      "speaker": "Farzan Karimi",
+      "t": "13:04"
+    },
+    {
+      "text": "When you have one security engineer trying to now help quality control over 6,000 bugs or 5,000 bugs, that doesn't scale. You have to plan for that work.",
+      "speaker": "Farzan Karimi",
+      "t": "13:34"
+    },
+    {
+      "text": "When you cut 1,600 tickets and cancel 1,600 tickets in the same month, all your developer friends are no longer friendly.",
+      "speaker": "Farzan Karimi",
+      "t": "12:34"
+    }
   ],
   "offense": [
     "Agent-found chain on a lab freezer: hard-coded default admin credentials in vendor documentation plus a clear-text HTTP web portal lets an adjacent attacker sniff the credential and tamper with freezer temperature, which at Moderna means tampering with patient medicine.",
@@ -103,7 +303,7 @@
   ],
   "takeaways": [
     "Fix system ownership data first; a CMDB with attested owners and a mandated, tracked survey is the prerequisite for routing agent output at scale.",
-    "Split the work: let the model reason over artifacts and put severity, scoring, decisions and ticket creation in deterministic code, with a schema contract between them.",
+    "Karimi's principle, model proposes and code enforces: let the model reason over artifacts and put severity, scoring, decisions and ticket creation in deterministic code, with a schema contract between them.",
     "Measure and publish your agent's ticket-level validity and cancellation taxonomy, separating agent error from changed requirements and bad input data, so QC feedback can be turned into instruction updates.",
     "Freeze requirements before a mass run or expect large-scale cancellations that burn developer trust.",
     "Plan remediation staffing and QC capacity as part of the business case; the saved review hours reappear as downstream work."
@@ -120,9 +320,9 @@
     "The headline time savings compare a two-to-three day manual review with 15 minutes of agent time; the downstream QC and cancellation labor is excluded from the 14,000 hours and 6.7 FTE figures, which the speaker scoped to tier-one reviews.",
     "Validity was judged by the same security engineering team that built the agent, and no independent adjudication or sampling method was stated, so the two-thirds valid rate is an internal label rather than an externally adjudicated precision figure.",
     "Only 42.8 percent of tickets were still standing at the end; 17.5 percent were counted valid although canceled because requirements changed, and the 66.6 percent valid figure includes them.",
-    "The 16.8 percent error rate uses all tickets as the denominator and excludes a further 16.6 percent of canceled tickets attributed to inputs (no active gap after clarification, bad survey data), which may partly reflect agent behavior; the speaker described the error rate as acceptable at scale.",
+    "The 16.8 percent error rate uses all tickets as the denominator and excludes a further 16.6 percent of canceled tickets attributed to inputs (no active gap after clarification, bad survey data); the speaker described the error rate as acceptable at scale.",
     "The 98 percent completion rate and 96.6 percent owner attestation rate come from an executive-mandated deadline, so they measure participation and do not measure answer quality.",
-    "No evaluation results for V2's claimed controls (planted bugs, decoy, second reviewer) were shown; the V2 enforcement claims are design descriptions.",
+    "No evaluation results for V2's described controls (planted bugs, decoy, second reviewer) were shown; the V2 enforcement statements are design descriptions.",
     "The pipeline uses Copilot Studio and Power Automate; the design principles (structured intake, schema contract, deterministic enforcement) are not specific to those products. The refrigerator demo uses public vendor documents, so it does not show performance on bespoke internal systems."
   ],
   "qa": [
@@ -131,21 +331,44 @@
     "How were the 1,800-plus valid tickets validated? By the security engineering team pivoting to quality control, which made August painful for them but unlocked resourcing.",
     "Why hooks into Claude Code and Codex rather than CI/CD? They are adapting the agent to several pipelines, including vibe coding, CI/CD and control-plane frameworks, so citizen developers are covered; CI/CD plus auto-logging to Jira is in progress.",
     "Have you considered compensating controls such as OT segmentation? Yes; currently handled in human validation, planned for V2 and V3 as richer context that reduces severity.",
-    "What are the unit economics, and how will you handle model changes? The speaker did not know the cost per threat model and admitted it was a poor answer; the design is model-agnostic and newer frontier models for cyber are being evaluated."
+    "What are the unit economics, and how will you handle model changes? The speaker did not know the cost per threat model and said it was a poor answer; the design is model-agnostic and newer frontier models for cyber are being evaluated."
   ],
-  "tags": ["appsec-secure-development", "org-adoption-culture", "evals-benchmarks-metrics", "guardrails-runtime-controls"],
+  "tags": [
+    "appsec-secure-development",
+    "org-adoption-culture",
+    "evals-benchmarks-metrics",
+    "guardrails-runtime-controls"
+  ],
   "key_frames": [
-    {"file": "t00356.jpg", "caption": "The enterprise review pipeline: owners, survey, agent, JSON contract, Power Automate to Jira, then human QC and remediation."},
-    {"file": "t00510.jpg", "caption": "Excerpts of the production agent instructions: mandatory control gates, standards are policy not proof, vendor documentation as evidence, adjacent-network attacker."},
-    {"file": "t00567.jpg", "caption": "V2 design principle of model proposes, code enforces, with the list of code-side checks and the eval types."},
-    {"file": "t00633.jpg", "caption": "Ticket outcome breakdown: 2,807 tickets, 66.6 percent valid, 16.8 percent agent error, with category counts."},
-    {"file": "t00764.jpg", "caption": "Why 1,605 tickets were canceled, separating valid-but-canceled, agent error and non-agent causes."}
+    {
+      "file": "t00356.jpg",
+      "caption": "The enterprise review pipeline: owners, survey, agent, JSON contract, Power Automate to Jira, then human QC and remediation."
+    },
+    {
+      "file": "t00510.jpg",
+      "caption": "Excerpts of the production agent instructions: mandatory control gates, standards are policy not proof, vendor documentation as evidence, adjacent-network attacker."
+    },
+    {
+      "file": "t00567.jpg",
+      "caption": "V2 design principle of model proposes, code enforces, with the list of code-side checks and the eval types."
+    },
+    {
+      "file": "t00633.jpg",
+      "caption": "Ticket outcome breakdown: 2,807 tickets, 66.6 percent valid, 16.8 percent agent error, with category counts."
+    },
+    {
+      "file": "t00764.jpg",
+      "caption": "Why 1,605 tickets were canceled, separating valid-but-canceled, agent error and non-agent causes."
+    }
   ],
-  "signal": {"score": 4, "reason": "Ticket-level accounting of an agentic threat-modeling program at production scale, with pipeline detail, prompt excerpts, an open-source release and remediation-cost figures; validity was judged by the team that built the agent."},
+  "signal": {
+    "score": 4,
+    "reason": "The talk reports ticket-level accounting of an agentic threat-modeling program run at production scale, with pipeline detail, prompt excerpts, an open-source release and remediation-cost figures; validity was judged by the team that built the agent."
+  },
   "caveats": [
-    "Auto-captions garble names: the speaker's 'Appendorf' is Eppendorf per slides; 'Nastic' is probably Knostic (a conference sponsor, not confirmed); 'Entropic' is Anthropic; 'Daybreak' is unclear and was not identified; 'cloud' for hooks is Claude.",
-    "The speaker said about 1,200 system owners; the slide shows 1,220 of 1,263 CMDB application CIs (96.6 percent) attested. Slide figures used.",
-    "The speaker said about 2,800 tickets and 'around 2/3'; slides give 2,807 and 66.6 percent. Slide figures used.",
+    "Auto-captions garble names: the speaker's 'Appendorf' is Eppendorf per slides; 'Nastic' could not be confirmed (Knostic is a conference sponsor); 'Entropic' is Anthropic; 'Daybreak' is unclear and was not identified; 'cloud' for hooks is Claude.",
+    "The speaker said about 1,200 system owners; the slide shows 1,220 of 1,263 CMDB application CIs (96.6 percent) attested. This record uses the slide figures.",
+    "The speaker said about 2,800 tickets and 'around 2/3'; slides give 2,807 and 66.6 percent. This record uses the slide figures.",
     "Speaker said 6,000 or 5,000 bugs per engineer as a hypothetical; it is not a measured figure.",
     "Model named in speech and slide as Claude Opus 4.8; Q&A transcript renders model names inconsistently (Sonnet 46, 55, Opus 48).",
     "Some V2 slides are numbered out of 24 and V1 slides out of 23; the deck was edited between versions. The slide repository URL was read from the slide text and not independently verified."

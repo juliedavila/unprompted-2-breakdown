@@ -4,22 +4,25 @@
   <li><strong>Source.</strong> The playlist lists 92 recordings. Three are unavailable (positions 31, 44 and 69), which leaves 89.</li>
   <li><strong>Transcripts</strong> are YouTube's automatic English captions, cleaned and time-marked. Automatic captions garble names, products and numbers.</li>
   <li><strong>Slides</strong> are frames taken from the video where the picture changed. Slides are the authority for spellings and figures: where a slide and the captions disagree, the record uses the slide and says so under its caveats.</li>
-  <li><strong>Each record was written by an AI model</strong> (Anthropic's Claude) that read one talk's full transcript and every captured slide, working to a fixed schema. A script checked each record for completeness. The cross-talk reading at the top was also drafted with Claude, and the figures it relies on were checked against the transcript or the slide.</li>
-  <li><strong>Nothing was checked against sources outside the talks.</strong> A number here is the speaker's number.</li>
-  <li><strong>Evidence grades</strong> describe what the talk showed for a claim: measured (the speaker's own data or experiment), demo, case (a specific real incident or deployment), anecdote, or assertion. A grade is a statement about the talk, and a 25-minute slot is short: an assertion on stage may be well supported in a paper the speaker did not have time to show.</li>
+  <li><strong>Each record was written by an AI model</strong> (Anthropic's Claude) that read one talk's full transcript and every captured slide, working to a fixed schema. A script checked each record for completeness, and two further model passes revised the wording for fairness and clarity.</li>
+  <li><strong>No person reviewed each record before publication.</strong> A person directed the work and its reviews. Expect errors in individual records, and treat each one as a pointer to the recording.</li>
+  <li><strong>The cross-talk reading at the top</strong> was drafted with Claude and edited after an independent review. The figures it relies on were checked a second time, by the same AI system, against the transcript or the slide.</li>
+  <li><strong>The notes headed "What published research says"</strong> come from a search of the academic literature with Elicit, one query per finding. The papers were read at the level of their abstracts, many are preprints that have not been peer reviewed, and the notes are a starting point for reading and no survey. Each paper is linked.</li>
+  <li><strong>No talk's claims were checked against outside sources.</strong> A number about a talk is the speaker's number.</li>
+  <li><strong>Evidence grades</strong> describe what the talk showed for a claim: measured (the speaker's own data or experiment), demo (shown working, live or recorded), case (a specific real incident or deployment), anecdote (a story without checkable detail), or assertion (stated without support in the talk). A grade is a statement about the talk, and a 25-minute slot is short: an assertion on stage may be well supported in a paper the speaker did not have time to show.</li>
   <li><strong>Signal scores and assessments are judgments</strong> about the evidence presented in the recording. They run generous: {{TOP}} of {{SESSIONS}} sessions scored 4 or 5. They say nothing about the speaker or the work beyond the talk.</li>
 </ul>
 <h3>Gaps</h3>
 <ul>
-  <li><strong>Two talks have no record.</strong> Both are exploit-development talks whose detail the AI system would not write up.
+  <li><strong>Two talks have no record.</strong> Both are exploit-development talks. The AI system declined to write up their detail, which reflects the model's limits and says nothing about the talks.
     <ul>
       <li><a href="https://www.youtube.com/watch?v=z5zWF_Ut5nw" target="_blank" rel="noopener">Ryan Austin and Thai Duong, "PHPocalypse: Exploiting php2shell"</a> (position 34).</li>
       <li><a href="https://www.youtube.com/watch?v=BkYfcM4Nfx8" target="_blank" rel="noopener">Brendan Dolan-Gavitt, "A Tale of Two Chains"</a> (position 60). From the transcript: a first Chrome full-chain attempt took two months; a second took six days and about $40,000 in API spend, against a full-chain bonus the speaker put at $250,000; the run used up to 64 sub-agents with a running ledger.</li>
     </ul>
   </li>
   <li><strong>Four talks are covered at summary level,</strong> with findings described as a public advisory would and exploit mechanics left out: Hacking Lean Proofs (07), Every Dog Has its 0-day (32), 0-Click Remote Exploits in an AI World (58) and Prompt, Patch, Prove (64).</li>
-  <li><strong>Some slides were missed.</strong> A frame is captured only when the picture changes enough, so a slide shown briefly can be absent. Records note this where it could be told.</li>
+  <li><strong>Some slides were missed.</strong> A frame is captured only when the picture changes enough, so a slide shown briefly can be absent. Records note a missing slide where the transcript made it evident.</li>
 </ul>
 <h3>Credit and corrections</h3>
-<p>The talks, slides and demos belong to their speakers. Slide images appear here as excerpts for commentary, each linked to its place in the recording. If a record misstates your work, a correction is welcome: <a href="https://github.com/juliedavila/unprompted-2-breakdown/issues" target="_blank" rel="noopener">open an issue</a> and it will be fixed or the record removed.</p>
+<p>The talks, slides and demos belong to their speakers. Slide images appear here as excerpts for commentary, each linked to its place in the recording. If a record misstates your work, a correction is welcome: <a href="https://github.com/juliedavila/unprompted-2-breakdown/issues" target="_blank" rel="noopener">open an issue</a>. It will be fixed, or the record removed if you prefer.</p>
 <p>The written breakdown and its data are released under <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">CC BY 4.0</a>; the code that builds the page is MIT. Neither license covers the slide images or the talks themselves. The page, the records as JSON and the build scripts are in the <a href="https://github.com/juliedavila/unprompted-2-breakdown" target="_blank" rel="noopener">repository</a>.</p>

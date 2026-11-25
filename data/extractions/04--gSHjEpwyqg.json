@@ -24,7 +24,7 @@
     {"claim": "Big data is a solved problem and in a surveillance state participation can be made mandatory, so a comprehensive database of everything is easy to build.", "evidence": "Stated; slide lists big data as a solved problem and voluntary versus mandatory participation.", "grade": "assertion", "t": "06:22", "source": "both"},
     {"claim": "Identification no longer requires a face: gait, breathing through Wi-Fi sensing and other biometrics can identify people at distance, and mind reading is coming.", "evidence": "Stated opinion; slide lists identifiers with question marks for breathing, Wi-Fi sensing and mind reading.", "grade": "assertion", "t": "07:24", "source": "both"},
     {"claim": "The human in the loop has been the bottleneck on surveillance power: analysts run queries, read, listen, watch, translate and report.", "evidence": "Speaker's own experience as the rate-limiting factor at NSA; slide The Human Rate-Limiting Factor.", "grade": "anecdote", "t": "07:54", "source": "both"},
-    {"claim": "AI is good at querying huge datasets, reading, listening, watching, translating and drafting reports, and humans in the loop can compensate for its weaknesses, producing massive efficiency gains and making it much harder for a dissident to hide.", "evidence": "Speaker's claim that with a current model he would have been a 100x employee; slide AI Solves This.", "grade": "assertion", "t": "08:25", "source": "both"},
+    {"claim": "AI is good at querying huge datasets, reading, listening, watching, translating and drafting reports, and humans in the loop can compensate for its weaknesses, producing massive efficiency gains and making it much harder for a dissident to hide.", "evidence": "Speaker's statement that with a current model he would have been a 100x employee; slide AI Solves This.", "grade": "assertion", "t": "08:25", "source": "both"},
     {"claim": "Fully automated luxury surveillance is possible now but not evenly distributed yet; it is distributed in China.", "evidence": "Closing assertion and slide.", "grade": "assertion", "t": "09:26", "source": "both"},
     {"claim": "US federal law governs how the FBI and the intelligence community may operate, but there are no clear federal laws on law enforcement use of ad-tech or location data, state-level practice is largely made up and court-driven, and stingrays are an open question.", "evidence": "Answer to an audience question; no cases cited.", "grade": "assertion", "t": "10:27", "source": "said"}
   ],
@@ -33,7 +33,7 @@
     {"figure": "10 years", "meaning": "speaker's time at NSA and Cyber Command", "t": "00:06"},
     {"figure": "80 dollars", "meaning": "approximate price of a 4K AI-powered local baby camera, about the price of an SD card", "t": "03:50"},
     {"figure": "half or more", "meaning": "share of national security effort a typical totalitarian state directs inward", "t": "01:44"},
-    {"figure": "100x", "meaning": "claimed productivity multiplier had the speaker had a current AI model as an NSA analyst", "t": "08:25"}
+    {"figure": "100x", "meaning": "stated productivity multiplier had the speaker had a current AI model as an NSA analyst", "t": "08:25"}
   ],
   "frameworks": [
     {"name": "Intelligence cycle questions", "description": "Make threats legible; deter, detect, defeat; then how do you collect, store, analyze and disseminate the information."},
@@ -88,8 +88,8 @@
     "The speaker says his answer on US law is a suspicion that the country will muddle through unless Congress acts."
   ],
   "critique": [
-    "The talk is an overview drawn from the speaker's experience; few claims are supported by data, cases or named systems beyond China as an example, and the longer version of the talk may hold more.",
-    "The 100x analyst claim is a personal estimate and the talk does not cover AI errors, false positives or the cost of verification at surveillance scale.",
+    "The talk is an overview drawn from the speaker's experience; few claims are supported by data, cases or named systems beyond China as an example.",
+    "The 100x analyst figure is a personal estimate and the talk does not cover AI errors, false positives or the cost of verification at surveillance scale.",
     "The defenses presented are mostly legal and institutional; no concrete technical controls for security teams were shown.",
     "Statements such as mind reading is coming and cars like Waymo being mobile collection devices are stated without cited evidence."
   ],
@@ -103,10 +103,10 @@
     {"file": "t00049.jpg", "caption": "Typical State Security Apparatus: the agencies, turf wars and inward versus outward balance."},
     {"file": "t00145.jpg", "caption": "Moore's Law and its Consequences: cheap sensors, ubiquitous technical surveillance, haystack of needles."}
   ],
-  "signal": {"score": 3, "reason": "A practitioner's framing of how AI affects the analyst bottleneck in surveillance, with few cited sources and no technical defenses shown."},
+  "signal": {"score": 3, "reason": "The talk frames how AI removes the analyst bottleneck in state surveillance, with few cited sources and no technical defenses shown."},
   "caveats": [
-    "meta.json lists slide coverage as 0, but the frames show slides and were used.",
-    "The speaker says he would have been a 100x employee if he had had Astra in his old job; the name is only in the transcript and is likely a model name, but could not be confirmed on a slide.",
+    "The source listing records slide coverage as 0, but the recording shows slides; this record uses them.",
+    "The speaker says he would have been a 100x employee if he had had Astra in his old job; the name appears only in the transcript and could not be confirmed on a slide.",
     "The transcript says CIA has a term called ubiquitous technical surveillance; slide uses Ubiquitous Technical Surveillance without attribution.",
     "The X handle on the last slide is hard to read and is recorded as shown, @Surveil___Lance.",
     "The questioner is identified only as Bruce by the moderator; no surname given.",

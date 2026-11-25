@@ -17,7 +17,7 @@
   ],
   "claims": [
     {"claim": "Investigating one low alert by hand across twelve consoles takes roughly 30 to 60 minutes, so teams do not do it thoroughly for low-severity alerts.", "evidence": "Walkthrough of the pivots on a fictional alert; slide lists 12 logins, 12 query languages, 12 timestamp formats, 30 to 60 minutes per alert.", "grade": "assertion", "t": "01:39", "source": "both"},
-    {"claim": "A Cisco study from before the AI boom found that 44 percent of security alerts are not investigated, and the figure has likely grown.", "evidence": "Cited from memory with no link; the growth claim is the speaker's inference.", "grade": "assertion", "t": "02:09", "source": "said"},
+    {"claim": "A Cisco study from before the AI boom found that 44 percent of security alerts are not investigated, and the figure has likely grown.", "evidence": "Cited from memory with no link; the statement that the figure has grown is the speaker's inference.", "grade": "assertion", "t": "02:09", "source": "said"},
     {"claim": "Ultron runs a tick every 10 minutes, takes an execution lease, picks at most five cases from the SIEM, and checks source health before any query so that an empty result is not confused with a dead log source.", "evidence": "Architecture slide and speaker description; slide shows query window of cursor minus 5 minutes and a heartbeat alert after 35 minutes.", "grade": "case", "t": "04:44", "source": "both"},
     {"claim": "Each case gets its own isolated sub-agent that follows a canonical playbook, holds two competing hypotheses, builds a UTC timeline against baselines, tries to disprove its own theory, and labels findings CONFIRMED, DEDUCED or UNKNOWN.", "evidence": "Architecture slide and replayed terminal demo showing H1 (really in Latveria, US presence is a tunnel) versus H2 (benign).", "grade": "demo", "t": "05:14", "source": "both"},
     {"claim": "Read-only is enforced by construction: every connector sits behind a GET-pinned chokepoint, isolate, change-case and disable-account tools are not in the toolset, and CI fails the build if one is added.", "evidence": "Stated design plus trust-boundary slide; no test results or bypass attempts shown.", "grade": "assertion", "t": "07:18", "source": "both"},
@@ -71,7 +71,7 @@
     "Final slide: right user yes, right place no; the real user, not a threat actor, masking that they are in Latveria; Ultron proved it in about four minutes."
   ],
   "demos": [
-    "Replay of a fictional case in a terminal UI (ultron tick, case CASE-10427): clusters three LOW alerts into one case, runs a source-health preflight, states two hypotheses, queries 90-day egress history and finds the 10-second Latveria connection, then (per the speaker) walks the remaining systems and the physical plane after an analyst approves the on-device read, ending with a cited high-likelihood verdict in about four minutes. The video was embedded and the speaker narrated; only the first part is legible in captured frames."
+    "Replay of a fictional case in a terminal UI (ultron tick, case CASE-10427): clusters three LOW alerts into one case, runs a source-health preflight, states two hypotheses, queries 90-day egress history and finds the 10-second Latveria connection, then (per the speaker) walks the remaining systems and the physical plane after an analyst approves the on-device read, ending with a cited high-likelihood verdict in about four minutes. The video was embedded and the speaker narrated; only the first part is legible in the recording."
   ],
   "quotes": [
     {"text": "It's read-only by construction, not by instruction.", "speaker": "Sannan Iqbal", "t": "06:47"},
@@ -97,10 +97,10 @@
   ],
   "takeaways": [
     "Count how many consoles and query languages your analysts cross for a low alert; if the answer is around a dozen, a read-only harness over existing tools may buy more coverage than a new detection tool.",
-    "If you give an agent security-tool access, remove write and containment tools from its toolset and test for that in CI, rather than relying on prompt instructions.",
-    "Make agent reports auditable by requiring a cited query result per claim and discarding the rest.",
+    "Iqbal's rule, read-only by construction: if you give an agent security-tool access, remove write and containment tools from its toolset and test for that in CI, rather than relying on prompt instructions.",
+    "Iqbal's rule, no citation and no claim: make agent reports auditable by requiring a cited query result per claim and discarding the rest.",
     "Add a source-health check to automated investigations so empty results are not read as clean.",
-    "Keep verdicts about people with humans: have the agent output likelihood plus evidence and route to analyst review, then HR or Legal."
+    "Iqbal's position, people make the call: keep verdicts about people with humans; have the agent output likelihood plus evidence and route to analyst review, then HR or Legal."
   ],
   "limits": [
     "Ultron is read-only today; the speaker said he would still keep a human in the loop for likely true positives and consider fully autonomous handling only where confidence is near 100 percent, such as false positives.",
@@ -112,7 +112,7 @@
     "The headline case is a fictional replay, so it shows the design working on a prepared example; it does not show how often the harness finds such cases or how it behaves on real ones.",
     "The 44 percent Cisco statistic was cited from memory without a title or link, and the statement that the figure has grown is the speaker's inference.",
     "Read-only by construction through GET-pinned drivers limits write actions, but GET is not guaranteed side-effect free on every API, and the talk does not address prompt injection through alert, log or ticket content that the agent reads; the on-box read, ask-gated, is the one place a human checks.",
-    "The back-testing and scorecard claims were described in Q&A and no results were shown; the number of analyst corrections measures analyst intervention rather than accuracy directly.",
+    "The back-testing and scorecard statements were made in Q&A and no results were shown; the number of analyst corrections measures analyst intervention rather than accuracy directly.",
     "Ultron is an internal tool and no released code was shown; the blueprint (GET pinning, indicator routing, ask tier) is described in terms others can adapt."
   ],
   "qa": [
@@ -130,12 +130,12 @@
     {"file": "t00421.jpg", "caption": "Trust boundary: read-only by construction, ask-then-deny, cited claims, scorecard against analysts."},
     {"file": "t00620.jpg", "caption": "Evidence table separating spoofable network egress from confirmed device, HR and physical-plane evidence."}
   ],
-  "signal": {"score": 3, "reason": "A design pattern (read-only by construction, source-health preflight, cited claims, indicator routing) shown with detailed slides and a replayed fictional case, with no production metrics presented."},
+  "signal": {"score": 3, "reason": "The talk shows a design pattern (read-only by construction, source-health preflight, cited claims, indicator routing) in detailed slides and a replayed fictional case, with no production metrics presented."},
   "caveats": [
     "Auto-captions garble names: the law enforcement collaborator is rendered as Jim Roge and Jim Rose and is not confirmed; Ultron is sometimes captioned Ultran; the country is captioned Laveria, Larevia and Lavaria, while slides spell it Latveria.",
     "The transcript says traffic travelled about 10,000 km; the masking slide says about 9,000 km.",
     "The transcript says Wi-Fi radios indicate the country; the slide gives the regulatory country code as XL.",
-    "The embedded demo video shows only its first two minutes legibly in captured frames; the later physical-plane steps rely on the narration and the summary slides.",
+    "The embedded demo video shows only its first two minutes legibly in the recording; the later physical-plane steps rely on the narration and the summary slides.",
     "Q&A timestamps are approximate because the transcript has a gap between 17:35 and 18:08.",
     "The conference Q&A slide shows a venue Wi-Fi credential, which is deliberately not recorded here."
   ]

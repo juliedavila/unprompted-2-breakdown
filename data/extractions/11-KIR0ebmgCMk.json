@@ -3,11 +3,16 @@
   "id": "KIR0ebmgCMk",
   "url": "https://www.youtube.com/watch?v=KIR0ebmgCMk",
   "title": "Integrous AI Systems Design",
-  "speakers": [{"name": "Bruce Schneier", "affiliation": "Harvard Kennedy School and the University of Toronto (Fellow and Lecturer, per the talk description)"}],
+  "speakers": [
+    {
+      "name": "Bruce Schneier",
+      "affiliation": "Harvard Kennedy School and the University of Toronto (Fellow and Lecturer, per the talk description)"
+    }
+  ],
   "format": "talk",
   "duration_min": 21,
   "thesis": "Integrity, the neglected third leg of the CIA triad, becomes the central security property once systems act on the world rather than just process data, and trustworthy AI requires treating integrity as one coherent system property across input, processing, storage and contextual use.",
-  "summary": "Schneier opens by arguing that integrity has always taken a backseat to confidentiality and availability, and that this stops working when AI agents, IoT devices and infrastructure act autonomously in the physical world: an integrity failure becomes the wrong thing happening at scale. He revives the obsolete word integrous for a system with integrity. He widens the NIST definition (preventing improper modification) into a list of facets: accuracy, completeness, consistency, freshness, provenance, semantics, accountability and recoverability, and says correctness is an envelope of constraints rather than one value. He names three kinds of integrity failure: corporations using AI against you, the AI doing the wrong thing, and an adversary manipulating it. He then splits integrity into four parts, input, processing, storage and contextual, giving attacks and defenses for each and mapping prompt injection, data poisoning, hallucination and memory-propagated attacks onto them. Contextual integrity, borrowed from Helen Nissenbaum, covers AI that breaks context boundaries, which he calls genie-like behavior (Midas and the golem). He lists design needs: composition of integrity, rethinking recovery, integrity service objectives, and a zero-trust analog, plus lessons from human systems such as double-entry bookkeeping and surgical checklists, and a governance and policy component. He frames Web 1.0, 2.0 and 3.0 as availability, confidentiality and integrity, and poses the research question of building an integrity system from non-integrous parts. In Q&A he separates security of AI, with AI, and from AI.",
+  "summary": "Schneier opens by arguing that integrity has always taken a backseat to confidentiality and availability, and that this stops working when AI agents, IoT devices and infrastructure act autonomously in the physical world: an integrity failure becomes the wrong thing happening at scale. He revives the obsolete word integrous for a system with integrity. He widens the NIST definition (preventing improper modification) into a list of facets: accuracy, completeness, consistency, freshness, provenance, semantics, accountability and recoverability, and says correctness is an envelope of constraints rather than one value. He names three kinds of integrity failure: corporations using AI against you, the AI doing the wrong thing, and an adversary manipulating it. He then splits integrity into four parts, input, processing, storage and contextual, giving attacks and defenses for each and mapping prompt injection, data poisoning, hallucination and memory-propagated attacks onto them. Contextual integrity, borrowed from Helen Nissenbaum (data flows should respect contextual norms), covers AI that breaks context boundaries, which he calls genie-like behavior (the Midas genie that grants a wish literally but wrongly, and the golem of Prague that does the right thing but tramples everything in its path). He lists design needs: composition of integrity, rethinking recovery, integrity service objectives, and a zero-trust analog, plus lessons from human systems such as double-entry bookkeeping and surgical checklists, and a governance and policy component. He frames Web 1.0, 2.0 and 3.0 as availability, confidentiality and integrity, and poses the research question of building an integrity system from non-integrous parts. In Q&A he separates security of AI, with AI, and from AI.",
   "argument": [
     "AI agents, IoT and infrastructure act on the world, so integrity failures now mean the wrong thing happening at scale and faster than humans can stop it.",
     "Integrity is broader than anti-tampering: accuracy, completeness, consistency, freshness, provenance, semantics, accountability and recoverability, and correctness is an envelope of acceptable behavior, not a single value.",
@@ -17,44 +22,174 @@
     "Integrous design needs composition, recovery, measurement and governance work, with lessons from human integrity systems, and the research question is whether integrity can be built from non-integrous parts."
   ],
   "claims": [
-    {"claim": "Integrity has long taken a backseat to confidentiality and availability, and most talks at this conference were about integrity rather than confidentiality.", "evidence": "Observation about the conference program and the field's history.", "grade": "assertion", "t": "01:12", "source": "said"},
-    {"claim": "Most attacks against AI systems are integrity attacks: manipulation of training data, the model, the input, the output or the feedback.", "evidence": "Enumeration of attack points, no data.", "grade": "assertion", "t": "04:52", "source": "said"},
-    {"claim": "Integrity failures can be silent and plausible, may be accidental, and are security events regardless of intent.", "evidence": "Reasoning by analogy to confidentiality failures.", "grade": "assertion", "t": "04:21", "source": "said"},
-    {"claim": "There are three types of integrity failure: corporations controlling AIs use them against you, the AI does the wrong thing through misunderstanding or training, and an adversary deliberately manipulates it.", "evidence": "Taxonomy offered by the speaker.", "grade": "assertion", "t": "05:22", "source": "said"},
-    {"claim": "Prompt injection is an input integrity attack because the AI cannot tell untrusted input from trusted commands, and training data poisoning is an integrity attack on AI state.", "evidence": "Mapping of known attack classes onto the input integrity category.", "grade": "assertion", "t": "07:28", "source": "said"},
-    {"claim": "Processing integrity failures in AI include hallucination, rowhammer attacks against AI chips, and an attack shown the day before that propagates malicious commands through an agent's memory.", "evidence": "Examples cited from the field and from a prior talk at the same conference; no detail given.", "grade": "case", "t": "08:30", "source": "said"},
-    {"claim": "AI systems are context-dissolving machines, and recent stories of AI breaking out of its constraints are contextual integrity failures better described as genie-like behavior than going rogue.", "evidence": "Midas and golem of Prague analogies; references to recent news without specifics.", "grade": "anecdote", "t": "10:03", "source": "said"},
-    {"claim": "Integrity needs new measurement concepts: integrity service objectives, mean time to detect integrity failures, integrity verification and breach-detection systems, and possibly a zero trust analog.", "evidence": "Proposed research directions, framed as questions.", "grade": "assertion", "t": "13:07", "source": "said"},
-    {"claim": "Human integrity systems such as double-entry bookkeeping, audits, copy editing, surgical checklists, peer review, rules of evidence and food safety regulation offer lessons for IT and AI integrity.", "evidence": "List of examples; no worked mapping.", "grade": "assertion", "t": "14:08", "source": "said"},
-    {"claim": "Web 1.0 answered an availability question, Web 2.0 a confidentiality question, and Web 3.0 (distributed, intelligent, agentic) hinges on integrity; whether an integrity system can be built from non-integrous parts is the open research question.", "evidence": "Historical framing by the speaker; he rates the confidentiality question's answer as maybe.", "grade": "assertion", "t": "16:12", "source": "said"},
-    {"claim": "AI security splits into three separate topics, security of AI, security with AI and security from AI, and AI integrity concerns only the first; there will always be untrustworthy humans using AI to attack.", "evidence": "Q&A answer.", "grade": "assertion", "t": "19:22", "source": "said"}
+    {
+      "claim": "Integrity has long taken a backseat to confidentiality and availability, and most talks at this conference were about integrity rather than confidentiality.",
+      "evidence": "Observation about the conference program and the field's history.",
+      "grade": "assertion",
+      "t": "01:12",
+      "source": "said"
+    },
+    {
+      "claim": "Most attacks against AI systems are integrity attacks: manipulation of training data, the model, the input, the output or the feedback.",
+      "evidence": "Enumeration of attack points, no data.",
+      "grade": "assertion",
+      "t": "04:52",
+      "source": "said"
+    },
+    {
+      "claim": "Integrity failures can be silent and plausible, may be accidental, and are security events regardless of intent.",
+      "evidence": "Reasoning by analogy to confidentiality failures.",
+      "grade": "assertion",
+      "t": "04:21",
+      "source": "said"
+    },
+    {
+      "claim": "There are three types of integrity failure: corporations controlling AIs use them against you, the AI does the wrong thing through misunderstanding or training, and an adversary deliberately manipulates it.",
+      "evidence": "Taxonomy offered by the speaker.",
+      "grade": "assertion",
+      "t": "05:22",
+      "source": "said"
+    },
+    {
+      "claim": "Prompt injection is an input integrity attack because the AI cannot tell untrusted input from trusted commands, and training data poisoning is an integrity attack on AI state.",
+      "evidence": "Mapping of known attack classes onto the input integrity category.",
+      "grade": "assertion",
+      "t": "07:28",
+      "source": "said"
+    },
+    {
+      "claim": "Processing integrity failures in AI include hallucination, rowhammer attacks against AI chips, and an attack shown the day before that propagates malicious commands through an agent's memory.",
+      "evidence": "Examples cited from the field and from a prior talk at the same conference; no detail given.",
+      "grade": "case",
+      "t": "08:30",
+      "source": "said"
+    },
+    {
+      "claim": "AI systems are context-dissolving machines, and recent stories of AI breaking out of its constraints are contextual integrity failures better described as genie-like behavior than going rogue.",
+      "evidence": "Midas and golem of Prague analogies; references to recent news without specifics.",
+      "grade": "anecdote",
+      "t": "10:03",
+      "source": "said"
+    },
+    {
+      "claim": "Integrity needs new measurement concepts: integrity service objectives, mean time to detect integrity failures, integrity verification and breach-detection systems, and possibly a zero trust analog.",
+      "evidence": "Proposed research directions, framed as questions.",
+      "grade": "assertion",
+      "t": "13:07",
+      "source": "said"
+    },
+    {
+      "claim": "Human integrity systems such as double-entry bookkeeping, audits, copy editing, surgical checklists, peer review, rules of evidence and food safety regulation offer lessons for IT and AI integrity.",
+      "evidence": "List of examples; no worked mapping.",
+      "grade": "assertion",
+      "t": "14:08",
+      "source": "said"
+    },
+    {
+      "claim": "Web 1.0 answered an availability question, Web 2.0 a confidentiality question, and Web 3.0 (distributed, intelligent, agentic) hinges on integrity; whether an integrity system can be built from non-integrous parts is the open research question.",
+      "evidence": "Historical framing by the speaker; he rates the confidentiality question's answer as maybe.",
+      "grade": "assertion",
+      "t": "16:12",
+      "source": "said"
+    },
+    {
+      "claim": "AI security splits into three separate topics, security of AI, security with AI and security from AI, and AI integrity concerns only the first; there will always be untrustworthy humans using AI to attack.",
+      "evidence": "Q&A answer.",
+      "grade": "assertion",
+      "t": "19:22",
+      "source": "said"
+    }
   ],
   "numbers": [
-    {"figure": "3", "meaning": "types of integrity failure named (corporate misuse, AI error, adversarial manipulation)", "t": "05:22"},
-    {"figure": "4", "meaning": "parts of integrity as a property: input, processing, storage, contextual", "t": "06:55"},
-    {"figure": "3", "meaning": "work streams proposed: security of AI, integrous AI, and regulation aligning incentives", "t": "18:15"},
-    {"figure": "3", "meaning": "separate security topics: of AI, with AI, from AI", "t": "19:22"}
+    {
+      "figure": "3",
+      "meaning": "types of integrity failure named (corporate misuse, AI error, adversarial manipulation)",
+      "t": "05:22"
+    },
+    {
+      "figure": "4",
+      "meaning": "parts of integrity as a property: input, processing, storage, contextual",
+      "t": "06:55"
+    },
+    {
+      "figure": "3",
+      "meaning": "work streams proposed: security of AI, integrous AI, and regulation aligning incentives",
+      "t": "18:15"
+    },
+    {
+      "figure": "3",
+      "meaning": "separate security topics: of AI, with AI, from AI",
+      "t": "19:22"
+    }
   ],
   "frameworks": [
-    {"name": "Four-part integrity property", "description": "Input integrity (spoofing, replay, poisoning, laundering; defenses: authenticated sensors, signed telemetry, redundancy, sanity checks, rate limits, plausibility constraints, cross-checking independent sources). Processing integrity (supply chain compromise, runtime tampering, memory corruption; defenses: memory-safe code, sandboxing, least-privilege tools, policy checks, formal methods, runtime monitors). Storage integrity (defenses: immutable logs, signed configurations, append-only audit trails, versioned model registries). Contextual integrity (data flows respect contextual norms)."},
-    {"name": "Facets of integrity", "description": "Beyond the NIST definition of preventing improper modification or destruction: accuracy, completeness, consistency, freshness, provenance, semantics, accountability and recoverability (detect, quantify damage, recover to known good state)."},
-    {"name": "Contextual integrity (Nissenbaum)", "description": "Helen Nissenbaum's privacy idea: data flows should respect contextual norms about who sent it, who received it, under what constraints and for what purposes. Schneier extends it to AI behavior outside the intent of a prompt."},
-    {"name": "Genie-like behavior", "description": "Two genie types: the Midas genie that grants a wish literally but wrongly, and the golem of Prague that does the right thing but tramples everything in its path. The paperclip maximizer is a golem genie."},
-    {"name": "Three types of integrity failure", "description": "Corporations using AIs against users; the AI doing the wrong thing; an adversary manipulating the AI."},
-    {"name": "Three AI security topics", "description": "Security of AI, security with AI, security from AI."}
+    {
+      "name": "Four-part integrity property",
+      "description": "Input integrity (spoofing, replay, poisoning, laundering; defenses: authenticated sensors, signed telemetry, redundancy, sanity checks, rate limits, plausibility constraints, cross-checking independent sources). Processing integrity (supply chain compromise, runtime tampering, memory corruption; defenses: memory-safe code, sandboxing, least-privilege tools, policy checks, formal methods, runtime monitors). Storage integrity (defenses: immutable logs, signed configurations, append-only audit trails, versioned model registries). Contextual integrity (data flows respect contextual norms)."
+    },
+    {
+      "name": "Facets of integrity",
+      "description": "Beyond the NIST definition of preventing improper modification or destruction: accuracy, completeness, consistency, freshness, provenance, semantics, accountability and recoverability (detect, quantify damage, recover to known good state)."
+    },
+    {
+      "name": "Contextual integrity (Nissenbaum)",
+      "description": "Helen Nissenbaum's privacy idea: data flows should respect contextual norms about who sent it, who received it, under what constraints and for what purposes. Schneier extends it to AI behavior outside the intent of a prompt."
+    },
+    {
+      "name": "Genie-like behavior",
+      "description": "Two genie types: the Midas genie that grants a wish literally but wrongly, and the golem of Prague that does the right thing but tramples everything in its path. The paperclip maximizer is a golem genie."
+    },
+    {
+      "name": "Three types of integrity failure",
+      "description": "Corporations using AIs against users; the AI doing the wrong thing; an adversary manipulating the AI."
+    },
+    {
+      "name": "Three AI security topics",
+      "description": "Security of AI, security with AI, security from AI."
+    }
   ],
   "artifacts": [
-    {"name": "NIST definition of integrity", "kind": "standard", "note": "Cited as the baseline: preventing improper information modification or destruction.", "url": ""},
-    {"name": "Contextual integrity (Helen Nissenbaum)", "kind": "paper", "note": "Privacy framework used as the fourth integrity component; the talk names the idea and author but no specific publication.", "url": ""}
+    {
+      "name": "NIST definition of integrity",
+      "kind": "standard",
+      "note": "Cited as the baseline: preventing improper information modification or destruction.",
+      "url": ""
+    },
+    {
+      "name": "Contextual integrity (Helen Nissenbaum)",
+      "kind": "paper",
+      "note": "Privacy framework used as the fourth integrity component; the talk names the idea and author but no specific publication.",
+      "url": ""
+    }
   ],
   "slide_only": [],
   "demos": [],
   "quotes": [
-    {"text": "An integrity failure is no longer my data got changed. It's the wrong thing happened at scale, often faster than we can stop it.", "speaker": "Bruce Schneier", "t": "00:40"},
-    {"text": "I really dislike the term going rogue because it absolves responsibility.", "speaker": "Bruce Schneier", "t": "10:34"},
-    {"text": "It doesn't matter how accurate, capable, or hallucination free an AI is, if we can't guarantee it hasn't been compromised, it just won't be trusted.", "speaker": "Bruce Schneier", "t": "06:23"},
-    {"text": "Can we build an integrity system out of non-integrous parts in a non-integrous world?", "speaker": "Bruce Schneier", "t": "17:45"},
-    {"text": "AI systems are context-dissolving machines. They jump context all the time.", "speaker": "Bruce Schneier", "t": "10:03"}
+    {
+      "text": "An integrity failure is no longer my data got changed. It's the wrong thing happened at scale, often faster than we can stop it.",
+      "speaker": "Bruce Schneier",
+      "t": "00:40"
+    },
+    {
+      "text": "I really dislike the term going rogue because it absolves responsibility.",
+      "speaker": "Bruce Schneier",
+      "t": "10:34"
+    },
+    {
+      "text": "It doesn't matter how accurate, capable, or hallucination free an AI is, if we can't guarantee it hasn't been compromised, it just won't be trusted.",
+      "speaker": "Bruce Schneier",
+      "t": "06:23"
+    },
+    {
+      "text": "Can we build an integrity system out of non-integrous parts in a non-integrous world?",
+      "speaker": "Bruce Schneier",
+      "t": "17:45"
+    },
+    {
+      "text": "AI systems are context-dissolving machines. They jump context all the time.",
+      "speaker": "Bruce Schneier",
+      "t": "10:03"
+    }
   ],
   "offense": [
     "Input attacks: spoofing, replay, data poisoning and data laundering; prompt injection as an input integrity attack.",
@@ -84,7 +219,7 @@
     "He leaves the corporate-misuse failure type and the regulation work stream largely aside, calling it a policy problem."
   ],
   "critique": [
-    "The talk is a conceptual framing; no data, demo or measured result was shown, and the claims rest on stated reasoning and analogy.",
+    "The talk is a conceptual framing; no data, demo or measured result was shown, and the statements rest on stated reasoning and analogy.",
     "The four-part decomposition groups known controls (signing, sandboxing, audit logs) under integrity; the talk does not say how to prioritize among them or how to test the composed property.",
     "Integrity service objectives and a zero trust analog are posed as questions, and no metric or design was proposed.",
     "The Midas and golem genie taxonomy is offered as vocabulary and is not tied to a detection or prevention mechanism.",
@@ -93,15 +228,25 @@
   "qa": [
     "Question: how do you think of defenses against AI attacks in this framework, do we need integrous defenses? Answer: he separates security of AI, with AI and from AI; defending against attackers using AI is security from AI and falls outside AI integrity, which is about whether AI itself can be trustworthy. Untrustworthy humans will keep using AI to attack, and organizations should want trustworthy AI for their own data and use."
   ],
-  "tags": ["governance-policy", "guardrails-runtime-controls", "law-policy-society"],
-  "key_frames": [
-    {"file": "t00045.jpg", "caption": "Speaker at the podium near the start of the talk; the video is camera-only and carries no slide content."}
+  "tags": [
+    "governance-policy",
+    "guardrails-runtime-controls",
+    "law-policy-society"
   ],
-  "signal": {"score": 3, "reason": "A conceptual framework presented without slides, data or demo; the controls named are drawn from existing practice."},
+  "key_frames": [
+    {
+      "file": "t00045.jpg",
+      "caption": "Speaker at the podium near the start of the talk; the video is camera-only and carries no slide content."
+    }
+  ],
+  "signal": {
+    "score": 3,
+    "reason": "The talk presents a conceptual framework without slides, data or demo, and the controls it names are drawn from existing practice."
+  },
   "caveats": [
-    "Camera-only video: all 14 frames are the speaker at the podium with no slides, so every claim is from the transcript and slide_only is empty.",
-    "Auto-captions garbled several words: the transcript says Dionysus grants King Midas a wish, which the story attributes to Dionysus but the speaker called a genie; 'Gini coefficient' in the transcript most likely means a measure of genie-like behavior; 'Integra' and 'Integra system design' were normalized to integrous.",
-    "One caption sentence near 04:52 ('Pretty much everything is conference, an integrity attack') is garbled; read as pretty much everything being an integrity attack.",
-    "Schneier's affiliation comes from the talk description."
+    "The video is camera-only: the recording shows the speaker at the podium with no slides, so every statement in this record comes from the transcript.",
+    "Auto-captions garbled several words: the transcript says Dionysus grants King Midas a wish, which the story attributes to Dionysus but the speaker called a genie; 'Gini coefficient' in the transcript is unclear and is not used in this record; 'Integra' and 'Integra system design' were normalized to integrous.",
+    "One caption sentence near 04:52 ('Pretty much everything is conference, an integrity attack') is garbled; this record reads it as pretty much everything being an integrity attack.",
+    "Schneier's affiliation comes from the published description."
   ]
 }

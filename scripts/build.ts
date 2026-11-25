@@ -8,7 +8,7 @@ const KIT = join(process.env.HOME!, "Projects/html-house-style/html-house-style/
 const SITE = join(ROOT, "site");
 mkdirSync(join(SITE, "img"), { recursive: true });
 
-const esc = (s: unknown) => String(s ?? "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+const esc = (s: unknown) => String(s ?? "").replace(/(\d) percent\b/g, "$1%").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 const secs = (t: string) => { const [m, s] = (t || "0:00").split(":").map(Number); return (m || 0) * 60 + (s || 0); };
 const mmss = (n: number) => `${Math.floor(n / 60)}:${String(n % 60).padStart(2, "0")}`;
 
@@ -26,7 +26,7 @@ const TAG_LABEL: Record<string, string> = {
 };
 const GRADE_LABEL: Record<string, string> = { measured: "Measured", demo: "Demo", case: "Case", anecdote: "Anecdote", assertion: "Assertion" };
 const GRADES = ["measured", "demo", "case", "anecdote", "assertion"];
-const SIGNAL_WORD: Record<number, string> = { 5: "New result, strong evidence", 4: "Specific and well evidenced", 3: "Useful, lighter on evidence", 2: "Position or overview", 1: "Not a technical session" };
+const SIGNAL_WORD: Record<number, string> = { 5: "New result, strong evidence", 4: "Specific and well evidenced", 3: "Useful, lighter on evidence", 2: "Position or overview", 1: "Informal session" };
 const KIND_LABEL: Record<string, string> = { tool: "Tools", repo: "Repositories", benchmark: "Benchmarks", dataset: "Datasets", paper: "Papers", standard: "Standards and specifications" };
 
 type Rec = any;
@@ -62,23 +62,23 @@ function talk(r: Rec): string {
   const frameworks = (r.frameworks ?? []).map((f: any) => `<li><strong>${esc(f.name)}.</strong> ${esc(f.description)}</li>`).join("");
   const artifacts = (r.artifacts ?? []).map((a: any) => `<li><strong>${esc(a.name)}</strong> <span class="chip">${esc(a.kind)}</span> ${esc(a.note)}${a.url ? ` <span class="url">${esc(a.url)}</span>` : ""}</li>`).join("");
   const quotes = (r.quotes ?? []).map((q: any) => `<blockquote><p>${esc(q.text)}</p><footer>${esc(q.speaker)} ${tlink(r, q.t)}</footer></blockquote>`).join("");
-  const discount = (r.limits?.length || r.critique?.length) ? `<h4>What to discount</h4>${r.critique?.length ? `<p class="sub2">This breakdown's assessment</p><ul>${r.critique.map((x: string) => `<li>${esc(x)}</li>`).join("")}</ul>` : ""}${r.limits?.length ? `<p class="sub2">Limits the speaker acknowledged</p><ul>${r.limits.map((x: string) => `<li>${esc(x)}</li>`).join("")}</ul>` : ""}` : "";
+  const discount = (r.limits?.length || r.critique?.length) ? `<h4>How far the evidence goes</h4>${r.critique?.length ? `<p class="sub2">This breakdown's assessment</p><ul>${r.critique.map((x: string) => `<li>${esc(x)}</li>`).join("")}</ul>` : ""}${r.limits?.length ? `<p class="sub2">Limits the speaker acknowledged</p><ul>${r.limits.map((x: string) => `<li>${esc(x)}</li>`).join("")}</ul>` : ""}` : "";
   const rest = [
     r.argument?.length ? `<h4>The argument</h4><ol>${r.argument.map((x: string) => `<li>${esc(x)}</li>`).join("")}</ol>` : "",
     frameworks ? `<h4>Frameworks and models</h4><ul>${frameworks}</ul>` : "",
     artifacts ? `<h4>Tools, papers and other artifacts</h4><ul>${artifacts}</ul>` : "",
     list("Attacks and failure modes", r.offense), list("Defenses and controls", r.defense), list("Demos", r.demos),
-    list("On the slides, not said aloud", r.slide_only), quotes ? `<h4>Quotes</h4>${quotes}` : "", list("Q&amp;A", r.qa), list("Extraction caveats", r.caveats),
+    list("On the slides, not said aloud", r.slide_only), quotes ? `<h4>Quotes</h4>${quotes}` : "", list("Q&amp;A", r.qa), list("Notes on this record", r.caveats),
   ].join("");
   return `<article class="entry talk" id="talk-${r.nn}" data-nn="${r.nn}">
   <h3><span class="nn">${r.nn}</span> ${esc(r.title)}</h3>
   <p class="byline">${esc(who(r))} · ${esc(r.format)} · ${r.duration_min} min · <a href="${esc(r.url)}" target="_blank" rel="noopener">Watch</a></p>
   <p class="sig"><span class="signal s${sc}" title="Signal ${sc} of 5">${"●".repeat(sc)}${"○".repeat(5 - sc)}</span> <strong>${SIGNAL_WORD[sc] ?? ""}.</strong> ${esc(r.signal?.reason)}</p>
-  <p class="answer">${esc(r.thesis)}</p>
+  <p class="answer"><span class="lead">The talk's thesis:</span> ${esc(r.thesis)}</p>
   <p class="tags">${(r.tags ?? []).map((t: string) => `<span class="chip">${esc(TAG_LABEL[t] ?? t)}</span>`).join(" ")}</p>
   <details><summary>Full breakdown: ${(r.claims ?? []).length} claims, ${(r.numbers ?? []).length} numbers, ${(r.key_frames ?? []).filter((k: any) => hasImg(r, k)).length} slides</summary><div class="body">
     <p>${esc(r.summary)}</p>
-    ${list("What to do with it", r.takeaways)}
+    ${list("What to do with it (this breakdown's reading)", r.takeaways)}
     ${discount}
     ${claims ? `<h4>Claims and evidence</h4><div class="table-wrap"><table><thead><tr><th scope="col">Claim</th><th scope="col">Evidence shown</th><th scope="col">Grade</th><th scope="col">At</th></tr></thead><tbody>${claims}</tbody></table></div>` : ""}
     ${frames ? `<h4>Key slides</h4><div class="slides">${frames}</div>` : ""}
@@ -122,7 +122,7 @@ function evidenceBar(): string {
   const W = 760, x0 = 10, w = W - 20, u = w / nCl; let x = x0;
   const cls: Record<string, string> = { measured: "eb-m", demo: "eb-s", case: "eb-s", anecdote: "eb-u", assertion: "eb-u" };
   const segs = GRADES.map((k) => { const sw = g[k] * u, cx = x + sw / 2; const out = `<rect class="${cls[k]}" x="${x.toFixed(1)}" y="12" width="${(sw - 2).toFixed(1)}" height="34"/><text class="c-label" x="${cx.toFixed(1)}" y="68" text-anchor="middle">${GRADE_LABEL[k]}</text><text class="c-tick" x="${cx.toFixed(1)}" y="86" text-anchor="middle">${g[k]} · ${pct(g[k])}%</text>`; x += sw; return out; }).join("");
-  return `<figure><div class="figure-frame"><svg viewBox="0 0 ${W} 96" style="--fig-min: ${W}px" role="img" aria-labelledby="evb-t evb-d" xmlns="http://www.w3.org/2000/svg"><title id="evb-t">All ${nCl} claims by the evidence shown</title><desc id="evb-d">${GRADES.map((k) => `${GRADE_LABEL[k]} ${g[k]}`).join("; ")}.</desc>${segs}</svg></div><figcaption><strong>Three claims in ten came with the speaker's own measurements, and nearly as many came with nothing.</strong> All ${nCl} recorded claims, by the evidence the talk showed for each. Measured means the speaker's own data or experiment. A case is a specific real incident or deployment. An assertion was stated without support.</figcaption></figure>`;
+  return `<figure><div class="figure-frame"><svg viewBox="0 0 ${W} 96" style="--fig-min: ${W}px" role="img" aria-labelledby="evb-t evb-d" xmlns="http://www.w3.org/2000/svg"><title id="evb-t">All ${nCl} claims by the evidence shown</title><desc id="evb-d">${GRADES.map((k) => `${GRADE_LABEL[k]} ${g[k]}`).join("; ")}.</desc>${segs}</svg></div><figcaption><strong>Three claims in ten came with the speaker's own measurements, and nearly as many were stated with no evidence shown in the talk.</strong> All ${nCl} recorded claims, by the evidence the talk showed for each. Measured means the speaker's own data or experiment. A case is a specific real incident or deployment. An assertion was stated without support.</figcaption></figure>`;
 }
 const sub: Record<string, string> = { CLAIMS: String(nCl), SESSIONS: String(recs.length), TOP: String(top), NO_MEASURED: words[noM] ?? String(noM), EVIDENCE_BAR: evidenceBar() };
 const fill = (s: string) => s.replace(/\{\{(\w+)\}\}/g, (_, k) => sub[k] ?? `[missing ${k}]`);
@@ -175,6 +175,12 @@ svg.eb { display: block; }
 .talkrefs a { margin-right: 6px; white-space: nowrap; }
 details.kind, details.record { margin-top: var(--s4); }
 .trail td:nth-child(2) { white-space: normal; min-width: 12ch; }
+.talk .answer .lead { font: 600 var(--fs-sm) var(--font-ui); color: var(--fg-muted); }
+.lit-h { font: 650 var(--fs-xs) var(--font-ui); letter-spacing: 0.06em; text-transform: uppercase; color: var(--accent-2); margin-top: var(--s5); }
+ul.lit { font: 400 var(--fs-sm)/1.55 var(--font-ui); color: var(--fg-muted); padding-left: 1.1em; }
+ul.lit li + li { margin-top: var(--s2); }
+ul.lit .venue { color: var(--fg-subtle); }
+ul.lit .venue::before { content: "("; } ul.lit .venue::after { content: ")"; }
 `;
 
 const html = `<title>[un]prompted 2 Breakdown</title>
@@ -188,7 +194,7 @@ ${extra}
     <div class="kicker">Conference breakdown · [un]prompted 2, October 2026</div>
     <h1>What [un]prompted 2 claimed, and what backed it</h1>
     <p class="dek">Every available session of the AI security practitioner conference, broken down from its recording: the thesis, each claim with the evidence shown, the numbers, the slides and an assessment.</p>
-    <div class="meta"><span>${recs.length} sessions</span><span>${Math.round(totalMin / 60)} hours of video</span><span>${nCl} graded claims</span><span>${imgCount} slides</span><span>Built 25 Nov 2026 with AI assistance; see <a href="#method">Method</a></span></div>
+    <div class="meta"><span>${recs.length} sessions</span><span>${Math.round(totalMin / 60)} hours of video</span><span>${nCl} graded claims</span><span>${imgCount} slides</span><span>Records written by an AI model from the recordings, 25 Nov 2026; see <a href="#method">Method</a></span></div>
   </header>
   <main>
     <div class="with-toc">
@@ -213,7 +219,7 @@ ${extra}
           <div class="field"><label for="talk-sig">Minimum signal</label><select id="talk-sig"><option value="1">Any</option><option value="3">3 and up</option><option value="4">4 and up</option><option value="5">5 only</option></select></div>
           <div class="chips" role="group" aria-label="Topic">${tagChips}</div>
         </div>
-        <p class="legend"><strong>Signal</strong> is this breakdown's judgment of the evidence shown, from 5 (a new result with strong evidence) through 4 (specific and well evidenced), 3 (useful, lighter on evidence) and 2 (a position or overview talk) to 1 (not a technical session). It rates how much checkable evidence the recording holds, and says nothing about the speaker or the work beyond the talk. <strong>Evidence bars</strong> count each talk's claims: <span class="key m"></span>measured by the speaker <span class="key s"></span>shown as a demo or a specific case <span class="key u"></span>anecdote or assertion.</p>
+        <p class="legend"><strong>Signal</strong> is this breakdown's judgment of the evidence shown, from 5 (a new result with strong evidence) through 4 (specific and well evidenced), 3 (useful, lighter on evidence) and 2 (a position or overview talk) to 1 (an informal session, such as closing remarks or a show-and-tell). It rates how much checkable evidence the recording holds, and says nothing about the speaker or the work beyond the talk. <strong>Evidence bars</strong> count each talk's claims: <span class="key m"></span>measured by the speaker <span class="key s"></span>shown as a demo or a specific case <span class="key u"></span>anecdote or assertion.</p>
         <p class="filter-sentence" id="talk-sentence" aria-live="polite">All ${recs.length} talks</p>
         <p class="filter-empty" id="talk-empty" hidden>No talks match. Clear a filter to see more.</p>
         <div class="table-wrap index-wrap wide"><table id="talk-index">

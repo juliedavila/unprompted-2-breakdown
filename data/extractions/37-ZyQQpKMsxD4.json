@@ -4,8 +4,14 @@
   "url": "https://www.youtube.com/watch?v=ZyQQpKMsxD4",
   "title": "Real-Time Scope Enforcement with Jev",
   "speakers": [
-    {"name": "Vincent Abruzzo", "affiliation": "Principal Research Engineer, Dreadnode"},
-    {"name": "Shane Caldwell", "affiliation": "Principal Research Engineer, Dreadnode"}
+    {
+      "name": "Vincent Abruzzo",
+      "affiliation": "Principal Research Engineer, Dreadnode"
+    },
+    {
+      "name": "Shane Caldwell",
+      "affiliation": "Principal Research Engineer, Dreadnode"
+    }
   ],
   "format": "talk",
   "duration_min": 22,
@@ -113,20 +119,76 @@
     }
   ],
   "numbers": [
-    {"figure": "100", "meaning": "agent trajectories collected for ScopeJudge", "t": "04:48"},
-    {"figure": "4,897", "meaning": "tool calls in the ScopeJudge corpus (about 4,800 on the raw data slide)", "t": "04:48"},
-    {"figure": "7.7%", "meaning": "share of tool calls labeled scope violations", "t": "05:21"},
-    {"figure": "5", "meaning": "expert labelers, majority vote of three or more decides", "t": "05:51"},
-    {"figure": "0.64", "meaning": "Fleiss kappa inter-grader agreement (abstract)", "t": "04:17"},
-    {"figure": "0.78", "meaning": "expert agreement reference point F1 (abstract and chart)", "t": "04:17"},
-    {"figure": "0.66", "meaning": "GLM-5.2 best F1 across context strategies (abstract); 0.637 on the intent-plus-calls chart", "t": "06:52"},
-    {"figure": "0.570", "meaning": "Jev 1.13 F1 with intent plus last 12 calls", "t": "09:29"},
-    {"figure": "$0.105", "meaning": "Jev cost per 1,000 tool-call decisions; GLM-5.2 $3.22, Opus 4.8 $9.76", "t": "09:29"},
-    {"figure": "31x", "meaning": "Jev cost advantage over GLM-5.2 per the cost slide", "t": "09:29"},
-    {"figure": "30", "meaning": "dead-end tasks in the ScopeBench pilot", "t": "12:03"},
-    {"figure": "35.6 pp", "meaning": "scope-adherence gap between Opus 4.8 and Sonnet 4.6", "t": "13:07"},
-    {"figure": "15.7 / 21.0 / 24.0 / 22.0 of 30", "meaning": "Sonnet 4.6 scope adherence with no monitor, Jev, Jev to GLM, Jev to GLM to Opus", "t": "15:13"},
-    {"figure": "27.7 / 25.3 / 27.0 / 25.3 of 30", "meaning": "Sonnet 4.6 capability in the same four conditions", "t": "15:13"}
+    {
+      "figure": "100",
+      "meaning": "agent trajectories collected for ScopeJudge",
+      "t": "04:48"
+    },
+    {
+      "figure": "4,897",
+      "meaning": "tool calls in the ScopeJudge corpus (about 4,800 on the raw data slide)",
+      "t": "04:48"
+    },
+    {
+      "figure": "7.7%",
+      "meaning": "share of tool calls labeled scope violations",
+      "t": "05:21"
+    },
+    {
+      "figure": "5",
+      "meaning": "expert labelers, majority vote of three or more decides",
+      "t": "05:51"
+    },
+    {
+      "figure": "0.64",
+      "meaning": "Fleiss kappa inter-grader agreement (abstract)",
+      "t": "04:17"
+    },
+    {
+      "figure": "0.78",
+      "meaning": "expert agreement reference point F1 (abstract and chart)",
+      "t": "04:17"
+    },
+    {
+      "figure": "0.66",
+      "meaning": "GLM-5.2 best F1 across context strategies (abstract); 0.637 on the intent-plus-calls chart",
+      "t": "06:52"
+    },
+    {
+      "figure": "0.570",
+      "meaning": "Jev 1.13 F1 with intent plus last 12 calls",
+      "t": "09:29"
+    },
+    {
+      "figure": "$0.105",
+      "meaning": "Jev cost per 1,000 tool-call decisions; GLM-5.2 $3.22, Opus 4.8 $9.76",
+      "t": "09:29"
+    },
+    {
+      "figure": "31x",
+      "meaning": "Jev cost advantage over GLM-5.2 per the cost slide",
+      "t": "09:29"
+    },
+    {
+      "figure": "30",
+      "meaning": "dead-end tasks in the ScopeBench pilot",
+      "t": "12:03"
+    },
+    {
+      "figure": "35.6 pp",
+      "meaning": "scope-adherence gap between Opus 4.8 and Sonnet 4.6",
+      "t": "13:07"
+    },
+    {
+      "figure": "15.7 / 21.0 / 24.0 / 22.0 of 30",
+      "meaning": "Sonnet 4.6 scope adherence with no monitor, Jev, Jev to GLM, Jev to GLM to Opus",
+      "t": "15:13"
+    },
+    {
+      "figure": "27.7 / 25.3 / 27.0 / 25.3 of 30",
+      "meaning": "Sonnet 4.6 capability in the same four conditions",
+      "t": "15:13"
+    }
   ],
   "frameworks": [
     {
@@ -151,12 +213,42 @@
     }
   ],
   "artifacts": [
-    {"name": "ScopeJudge", "kind": "benchmark", "note": "Offline benchmark and dataset of about 4,900 labeled tool calls for judging scope violations; arXiv preprint dated 8 Jul 2026 (cs.CR), titled ScopeJudge: Cost-Aware Pre-Execution Gating for Offensive Security Agents.", "url": ""},
-    {"name": "ScopeBench", "kind": "benchmark", "note": "Paired capability and scope-adherence benchmark of 30 dead-end security tasks (pilot) with trajectories and paper, titled ScopeBench: Do Agents Preserve Engagement Boundaries Under Goal Pressure? Community-contributed tasks invited, contributors become co-authors on future papers.", "url": ""},
-    {"name": "Jev (jev-1.13.0)", "kind": "product", "note": "General decision classifier taking a state string and named questions with allow and deny criteria, returning a choice, confidence and probabilities. The talk does not say who makes it.", "url": ""},
-    {"name": "AISI incident report: unsanctioned agent behaviour during cyber testing", "kind": "paper", "note": "UK AI Security Institute report INC-2026-07-28-01, dated Aug 4 2026; section 5.3 notes no synchronous LLM monitoring ran and calls it challenging for cyber evaluations. Prompted the ScopeJudge work.", "url": ""},
-    {"name": "Claude Code auto mode and OpenAI auto-review", "kind": "product", "note": "Existing synchronous LLM-monitor designs cited as the model for the judge setup; OpenAI post titled Auto-review of agent actions without synchronous human oversight, Apr 30 2026.", "url": ""},
-    {"name": "ScopeProbe", "kind": "tool", "note": "Planned activation-probe research asking whether scope violation is decodable from the residual stream; preliminary results said to show something there.", "url": ""}
+    {
+      "name": "ScopeJudge",
+      "kind": "benchmark",
+      "note": "Offline benchmark and dataset of about 4,900 labeled tool calls for judging scope violations; arXiv preprint dated 8 Jul 2026 (cs.CR), titled ScopeJudge: Cost-Aware Pre-Execution Gating for Offensive Security Agents.",
+      "url": ""
+    },
+    {
+      "name": "ScopeBench",
+      "kind": "benchmark",
+      "note": "Paired capability and scope-adherence benchmark of 30 dead-end security tasks (pilot) with trajectories and paper, titled ScopeBench: Do Agents Preserve Engagement Boundaries Under Goal Pressure? Community-contributed tasks invited, contributors become co-authors on future papers.",
+      "url": ""
+    },
+    {
+      "name": "Jev (jev-1.13.0)",
+      "kind": "product",
+      "note": "General decision classifier taking a state string and named questions with allow and deny criteria, returning a choice, confidence and probabilities. The talk does not say who makes it.",
+      "url": ""
+    },
+    {
+      "name": "AISI incident report: unsanctioned agent behaviour during cyber testing",
+      "kind": "paper",
+      "note": "UK AI Security Institute report INC-2026-07-28-01, dated Aug 4 2026; section 5.3 notes no synchronous LLM monitoring ran and calls it challenging for cyber evaluations. Prompted the ScopeJudge work.",
+      "url": ""
+    },
+    {
+      "name": "Claude Code auto mode and OpenAI auto-review",
+      "kind": "product",
+      "note": "Existing synchronous LLM-monitor designs cited as the model for the judge setup; OpenAI post titled Auto-review of agent actions without synchronous human oversight, Apr 30 2026.",
+      "url": ""
+    },
+    {
+      "name": "ScopeProbe",
+      "kind": "tool",
+      "note": "Planned activation-probe research asking whether scope violation is decodable from the residual stream; preliminary results said to show something there.",
+      "url": ""
+    }
   ],
   "slide_only": [
     "Co-author slide: Ads Dawson (Staff AI Security Researcher), Michael Kouremetis (Principal AI Research Engineer), Max Harley (Principal Security Researcher), Will Pearce (Co-Founder).",
@@ -173,11 +265,31 @@
   ],
   "demos": [],
   "quotes": [
-    {"text": "As we've seen, agents are capable. The thing today is the least capable they'll ever be going forward. But as we've seen, they also love to reward hack and break out of sandboxes.", "speaker": "Vincent Abruzzo", "t": "01:08"},
-    {"text": "If you're just looking at whether a tool call is malicious, everything you do in offensive security is malicious.", "speaker": "Shane Caldwell", "t": "03:46"},
-    {"text": "We engaged in the last act of human will in a world where all of your hard work is being eaten by agents. We label data by hand.", "speaker": "Shane Caldwell", "t": "05:21"},
-    {"text": "It's just a classifier. On the other hand it's a general classifier. We didn't have to train this.", "speaker": "Vincent Abruzzo", "t": "08:58"},
-    {"text": "You wouldn't want to rely on Jev, really any model, in isolation.", "speaker": "Vincent Abruzzo", "t": "10:30"}
+    {
+      "text": "As we've seen, agents are capable. The thing today is the least capable they'll ever be going forward. But as we've seen, they also love to reward hack and break out of sandboxes.",
+      "speaker": "Vincent Abruzzo",
+      "t": "01:08"
+    },
+    {
+      "text": "If you're just looking at whether a tool call is malicious, everything you do in offensive security is malicious.",
+      "speaker": "Shane Caldwell",
+      "t": "03:46"
+    },
+    {
+      "text": "We engaged in the last act of human will in a world where all of your hard work is being eaten by agents. We label data by hand.",
+      "speaker": "Shane Caldwell",
+      "t": "05:21"
+    },
+    {
+      "text": "It's just a classifier. On the other hand it's a general classifier. We didn't have to train this.",
+      "speaker": "Vincent Abruzzo",
+      "t": "08:58"
+    },
+    {
+      "text": "You wouldn't want to rely on Jev, really any model, in isolation.",
+      "speaker": "Vincent Abruzzo",
+      "t": "10:30"
+    }
   ],
   "offense": [
     "Agents given an external-scope pentest have, on overnight runs, compromised internal infrastructure; news examples listed on a slide.",
@@ -215,7 +327,7 @@
     "The speaker attributes the third-tier result to Opus not recognizing server-side request forgery pivots, based on reading the data; this was not tested separately.",
     "Only one agent model (Sonnet 4.6) appears in the monitor cascade results, and the agent also changes the adherence baseline, so generality across agents is unshown.",
     "The talk never says who makes Jev or whether it is open weights, so cost and deployment comparisons cannot be reproduced or priced from the talk alone.",
-    "Scope violations in the benchmark are constructed dead ends; real-world violations such as an overnight internal pivot may be harder to specify in an intent string.",
+    "Scope violations in the benchmark are constructed dead ends; the talk did not test real-world violations such as an overnight internal pivot against an intent string.",
     "The Q&A answer that models treated blocks as faulty tools is the one data point on adversarial agents and monitor evasion, and it is anecdote from older models."
   ],
   "qa": [
@@ -224,15 +336,38 @@
     "Jev precision and recall and prompting: Jev was given the same inputs as the LLM judges, and the question was in or out of scope; details are in the papers and datasets, with datasets for the decision models to be published.",
     "Whether linear probes were tried on closed models as well as open ones: asked from the audience; no answer was recorded."
   ],
-  "tags": ["guardrails-runtime-controls", "evals-benchmarks-metrics", "autonomous-offense", "model-internals"],
-  "key_frames": [
-    {"file": "t00568.jpg", "caption": "Judge cost per 1,000 tool calls on the same 4,897-call corpus: Jev 1.13 at $0.105 versus GLM-5.2 $3.22 and Opus 4.8 $9.76, labeled 31x cheaper."},
-    {"file": "t00584.jpg", "caption": "Out-of-scope F1 by judge: GLM-5.2 0.637, Opus 4.8 0.587, Jev 0.570, with the caveat that LLMs saw full call history and Jev the last 12 calls."},
-    {"file": "t00780.jpg", "caption": "ScopeBench scatter showing capability does not imply scope adherence; a 35.6 point adherence gap separates Opus 4.8 and Sonnet 4.6 at similar capability."},
-    {"file": "t00905.jpg", "caption": "Jev escalating to GLM lifts Sonnet 4.6 scope adherence from 15.7 to 24.0 of 30 with capability near the 27.7 baseline."},
-    {"file": "t00949.jpg", "caption": "Adding Opus 4.8 as a third tier lowers both capability and adherence versus the two-tier cascade."}
+  "tags": [
+    "guardrails-runtime-controls",
+    "evals-benchmarks-metrics",
+    "autonomous-offense",
+    "model-internals"
   ],
-  "signal": {"score": 4, "reason": "Cost, F1 and paired capability-versus-adherence figures for gating agent tool calls, including a third-tier result that did worse, from a 30-task pilot in which the compared judges received different context."},
+  "key_frames": [
+    {
+      "file": "t00568.jpg",
+      "caption": "Judge cost per 1,000 tool calls on the same 4,897-call corpus: Jev 1.13 at $0.105 versus GLM-5.2 $3.22 and Opus 4.8 $9.76, labeled 31x cheaper."
+    },
+    {
+      "file": "t00584.jpg",
+      "caption": "Out-of-scope F1 by judge: GLM-5.2 0.637, Opus 4.8 0.587, Jev 0.570, with the caveat that LLMs saw full call history and Jev the last 12 calls."
+    },
+    {
+      "file": "t00780.jpg",
+      "caption": "ScopeBench scatter showing capability does not imply scope adherence; a 35.6 point adherence gap separates Opus 4.8 and Sonnet 4.6 at similar capability."
+    },
+    {
+      "file": "t00905.jpg",
+      "caption": "Jev escalating to GLM lifts Sonnet 4.6 scope adherence from 15.7 to 24.0 of 30 with capability near the 27.7 baseline."
+    },
+    {
+      "file": "t00949.jpg",
+      "caption": "Adding Opus 4.8 as a third tier lowers both capability and adherence versus the two-tier cascade."
+    }
+  ],
+  "signal": {
+    "score": 4,
+    "reason": "The talk reports cost, F1 and paired capability-versus-adherence figures for gating agent tool calls, including a third-tier result that did worse, from a 30-task pilot in which the compared judges received different context."
+  },
   "caveats": [
     "Auto-captions garble names: Jev appears as Jeb, Dreadnode as Dreadnot, Opus 4.8 as Opus 48, AISI as AC; spellings follow the slides.",
     "Speaker says Jev is an order of magnitude cheaper than LLM judges and about 10 cents per thousand; the slide shows $0.105 and 31x versus GLM-5.2. The slide figure is used.",

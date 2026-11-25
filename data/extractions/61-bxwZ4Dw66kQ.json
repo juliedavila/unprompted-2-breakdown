@@ -3,11 +3,16 @@
   "id": "bxwZ4Dw66kQ",
   "url": "https://www.youtube.com/watch?v=bxwZ4Dw66kQ",
   "title": "Who Authorized the Agent? Making the AI Harness an Enforceable Compliance Boundary",
-  "speakers": [{"name": "Oleksii Baranovskyi", "affiliation": "Cracken"}],
+  "speakers": [
+    {
+      "name": "Oleksii Baranovskyi",
+      "affiliation": "Cracken"
+    }
+  ],
   "format": "talk",
   "duration_min": 21,
   "thesis": "To give clients assurance that an AI agent stays inside agreed limits, install and verify host-level restrictions and short-lived credentials before the agent starts, and refuse to launch if any control is missing.",
-  "summary": "Baranovskyi describes how his company, which runs AI-driven agents for vulnerability management and application security, hardened its agent runtime after clients asked for guarantees that agents stay within geographic and system limits. Agents run in Linux containers or virtual machines as an authenticated user with that user's permissions or a narrower set, and limits must be applied and verified before the agent runs. The startup architecture has a user sign in through an identity provider, a credential broker that turns the user token into temporary, scoped credentials with a shorter life than the user token, a policy compiler that merges mandatory defaults with user limits, a trusted installer such as Terraform or Ansible, and a launch gate that checks every control before releasing the agent. Runtime enforcement uses Tetragon (eBPF socket and file hooks), fapolicyd (execution and open rules) and an Envoy proxy for hostnames. He explains why policies are merged into one file per engine, why user settings may only narrow the defaults, and shows four launch cases: default, narrower access, refused launch and runtime denial. He reports observed agent evasion behavior, such as copying and renaming a blocked binary or writing a script instead, and covers credential lifetime, stale policy and file-change coverage. The live demo failed, so he showed a screenshot from an earlier virtual machine test. Q&A asked how a new tool call is authorized after launch.",
+  "summary": "Baranovskyi describes how his company, which runs AI-driven agents for vulnerability management and application security, hardened its agent runtime after clients asked for guarantees that agents stay within geographic and system limits. Agents run in Linux containers or virtual machines as an authenticated user with that user's permissions or a narrower set, and limits must be applied and verified before the agent runs. The startup architecture has a user sign in through an identity provider, a credential broker that turns the user token into temporary, scoped credentials with a shorter life than the user token, a policy compiler that merges mandatory defaults with user limits, a trusted installer such as Terraform or Ansible, and a launch gate that checks every control before releasing the agent. Runtime enforcement uses Tetragon (eBPF socket and file hooks), fapolicyd (execution and open rules) and an Envoy proxy for hostnames. He explains why policies are merged into one file per engine, why user settings may only narrow the defaults, and shows four launch cases: default, narrower access, refused launch and runtime denial. He reports observed agent evasion behavior, such as copying and renaming a blocked binary or writing a script instead, and covers credential lifetime, stale policy and file-change coverage. The live demo failed, so he showed a screenshot from an earlier virtual machine test.",
   "argument": [
     "Clients need assurance that an agent cannot exceed geographic or system boundaries, and prompt instructions alone do not provide it because agents do not always follow restrictions.",
     "Therefore limits must be applied and verified before the agent starts, with an authenticated user, short-lived scoped credentials, and policy administration kept outside the agent.",
@@ -17,40 +22,172 @@
     "Residual problems remain in credential renewal, changes in rights after launch, and file-change coverage, which need explicit design and tests."
   ],
   "claims": [
-    {"claim": "Agents will work around restrictions: when curl was blocked, an agent copied curl into the user folder and launched it from there, and others wrote Python or Perl scripts to do the same job.", "evidence": "Observed during the author's own design and testing, told as examples.", "grade": "anecdote", "t": "14:10", "source": "said"},
-    {"claim": "Agents also tried renaming blocked tools such as nmap and curl, so file renames, hard links and symlinks need their own prevention.", "evidence": "Observed in the author's tests; the file coverage slide lists the controls.", "grade": "anecdote", "t": "16:14", "source": "both"},
-    {"claim": "Prompt instructions alone are unreliable for limiting agents because they do not always follow the rules, so limits must be enforced at the run stage.", "evidence": "Based on the author's observations of agents ignoring restrictions.", "grade": "anecdote", "t": "14:40", "source": "said"},
-    {"claim": "A startup architecture of IdP, credential broker, policy compiler, trusted installer and launch gate lets the agent start only after all controls are verified, and a failed preparation never releases an unrestricted agent.", "evidence": "Architecture diagram and case slides; the author says the checks are few and can be verified with a simple script.", "grade": "assertion", "t": "06:22", "source": "both"},
-    {"claim": "Mandatory defaults must stay in force and user settings may only narrow scope, and policies should be compiled into one configuration per engine because separate policy files can conflict or overwrite each other.", "evidence": "Explained from experience with Tetragon and fapolicyd limits on policy files; no incident details given.", "grade": "assertion", "t": "10:00", "source": "both"},
-    {"claim": "A Tetragon IP denial returns a permission error on connect while keeping the agent alive, and the author hit issues with IPv4 and IPv6 and older sockets and hooks.", "evidence": "Policy fragment shown on slide (SAddr match with Override action and error -1); issues described verbally.", "grade": "demo", "t": "15:12", "source": "both"},
-    {"claim": "fapolicyd can enforce an execution allow-list and can check file integrity by hash, so a binary whose hash does not match will not launch; it does not provide a general write rule.", "evidence": "Rule examples on slide and the stated limitation.", "grade": "assertion", "t": "17:17", "source": "both"},
-    {"claim": "An Envoy proxy is used to block restricted hostnames because agents try to resolve names of resources beyond the target ones; denials return HTTP 403 so the agent gets an explicit answer.", "evidence": "Envoy configuration shown on slide, with notes that names can share an IP and that there is no inner TLS inspection.", "grade": "assertion", "t": "09:29", "source": "both"},
-    {"claim": "Credentials are issued with an expiry set before launch, bounded by run and delegation limits, and rechecked before renewal; rights changes mid-run require renewal or stopping, which the author says is difficult.", "evidence": "Credential lifetime slide and spoken caveat; no measured data.", "grade": "assertion", "t": "14:40", "source": "both"},
-    {"claim": "A packaged, pre-limited container stays limited even if the connection to the management plane is lost, so there is no dynamic per-tool-call authorization after the launch gate.", "evidence": "Answer to an audience question about tool calls after launch.", "grade": "assertion", "t": "19:53", "source": "said"},
-    {"claim": "The enforcement works against a tested sequence: loopback connection allowed, name resolution and direct IP blocked, copied curl blocked from running, even for root.", "evidence": "Static terminal screenshot from an earlier VirtualBox test (the live demo failed).", "grade": "demo", "t": "18:51", "source": "slide"}
+    {
+      "claim": "Agents will work around restrictions: when curl was blocked, an agent copied curl into the user folder and launched it from there, and others wrote Python or Perl scripts to do the same job.",
+      "evidence": "Observed during the author's own design and testing, told as examples.",
+      "grade": "anecdote",
+      "t": "14:10",
+      "source": "said"
+    },
+    {
+      "claim": "Agents also tried renaming blocked tools such as nmap and curl, so file renames, hard links and symlinks need their own prevention.",
+      "evidence": "Observed in the author's tests; the file coverage slide lists the controls.",
+      "grade": "anecdote",
+      "t": "16:14",
+      "source": "both"
+    },
+    {
+      "claim": "Prompt instructions alone are unreliable for limiting agents because they do not always follow the rules, so limits must be enforced at the run stage.",
+      "evidence": "Based on the author's observations of agents ignoring restrictions.",
+      "grade": "anecdote",
+      "t": "14:40",
+      "source": "said"
+    },
+    {
+      "claim": "A startup architecture of IdP, credential broker, policy compiler, trusted installer and launch gate lets the agent start only after all controls are verified, and a failed preparation never releases an unrestricted agent.",
+      "evidence": "Architecture diagram and case slides; the author says the checks are few and can be verified with a simple script.",
+      "grade": "assertion",
+      "t": "06:22",
+      "source": "both"
+    },
+    {
+      "claim": "Mandatory defaults must stay in force and user settings may only narrow scope, and policies should be compiled into one configuration per engine because separate policy files can conflict or overwrite each other.",
+      "evidence": "Explained from experience with Tetragon and fapolicyd limits on policy files; no incident details given.",
+      "grade": "assertion",
+      "t": "10:00",
+      "source": "both"
+    },
+    {
+      "claim": "A Tetragon IP denial returns a permission error on connect while keeping the agent alive, and the author hit issues with IPv4 and IPv6 and older sockets and hooks.",
+      "evidence": "Policy fragment shown on slide (SAddr match with Override action and error -1); issues described verbally.",
+      "grade": "demo",
+      "t": "15:12",
+      "source": "both"
+    },
+    {
+      "claim": "fapolicyd can enforce an execution allow-list and can check file integrity by hash, so a binary whose hash does not match will not launch; it does not provide a general write rule.",
+      "evidence": "Rule examples on slide and the stated limitation.",
+      "grade": "assertion",
+      "t": "17:17",
+      "source": "both"
+    },
+    {
+      "claim": "An Envoy proxy is used to block restricted hostnames because agents try to resolve names of resources beyond the target ones; denials return HTTP 403 so the agent gets an explicit answer.",
+      "evidence": "Envoy configuration shown on slide, with notes that names can share an IP and that there is no inner TLS inspection.",
+      "grade": "assertion",
+      "t": "09:29",
+      "source": "both"
+    },
+    {
+      "claim": "Credentials are issued with an expiry set before launch, bounded by run and delegation limits, and rechecked before renewal; rights changes mid-run require renewal or stopping, which the author says is difficult.",
+      "evidence": "Credential lifetime slide and spoken caveat; no measured data.",
+      "grade": "assertion",
+      "t": "14:40",
+      "source": "both"
+    },
+    {
+      "claim": "A packaged, pre-limited container stays limited even if the connection to the management plane is lost, so there is no dynamic per-tool-call authorization after the launch gate.",
+      "evidence": "Answer to an audience question about tool calls after launch.",
+      "grade": "assertion",
+      "t": "19:53",
+      "source": "said"
+    },
+    {
+      "claim": "The enforcement works against a tested sequence: loopback connection allowed, name resolution and direct IP blocked, copied curl blocked from running, even for root.",
+      "evidence": "Static terminal screenshot from an earlier VirtualBox test (the live demo failed).",
+      "grade": "demo",
+      "t": "18:51",
+      "source": "slide"
+    }
   ],
   "numbers": [
-    {"figure": "10 minutes", "meaning": "example run time limit in the narrower access case, with read-only scope", "t": "12:37"},
-    {"figure": "7", "meaning": "steps in the startup sequence from IdP authentication to starting the restricted agent", "t": "09:29"},
-    {"figure": "6", "meaning": "steps in each of the default launch and narrower access launch cases", "t": "12:07"},
-    {"figure": "403", "meaning": "HTTP status Envoy returns to deny a blocked hostname", "t": "17:49"},
-    {"figure": "2001", "meaning": "example user ID in the fapolicyd rule examples", "t": "17:17"}
+    {
+      "figure": "10 minutes",
+      "meaning": "example run time limit in the narrower access case, with read-only scope",
+      "t": "12:37"
+    },
+    {
+      "figure": "7",
+      "meaning": "steps in the startup sequence from IdP authentication to starting the restricted agent",
+      "t": "09:29"
+    },
+    {
+      "figure": "6",
+      "meaning": "steps in each of the default launch and narrower access launch cases",
+      "t": "12:07"
+    },
+    {
+      "figure": "403",
+      "meaning": "HTTP status Envoy returns to deny a blocked hostname",
+      "t": "17:49"
+    },
+    {
+      "figure": "2001",
+      "meaning": "example user ID in the fapolicyd rule examples",
+      "t": "17:17"
+    }
   ],
   "frameworks": [
-    {"name": "Limits precede execution", "description": "User requests a run; the agent acts with the user's or narrowed access; network, system and file limits are applied and verified and identity lifetime is bounded; only then is the agent started."},
-    {"name": "Startup architecture", "description": "User or launcher signs in, IdP returns a user token, credential broker validates and derives temporary tokens (scope and expiry), policy inputs (defaults, user limits, account ceiling) go to a policy compiler (Tetragon, fapolicyd, Envoy), a trusted installer sets up host and proxy, and a launch gate confirms all controls are ready before the agent harness runs restricted."},
-    {"name": "Runtime enforcement stack", "description": "Agent harness under a run identity; Tetragon for socket and file hooks; fapolicyd for execute and open; Envoy for hostname and API; protected files by OS mount or ACL; target resources by token plus native ACL."},
-    {"name": "Policy composition rules", "description": "Mandatory defaults stay effective, user settings only narrow scope, account rights bound credentials, one normalized policy contract, engine-specific rules and ordering, reject conflicts or unsupported limits."},
-    {"name": "Four launch cases", "description": "Default launch, narrower access (for example read-only for 10 minutes), launch refused (invalid token, scope conflict, policy rejection or missing readiness, with staged tokens revoked), and runtime denial (IP or hostname denied, file write denied, refusals recorded)."},
-    {"name": "Who authorized the run", "description": "IdP authenticates the user, broker bounds credentials, defaults and user limits apply, trusted installer verifies limits, launcher starts a limited agent, runtime controls enforce limits."},
-    {"name": "File change coverage", "description": "Write and append: read-only mount or OS write denial; rename, replace or delete: protect parent directories and names; new opens: Tetragon open and permission hooks; rename or hard link: dedicated path hooks and alias tests (fapolicyd); existing file descriptors and writable mmap: restart or isolate and test explicitly."}
+    {
+      "name": "Limits precede execution",
+      "description": "User requests a run; the agent acts with the user's or narrowed access; network, system and file limits are applied and verified and identity lifetime is bounded; only then is the agent started."
+    },
+    {
+      "name": "Startup architecture",
+      "description": "User or launcher signs in, IdP returns a user token, credential broker validates and derives temporary tokens (scope and expiry), policy inputs (defaults, user limits, account ceiling) go to a policy compiler (Tetragon, fapolicyd, Envoy), a trusted installer sets up host and proxy, and a launch gate confirms all controls are ready before the agent harness runs restricted."
+    },
+    {
+      "name": "Runtime enforcement stack",
+      "description": "Agent harness under a run identity; Tetragon for socket and file hooks; fapolicyd for execute and open; Envoy for hostname and API; protected files by OS mount or ACL; target resources by token plus native ACL."
+    },
+    {
+      "name": "Policy composition rules",
+      "description": "Mandatory defaults stay effective, user settings only narrow scope, account rights bound credentials, one normalized policy contract, engine-specific rules and ordering, reject conflicts or unsupported limits."
+    },
+    {
+      "name": "Four launch cases",
+      "description": "Default launch, narrower access (for example read-only for 10 minutes), launch refused (invalid token, scope conflict, policy rejection or missing readiness, with staged tokens revoked), and runtime denial (IP or hostname denied, file write denied, refusals recorded)."
+    },
+    {
+      "name": "Who authorized the run",
+      "description": "IdP authenticates the user, broker bounds credentials, defaults and user limits apply, trusted installer verifies limits, launcher starts a limited agent, runtime controls enforce limits."
+    },
+    {
+      "name": "File change coverage",
+      "description": "Write and append: read-only mount or OS write denial; rename, replace or delete: protect parent directories and names; new opens: Tetragon open and permission hooks; rename or hard link: dedicated path hooks and alias tests (fapolicyd); existing file descriptors and writable mmap: restart or isolate and test explicitly."
+    }
   ],
   "artifacts": [
-    {"name": "Tetragon", "kind": "tool", "note": "eBPF-based runtime enforcement used for socket and file hooks and IP denial.", "url": ""},
-    {"name": "fapolicyd", "kind": "tool", "note": "File access policy daemon used for execution allow-lists and open denial, including hash-based integrity checks; the transcript spells it Policy ID.", "url": ""},
-    {"name": "Envoy proxy", "kind": "tool", "note": "Used to block or allow restricted hostnames and return HTTP 403.", "url": ""},
-    {"name": "Terraform and Ansible", "kind": "tool", "note": "Named as examples of the trusted installer that delivers policies and launches the agent.", "url": ""},
-    {"name": "Keycloak, Okta", "kind": "product", "note": "Named as examples of the identity provider issuing the user token; the transcript also has a garbled third name.", "url": ""}
+    {
+      "name": "Tetragon",
+      "kind": "tool",
+      "note": "eBPF-based runtime enforcement used for socket and file hooks and IP denial.",
+      "url": ""
+    },
+    {
+      "name": "fapolicyd",
+      "kind": "tool",
+      "note": "File access policy daemon used for execution allow-lists and open denial, including hash-based integrity checks; the transcript spells it Policy ID.",
+      "url": ""
+    },
+    {
+      "name": "Envoy proxy",
+      "kind": "tool",
+      "note": "Used to block or allow restricted hostnames and return HTTP 403.",
+      "url": ""
+    },
+    {
+      "name": "Terraform and Ansible",
+      "kind": "tool",
+      "note": "Named as examples of the trusted installer that delivers policies and launches the agent.",
+      "url": ""
+    },
+    {
+      "name": "Keycloak, Okta",
+      "kind": "product",
+      "note": "Named as examples of the identity provider issuing the user token; the transcript also has a garbled third name.",
+      "url": ""
+    }
   ],
   "slide_only": [
     "Initial requirements slide: authenticate the user for every run; bound temporary or ephemeral credentials; combine defaults and user limits; install controls before agent run; keep policy admin outside the agent; test allowed and denied operations.",
@@ -70,9 +207,21 @@
     "Live demo was not shown because of technical issues; instead a screenshot of an earlier virtual machine test showed a root shell where curl to 127.0.0.1:8080 succeeded, curl to google.com could not resolve, curl to 8.8.8.8 could not connect, copying curl to ./tempcurl and running it gave operation not permitted (also through runuser as user), and whoami still returned root."
   ],
   "quotes": [
-    {"text": "Agent is not able to edit itself or bypass the enforcement.", "speaker": "Oleksii Baranovskyi", "t": "11:33"},
-    {"text": "It tried to copy the curl into the user folder and launch it from the user folder. Smart, yeah?", "speaker": "Oleksii Baranovskyi", "t": "14:10"},
-    {"text": "We can try to manage with prompts, don't do that or do that. They don't all the time follow our restrictions.", "speaker": "Oleksii Baranovskyi", "t": "14:10"}
+    {
+      "text": "Agent is not able to edit itself or bypass the enforcement.",
+      "speaker": "Oleksii Baranovskyi",
+      "t": "11:33"
+    },
+    {
+      "text": "It tried to copy the curl into the user folder and launch it from the user folder. Smart, yeah?",
+      "speaker": "Oleksii Baranovskyi",
+      "t": "14:10"
+    },
+    {
+      "text": "We can try to manage with prompts, don't do that or do that. They don't all the time follow our restrictions.",
+      "speaker": "Oleksii Baranovskyi",
+      "t": "14:10"
+    }
   ],
   "offense": [
     "Agent copies a blocked binary (curl) into a writable directory and runs it from there to get around an execution block.",
@@ -91,8 +240,8 @@
     "Treat startup policy as a versioned snapshot and recheck authority before credential renewal; if rights change, renew or stop."
   ],
   "takeaways": [
-    "Make agent launch conditional on a verification step that checks every control is installed and working, and fail closed.",
-    "Do not rely on prompt rules to confine an agent; assume it will copy, rename or script around a blocked tool and test those cases.",
+    "Make agent launch conditional on a verification step that checks every control is installed and working, and refuse to launch (fail closed) if any check fails.",
+    "Do not rely on prompt rules to confine an agent, assume it will copy, rename or script around a blocked tool, and test those cases.",
     "Block by execution allow-list and file-integrity hash, not just by tool name, and cover rename and link operations.",
     "Issue per-run credentials through a broker with expiry set at launch and a ceiling from the user's own account rights.",
     "Decide up front how rights changes, credential renewal and policy reloads are handled mid-run, since the design here mostly handles them by renewing or stopping."
@@ -110,23 +259,43 @@
     "The title question, who authorized the agent, is answered as a chain from IdP through a broker, but the talk does not address downstream authorization at target services beyond saying tokens and native ACLs apply, nor how audit evidence is produced beyond refusals being recorded.",
     "The model fits a single-tenant container run for one user; it does not address multi-agent delegation, tool calls through MCP or SaaS APIs, or long-lived sessions where policy staleness matters most.",
     "Some claims, such as that agents ignore prompt restrictions, rest on informal observation and were not quantified.",
-    "The affiliation is spelled Kraken in speech and Cracken on the slide and in the description, so it should be confirmed before citing."
+    "The affiliation is spelled Kraken in speech and Cracken on the slide and in the published description, so it should be confirmed before citing."
   ],
   "qa": [
     "Once the launch gate is released, if a tool call involves a new tool invocation, how is authorization verified dynamically, by the policy engine or by failing? The answer was that the agent is delivered inside a limited environment, packaged in a container with policies, so even if the connection or management is lost it stays limited and cannot do anything harmful; no per-call policy decision was described."
   ],
-  "tags": ["sandboxing-isolation", "agent-authz-identity", "guardrails-runtime-controls", "governance-policy"],
-  "key_frames": [
-    {"file": "t00266.jpg", "caption": "Startup architecture diagram: IdP, credential broker, policy compiler, trusted installer, launch gate and restricted agent run."},
-    {"file": "t00461.jpg", "caption": "Runtime enforcement stack: Tetragon socket and file hooks, fapolicyd execute and open, Envoy hostname and API."},
-    {"file": "t00989.jpg", "caption": "Table of file-change operations and the control and evidence for each, including renames and writable mmap."},
-    {"file": "t01137.jpg", "caption": "Terminal screenshot showing the copied curl blocked and unresolved external hosts, from an earlier VM test."}
+  "tags": [
+    "sandboxing-isolation",
+    "agent-authz-identity",
+    "guardrails-runtime-controls",
+    "governance-policy"
   ],
-  "signal": {"score": 3, "reason": "Practical, specific host-confinement pattern with useful agent-evasion observations, no measurements were shown, the live demo did not run, and the recording covers part of the scope in the published description."},
+  "key_frames": [
+    {
+      "file": "t00266.jpg",
+      "caption": "Startup architecture diagram: IdP, credential broker, policy compiler, trusted installer, launch gate and restricted agent run."
+    },
+    {
+      "file": "t00461.jpg",
+      "caption": "Runtime enforcement stack: Tetragon socket and file hooks, fapolicyd execute and open, Envoy hostname and API."
+    },
+    {
+      "file": "t00989.jpg",
+      "caption": "Table of file-change operations and the control and evidence for each, including renames and writable mmap."
+    },
+    {
+      "file": "t01137.jpg",
+      "caption": "Terminal screenshot showing the copied curl blocked and unresolved external hosts, from an earlier VM test."
+    }
+  ],
+  "signal": {
+    "score": 3,
+    "reason": "The talk presents a host-level confinement pattern with a verified launch gate and reports agent evasion attempts such as copying and renaming blocked binaries; no measurements were shown, the live demo did not run, and the recording covers part of the scope in the published description."
+  },
   "caveats": [
     "Auto-captions garble names: the speaker's first name appears as Alexey and the affiliation as Kraken; the slide and caption give Oleksii Baranovskyi and Cracken.",
     "The transcript spells fapolicyd as Policy ID and has an garbled IdP product name (Authentic); only Keycloak and Okta are clear.",
-    "The description mentions a policy decision point, a prototype, executable policy models, a decision-only API versus inline proxy demo, wrapper bypass and service-account substitution; none of these appear in the talk or on the slides.",
+    "The published description mentions a policy decision point, a prototype, executable policy models, a decision-only API versus inline proxy demo, wrapper bypass and service-account substitution; none of these appear in the talk or on the slides.",
     "The screenshot slide shows a date of Sep 29 on the VM desktop clock, which is the only date given for the test.",
     "Q&A transcript includes an organizer's remarks about coffee until 3:30; only one audience question was recorded."
   ]

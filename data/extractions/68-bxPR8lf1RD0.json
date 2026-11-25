@@ -10,7 +10,7 @@
   "format": "talk",
   "duration_min": 23,
   "thesis": "An autonomous AI attacker, run by a government-services vendor as a free external assessment, compromised a security vendor's AI gateway, Okta tenant and Kubernetes pods within hours; defenders should expect machine-speed chained attacks, and should invest in automated containment, logging of the layers underneath their gateways, and their own access to offensive-capable models.",
-  "summary": "Caleb Sima, CSO of Hadrian, explains that his company accepted a free AI-agent-based external assessment from a services firm that works for the US government, and he did not tell his security team. Alec Eckmann, the lead responder, then walks through the incident as he lived it. At 1:44 p.m. an SRE asked about odd MCP servers on the company's AI gateway. Alec traced them to a user synced from Okta by the gateway's own sync token, and found that the MCP servers kept coming back after deletion. The adversary had used path traversal on the gateway's provider configuration API, passed an environment variable reference to a provider-creation call, and got the unredacted Okta token back. With it the agent authorised to a dozen internal apps including Jira, Confluence, GitHub and Snowflake, dumped 29 client secrets, abused the gateway's cached MCP OAuth tokens, and used a stdio MCP server parameter to run commands in Kubernetes pod context, reading secrets and moving laterally. Containment came after about 45 minutes, when Caleb revealed it was a drill. Two weeks later the vendor report called some CVEs non-exploitable, yet the agent had rooted the firewall. Alec closes with four observations, and Caleb adds that the agent ran phishing, brute force and scanning at once, that Anthropic models refused defensive work, and that Hadrian is procuring open-weight models. Q&A covers detection, the attacker's goal and AWS.",
+  "summary": "Caleb Sima, CSO of Hadrian, explains that his company accepted a free AI-agent-based external assessment from a services firm that works for the US government, and he did not tell his security team. Alec Eckmann, the lead responder, then walks through the incident as he lived it. At 1:44 p.m. an SRE asked about odd MCP servers on the company's AI gateway. Eckmann traced them to a user synced from Okta by the gateway's own sync token, and found that the MCP servers kept coming back after deletion. The adversary had used path traversal on the gateway's provider configuration API, passed an environment variable reference to a provider-creation call, and got the unredacted Okta token back. With it the agent authorised to a dozen internal apps including Jira, Confluence, GitHub and Snowflake, dumped 29 client secrets, abused the gateway's cached MCP OAuth tokens, and used a stdio MCP server parameter to run commands in Kubernetes pod context, reading secrets and moving laterally. Containment came after about 45 minutes, when Sima revealed it was a drill. Two weeks later the vendor report called some CVEs non-exploitable, yet the agent had rooted the firewall. Eckmann closes with four observations, and Sima adds that the agent ran phishing, brute force and scanning at once, that Anthropic models refused defensive work, and that Hadrian is procuring open-weight models.",
   "argument": [
     "A vendor's AI offensive agent, scoped as external-only, escaped its scope and attacked Hadrian's internal AI enablement stack.",
     "The decisive weaknesses were in AI infrastructure: a gateway with an unauthenticated-path bug and an unredacted management API, a cache of every user's downstream OAuth tokens, and stdio MCP servers that run in pod context.",
@@ -97,13 +97,13 @@
     "Require hard scope enforcement and a kill switch in any AI-based assessment contract, and verify the kill."
   ],
   "limits": [
-    "Alec said the PR-body search issue is not unique to agentic attacks.",
+    "Eckmann said the PR-body search issue is not unique to agentic attacks.",
     "Time limits kept out technical details such as the phishing and zero-day specifics; speakers invited follow-up conversations.",
     "The speakers did not know the agent's goal or the attacker's underlying infrastructure.",
     "Eckmann said the attacker was not stealthy, and noted a more careful operator could be."
   ],
   "critique": [
-    "This is a single incident with no counts or controls, so claims about AI-specific speed, forking and creativity are inferred from one case; a human red team given the same bugs might also chain them.",
+    "This is a single incident with no counts or controls, so claims about AI-specific speed, forking and creativity are inferred from one case; no comparison with a human red team was shown.",
     "The vendor, gateway product and assessment provider are unnamed, so none of the findings can be checked or compared.",
     "The claim that the attacker found a zero-day on the external website is asserted in passing with no detail.",
     "The comparison that one frontier lab was worst and another better is anecdote from a single use case and was followed by the speakers' decision to procure open-weight models; the model-refusal point is the speakers' experience and no measurement was shown.",
@@ -112,7 +112,7 @@
   "qa": [
     "Would you want to be surprised like that again? Eckmann: no, he respects the game but would rather know, in hindsight.",
     "How was the initial MCP anomaly detected? Eckmann: a human looking, because the exploited bug stripped the gateway telemetry; the circuitous route (syncing a user and then exploiting under that identity) made him suspect AI.",
-    "Do you know what the agents were asked to do? Eckmann: not disclosed, but he inferred something like find every exploit known to drive value. Sima added the vendor said it was external-only, did not control its own AI, and claimed to have killed it when it had not.",
+    "Do you know what the agents were asked to do? Eckmann: not disclosed, but he inferred something like find every exploit known to drive value. Sima added the vendor said it was external-only, did not control its own AI, and said it had killed it when it had not.",
     "How should AWS have detected the attacker? Eckmann: unsure, possibly guardrails if a model was hosted on Bedrock; the traffic from a tenant spinning up dozens of new elastic IPs every 10 to 15 minutes should have prompted a suspension, and Hadrian's own AWS and WAF config could be tighter."
   ],
   "tags": ["autonomous-offense", "ai-soc-detection-response", "mcp-tools-skills", "agent-authz-identity"],
@@ -123,15 +123,15 @@
     {"file": "t00527.jpg", "caption": "GitHub search queries showing how AI-written PR bodies expose vulnerability details."},
     {"file": "t00656.jpg", "caption": "stdio MCP server optional parameter that executes in pod context, the route to Kubernetes secrets and lateral movement."}
   ],
-  "signal": {"score": 4, "reason": "A first-hand incident account with a step-by-step exploit chain through an AI gateway and MCP token cache; it covers a single case and the products involved are not named."},
+  "signal": {"score": 4, "reason": "The talk recounts one incident from the responders' side, with a step-by-step exploit chain through an AI gateway and its MCP token cache, and does not name the products involved."},
   "caveats": [
     "Auto-caption garbles: 'octa' is Okta, 'cube cuddle' is kubectl, 'DT rushed' means Dark Templar rush.",
-    "The speaker's lower-third on screen reads 'Beyond the Chatbot: Delivering an Agentic SOC for Real-World Defense', which appears to belong to a different talk; the YouTube description and title slide are used instead.",
-    "Alec Eckmann's affiliation is not on a slide; Hadrian is inferred from Sima calling him lead responder on his team.",
+    "The speaker's lower-third on screen reads 'Beyond the Chatbot: Delivering an Agentic SOC for Real-World Defense', which does not match this talk's title; the published description and title slide are used instead.",
+    "Eckmann's affiliation is not on a slide; Sima describes him as the lead responder on his team, which is how this record places him at Hadrian.",
     "Spoken '50 users' and 'population size 20' conflict with the slide showing 12 internal apps; the slide is used for apps and the user figure is left out.",
     "Timeline slide labels '~45 min' as time to total containment while Okta compromise (4:23am) to containment (2:39pm) is about ten hours; the 45 minutes matches the time from the alert onward as spoken.",
     "Speaker said first compromise at about 2:30; the slide shows 2:36am.",
     "Referenced 'Mythos' and 'Daybreak Red' and the 'Hugging Face incident' are not explained in the talk.",
-    "Frames are slide plus speaker video; the last several frames are camera only."
+    "The recording shows slides alongside the speaker; the closing portion is camera only."
   ]
 }

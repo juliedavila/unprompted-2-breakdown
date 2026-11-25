@@ -3,7 +3,7 @@
 import { readdirSync, readFileSync } from "node:fs";
 import { join, dirname } from "node:path";
 const ROOT = dirname(Bun.main);
-const TERMS = /\b(self-serving|sales pitch|vendor pitch|a pitch|pitch(es|ed)? (for|from)|marketing (talk|claim|exercise|material)|hype[sd]?|positioning|spin|overs(ell|old|elling)|overclaim\w*|oversta\w+|padd(ed|ing)|sloppy|naive(ly)?|lazy|misleading|dishonest|disingenuous|cherry-?pick\w*|thin(ly)?|weak(ly)?|fluff|little value|vendor-flavored|self-promot\w+|buzzword\w*|hand-?wav\w+)\b/i;
+const TERMS = /\b(self-serving|sales pitch|vendor pitch|a pitch|pitch(es|ed)? (for|from)|marketing (talk|claim|exercise|material)|hype[sd]?|positioning|spin|overs(ell|old|elling)|overclaim\w*|oversta\w+|padd(ed|ing)|sloppy|naive(ly)?|lazy|misleading|dishonest|disingenuous|cherry-?pick\w*|thin(ly)?|weak(ly)?|fluff|little value|vendor-flavored|self-promot\w+|buzzword\w*|hand-?wav\w+|admits?|admitted|insists?|insisted|concedes?|interrupting|hobby|boasts?|brags?|merely|meta\.json|key_frames|the extractor|the validator|the brief)\b|\bt\d{5}\.jpg|(^|[.;] )I (used|recorded|could|did|left|kept)\b/i;
 const fields = (r: any): [string, string][] => [
   ...(r.critique ?? []).map((x: string, i: number) => [`critique[${i}]`, x] as [string, string]),
   ["signal.reason", r.signal?.reason ?? ""], ["summary", r.summary ?? ""], ["thesis", r.thesis ?? ""],

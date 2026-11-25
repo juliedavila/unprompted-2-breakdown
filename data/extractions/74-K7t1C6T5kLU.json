@@ -3,7 +3,12 @@
   "id": "K7t1C6T5kLU",
   "url": "https://www.youtube.com/watch?v=K7t1C6T5kLU",
   "title": "Building & Breaking an MCP Permission Broker (Approval Is Not Human Presence)",
-  "speakers": [{"name": "Brooks McMillin", "affiliation": "The Browser Company"}],
+  "speakers": [
+    {
+      "name": "Brooks McMillin",
+      "affiliation": "The Browser Company"
+    }
+  ],
   "format": "talk",
   "duration_min": 26,
   "thesis": "When a coding agent runs as the same Unix user as its human, an Approve click is only input the agent may be able to produce, so sensitive capabilities need a separately protected proof of human presence that the agent cannot read, write, replay or route around. Even then, per-session grants are not isolation: the surrounding environment is part of the boundary.",
@@ -17,46 +22,192 @@
     "The environment is part of the boundary: installing a terminal multiplexer that lets sessions control each other's tabs defeated the broker's guarantees without any new grant being issued."
   ],
   "claims": [
-    {"claim": "The speaker runs 20 to 30 concurrent coding-agent sessions on one workstation, started by him or by cron jobs, so per-session scoping of privileged capabilities matters.", "evidence": "Stated as his own setup.", "grade": "anecdote", "t": "01:07", "source": "said"},
-    {"claim": "A kubeconfig file plus a skill that points to it is discoverable by any agent on the machine, so omitting a credential from a prompt does not control access.", "evidence": "His own prior setup; the slide states 'Not mentioning a credential is not an access-control boundary.'", "grade": "case", "t": "02:09", "source": "both"},
-    {"claim": "An agent cannot approve its own permission request: an agent-authored elicitation response with action 'accept' and no factor is refused and leaves 0 active grants.", "evidence": "Demo A on screen showing the broker refusing and the audit record; slide 04 gives the send, expect, verify steps.", "grade": "demo", "t": "05:12", "source": "both"},
-    {"claim": "From the agent's UID, reading the service-owned TOTP seed and opening the policy database for a direct grant write both fail with EACCES.", "evidence": "Slide 06 shows the two denied operations; the speaker notes that if the agent UID equals the user UID the user must also be locked out of those files.", "grade": "demo", "t": "08:33", "source": "both"},
-    {"claim": "Replacing policy over the admin socket with an agent-authored file is refused ('--seed is not accepted over admin socket'), and pointing at a nonexistent admin socket is refused with no silent local-store fallback.", "evidence": "Slide 07 shows the commands and refusal text; no live run of these two shown.", "grade": "demo", "t": "09:03", "source": "both"},
-    {"claim": "Forged approvals fail on both paths: the CLI refuses no code and a fabricated code, and an MCP elicitation with action accept plus a fabricated code returns presence_check_failed with no new grant.", "evidence": "Slide 08 lists the outcomes.", "grade": "demo", "t": "10:40", "source": "slide"},
-    {"claim": "A historical evaluation passed 15 of 15 defined checks (5 state, routing and provisioning, 8 capability checks, 2 postconditions) and 4 probe sessions ended with 0 active grants.", "evidence": "Slide 09, labeled documented historical results; the slide adds that 15 checks are not 15 exploit techniques and the historical web UI was not live-tested.", "grade": "measured", "t": "11:11", "source": "slide"},
-    {"claim": "The human approval path broke in production while all service-health and refusal checks stayed green: a migration advanced the version but the disk held an old permission_requests table missing trusted_* columns, producing HTTP 500 'no column named trusted_title'.", "evidence": "His own incident, shown on slide 12 with the error text; he says he locked himself out a couple of times.", "grade": "case", "t": "13:18", "source": "both"},
-    {"claim": "The broker's one-time code gives only evidence that some human said yes; it does not establish who holds the phone, informed consent, transaction signing or protection after the factor is compromised.", "evidence": "Reasoning on slide 14, which lists what is enforced (single-use factor, 5 failures then 5-minute lockout, scope, expiry, revocation) against what is not established.", "grade": "assertion", "t": "11:43", "source": "both"},
-    {"claim": "Installing the Rex terminal multiplexer let an agent in a session with no browser grant drive another tab that held a browser grant, so existing authority was borrowed without any new grant being issued.", "evidence": "Live demo on a replayed run in which a session told to use the Rex browser tab handed the browser-agent MCP task to the authenticated session; slide 15 shows Session A, Rex control, Session B, browser.", "grade": "demo", "t": "17:27", "source": "both"},
-    {"claim": "The broker enforces different grants per session, but preventing borrowed authority additionally requires isolation; the same UID is not a sandbox.", "evidence": "Slide 03 states the two properties separately.", "grade": "assertion", "t": "04:11", "source": "both"},
-    {"claim": "Ambient credentials such as git or the GitHub CLI and AWS CLI are an unsolved gap in his setup; his interim fix is wrapper commands that check for an authorized session, and he may move agents to a separate OS user.", "evidence": "His answer to an audience question; no results given.", "grade": "anecdote", "t": "22:14", "source": "said"}
+    {
+      "claim": "The speaker runs 20 to 30 concurrent coding-agent sessions on one workstation, started by him or by cron jobs, so per-session scoping of privileged capabilities matters.",
+      "evidence": "Stated as his own setup.",
+      "grade": "anecdote",
+      "t": "01:07",
+      "source": "said"
+    },
+    {
+      "claim": "A kubeconfig file plus a skill that points to it is discoverable by any agent on the machine, so omitting a credential from a prompt does not control access.",
+      "evidence": "His own prior setup; the slide states 'Not mentioning a credential is not an access-control boundary.'",
+      "grade": "case",
+      "t": "02:09",
+      "source": "both"
+    },
+    {
+      "claim": "An agent cannot approve its own permission request: an agent-authored elicitation response with action 'accept' and no factor is refused and leaves 0 active grants.",
+      "evidence": "Demo A on screen showing the broker refusing and the audit record; slide 04 gives the send, expect, verify steps.",
+      "grade": "demo",
+      "t": "05:12",
+      "source": "both"
+    },
+    {
+      "claim": "From the agent's UID, reading the service-owned TOTP seed and opening the policy database for a direct grant write both fail with EACCES.",
+      "evidence": "Slide 06 shows the two denied operations; the speaker notes that if the agent UID equals the user UID the user must also be locked out of those files.",
+      "grade": "demo",
+      "t": "08:33",
+      "source": "both"
+    },
+    {
+      "claim": "Replacing policy over the admin socket with an agent-authored file is refused ('--seed is not accepted over admin socket'), and pointing at a nonexistent admin socket is refused with no silent local-store fallback.",
+      "evidence": "Slide 07 shows the commands and refusal text; no live run of these two shown.",
+      "grade": "demo",
+      "t": "09:03",
+      "source": "both"
+    },
+    {
+      "claim": "Forged approvals fail on both paths: the CLI refuses no code and a fabricated code, and an MCP elicitation with action accept plus a fabricated code returns presence_check_failed with no new grant.",
+      "evidence": "Slide 08 lists the outcomes.",
+      "grade": "demo",
+      "t": "10:40",
+      "source": "slide"
+    },
+    {
+      "claim": "A historical evaluation passed 15 of 15 defined checks (5 state, routing and provisioning, 8 capability checks, 2 postconditions) and 4 probe sessions ended with 0 active grants.",
+      "evidence": "Slide 09, labeled documented historical results; the slide adds that 15 checks are not 15 exploit techniques and the historical web UI was not live-tested.",
+      "grade": "measured",
+      "t": "11:11",
+      "source": "slide"
+    },
+    {
+      "claim": "The human approval path broke in production while all service-health and refusal checks stayed green: a migration advanced the version but the disk held an old permission_requests table missing trusted_* columns, producing HTTP 500 'no column named trusted_title'.",
+      "evidence": "His own incident, shown on slide 12 with the error text; he says he locked himself out a couple of times.",
+      "grade": "case",
+      "t": "13:18",
+      "source": "both"
+    },
+    {
+      "claim": "The broker's one-time code gives only evidence that some human said yes; it does not establish who holds the phone, informed consent, transaction signing or protection after the factor is compromised.",
+      "evidence": "Reasoning on slide 14, which lists what is enforced (single-use factor, 5 failures then 5-minute lockout, scope, expiry, revocation) against what is not established.",
+      "grade": "assertion",
+      "t": "11:43",
+      "source": "both"
+    },
+    {
+      "claim": "Installing the Rex terminal multiplexer let an agent in a session with no browser grant drive another tab that held a browser grant, so existing authority was borrowed without any new grant being issued.",
+      "evidence": "Live demo on a replayed run in which a session told to use the Rex browser tab handed the browser-agent MCP task to the authenticated session; slide 15 shows Session A, Rex control, Session B, browser.",
+      "grade": "demo",
+      "t": "17:27",
+      "source": "both"
+    },
+    {
+      "claim": "The broker enforces different grants per session, but preventing borrowed authority additionally requires isolation; the same UID is not a sandbox.",
+      "evidence": "Slide 03 states the two properties separately.",
+      "grade": "assertion",
+      "t": "04:11",
+      "source": "both"
+    },
+    {
+      "claim": "Ambient credentials such as git or the GitHub CLI and AWS CLI are an unsolved gap in his setup; his interim fix is wrapper commands that check for an authorized session, and he may move agents to a separate OS user.",
+      "evidence": "His answer to an audience question; no results given.",
+      "grade": "anecdote",
+      "t": "22:14",
+      "source": "said"
+    }
   ],
   "numbers": [
-    {"figure": "20 to 30", "meaning": "concurrent coding-agent sessions on the speaker's desktop at any time", "t": "01:07"},
-    {"figure": "6 digits", "meaning": "length of the human-presence one-time code", "t": "24:20"},
-    {"figure": "30 seconds", "meaning": "lifetime of the one-time code as described by the speaker", "t": "10:40"},
-    {"figure": "2 hours", "meaning": "typical grant expiry; he calls it the base setting", "t": "12:14"},
-    {"figure": "4 hours", "meaning": "shared coding work period shown on the approval page (deadline preview 4h) and the coding-profile session he reuses", "t": "15:53"},
-    {"figure": "15/15", "meaning": "defined checks passing in the historical evaluation (5 state/routing/provisioning, 8 capability checks, 2 postconditions)", "t": "11:11"},
-    {"figure": "4 probe sessions, 0 active grants", "meaning": "probe sessions run in the historical evaluation and the grants left active afterward", "t": "11:11"},
-    {"figure": "5 failures, 5-minute lockout", "meaning": "factor attempt limit and lockout in the broker", "t": "16:24"},
-    {"figure": "63 tools", "meaning": "tools exposed by the broker session after the browser-agent grant was approved in the demo", "t": "15:22"}
+    {
+      "figure": "20 to 30",
+      "meaning": "concurrent coding-agent sessions on the speaker's desktop at any time",
+      "t": "01:07"
+    },
+    {
+      "figure": "6 digits",
+      "meaning": "length of the human-presence one-time code",
+      "t": "24:20"
+    },
+    {
+      "figure": "30 seconds",
+      "meaning": "lifetime of the one-time code as described by the speaker",
+      "t": "10:40"
+    },
+    {
+      "figure": "2 hours",
+      "meaning": "typical grant expiry; he calls it the base setting",
+      "t": "12:14"
+    },
+    {
+      "figure": "4 hours",
+      "meaning": "shared coding work period shown on the approval page (deadline preview 4h) and the coding-profile session he reuses",
+      "t": "15:53"
+    },
+    {
+      "figure": "15/15",
+      "meaning": "defined checks passing in the historical evaluation (5 state/routing/provisioning, 8 capability checks, 2 postconditions)",
+      "t": "11:11"
+    },
+    {
+      "figure": "4 probe sessions, 0 active grants",
+      "meaning": "probe sessions run in the historical evaluation and the grants left active afterward",
+      "t": "11:11"
+    },
+    {
+      "figure": "5 failures, 5-minute lockout",
+      "meaning": "factor attempt limit and lockout in the broker",
+      "t": "16:24"
+    },
+    {
+      "figure": "63 tools",
+      "meaning": "tools exposed by the broker session after the browser-agent grant was approved in the demo",
+      "t": "15:22"
+    }
   ],
   "frameworks": [
-    {"name": "Attacker position versus protected state", "description": "Define the boundary before testing. Attacker holds the human UID, admin and broker-operator groups, admin-socket access, a writable checkout and a valid session. Protected: service identity, deployed verifier and its state, the enrolled phone; admin-group membership is not unrestricted sudo."},
-    {"name": "Three routes to unauthorized authority", "description": "State (steal the factor, write a grant), routing (replace policy, bypass the monitor), approval (fake a decision, forge the factor). All three meet the same protected authority."},
-    {"name": "Service-owned reference monitor", "description": "MCP client elicitation response, CLI over a restricted admin socket and web UI approval form all feed one monitor that verifies the factor, calls _insert_grant, and records session plus capability plus expiry. Protected state is the policy DB, TOTP seed and audit trail."},
-    {"name": "Claim versus proof", "description": "An agent-controlled 'accept' is only a claim; a protected verifier checks the factor, not the answer. No valid factor means no grant."},
-    {"name": "Repeatable boundary test", "description": "Five steps: define the boundary, attack three routes, inspect authority (refusal reasons, grants, audit), prove both paths (human success, replay refusal, revocation, cleanup), test real upgrades from historical database shapes. Run only in an authorized environment with a harmless capability and retain evidence."},
-    {"name": "Broker profiles", "description": "Approval page offers agent-runner, coding, default (read-only TaskManager), personal-trusted (allow-all-minus-deny, marked fail-open), review, and ui-coding (adds browser-agent). Capability 'permission packs' such as browser access or agent-job access are requested per role for about two hours."}
+    {
+      "name": "Attacker position versus protected state",
+      "description": "Define the boundary before testing. Attacker holds the human UID, admin and broker-operator groups, admin-socket access, a writable checkout and a valid session. Protected: service identity, deployed verifier and its state, the enrolled phone; admin-group membership is not unrestricted sudo."
+    },
+    {
+      "name": "Three routes to unauthorized authority",
+      "description": "State (steal the factor, write a grant), routing (replace policy, bypass the monitor), approval (fake a decision, forge the factor). All three meet the same protected authority."
+    },
+    {
+      "name": "Service-owned reference monitor",
+      "description": "MCP client elicitation response, CLI over a restricted admin socket and web UI approval form all feed one monitor that verifies the factor, calls _insert_grant, and records session plus capability plus expiry. Protected state is the policy DB, TOTP seed and audit trail."
+    },
+    {
+      "name": "Claim versus proof",
+      "description": "An agent-controlled 'accept' is only a claim; a protected verifier checks the factor, not the answer. No valid factor means no grant."
+    },
+    {
+      "name": "Repeatable boundary test",
+      "description": "Five steps: define the boundary, attack three routes, inspect authority (refusal reasons, grants, audit), prove both paths (human success, replay refusal, revocation, cleanup), test real upgrades from historical database shapes. Run only in an authorized environment with a harmless capability and retain evidence."
+    },
+    {
+      "name": "Broker profiles",
+      "description": "Approval page offers agent-runner, coding, default (read-only TaskManager), personal-trusted (allow-all-minus-deny, marked fail-open), review, and ui-coding (adds browser-agent). Capability 'permission packs' such as browser access or agent-job access are requested per role for about two hours."
+    }
   ],
   "artifacts": [
-    {"name": "mcp-presence-broker", "kind": "repo", "note": "Reference code for the broker; the speaker says it is environment-specific.", "url": "github.com/brooksmcmillin/mcp-presence-broker"},
-    {"name": "Pi coding agent", "kind": "tool", "note": "Coding agent the speaker runs behind a broker wrapper that selects a profile; extensions include broker-session and broker-profile.", "url": ""},
-    {"name": "Rex", "kind": "tool", "note": "New terminal multiplexer from the makers of Ghostty (per the speaker); its default cross-tab control defeated the session isolation.", "url": ""},
-    {"name": "mcp-proxyctl", "kind": "tool", "note": "Admin CLI for the broker used in the attack on policy replacement.", "url": ""}
+    {
+      "name": "mcp-presence-broker",
+      "kind": "repo",
+      "note": "Reference code for the broker; the speaker says it is environment-specific.",
+      "url": "github.com/brooksmcmillin/mcp-presence-broker"
+    },
+    {
+      "name": "Pi coding agent",
+      "kind": "tool",
+      "note": "Coding agent the speaker runs behind a broker wrapper that selects a profile; extensions include broker-session and broker-profile.",
+      "url": ""
+    },
+    {
+      "name": "Rex",
+      "kind": "tool",
+      "note": "New terminal multiplexer from the makers of Ghostty (per the speaker); its default cross-tab control defeated the session isolation.",
+      "url": ""
+    },
+    {
+      "name": "mcp-proxyctl",
+      "kind": "tool",
+      "note": "Admin CLI for the broker used in the attack on policy replacement.",
+      "url": ""
+    }
   ],
   "slide_only": [
-    "Slide 02 headline: 'Not mentioning a credential is not an access-control boundary.' What I needed: one session, one capability, bounded revocable authority.",
+    "Slide 02 headline: 'Not mentioning a credential is not an access-control boundary.' The slide lists what the speaker needed: one session, one capability, bounded revocable authority.",
     "Slide 03 footer: 'Same UID is not a sandbox. Cross-session control can borrow existing authority.'",
     "Approval page shown in the demo lists profiles agent-runner, coding, default, personal-trusted (marked fail-open: allows everything not explicitly denied), review and ui-coding, and a warning that the client's display name ('Pi Coding Agent') is chosen by the client itself and is not verified. Callback was http://127.0.0.1:53787/callback.",
     "Coding-profile policy on the approval page: an allow list of agents.get_*, agents.spawn_* and many nexus.* task, memory, wiki and milestone operations; deny list agents.admin_*, nexus.admin_* and nexus.delete_*; fail_open false; servers agents and nexus. Optional shared coding work period, 4h deadline preview.",
@@ -74,10 +225,26 @@
     "Rex cross-tab demo: a session with no browser grant is told to use the Rex browser tab; it finds the other tab's capability through the rex skill and tries to drive it, borrowing the already-granted browser MCP access. The speaker concludes the grant boundary is defeated by the multiplexer."
   ],
   "quotes": [
-    {"text": "It doesn't prove that I was aware of what's happening and want the effects of what's happening to occur. It just proves that there was a human that said yes to this.", "speaker": "Brooks McMillin", "t": "12:14"},
-    {"text": "All of a sudden all the security guarantees that I thought I had in place are pretty much destroyed unless I disable this feature or go find some other security controls to put around it.", "speaker": "Brooks McMillin", "t": "18:37"},
-    {"text": "Agents are very resourceful. They're good at getting stuff done.", "speaker": "Brooks McMillin", "t": "09:03"},
-    {"text": "Just because you get an error doesn't mean the authority wasn't actually granted.", "speaker": "Brooks McMillin", "t": "20:41"}
+    {
+      "text": "It doesn't prove that I was aware of what's happening and want the effects of what's happening to occur. It just proves that there was a human that said yes to this.",
+      "speaker": "Brooks McMillin",
+      "t": "12:14"
+    },
+    {
+      "text": "All of a sudden all the security guarantees that I thought I had in place are pretty much destroyed unless I disable this feature or go find some other security controls to put around it.",
+      "speaker": "Brooks McMillin",
+      "t": "18:37"
+    },
+    {
+      "text": "Agents are very resourceful. They're good at getting stuff done.",
+      "speaker": "Brooks McMillin",
+      "t": "09:03"
+    },
+    {
+      "text": "Just because you get an error doesn't mean the authority wasn't actually granted.",
+      "speaker": "Brooks McMillin",
+      "t": "20:41"
+    }
   ],
   "offense": [
     "Agent reads or edits the verifier's on-disk TOTP seed or the SQLite grant database because it shares the human's UID.",
@@ -97,7 +264,7 @@
     "Treat the environment as part of the boundary: disable or isolate cross-session control features and review any tool installed on agent hosts."
   ],
   "takeaways": [
-    "Run his take-home experiment on your own agent platform: let the agent answer its own approval request and check whether new authority appears.",
+    "On your own agent platform, let the agent answer its own approval request and check whether new authority appears.",
     "If agents share a UID with humans, stop treating UI approvals as a boundary; require a factor held by a verifier the agent UID cannot read or write, and prefer a separate agent user or sandbox.",
     "Add success-path and upgrade-from-old-schema tests to security control suites so a broken human path is caught, not only a permissive one.",
     "Inventory developer-host tooling (terminal multiplexers, IDE agents, session managers) for features that cross trust boundaries between agent sessions.",
@@ -123,20 +290,43 @@
     "Q: Do you use per-privilege-action profiles? A: Not per action, since he does not want to babysit; there is a standard coding profile (pull tasks, create PRs, merge after reviewer checks pass) plus permission packs such as browser access or agent-job access that he requests for two hours, RBAC style. He is working on just-in-time access for Kubernetes.",
     "Q (session chair): If you only need to confirm a human is present, why not a simpler approve interface? A: He is considering a mobile app with push notifications for yes or no, building on a decision ping he already has for agents that need a human; the chair joked about the future keyboard having only an approve key, and he agreed it makes him the meat puppet of his agents."
   ],
-  "tags": ["agent-authz-identity", "mcp-tools-skills", "coding-agent-security", "sandboxing-isolation"],
-  "key_frames": [
-    {"file": "t00694.jpg", "caption": "Architecture: MCP client, CLI and web UI all feed one service-owned reference monitor (verify factor, _insert_grant, session plus capability plus expiry) guarding the policy DB, TOTP seed and audit trail."},
-    {"file": "t00262.jpg", "caption": "Threat model: attacker holds the human UID, admin and operator groups, admin socket, writable checkout and valid session; separates per-session grants from isolation."},
-    {"file": "t00671.jpg", "caption": "Historical evaluation results: 15 of 15 checks, 4 probe sessions with 0 active grants, with the caveat that 15 checks are not 15 techniques."},
-    {"file": "t00812.jpg", "caption": "The migration incident: an old table lacking trusted_* columns broke the human approval path while all refusal checks passed."},
-    {"file": "t01036.jpg", "caption": "Rex cross-tab bypass: Session A with no browser grant drives Session B's tab, borrowing existing authority."}
+  "tags": [
+    "agent-authz-identity",
+    "mcp-tools-skills",
+    "coding-agent-security",
+    "sandboxing-isolation"
   ],
-  "signal": {"score": 4, "reason": "A specific threat model and test plan for same-UID coding agents, with two shown failures (green tests with a broken human path, and an environment bypass); the evidence comes from a single-user home-lab evaluation."},
+  "key_frames": [
+    {
+      "file": "t00694.jpg",
+      "caption": "Architecture: MCP client, CLI and web UI all feed one service-owned reference monitor (verify factor, _insert_grant, session plus capability plus expiry) guarding the policy DB, TOTP seed and audit trail."
+    },
+    {
+      "file": "t00262.jpg",
+      "caption": "Threat model: attacker holds the human UID, admin and operator groups, admin socket, writable checkout and valid session; separates per-session grants from isolation."
+    },
+    {
+      "file": "t00671.jpg",
+      "caption": "Historical evaluation results: 15 of 15 checks, 4 probe sessions with 0 active grants, with the caveat that 15 checks are not 15 techniques."
+    },
+    {
+      "file": "t00812.jpg",
+      "caption": "The migration incident: an old table lacking trusted_* columns broke the human approval path while all refusal checks passed."
+    },
+    {
+      "file": "t01036.jpg",
+      "caption": "Rex cross-tab bypass: Session A with no browser grant drives Session B's tab, borrowing existing authority."
+    }
+  ],
+  "signal": {
+    "score": 4,
+    "reason": "The talk presents a threat model and test plan for coding agents that share the user's UID, shows two failures (passing tests with a broken human approval path, and an environment bypass), and rests on a single-user home-lab evaluation."
+  },
   "caveats": [
-    "The video description gives Brooks McMillin's affiliation as Dropbox, but the title slide shows The Browser Company and he says he left Dropbox about four months before; affiliation taken from the slide.",
+    "The video description gives McMillin's affiliation as Dropbox, but the title slide shows The Browser Company and he says he left Dropbox about four months before; affiliation taken from the slide.",
     "Auto-captions garble names: 'Rex' is correct per the slide and the speaker (terminal multiplexer); 'PI' is the Pi coding agent; 'cloud code' means Claude Code; the session host calls the speaker 'Brooke' once.",
-    "The speaker says the one-time code lives 30 seconds and the grant default is 2 hours; slides show 'each code works once', a 5-failure lockout and a 4-hour coding-profile deadline preview, so the exact lifetimes in the repo may differ.",
+    "The speaker says the one-time code lives 30 seconds and the grant default is 2 hours; slides show 'each code works once', a 5-failure lockout and a 4-hour coding-profile deadline preview; the repo's exact lifetimes were not shown.",
     "Appendix slides A1 to A4 are referenced but were not shown; the evaluation matrix and dated sources are not available from the video.",
-    "The replay of the earlier successful browser run is partly visible only as a terminal frame; page title text '[un]prompted III' is read from that frame as shown."
+    "The replay of the earlier successful browser run is visible only in part, as terminal output; the page title text '[un]prompted III' is read from it as shown."
   ]
 }

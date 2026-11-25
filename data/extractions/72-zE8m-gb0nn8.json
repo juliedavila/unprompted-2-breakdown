@@ -4,7 +4,10 @@
   "url": "https://www.youtube.com/watch?v=zE8m-gb0nn8",
   "title": "Lightning Talk",
   "speakers": [
-    {"name": "Kyle Easterly", "affiliation": "Co-Founder and CEO, Delve Group, Anchorage, Alaska (video description and title slide)"}
+    {
+      "name": "Kyle Easterly",
+      "affiliation": "Co-Founder and CEO, Delve Group, Anchorage, Alaska (video description and title slide)"
+    }
   ],
   "format": "lightning",
   "duration_min": 7,
@@ -18,28 +21,112 @@
     "The audience understands AI better than almost anyone and should build something similar and explain it to their neighbours."
   ],
   "claims": [
-    {"claim": "LOAD, a single offline box with two GPUs and no internet connection, can run the full demo set including a 21-agent fleet using Gemma 4.", "evidence": "Description of the machine and demos; slide lists 1 box on a 24-inch-deep table, 2 GPUs visible through the lid, 0 internet connections.", "grade": "demo", "t": "03:46", "source": "both"},
-    {"claim": "A live LoRA fine-tune on about 100 facts changes a 1B-parameter Llama's answer to 'Who built you?' within 15 to 30 seconds on one GPU.", "evidence": "Slide figures; in speech he said the full training takes about a minute and a pause at 10 steps shows hallucinated creators such as Google or California universities.", "grade": "demo", "t": "04:17", "source": "both"},
-    {"claim": "The build went from parts to public use in about a month, with the first commit on the night of Sep 27 and public debut on Sep 28.", "evidence": "Timeline slide and speech.", "grade": "case", "t": "02:43", "source": "both"},
-    {"claim": "The machine had several hardware failures in public: a hang at 1:05 AM before the debut, a full power-off during the debut session, a weak memory cell caught by ECC, and a GPU that stopped answering on Oct 11 (Xid 119), replaced by an RTX 3090.", "evidence": "Failure slide with a photographed crash console.", "grade": "case", "t": "05:18", "source": "both"},
-    {"claim": "Pausing training early and asking the model who built it shows its answer drifting away from Meta towards Alaska and finally to Delve Group.", "evidence": "Easterly's description of the demo as a teaching device.", "grade": "demo", "t": "04:48", "source": "said"},
-    {"claim": "Claude was used heavily: to make the slide deck minutes before the talk, to write the overnight first version of the app, and to read 96 photos to update the digital twin after the cooling refit.", "evidence": "Speaker statements and slide text.", "grade": "anecdote", "t": "00:08", "source": "both"}
+    {
+      "claim": "LOAD, a single offline box with two GPUs and no internet connection, can run the full demo set including a 21-agent fleet using Gemma 4.",
+      "evidence": "Description of the machine and demos; slide lists 1 box on a 24-inch-deep table, 2 GPUs visible through the lid, 0 internet connections.",
+      "grade": "demo",
+      "t": "03:46",
+      "source": "both"
+    },
+    {
+      "claim": "A live LoRA fine-tune on about 100 facts changes a 1B-parameter Llama's answer to 'Who built you?' within 15 to 30 seconds on one GPU.",
+      "evidence": "Slide figures; in speech he said the full training takes about a minute and a pause at 10 steps shows hallucinated creators such as Google or California universities.",
+      "grade": "demo",
+      "t": "04:17",
+      "source": "both"
+    },
+    {
+      "claim": "The build went from parts to public use in about a month, with the first commit on the night of Sep 27 and public debut on Sep 28.",
+      "evidence": "Timeline slide and speech.",
+      "grade": "case",
+      "t": "02:43",
+      "source": "both"
+    },
+    {
+      "claim": "The machine had several hardware failures in public: a hang at 1:05 AM before the debut, a full power-off during the debut session, a weak memory cell caught by ECC, and a GPU that stopped answering on Oct 11 (Xid 119), replaced by an RTX 3090.",
+      "evidence": "Failure slide with a photographed crash console.",
+      "grade": "case",
+      "t": "05:18",
+      "source": "both"
+    },
+    {
+      "claim": "Pausing training early and asking the model who built it shows its answer drifting away from Meta towards Alaska and finally to Delve Group.",
+      "evidence": "Easterly's description of the demo as a teaching device.",
+      "grade": "demo",
+      "t": "04:48",
+      "source": "said"
+    },
+    {
+      "claim": "Claude was used heavily: to make the slide deck minutes before the talk, to write the overnight first version of the app, and to read 96 photos to update the digital twin after the cooling refit.",
+      "evidence": "Speaker statements and slide text.",
+      "grade": "anecdote",
+      "t": "00:08",
+      "source": "both"
+    }
   ],
   "numbers": [
-    {"figure": "21", "meaning": "copies of Gemma 4 running as agents building a town in the agent fleet demo", "t": "03:46"},
-    {"figure": "about 800 dollars", "meaning": "current resale value he estimates for each 2 TB SSD he already owned (he had eight)", "t": "02:43"},
-    {"figure": "about 1 month", "meaning": "time from parts to public debut", "t": "02:43"},
-    {"figure": "~100 facts, 15 to 30 seconds", "meaning": "size and duration of the live LoRA fine-tune shown on the slide", "t": "04:17"},
-    {"figure": "~1 kW peak (estimate)", "meaning": "power draw of the machine on one wall outlet, per the slide", "t": "01:39"},
-    {"figure": "96", "meaning": "photos Claude read after the refit to update the digital twin", "t": "05:48"},
-    {"figure": "256 GB ECC", "meaning": "memory in the machine, per the slide", "t": "01:39"}
+    {
+      "figure": "21",
+      "meaning": "copies of Gemma 4 running as agents building a town in the agent fleet demo",
+      "t": "03:46"
+    },
+    {
+      "figure": "about 800 dollars",
+      "meaning": "current resale value he estimates for each 2 TB SSD he already owned (he had eight)",
+      "t": "02:43"
+    },
+    {
+      "figure": "about 1 month",
+      "meaning": "time from parts to public debut",
+      "t": "02:43"
+    },
+    {
+      "figure": "~100 facts, 15 to 30 seconds",
+      "meaning": "size and duration of the live LoRA fine-tune shown on the slide",
+      "t": "04:17"
+    },
+    {
+      "figure": "~1 kW peak (estimate)",
+      "meaning": "power draw of the machine on one wall outlet, per the slide",
+      "t": "01:39"
+    },
+    {
+      "figure": "96",
+      "meaning": "photos Claude read after the refit to update the digital twin",
+      "t": "05:48"
+    },
+    {
+      "figure": "256 GB ECC",
+      "meaning": "memory in the machine, per the slide",
+      "t": "01:39"
+    }
   ],
   "frameworks": [],
   "artifacts": [
-    {"name": "LOAD (Local Offline AI Demonstration)", "kind": "product", "note": "Delve Group's glass-lidded demo machine: RTX A6000 48 GB plus RTX 3090 24 GB, AMD EPYC 7443 24 cores, 256 GB ECC, 8 SATA SSDs in RAID 5 plus 4 NVMe, custom water loop with a 360 mm copper radiator, Ubuntu, vLLM, open models (Gemma 4 and others) and a .NET app.", "url": ""},
-    {"name": "Stanford generative agents paper (2023)", "kind": "paper", "note": "Basis for the town simulation in which the agent fleet lives; Easterly refers to it as the Stanford generative agents paper.", "url": ""},
-    {"name": "Gemma 4", "kind": "product", "note": "Open model used for the 21-agent fleet and others.", "url": ""},
-    {"name": "Llama 1B-parameter model with LoRA", "kind": "tool", "note": "Used in the live fine-tune demo.", "url": ""}
+    {
+      "name": "LOAD (Local Offline AI Demonstration)",
+      "kind": "product",
+      "note": "Delve Group's glass-lidded demo machine: RTX A6000 48 GB plus RTX 3090 24 GB, AMD EPYC 7443 24 cores, 256 GB ECC, 8 SATA SSDs in RAID 5 plus 4 NVMe, custom water loop with a 360 mm copper radiator, Ubuntu, vLLM, open models (Gemma 4 and others) and a .NET app.",
+      "url": ""
+    },
+    {
+      "name": "Stanford generative agents paper (2023)",
+      "kind": "paper",
+      "note": "Basis for the town simulation in which the agent fleet lives; Easterly refers to it as the Stanford generative agents paper.",
+      "url": ""
+    },
+    {
+      "name": "Gemma 4",
+      "kind": "product",
+      "note": "Open model used for the 21-agent fleet and others.",
+      "url": ""
+    },
+    {
+      "name": "Llama 1B-parameter model with LoRA",
+      "kind": "tool",
+      "note": "Used in the live fine-tune demo.",
+      "url": ""
+    }
   ],
   "slide_only": [
     "Title slide: LOAD, Local Offline AI Demonstration, with the line 'We put AI on a folding table in Alaska so people could finally see it'; labelled [un]prompted II Turbo Talk.",
@@ -60,16 +147,28 @@
     "VR: a Quest 3 headset lets a visitor remove a GPU from the digital twin while the software shuts that GPU off in the real machine. These were described, not shown live."
   ],
   "quotes": [
-    {"text": "We put AI on a folding table in Alaska so people could finally see it.", "speaker": "Kyle Easterly (title slide)", "t": "00:19"},
-    {"text": "AI is a file running on a chip. Not a place.", "speaker": "Kyle Easterly (slide)", "t": "01:07"},
-    {"text": "Showing what broke is how people learn to trust the thing.", "speaker": "Kyle Easterly (slide)", "t": "05:18"}
+    {
+      "text": "We put AI on a folding table in Alaska so people could finally see it.",
+      "speaker": "Kyle Easterly (title slide)",
+      "t": "00:19"
+    },
+    {
+      "text": "AI is a file running on a chip. Not a place.",
+      "speaker": "Kyle Easterly (slide)",
+      "t": "01:07"
+    },
+    {
+      "text": "Showing what broke is how people learn to trust the thing.",
+      "speaker": "Kyle Easterly (slide)",
+      "t": "05:18"
+    }
   ],
   "offense": [],
   "defense": [],
   "takeaways": [
-    "If your organisation struggles with AI literacy among non-technical stakeholders, a tangible offline demo can build intuition that slides do not.",
-    "Showing training and inference on real hardware, including failures, is a candid way to build trust with customers and policymakers.",
-    "Offline local-model demos avoid sending customer data to external services, which matters for sensitive sectors."
+    "Where non-technical stakeholders struggle with AI literacy, build a tangible offline demo, as Easterly urges the audience to do.",
+    "Show training and inference on real hardware, including failures, to build trust with customers and policymakers.",
+    "Run demos on offline local models so customer data is not sent to external services, which matters for sensitive sectors."
   ],
   "limits": [
     "Easterly said he had seen the slides only once, and that he had more slides than time.",
@@ -82,14 +181,32 @@
     "The speaker's company sells AI deployment software, and the demos use small models whose behaviour was not compared with frontier systems."
   ],
   "qa": [],
-  "tags": ["org-adoption-culture", "model-internals"],
-  "key_frames": [
-    {"file": "t00100.jpg", "caption": "Bill of materials for LOAD: GPUs, CPU, memory, storage, cooling, power and software stack, with the digital-twin render."},
-    {"file": "t00150.jpg", "caption": "Timeline from first commit on Sep 27 through the Sep 28 debut, a GPU failure on Oct 11 to 12 and trade shows from Oct 27."},
-    {"file": "t00242.jpg", "caption": "Live fine-tune slide: a 1B Llama asked who built it, then a LoRA on about 100 facts in 15 to 30 seconds."},
-    {"file": "t00261.jpg", "caption": "Failure log slide: hang before debut, power-off during debut, ECC weak cell and Xid 119 GPU failure."}
+  "tags": [
+    "org-adoption-culture",
+    "model-internals"
   ],
-  "signal": {"score": 2, "reason": "An AI-literacy demo talk that gives a full hardware specification and a build timeline, with no security content and no measured results on audience understanding."},
+  "key_frames": [
+    {
+      "file": "t00100.jpg",
+      "caption": "Bill of materials for LOAD: GPUs, CPU, memory, storage, cooling, power and software stack, with the digital-twin render."
+    },
+    {
+      "file": "t00150.jpg",
+      "caption": "Timeline from first commit on Sep 27 through the Sep 28 debut, a GPU failure on Oct 11 to 12 and trade shows from Oct 27."
+    },
+    {
+      "file": "t00242.jpg",
+      "caption": "Live fine-tune slide: a 1B Llama asked who built it, then a LoRA on about 100 facts in 15 to 30 seconds."
+    },
+    {
+      "file": "t00261.jpg",
+      "caption": "Failure log slide: hang before debut, power-off during debut, ECC weak cell and Xid 119 GPU failure."
+    }
+  ],
+  "signal": {
+    "score": 2,
+    "reason": "The talk presents an offline GPU demo machine for AI literacy, with its hardware specification and build timeline, and has no security content or measured results on audience understanding."
+  },
   "caveats": [
     "Auto-caption garbles: 'Dove Group' is Delve Group; 'Stanford generative agents' and 'Gemma 4' were taken from the slide and speech; 'Telecom Show' is as heard.",
     "The speaker said an A6000 GPU died and he fried one GPU; the slide says the GPU that stopped answering was replaced by an RTX 3090, and the slide build lists an A6000 plus a 3090.",

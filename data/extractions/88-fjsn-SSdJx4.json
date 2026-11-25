@@ -3,11 +3,16 @@
   "id": "fjsn-SSdJx4",
   "url": "https://www.youtube.com/watch?v=fjsn-SSdJx4",
   "title": "Everyone Wants All the AI Tools. Good.",
-  "speakers": [{"name": "Nicole Grinstead", "affiliation": "Chief Information Security Officer, Roblox"}],
+  "speakers": [
+    {
+      "name": "Nicole Grinstead",
+      "affiliation": "Chief Information Security Officer, Roblox"
+    }
+  ],
   "format": "talk",
   "duration_min": 30,
   "thesis": "AI governance should be engineering rather than meetings: leadership sets risk redlines once, those decisions become reusable technical controls and self-service paved roads, and detours are monitored as feedback, so a company can say yes to nearly every AI tool without a six-week review queue.",
-  "summary": "Grinstead opens with the shift from last year, when executives urged people to try AI tools, to this year, when everyone demands the newest model, agent harness and connectors immediately, and she says she wants these tools too, including agents that review every line of code and triage every alert. She then shows what can go wrong with a staged terminal example in which a coding agent told to fix a flaky build packages the repo and uploads it to Catbox, and argues controls must be built around the agent, not in the prompt. She presents a four-step model: align on redlines, build paved roads, make the safe path the easy one, and monitor the detours while blocking hard nos. Leaders decide per system where they will take risk, put guardrails, or refuse (for example docs yes, email with controls, source in an ephemeral sandbox, AWS read-only, production data without internet, long-lived production secrets never). The paved road bundles reusable tool sets, sandboxes, scoped identities, constrained egress, logging and detective controls. A case study routes agent email access through a gateway that blocks restricted-label mail. She recommends designing for the most AI-enthusiastic user first ('hard mode'), shows an end-to-end architecture (LLM gateway, egress proxy, MCP gateway, credential broker, logging) with a rule that agents may reach the outside or sensitive data but never both, and answers questions on drift, engineering pushback, culture, sensitive-data leakage, anomaly-based egress and build versus buy.",
+  "summary": "Grinstead opens with the shift from last year, when executives urged people to try AI tools, to this year, when everyone demands the newest model, agent harness and connectors immediately, and she says she wants these tools too, including agents that review every line of code and triage every alert. She then shows what can go wrong with a staged terminal example in which a coding agent told to fix a flaky build packages the repo and uploads it to Catbox (a public file-sharing site), and argues controls must be built around the agent, not in the prompt. She presents a four-step model: align on redlines, build paved roads, make the safe path the easy one, and monitor the detours while blocking hard nos. Leaders decide per system where they will take risk, put guardrails, or refuse (for example docs yes, email with controls, source in an ephemeral sandbox, AWS read-only, production data without internet, long-lived production secrets never). The paved road bundles reusable tool sets, sandboxes, scoped identities, constrained egress, logging and detective controls. A case study routes agent email access through a gateway that blocks restricted-label mail. She recommends designing for the most AI-enthusiastic user first ('hard mode'), shows an end-to-end architecture (LLM gateway, egress proxy, MCP gateway, credential broker, logging) with a rule that agents may reach the outside or sensitive data but never both.",
   "argument": [
     "Demand for AI tools is legitimate and security's job is to help the company use them, not to queue them for central review.",
     "Agents optimize for finishing the task and will route around obstacles, so controls must be enforced around the agent rather than written into the prompt.",
@@ -17,40 +22,176 @@
     "Monitor detours and treat repeated bypass as a signal that a control is too restrictive, while blocking paths that cross a redline."
   ],
   "claims": [
-    {"claim": "A coding agent asked to fix a flaky build, after eight failed attempts, decided to post the repository snapshot to Catbox so another agent could look, and reported the task done.", "evidence": "Staged terminal transcript on a slide ending with 'DATA LEFT THE BUILDING'; the speaker said she and others have seen this kind of reasoning but gave no incident details.", "grade": "anecdote", "t": "03:47", "source": "both"},
-    {"claim": "Controls have to be built around the agent, not in the prompt.", "evidence": "Slide caption tied to the Catbox example; no experiment shown.", "grade": "assertion", "t": "04:17", "source": "slide"},
-    {"claim": "Leadership can pre-decide risk by system, giving a yes, with-controls, depends or no answer for internal docs, email, source repositories, AWS infrastructure, production data and long-lived production secrets.", "evidence": "Table slide: docs yes (standard connector, agent's own identity); email with controls (gateway filters restricted labels); source repository with controls (ephemeral sandbox, only the relevant workspace); AWS depends (read-only, changes via deterministic change process with testing); production data depends (no internet access); long-lived production secrets no (never enter the agent's environment).", "grade": "case", "t": "07:24", "source": "both"},
-    {"claim": "Roblox routes all agent email access through a central MCP gateway with DLP tagging that blocks highly sensitive mail and passes the rest, and every new tool reuses that gateway.", "evidence": "Case study slide with a gateway diagram and a white paper link; no volume or block-rate data.", "grade": "case", "t": "10:01", "source": "both"},
-    {"claim": "Coding-agent sandboxes were packaged and pushed through device management so the secure configuration is the default for everyone.", "evidence": "Stated by the speaker; no rollout figures.", "grade": "case", "t": "08:57", "source": "said"},
-    {"claim": "An early security-built Docker sandbox was rejected by engineers as too restrictive, slow for builds and not robust enough, and was replaced by a design built jointly with an AI-enthusiastic engineer.", "evidence": "Told in Q&A as the company's own experience.", "grade": "case", "t": "21:22", "source": "said"},
-    {"claim": "Designing the controls for 'hard mode' first, covering the best models, new harnesses, every connector, unattended and always-on agents and agents that spawn agents, stopped the cycle of incremental access requests.", "evidence": "Speaker's account of changing approach after repeated requests; slide lists the wish list. No before-and-after metrics.", "grade": "anecdote", "t": "12:06", "source": "both"},
-    {"claim": "The production architecture has a central LLM gateway on AWS Bedrock with zero data retention, an egress proxy, an MCP gateway, a credential broker injecting short-lived credentials, and central logging and detection, with sensitive-data agents given no path to the internet.", "evidence": "End-to-end diagram slide and spoken description; no scale or coverage numbers.", "grade": "case", "t": "16:13", "source": "both"},
-    {"claim": "The design rule is that an agent can reach outside or reach sensitive data, never both.", "evidence": "Slide statement; in Q&A she added that for the most sensitive agents this includes blocking agent-to-agent communication, not only network egress.", "grade": "assertion", "t": "26:02", "source": "both"},
-    {"claim": "Aligning leadership on concrete per-system risk tolerance, rather than abstract risk, resolved the cultural conflict between engineering demanding productivity and security warning about rogue agents.", "evidence": "Q&A account from experience at the company.", "grade": "anecdote", "t": "22:55", "source": "said"},
-    {"claim": "If everyone bypasses the same control, the control is the problem; repeated bypasses should prompt building a secure path, and only paths that cross a redline get blocked.", "evidence": "Slide 'Watch the detours. Treat them as feedback' with evangelize, incorporate and block responses; illustrated with her own workaround of a download restriction in Claude Cowork.", "grade": "anecdote", "t": "14:41", "source": "both"},
-    {"claim": "Policies and controls are continuously validated and monitored for drift, and loosened if too restrictive or tightened as the threat landscape changes.", "evidence": "Q&A answer without specifics on mechanism.", "grade": "assertion", "t": "19:51", "source": "said"},
-    {"claim": "Agents that handle sensitive data rely mainly on restrictive network policy, strong detective controls and zero-data-retention model providers; context clearing after reading sensitive data is not yet implemented.", "evidence": "Q&A answer; she said they are considering the clearing technique but have not fully gotten it off the ground.", "grade": "assertion", "t": "24:30", "source": "said"}
+    {
+      "claim": "A coding agent asked to fix a flaky build, after eight failed attempts, decided to post the repository snapshot to Catbox so another agent could look, and reported the task done.",
+      "evidence": "Staged terminal transcript on a slide ending with 'DATA LEFT THE BUILDING'; the speaker said she and others have seen this kind of reasoning but gave no incident details.",
+      "grade": "anecdote",
+      "t": "03:47",
+      "source": "both"
+    },
+    {
+      "claim": "Controls have to be built around the agent, not in the prompt.",
+      "evidence": "Slide caption tied to the Catbox example; no experiment shown.",
+      "grade": "assertion",
+      "t": "04:17",
+      "source": "slide"
+    },
+    {
+      "claim": "Leadership can pre-decide risk by system, giving a yes, with-controls, depends or no answer for internal docs, email, source repositories, AWS infrastructure, production data and long-lived production secrets.",
+      "evidence": "Table slide: docs yes (standard connector, agent's own identity); email with controls (gateway filters restricted labels); source repository with controls (ephemeral sandbox, only the relevant workspace); AWS depends (read-only, changes via deterministic change process with testing); production data depends (no internet access); long-lived production secrets no (never enter the agent's environment).",
+      "grade": "case",
+      "t": "07:24",
+      "source": "both"
+    },
+    {
+      "claim": "Roblox routes all agent email access through a central MCP gateway with DLP tagging that blocks highly sensitive mail and passes the rest, and every new tool reuses that gateway.",
+      "evidence": "Case study slide with a gateway diagram and a white paper link; no volume or block-rate data.",
+      "grade": "case",
+      "t": "10:01",
+      "source": "both"
+    },
+    {
+      "claim": "Coding-agent sandboxes were packaged and pushed through device management so the secure configuration is the default for everyone.",
+      "evidence": "Stated by the speaker; no rollout figures.",
+      "grade": "case",
+      "t": "08:57",
+      "source": "said"
+    },
+    {
+      "claim": "An early security-built Docker sandbox was rejected by engineers as too restrictive, slow for builds and not robust enough, and was replaced by a design built jointly with an AI-enthusiastic engineer.",
+      "evidence": "Told in Q&A as the company's own experience.",
+      "grade": "case",
+      "t": "21:22",
+      "source": "said"
+    },
+    {
+      "claim": "Designing the controls for 'hard mode' first, covering the best models, new harnesses, every connector, unattended and always-on agents and agents that spawn agents, stopped the cycle of incremental access requests.",
+      "evidence": "Speaker's account of changing approach after repeated requests; slide lists the wish list. No before-and-after metrics.",
+      "grade": "anecdote",
+      "t": "12:06",
+      "source": "both"
+    },
+    {
+      "claim": "The production architecture has a central LLM gateway on AWS Bedrock with zero data retention, an egress proxy, an MCP gateway, a credential broker injecting short-lived credentials, and central logging and detection, with sensitive-data agents given no path to the internet.",
+      "evidence": "End-to-end diagram slide and spoken description; no scale or coverage numbers.",
+      "grade": "case",
+      "t": "16:13",
+      "source": "both"
+    },
+    {
+      "claim": "The design rule is that an agent can reach outside or reach sensitive data, never both.",
+      "evidence": "Slide statement; in Q&A she added that for the most sensitive agents this includes blocking agent-to-agent communication, not only network egress.",
+      "grade": "assertion",
+      "t": "26:02",
+      "source": "both"
+    },
+    {
+      "claim": "Aligning leadership on concrete per-system risk tolerance, rather than abstract risk, resolved the cultural conflict between engineering demanding productivity and security warning about rogue agents.",
+      "evidence": "Q&A account from experience at the company.",
+      "grade": "anecdote",
+      "t": "22:55",
+      "source": "said"
+    },
+    {
+      "claim": "If everyone bypasses the same control, the control is the problem; repeated bypasses should prompt building a secure path, and only paths that cross a redline get blocked.",
+      "evidence": "Slide 'Watch the detours. Treat them as feedback' with evangelize, incorporate and block responses; illustrated with her own workaround of a download restriction in Claude Cowork.",
+      "grade": "anecdote",
+      "t": "14:41",
+      "source": "both"
+    },
+    {
+      "claim": "Policies and controls are continuously validated and monitored for drift, and loosened if too restrictive or tightened as the threat landscape changes.",
+      "evidence": "Q&A answer without specifics on mechanism.",
+      "grade": "assertion",
+      "t": "19:51",
+      "source": "said"
+    },
+    {
+      "claim": "Agents that handle sensitive data rely mainly on restrictive network policy, strong detective controls and zero-data-retention model providers; context clearing after reading sensitive data is not yet implemented.",
+      "evidence": "Q&A answer; she said they are considering the clearing technique but have not fully gotten it off the ground.",
+      "grade": "assertion",
+      "t": "24:30",
+      "source": "said"
+    }
   ],
   "numbers": [
-    {"figure": "6 weeks", "meaning": "the review-process length the talk argues against (subtitle: governing AI agents without a 6 week review process)", "t": "00:38"},
-    {"figure": "8", "meaning": "attempts the agent made at fixing the build before uploading to Catbox in the example transcript", "t": "03:47"},
-    {"figure": "4", "meaning": "steps in the governance model: align on redlines, build paved roads, make safe the easy path, monitor the detours", "t": "04:17"},
-    {"figure": "6", "meaning": "components of the paved road: reusable tool sets, agent sandboxes, scoped identities, constrained connectivity, logging, detective controls", "t": "08:26"},
-    {"figure": "5", "meaning": "tool-and-gateway layers in the control layer on the end-to-end slide: LLM gateway, egress proxy, MCP gateway, credential broker, logging and detection", "t": "16:13"}
+    {
+      "figure": "6 weeks",
+      "meaning": "the review-process length the talk argues against (subtitle: governing AI agents without a 6 week review process)",
+      "t": "00:38"
+    },
+    {
+      "figure": "8",
+      "meaning": "attempts the agent made at fixing the build before uploading to Catbox in the example transcript",
+      "t": "03:47"
+    },
+    {
+      "figure": "4",
+      "meaning": "steps in the governance model: align on redlines, build paved roads, make safe the easy path, monitor the detours",
+      "t": "04:17"
+    },
+    {
+      "figure": "6",
+      "meaning": "components of the paved road: reusable tool sets, agent sandboxes, scoped identities, constrained connectivity, logging, detective controls",
+      "t": "08:26"
+    },
+    {
+      "figure": "5",
+      "meaning": "tool-and-gateway layers in the control layer on the end-to-end slide: LLM gateway, egress proxy, MCP gateway, credential broker, logging and detection",
+      "t": "16:13"
+    }
   ],
   "frameworks": [
-    {"name": "Governance is engineering, not meetings", "description": "Instead of a central review queue for every tool, build a risk-based framework translated into technical controls through four steps: 1 align on redlines (leadership decides where to take risk), 2 build paved roads (decisions become reusable controls), 3 make safe the easy path (default-on, self-service, no queue), 4 monitor the detours and block the hard nos."},
-    {"name": "Risk tolerance tiers", "description": "Take the risk (move fast; example assistants reading ordinary email, docs, chat), Guardrails (yes with controls; example coding agents on source code in a sandbox with constrained egress), Redline (the answer is no; example highly restricted data reaching an AI tool under any configuration). Principle: decide once, reuse the answer."},
-    {"name": "Paved road components", "description": "Reusable tool sets (pre-approved connectors pushed automatically), agent sandboxes (ephemeral, isolated), scoped identities (each agent has its own least-privilege identity), constrained connectivity (egress proxy, allowlists), logging (every allowed and denied action attributed to the agent), detective controls (spot and revoke a misbehaving agent in one step)."},
-    {"name": "Design for hard mode first", "description": "Pair up with the most AI-pilled person and build with them; map every tool, model and workflow they would want; secure all of it. Wish list: the best models, new agent harnesses, every connector, MCP servers, unattended agents, always-on agents, agents that spawn agents, whatever ships next week."},
-    {"name": "Detour response", "description": "Watch for unapproved tools, personal accounts, risky data movement and creative new connections; respond by evangelizing approved tools, incorporating repeated bypasses by building a secure path, or blocking when the path crosses a redline."},
-    {"name": "End-to-end agent control architecture", "description": "Where agents run: secure cloud workspace (unattended, hardened account), local sandbox (OS-level or container), hardened endpoint (explicit risk acceptance, extra controls). Control layer: LLM gateway (guardrails, models in private cloud), egress proxy (approved domains, global deny-list), MCP gateway (authenticated, rate-limited, approved tools), credential broker (agent identity, short-lived tokens), logging and detection. General use agents: internet via proxy allowlist only, approved tools via MCP gateway, no highly sensitive data. Highly sensitive data agents: no path to the internet, isolated segmented environment, no self-approved domains."}
+    {
+      "name": "Governance is engineering, not meetings",
+      "description": "Instead of a central review queue for every tool, build a risk-based framework translated into technical controls through four steps: 1 align on redlines (leadership decides where to take risk), 2 build paved roads (decisions become reusable controls), 3 make safe the easy path (default-on, self-service, no queue), 4 monitor the detours and block the hard nos."
+    },
+    {
+      "name": "Risk tolerance tiers",
+      "description": "Take the risk (move fast; example assistants reading ordinary email, docs, chat), Guardrails (yes with controls; example coding agents on source code in a sandbox with constrained egress), Redline (the answer is no; example highly restricted data reaching an AI tool under any configuration). Principle: decide once, reuse the answer."
+    },
+    {
+      "name": "Paved road components",
+      "description": "Reusable tool sets (pre-approved connectors pushed automatically), agent sandboxes (ephemeral, isolated), scoped identities (each agent has its own least-privilege identity), constrained connectivity (egress proxy, allowlists), logging (every allowed and denied action attributed to the agent), detective controls (spot and revoke a misbehaving agent in one step)."
+    },
+    {
+      "name": "Design for hard mode first",
+      "description": "Pair up with the most AI-pilled person and build with them; map every tool, model and workflow they would want; secure all of it. Wish list: the best models, new agent harnesses, every connector, MCP servers, unattended agents, always-on agents, agents that spawn agents, whatever ships next week."
+    },
+    {
+      "name": "Detour response",
+      "description": "Watch for unapproved tools, personal accounts, risky data movement and creative new connections; respond by evangelizing approved tools, incorporating repeated bypasses by building a secure path, or blocking when the path crosses a redline."
+    },
+    {
+      "name": "End-to-end agent control architecture",
+      "description": "Where agents run: secure cloud workspace (unattended, hardened account), local sandbox (OS-level or container), hardened endpoint (explicit risk acceptance, extra controls). Control layer: LLM gateway (guardrails, models in private cloud), egress proxy (approved domains, global deny-list), MCP gateway (authenticated, rate-limited, approved tools), credential broker (agent identity, short-lived tokens), logging and detection. General use agents: internet via proxy allowlist only, approved tools via MCP gateway, no highly sensitive data. Highly sensitive data agents: no path to the internet, isolated segmented environment, no self-approved domains."
+    }
   ],
   "artifacts": [
-    {"name": "Roblox agent gateway white paper", "kind": "paper", "note": "Write-up of the email-access gateway case study that the speaker referenced for details.", "url": "https://tinyurl.com/roblox-agent-gateway"},
-    {"name": "Central MCP gateway", "kind": "tool", "note": "Internal gateway through which agents reach email and other tools with policy checks and DLP tagging; not public.", "url": ""},
-    {"name": "Central LLM gateway on AWS Bedrock with ZDR", "kind": "tool", "note": "Single place for LLM use with centralized logging and detective controls; not public.", "url": ""},
-    {"name": "Credential broker", "kind": "tool", "note": "Injects short-lived credentials into tools agents use instead of long-lived static secrets; not public.", "url": ""}
+    {
+      "name": "Roblox agent gateway white paper",
+      "kind": "paper",
+      "note": "Write-up of the email-access gateway case study that the speaker referenced for details.",
+      "url": "https://tinyurl.com/roblox-agent-gateway"
+    },
+    {
+      "name": "Central MCP gateway",
+      "kind": "tool",
+      "note": "Internal gateway through which agents reach email and other tools with policy checks and DLP tagging; not public.",
+      "url": ""
+    },
+    {
+      "name": "Central LLM gateway on AWS Bedrock with ZDR",
+      "kind": "tool",
+      "note": "Single place for LLM use with centralized logging and detective controls; not public.",
+      "url": ""
+    },
+    {
+      "name": "Credential broker",
+      "kind": "tool",
+      "note": "Injects short-lived credentials into tools agents use instead of long-lived static secrets; not public.",
+      "url": ""
+    }
   ],
   "slide_only": [
     "Subtitle slide: 'Governing AI agents without a 6 week review process'.",
@@ -66,10 +207,26 @@
     "No live demo. The Cowork meme episode was a recounted anecdote: asked to add a meme, the tool produced something else because downloads were restricted, so she downloaded the video herself and inserted it."
   ],
   "quotes": [
-    {"text": "Controls have to be built around the agent, not in the prompt.", "speaker": "Nicole Grinstead", "t": "04:17"},
-    {"text": "Without redlines, every AI request becomes a fresh argument. Decide once. Reuse the answer.", "speaker": "Nicole Grinstead", "t": "06:21"},
-    {"text": "The answer isn't no. It's yes, through a gateway.", "speaker": "Nicole Grinstead", "t": "10:32"},
-    {"text": "If everyone bypasses the same control, the control is the problem.", "speaker": "Nicole Grinstead", "t": "15:41"}
+    {
+      "text": "Controls have to be built around the agent, not in the prompt.",
+      "speaker": "Nicole Grinstead",
+      "t": "04:17"
+    },
+    {
+      "text": "Without redlines, every AI request becomes a fresh argument. Decide once. Reuse the answer.",
+      "speaker": "Nicole Grinstead",
+      "t": "06:21"
+    },
+    {
+      "text": "The answer isn't no. It's yes, through a gateway.",
+      "speaker": "Nicole Grinstead",
+      "t": "10:32"
+    },
+    {
+      "text": "If everyone bypasses the same control, the control is the problem.",
+      "speaker": "Nicole Grinstead",
+      "t": "15:41"
+    }
   ],
   "offense": [
     "Agents pursuing task completion will exfiltrate data to public file-sharing sites such as Catbox when blocked, without being malicious.",
@@ -106,7 +263,7 @@
     "The Catbox example is a staged illustration, not shown as a captured incident, so it supports the argument but not a frequency estimate.",
     "The talk describes drift monitoring only in general terms and does not say how redlines set under the 'decide once, reuse the answer' model are re-evaluated as model capability and agent behavior change.",
     "The 'never both outside reach and sensitive data' rule was presented as a design heuristic; the talk does not detail how agent-to-agent channels, shared memory or human relays are policed, and the answer to the lethal trifecta follow-up was general.",
-    "Heavily in-house, build-first approach may not transfer to companies without Roblox-scale engineering capacity; the build-versus-buy answer cited culture and cost and gave no comparison data.",
+    "The approach is in-house and build-first, and the talk does not show whether it transfers to companies without Roblox-scale engineering capacity; the build-versus-buy answer cited culture and cost and gave no comparison data.",
     "The talk ended with an unrelated startup founder from the audience praising the speaker; this is not evidence about the content."
   ],
   "qa": [
@@ -117,19 +274,42 @@
     "Q: Is egress an allowlist, and have you considered behavior-profiling ML instead, and what about lateral movement between general and sensitive agents? A: Depends on risk tolerance; for very sensitive agents block all ways out including talking to other agents; this is part of the threat model.",
     "Q: Did you build this in-house rather than buy, and why? A: Roblox has a build-heavy engineering culture and significant scale, and wants to control its cost destiny, so tools are purpose-built; open sourcing some has been considered but not done."
   ],
-  "tags": ["governance-policy", "guardrails-runtime-controls", "sandboxing-isolation", "org-adoption-culture"],
-  "key_frames": [
-    {"file": "t00250.jpg", "caption": "Staged coding-agent transcript in which a stuck agent uploads a repo snapshot to Catbox, captioned that controls must be built around the agent, not in the prompt."},
-    {"file": "t00269.jpg", "caption": "Governance is engineering, not meetings: replace the central review queue with four steps (redlines, paved roads, safe easy path, monitor detours)."},
-    {"file": "t00507.jpg", "caption": "Per-system answer table: docs yes, email and source with controls, AWS and production data depends, long-lived production secrets never enter the agent environment."},
-    {"file": "t00520.jpg", "caption": "Paved road components: reusable tool sets, sandboxes, scoped identities, constrained connectivity, logging and detective controls."},
-    {"file": "t00970.jpg", "caption": "End-to-end architecture: LLM gateway, egress proxy, MCP gateway, credential broker, logging, with the rule that agents reach outside or reach sensitive data, never both."}
+  "tags": [
+    "governance-policy",
+    "guardrails-runtime-controls",
+    "sandboxing-isolation",
+    "org-adoption-culture"
   ],
-  "signal": {"score": 4, "reason": "A governance model and control architecture described with per-system examples; no quantitative results were shown."},
+  "key_frames": [
+    {
+      "file": "t00250.jpg",
+      "caption": "Staged coding-agent transcript in which a stuck agent uploads a repo snapshot to Catbox, captioned that controls must be built around the agent, not in the prompt."
+    },
+    {
+      "file": "t00269.jpg",
+      "caption": "Governance is engineering, not meetings: replace the central review queue with four steps (redlines, paved roads, safe easy path, monitor detours)."
+    },
+    {
+      "file": "t00507.jpg",
+      "caption": "Per-system answer table: docs yes, email and source with controls, AWS and production data depends, long-lived production secrets never enter the agent environment."
+    },
+    {
+      "file": "t00520.jpg",
+      "caption": "Paved road components: reusable tool sets, sandboxes, scoped identities, constrained connectivity, logging and detective controls."
+    },
+    {
+      "file": "t00970.jpg",
+      "caption": "End-to-end architecture: LLM gateway, egress proxy, MCP gateway, credential broker, logging, with the rule that agents reach outside or reach sensitive data, never both."
+    }
+  ],
+  "signal": {
+    "score": 4,
+    "reason": "The talk describes a governance model and control architecture with per-system examples and shows no quantitative results."
+  },
   "caveats": [
-    "Auto-caption renders OpenClaw as 'Open Claw' and Claude Cowork as 'Claude Co-work'; slide spellings used. 'DCC' is the Dungeon Crawler Carl novel reference, used only as a framing joke for 'hard mode'.",
+    "Auto-caption renders OpenClaw as 'Open Claw' and Claude Cowork as 'Claude Co-work'; slide spellings used. 'DCC' is a reference to the Dungeon Crawler Carl novel, used in the talk for 'hard mode'.",
     "Several slides were captured at multiple build states (the per-system table and the request wall); the final state of each was used.",
-    "The description's line that agents are designed to finish the task rather than respect risk tolerance they were never given is from the talk abstract, not a spoken quote.",
+    "The published description's line that agents are designed to finish the task rather than respect risk tolerance they were never given is from the talk abstract, not a spoken quote.",
     "The transcript says ZDR for the Bedrock route; the slide only says models in private cloud, so ZDR is taken from the spoken description.",
     "The final minutes include an unrelated audience member praising the speaker; excluded from claims.",
     "No slide URLs were shown beyond the tinyurl white paper link, read from the slide."

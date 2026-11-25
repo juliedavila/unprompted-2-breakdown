@@ -3,11 +3,16 @@
   "id": "JIYsdqGC4Hk",
   "url": "https://www.youtube.com/watch?v=JIYsdqGC4Hk",
   "title": "Opening Words - Being AI-Native Relevant - The Hobby Way",
-  "speakers": [{"name": "Gadi Evron", "affiliation": "CEO and Co-founder, Knostic; CISO-in-Residence for AI, CSA; Chair, [un]prompted conference"}],
+  "speakers": [
+    {
+      "name": "Gadi Evron",
+      "affiliation": "CEO and Co-founder, Knostic; CISO-in-Residence for AI, CSA; Chair, [un]prompted conference"
+    }
+  ],
   "format": "opening",
   "duration_min": 20,
   "thesis": "Defenders should stop automating their existing workflows faster and instead restructure security work around what models do natively, using vulnerability research, application security and threat intelligence as three worked examples. The attackers' singularity moment has already happened and the defenders' has to follow.",
-  "summary": "Gadi Evron opens day 3 by recapping the previous day's demos and then walking through three of his own hobby projects as examples of staying relevant with AI. He recaps a Doom demo where a live function was rewritten with a model so monsters stopped firing, and a second demo where a simple web app detected a SQL injection in its logs and patched the vulnerable function on the fly, which he calls purely vibe coded and not production ready. He then introduces a four-layer model of AI usage, says attackers mostly work at layers one to three and rarely at layer four (AI-native), and describes his hunt for logic vulnerabilities. That led to Snouter, a symmetry and asymmetry mapper, which found over 600 results on Raptor and helped surface an OpenBMC IPMI privilege escalation with HD Moore. A later graph tool, Code Surf, maps relationships among values, call sites, routes and trust zones rather than source-to-sink flows. Running it on Raptor gave 2,500 findings but one defense-in-depth bug, so he reused the findings as a dataset to map which guards each finding shape passes through, and proposes watching guard coverage regressions instead of chasing patches. Last, he presents Adversary Brains, a threat intelligence approach that scales analysis of competing hypotheses to thousands of weighted hypotheses used as detection signatures, published as an arXiv preprint. He closes with a call to try ideas that fail, retry with each new model, and take AI back from the marketers.",
+  "summary": "Gadi Evron opens day 3 by recapping the previous day's demos and then walking through three of his own personal projects as examples of staying relevant with AI. He recaps a Doom demo where a live function was rewritten with a model so monsters stopped firing, and a second demo where a simple web app detected a SQL injection in its logs and patched the vulnerable function on the fly, which he calls purely vibe coded and not production ready. He then introduces a four-layer model of AI usage (automate yourself, orchestrate the automation, structure data natively for the model, AI-native), says attackers mostly work at layers one to three and rarely at layer four (AI-native), and describes his hunt for logic vulnerabilities. That led to Snouter, a symmetry and asymmetry mapper, which found over 600 results on Raptor and helped surface an OpenBMC IPMI privilege escalation with HD Moore. A later graph tool, Code Surf, maps relationships among values, call sites, routes and trust zones rather than source-to-sink flows. Running it on Raptor gave 2,500 findings but one defense-in-depth bug, so he reused the findings as a dataset to map which guards each finding shape passes through, and proposes watching guard coverage regressions instead of chasing patches. Last, he presents Adversary Brains, a threat intelligence approach that scales analysis of competing hypotheses to thousands of weighted hypotheses used as detection signatures, published as an arXiv preprint. He closes with a call to try ideas that fail, retry with each new model, and take AI back from the marketers.",
   "argument": [
     "Attackers have already moved to automating and orchestrating with AI, and defenders need their own step change rather than faster versions of current work.",
     "AI usage has four layers (automate yourself, orchestrate the automation, structure data natively for the model, and AI-native), and security work rarely reaches the fourth.",
@@ -17,45 +22,202 @@
     "Practitioners should try ideas that do not work, retry them on each new model, prioritise recall over benchmarks at first, then productionise."
   ],
   "claims": [
-    {"claim": "A web app can detect a SQL injection in its own logs and patch the vulnerable function live so the same attack fails on the second attempt.", "evidence": "Demo 2 on an intentionally simple web app: the first injection worked, the repeat failed. The slide shows a critical SQL injection incident on app.main:search marked fixed, with the function rewritten and live. Evron calls it purely vibe coded and not necessarily production ready.", "grade": "demo", "t": "03:12", "source": "both"},
-    {"claim": "A running function in a game can be replaced live by describing the desired behavior to a model, here making Doom monsters stop firing and walk toward the player.", "evidence": "Demo 1 recap. The failed live run the day before is acknowledged. The slide shows a controller UI proposing candidate functions (decideMonster, decideMonsters) from 254 functions.", "grade": "demo", "t": "01:39", "source": "both"},
-    {"claim": "Offensive AI use is mostly at layers 1 to 3 of a four-layer model, and rarely at layer 4, AI-native.", "evidence": "His own model of AI usage and his assessment of attack practice; the slide marks layers 1 to 3 YES and layer 4 RARELY. No data given.", "grade": "assertion", "t": "05:50", "source": "both"},
-    {"claim": "A symmetry and asymmetry mapper (Snouter) turned up over 600 results on Raptor, a project built by strong vulnerability researchers.", "evidence": "Stated as a first-run result. Not verified or triaged; he says the goal was code smells and leads, not verification at that stage.", "grade": "anecdote", "t": "08:22", "source": "said"},
-    {"claim": "The symmetry approach helped lead to a CVE in OpenBMC IPMI after HD Moore, who had worked on OpenBMC for about three months, sent it as an exhausted target.", "evidence": "Slide shows CVE-2026-16140, OpenBMC IPMI Privilege Escalation via Retargeted RAKP 1, a logic flaw in phosphor-net-ipmid (CWE-863), published 2026-09-15 by runZero, credits HD Moore and Gadi Evron as finders and Tod Beardsley as coordinator.", "grade": "case", "t": "08:22", "source": "both"},
-    {"claim": "Docstring or contract versus code comparison done semantically by a model is an AI-native (layer 3) way to find bugs, with no instructions needed for some newer models.", "evidence": "Described as a worked idea, with two colleagues taking it further; no results given.", "grade": "assertion", "t": "07:52", "source": "said"},
-    {"claim": "Starting with a newer Opus model, simply asking the model to map trust boundaries works better than describing source-to-sink flows.", "evidence": "Credited to a colleague's suggestion (Kat Traxler on the slide) and described as working; no quantitative comparison.", "grade": "anecdote", "t": "09:56", "source": "both"},
-    {"claim": "Code Surf, a graph abstraction over relationships among values, call sites, routes and trust zones, finds structural shapes such as bypass diamonds, guard splits and cross-zone cycles that existing tools miss or present oddly.", "evidence": "Slides define a shape as a relationship among mapped values, call sites, routes, trust zones or conditions, and show the cross-zone-cycle shape (v0.3.0, tier T5, cycle). No hit rates shown.", "grade": "demo", "t": "10:27", "source": "both"},
-    {"claim": "Running the tool on Raptor produced 2,500 findings but only one defense-in-depth bug, which Raptor's hardening explains.", "evidence": "Stated figure and slide text; the project is well hardened by the speaker's account.", "grade": "measured", "t": "11:30", "source": "both"},
-    {"claim": "Findings can be reused as a dataset to map which guards each finding shape passes through, so that defenders track a few thousand guards instead of an unbounded stream of vulnerabilities, and watch for guard coverage regressions.", "evidence": "A Sankey diagram of finding shapes to guards to sinks on Raptor, including a NO GUARD row. Evron admits he does not know whether it will scale.", "grade": "demo", "t": "13:04", "source": "both"},
-    {"claim": "Adversary brains, weighted hypothesis graphs scored against observations across time and systems, can act as detection signatures like YARA and Sigma and flag the missing link when an adversary shifts infrastructure.", "evidence": "Conceptual slides (YARA matches a file, Sigma matches a log line, a brain matches an arrangement; known unknown to known flow) and an arXiv preprint. No detection results presented in the talk.", "grade": "assertion", "t": "16:37", "source": "both"},
-    {"claim": "Analysis of competing hypotheses, traditionally capped at a handful of hypotheses, can be scaled to thousands with LLMs.", "evidence": "Asserted; the original write-up's limit of seven is cited from memory with a comment that decision makers should get two to four.", "grade": "assertion", "t": "16:07", "source": "said"}
+    {
+      "claim": "A web app can detect a SQL injection in its own logs and patch the vulnerable function live so the same attack fails on the second attempt.",
+      "evidence": "Demo 2 on an intentionally simple web app: the first injection worked, the repeat failed. The slide shows a critical SQL injection incident on app.main:search marked fixed, with the function rewritten and live. Evron calls it purely vibe coded and not necessarily production ready.",
+      "grade": "demo",
+      "t": "03:12",
+      "source": "both"
+    },
+    {
+      "claim": "A running function in a game can be replaced live by describing the desired behavior to a model, here making Doom monsters stop firing and walk toward the player.",
+      "evidence": "Demo 1 recap. The failed live run the day before is acknowledged. The slide shows a controller UI proposing candidate functions (decideMonster, decideMonsters) from 254 functions.",
+      "grade": "demo",
+      "t": "01:39",
+      "source": "both"
+    },
+    {
+      "claim": "Offensive AI use is mostly at layers 1 to 3 of a four-layer model, and rarely at layer 4, AI-native.",
+      "evidence": "His own model of AI usage and his assessment of attack practice; the slide marks layers 1 to 3 YES and layer 4 RARELY. No data given.",
+      "grade": "assertion",
+      "t": "05:50",
+      "source": "both"
+    },
+    {
+      "claim": "A symmetry and asymmetry mapper (Snouter) turned up over 600 results on Raptor, a project built by strong vulnerability researchers.",
+      "evidence": "Stated as a first-run result. Not verified or triaged; he says the goal was code smells and leads, not verification at that stage.",
+      "grade": "anecdote",
+      "t": "08:22",
+      "source": "said"
+    },
+    {
+      "claim": "The symmetry approach helped lead to a CVE in OpenBMC IPMI after HD Moore, who had worked on OpenBMC for about three months, sent it as an exhausted target.",
+      "evidence": "Slide shows CVE-2026-16140, OpenBMC IPMI Privilege Escalation via Retargeted RAKP 1, a logic flaw in phosphor-net-ipmid (CWE-863), published 2026-09-15 by runZero, credits HD Moore and Gadi Evron as finders and Tod Beardsley as coordinator.",
+      "grade": "case",
+      "t": "08:22",
+      "source": "both"
+    },
+    {
+      "claim": "Docstring or contract versus code comparison done semantically by a model is an AI-native (layer 3) way to find bugs, with no instructions needed for some newer models.",
+      "evidence": "Described as a worked idea, with two colleagues taking it further; no results given.",
+      "grade": "assertion",
+      "t": "07:52",
+      "source": "said"
+    },
+    {
+      "claim": "Starting with a newer Opus model, asking the model to map trust boundaries works better than describing source-to-sink flows.",
+      "evidence": "Credited to a colleague's suggestion (Kat Traxler on the slide) and described as working; no quantitative comparison.",
+      "grade": "anecdote",
+      "t": "09:56",
+      "source": "both"
+    },
+    {
+      "claim": "Code Surf, a graph abstraction over relationships among values, call sites, routes and trust zones, finds structural shapes such as bypass diamonds, guard splits and cross-zone cycles that existing tools miss or present oddly.",
+      "evidence": "Slides define a shape as a relationship among mapped values, call sites, routes, trust zones or conditions, and show the cross-zone-cycle shape (v0.3.0, tier T5, cycle). No hit rates shown.",
+      "grade": "demo",
+      "t": "10:27",
+      "source": "both"
+    },
+    {
+      "claim": "Running the tool on Raptor produced 2,500 findings but only one defense-in-depth bug, which Raptor's hardening explains.",
+      "evidence": "Stated figure and slide text; the project is well hardened by the speaker's account.",
+      "grade": "measured",
+      "t": "11:30",
+      "source": "both"
+    },
+    {
+      "claim": "Findings can be reused as a dataset to map which guards each finding shape passes through, so that defenders track a few thousand guards instead of an unbounded stream of vulnerabilities, and watch for guard coverage regressions.",
+      "evidence": "A Sankey diagram of finding shapes to guards to sinks on Raptor, including a NO GUARD row. Evron says he does not know whether it will scale.",
+      "grade": "demo",
+      "t": "13:04",
+      "source": "both"
+    },
+    {
+      "claim": "Adversary brains, weighted hypothesis graphs scored against observations across time and systems, can act as detection signatures like YARA and Sigma and flag the missing link when an adversary shifts infrastructure.",
+      "evidence": "Conceptual slides (YARA matches a file, Sigma matches a log line, a brain matches an arrangement; known unknown to known flow) and an arXiv preprint. No detection results presented in the talk.",
+      "grade": "assertion",
+      "t": "16:37",
+      "source": "both"
+    },
+    {
+      "claim": "Analysis of competing hypotheses, traditionally capped at a handful of hypotheses, can be scaled to thousands with LLMs.",
+      "evidence": "Asserted; the original write-up's limit of seven is cited from memory with a comment that decision makers should get two to four.",
+      "grade": "assertion",
+      "t": "16:07",
+      "source": "said"
+    }
   ],
   "numbers": [
-    {"figure": "600+", "meaning": "results from the first Snouter run on Raptor", "t": "08:22"},
-    {"figure": "3 months", "meaning": "time HD Moore had spent on OpenBMC before the CVE", "t": "08:22"},
-    {"figure": "2,500", "meaning": "findings from the Code Surf run on Raptor", "t": "11:30"},
-    {"figure": "1", "meaning": "defense-in-depth bug among those 2,500 findings", "t": "11:30"},
-    {"figure": "4,000", "meaning": "number of guards he proposes maintaining", "t": "14:05"},
-    {"figure": "100,000", "meaning": "findings he contrasts with the 4,000 guards, as an unbounded stream", "t": "14:05"},
-    {"figure": "7", "meaning": "maximum hypotheses the original analysis of competing hypotheses write-up allowed", "t": "16:07"},
-    {"figure": "254", "meaning": "functions in the Doom demo app that the model searched (looked at 120 of 254 per the slide)", "t": "01:39"},
-    {"figure": "2610.35624", "meaning": "arXiv identifier of the Adversary Brains preprint", "t": "18:11"},
-    {"figure": "CVE-2026-16140", "meaning": "OpenBMC IPMI privilege escalation via retargeted RAKP 1", "t": "08:22"}
+    {
+      "figure": "600+",
+      "meaning": "results from the first Snouter run on Raptor",
+      "t": "08:22"
+    },
+    {
+      "figure": "3 months",
+      "meaning": "time HD Moore had spent on OpenBMC before the CVE",
+      "t": "08:22"
+    },
+    {
+      "figure": "2,500",
+      "meaning": "findings from the Code Surf run on Raptor",
+      "t": "11:30"
+    },
+    {
+      "figure": "1",
+      "meaning": "defense-in-depth bug among those 2,500 findings",
+      "t": "11:30"
+    },
+    {
+      "figure": "4,000",
+      "meaning": "number of guards he proposes maintaining",
+      "t": "14:05"
+    },
+    {
+      "figure": "100,000",
+      "meaning": "findings he contrasts with the 4,000 guards, as an unbounded stream",
+      "t": "14:05"
+    },
+    {
+      "figure": "7",
+      "meaning": "maximum hypotheses the original analysis of competing hypotheses write-up allowed",
+      "t": "16:07"
+    },
+    {
+      "figure": "254",
+      "meaning": "functions in the Doom demo app that the model searched (looked at 120 of 254 per the slide)",
+      "t": "01:39"
+    },
+    {
+      "figure": "2610.35624",
+      "meaning": "arXiv identifier of the Adversary Brains preprint",
+      "t": "18:11"
+    },
+    {
+      "figure": "CVE-2026-16140",
+      "meaning": "OpenBMC IPMI privilege escalation via retargeted RAKP 1",
+      "t": "08:22"
+    }
   ],
   "frameworks": [
-    {"name": "Four Layers to AI Usage", "description": "Layer 1: automate and orchestrate ourselves. Layer 2: automate and orchestrate layer 1, then again, up to N. Layer 3: structure data natively for the model, or have it read data natively. Layer 4: AI-native. For attack he rates 1 to 3 as common and 4 as rare."},
-    {"name": "Code Surf shapes", "description": "A code surf shape is a relationship among mapped values, call sites, routes, trust zones or conditions, or a ranking of such relationships. Examples shown: bypass diamond, guard split, cross-zone cycle (data that loops across a trust boundary and back)."},
-    {"name": "Symmetry and asymmetry mapping (Snouter)", "description": "Look for missing symmetry, such as three of four sibling functions having a check, or a docstring that does not semantically match its function, as leads for logic flaws."},
-    {"name": "Guard coverage regression (AppSec is now Ops)", "description": "Map finding shapes to the guards they pass through and onto sinks; track which guards carry the most and which shapes rest on one guard; alert when a shape loses a guard."},
-    {"name": "Adversary Brains", "description": "Hypothesis-based logical signatures for threat actor detection: weighted, related observations scored across time and systems, which can be split, merged, retired or faded, used like YARA and Sigma rules, and read backwards to turn a half-matched brain into a collection task."}
+    {
+      "name": "Four Layers to AI Usage",
+      "description": "Layer 1: automate and orchestrate ourselves. Layer 2: automate and orchestrate layer 1, then again, up to N. Layer 3: structure data natively for the model, or have it read data natively. Layer 4: AI-native. For attack he rates 1 to 3 as common and 4 as rare."
+    },
+    {
+      "name": "Code Surf shapes",
+      "description": "A code surf shape is a relationship among mapped values, call sites, routes, trust zones or conditions, or a ranking of such relationships. Examples shown: bypass diamond, guard split, cross-zone cycle (data that loops across a trust boundary and back)."
+    },
+    {
+      "name": "Symmetry and asymmetry mapping (Snouter)",
+      "description": "Look for missing symmetry, such as three of four sibling functions having a check, or a docstring that does not semantically match its function, as leads for logic flaws."
+    },
+    {
+      "name": "Guard coverage regression (AppSec is now Ops)",
+      "description": "Map finding shapes to the guards they pass through and onto sinks; track which guards carry the most and which shapes rest on one guard; alert when a shape loses a guard."
+    },
+    {
+      "name": "Adversary Brains",
+      "description": "Hypothesis-based logical signatures for threat actor detection: weighted, related observations scored across time and systems, which can be split, merged, retired or faded, used like YARA and Sigma rules, and read backwards to turn a half-matched brain into a collection task."
+    }
   ],
   "artifacts": [
-    {"name": "Adversary Brains: Hypothesis-Based Logical Signatures for Threat Actor Detection with LLMs", "kind": "paper", "note": "Evron's preprint describing scaled analysis of competing hypotheses as detection signatures. He says he will not submit it for peer review.", "url": "https://arxiv.org/html/2610.35624v1"},
-    {"name": "CVE-2026-16140", "kind": "cve", "note": "OpenBMC IPMI privilege escalation via retargeted RAKP 1 in phosphor-net-ipmid, CWE-863; credits HD Moore and Gadi Evron as finders.", "url": ""},
-    {"name": "Snouter", "kind": "tool", "note": "Symmetry and asymmetry mapper for code; code not yet released.", "url": ""},
-    {"name": "Code Surf", "kind": "tool", "note": "Graph abstraction tool for mapping relationships among values, call sites, routes and trust zones; code not yet released.", "url": ""},
-    {"name": "Raptor", "kind": "repo", "note": "Hardened project used as the test target for Snouter and Code Surf; the talk does not say what it is beyond being built by good vulnerability researchers.", "url": ""},
-    {"name": "in-place-ai controller", "kind": "tool", "note": "UI used in the Doom and self-healing SQL injection demos to bind model-rewritten functions to running app instances.", "url": ""}
+    {
+      "name": "Adversary Brains: Hypothesis-Based Logical Signatures for Threat Actor Detection with LLMs",
+      "kind": "paper",
+      "note": "Evron's preprint describing scaled analysis of competing hypotheses as detection signatures. He says he will not submit it for peer review.",
+      "url": "https://arxiv.org/html/2610.35624v1"
+    },
+    {
+      "name": "CVE-2026-16140",
+      "kind": "cve",
+      "note": "OpenBMC IPMI privilege escalation via retargeted RAKP 1 in phosphor-net-ipmid, CWE-863; credits HD Moore and Gadi Evron as finders.",
+      "url": ""
+    },
+    {
+      "name": "Snouter",
+      "kind": "tool",
+      "note": "Symmetry and asymmetry mapper for code; code not yet released.",
+      "url": ""
+    },
+    {
+      "name": "Code Surf",
+      "kind": "tool",
+      "note": "Graph abstraction tool for mapping relationships among values, call sites, routes and trust zones; code not yet released.",
+      "url": ""
+    },
+    {
+      "name": "Raptor",
+      "kind": "repo",
+      "note": "Hardened project used as the test target for Snouter and Code Surf; the talk does not say what it is beyond being built by good vulnerability researchers.",
+      "url": ""
+    },
+    {
+      "name": "in-place-ai controller",
+      "kind": "tool",
+      "note": "UI used in the Doom and self-healing SQL injection demos to bind model-rewritten functions to running app instances.",
+      "url": ""
+    }
   ],
   "slide_only": [
     "Title slide lists Evron as CEO and Co-founder of Knostic, CISO-in-Residence for AI at CSA, and Chair of the [un]prompted conference.",
@@ -76,11 +238,31 @@
     "Self-healing SQL injection: a simple search web app was hit with a SQL injection that worked, the attack was detected in the log, the search function was rewritten and bound live, and the repeat attack failed."
   ],
   "quotes": [
-    {"text": "The attackers' singularity moment already happened. Now it's time for ours.", "speaker": "Gadi Evron", "t": "00:37"},
-    {"text": "If SAST or fuzzing can find it, if it can be shown in threat modelling, if it has a name, I don't want it.", "speaker": "Gadi Evron", "t": "06:21"},
-    {"text": "A Yara rule matches on a file, a Sigma rule matches on a log line, an adversary brain matches on the arrangement.", "speaker": "Gadi Evron", "t": "16:37"},
-    {"text": "We should fix the vulnerabilities, but our focus must move elsewhere because we just keep running around our own tails trying to fix endless vulnerabilities and we can't.", "speaker": "Gadi Evron", "t": "13:34"},
-    {"text": "We need to take AI back from the marketers because this is the hackening.", "speaker": "Gadi Evron", "t": "19:13"}
+    {
+      "text": "The attackers' singularity moment already happened. Now it's time for ours.",
+      "speaker": "Gadi Evron",
+      "t": "00:37"
+    },
+    {
+      "text": "If SAST or fuzzing can find it, if it can be shown in threat modelling, if it has a name, I don't want it.",
+      "speaker": "Gadi Evron",
+      "t": "06:21"
+    },
+    {
+      "text": "A Yara rule matches on a file, a Sigma rule matches on a log line, an adversary brain matches on the arrangement.",
+      "speaker": "Gadi Evron",
+      "t": "16:37"
+    },
+    {
+      "text": "We should fix the vulnerabilities, but our focus must move elsewhere because we just keep running around our own tails trying to fix endless vulnerabilities and we can't.",
+      "speaker": "Gadi Evron",
+      "t": "13:34"
+    },
+    {
+      "text": "We need to take AI back from the marketers because this is the hackening.",
+      "speaker": "Gadi Evron",
+      "t": "19:13"
+    }
   ],
   "offense": [
     "Asking a model to find logic flaws that SAST, fuzzing and threat modeling would not name, via symmetry and asymmetry between sibling functions and between docstrings and code.",
@@ -117,21 +299,44 @@
     "The speaker is CEO and co-founder of Knostic; the thesis is a call to action and the talk presents no product."
   ],
   "qa": [],
-  "tags": ["vuln-discovery-exploit", "appsec-secure-development", "ai-soc-detection-response", "threat-intel-in-the-wild"],
-  "key_frames": [
-    {"file": "t00248.jpg", "caption": "Four Layers to AI Usage, the talk's organising model."},
-    {"file": "t00510.jpg", "caption": "CVE-2026-16140, the OpenBMC IPMI privilege escalation credited to HD Moore and Gadi Evron."},
-    {"file": "t00799.jpg", "caption": "Guard coverage Sankey diagram from findings to guards to sinks, including a NO GUARD row."},
-    {"file": "t01005.jpg", "caption": "How an adversary brain differs from YARA and Sigma rules."},
-    {"file": "t01060.jpg", "caption": "From unknown to known: how a half-matched brain turns a filter into a collection task."}
+  "tags": [
+    "vuln-discovery-exploit",
+    "appsec-secure-development",
+    "ai-soc-detection-response",
+    "threat-intel-in-the-wild"
   ],
-  "signal": {"score": 3, "reason": "Several ideas (guard coverage regression, hypothesis-graph detections) with one published CVE; the results shown are demos and stated assertions, with no measured detection or precision data."},
+  "key_frames": [
+    {
+      "file": "t00248.jpg",
+      "caption": "Four Layers to AI Usage, the talk's organising model."
+    },
+    {
+      "file": "t00510.jpg",
+      "caption": "CVE-2026-16140, the OpenBMC IPMI privilege escalation credited to HD Moore and Gadi Evron."
+    },
+    {
+      "file": "t00799.jpg",
+      "caption": "Guard coverage Sankey diagram from findings to guards to sinks, including a NO GUARD row."
+    },
+    {
+      "file": "t01005.jpg",
+      "caption": "How an adversary brain differs from YARA and Sigma rules."
+    },
+    {
+      "file": "t01060.jpg",
+      "caption": "From unknown to known: how a half-matched brain turns a filter into a collection task."
+    }
+  ],
+  "signal": {
+    "score": 3,
+    "reason": "The talk presents several ideas (guard coverage regression, hypothesis-graph detections) with one published CVE, and the results shown are demos and stated assertions, with no measured detection or precision data."
+  },
   "caveats": [
     "Auto-captions garble names: the transcript renders Kat Traxler as Kat Roxler, uses PuPu for pew-pew, cloud for Claude, Voln for vuln, and Von pocalypse and breach pocalypse for vulnpocalypse; slides were used for spellings.",
     "The transcript says 'Daniel Gashi and Tamir Isakhal' and 'my a byte'; the slide shows Daniel Geyshis and Tamir Isaschar and BITE.",
     "Raptor is never defined in the talk; the transcript's 'barely databases' and 'Raptor' references were taken as spoken.",
     "The transcript attributes a model name as Opus 4.8 and Opus 5; these were not on a slide and are recorded as said.",
-    "The description text is truncated, so the full abstract was not available.",
-    "Slides are largely title-style text; slide frames are partly occluded by the speaker video on the left."
+    "The published description is truncated, so the full abstract was not available.",
+    "Slides are largely title-style text; the slides are partly occluded by the speaker video on the left."
   ]
 }

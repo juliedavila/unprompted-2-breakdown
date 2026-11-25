@@ -4,12 +4,15 @@
   "url": "https://www.youtube.com/watch?v=41a-LmkaFrA",
   "title": "Into the Wild: Hunting Real-World Attacks on AI Systems",
   "speakers": [
-    {"name": "Mike Takahashi", "affiliation": "Zenity (AI Red Team Researcher)"}
+    {
+      "name": "Mike Takahashi",
+      "affiliation": "Zenity (AI Red Team Researcher)"
+    }
   ],
   "format": "talk",
   "duration_min": 21,
   "thesis": "Honeypots that emulate production AI stacks show attackers are already fingerprinting AI backends at scale, exploiting new CVEs within days, stealing secrets through the agents' own tools, and hijacking exposed inference endpoints as free compute for their own, increasingly autonomous, campaigns.",
-  "summary": "Takahashi starts from the gap that AI security research lives in labs and defenders lack threat intelligence from real incidents. His team, with colleagues Avishai Efrat and Ayush RoyChowdhury, deployed decoy AI servers and agents built on LangChain, OpenClaw, LiteLLM and Ollama in various locations, and attackers arrived almost immediately. The first phase was fingerprinting and discovery: a spike of 400,000 requests in an hour hitting inference endpoints with benign prompts like respond with pong, focusing on GLM, DeepSeek and Qwen, and probing for system prompts and tool lists; over about six months there were more than 22 million requests from thousands of IPs. He then walks through three LiteLLM CVE exploitation cases: a config update local file inclusion that reads the .env file, tested one day after disclosure; a guardrails test endpoint abused with default key spraying and a fragmented-keyword sandbox bypass to run code as root; and a health test-connection endpoint that sends the server's own master key to an attacker server. Canary tokens planted on the honeypots were used within about 30 minutes, including AWS calls testing AI model access. He shows a Strix autonomous pentest agent prompt of 140,000 characters and an AIRecon bug-bounty agent payload, which leaked intent and tooling. He closes with Q&A on whether the attacks are agentic, honeypot evasion, liability and an underground key market.",
+  "summary": "Takahashi starts from the gap that AI security research lives in labs and defenders lack threat intelligence from real incidents. His team, with colleagues Avishai Efrat and Ayush RoyChowdhury, deployed decoy AI servers and agents built on LangChain, OpenClaw, LiteLLM and Ollama in various locations, and attackers arrived almost immediately. The first phase was fingerprinting and discovery: a spike of 400,000 requests in an hour hitting inference endpoints with benign prompts like respond with pong, focusing on GLM, DeepSeek and Qwen, and probing for system prompts and tool lists; over about six months there were more than 22 million requests from thousands of IPs. He then walks through three LiteLLM CVE exploitation cases: a config update local file inclusion that reads the .env file, tested one day after disclosure; a guardrails test endpoint abused with default key spraying and a fragmented-keyword sandbox bypass to run code as root; and a health test-connection endpoint that sends the server's own master key to an attacker server. Canary tokens planted on the honeypots were used within about 30 minutes, including AWS calls testing AI model access. He shows a Strix autonomous pentest agent prompt of 140,000 characters and an AIRecon bug-bounty agent payload, which leaked intent and tooling.",
   "argument": [
     "AI security knowledge is lab-derived and defenders lack real threat intelligence about what attackers do to production AI systems.",
     "Decoy AI stacks attract huge volumes of automated fingerprinting and discovery traffic that is used to find free inference, models and tools.",
@@ -18,48 +21,220 @@
     "Autonomous pentest agents are being run through victim infrastructure, so victims supply the free tokens and can be implicated, while the stateless prompts leak the attacker's tools, harness and intent."
   ],
   "claims": [
-    {"claim": "Attackers arrived at the honeypots almost immediately, and one LiteLLM honeypot saw a spike of about 400,000 requests in one hour during fingerprinting and discovery.", "evidence": "Graph of LiteLLM volume over three days (Sep 17 to Sep 20) with a peak near 400K; the speaker states 400,000 requests in 1 hour.", "grade": "measured", "t": "02:15", "source": "both"},
-    {"claim": "Discovery campaigns made more than 22 million requests from thousands of IPs continuously over about six months, probing inference endpoints and focusing on GLM, DeepSeek and Qwen models.", "evidence": "Slide of campaign totals; the speaker says it is ongoing and details are in a Zenity Labs post with IOCs.", "grade": "measured", "t": "03:18", "source": "both"},
-    {"claim": "Attackers tested a LiteLLM config-update local file inclusion one day after the CVE was disclosed, pointing the UI logo path at a .env file to read the victim's API keys.", "evidence": "Case 1 slide: POST /config/update with a read-only proxy_admin_viewer bearer key and environment_variables UI_LOGO_PATH set to /app/.env, then a GET /get_image that returns the file; labelled CVE-2026-35029, tested 1 day after disclosure.", "grade": "case", "t": "04:19", "source": "both"},
-    {"claim": "The LiteLLM guardrails test_custom_code endpoint was used for code execution as root: attackers spray default keys such as sk-1234, submit Python that bypasses the sandbox's keyword filter by fragmenting keywords, and dump environment variables to take the API key.", "evidence": "Request slide with the endpoint, Bearer sk-1234 and custom_code fields; thousands of requests across multiple IPs.", "grade": "case", "t": "04:52", "source": "both"},
-    {"claim": "The LiteLLM health test_connection endpoint was abused to exfiltrate the master key: the request sets api_base to an attacker server and api_key to the server's own environment variable, so the key arrives in the attacker's logs.", "evidence": "Case 3 slide showing api_base at an attacker IP on port 18182 and api_key as os.environ/LITELLM_MASTER_KEY, with default-key spraying via Bearer sk-1234; the next slide, The attacker is handed the keys to the kingdom, is labelled CVE-2026-40217.", "grade": "case", "t": "05:54", "source": "both"},
-    {"claim": "Attackers prompt exposed agents to run shell tools to hunt for credentials, pointing at paths like production credentials and grepping for API keys and tokens.", "evidence": "Shell tools probing and abuse slide shows prompts, several written in Chinese, such as cat of ~/infra/prod-creds.env, id plus a grep for apiKey or token, and find under ~/.openclaw; a later slide shows env piped to grep for key, token, secret, pass or api.", "grade": "case", "t": "06:25", "source": "both"},
-    {"claim": "Canary tokens planted on the honeypots across all tech stacks produced thousands of login attempts with stolen keys from multiple IPs and user agents.", "evidence": "AWS canary-token alert slide; counts given only as thousands.", "grade": "case", "t": "07:26", "source": "both"},
-    {"claim": "Stolen AWS keys were first tested about 30 minutes after discovery, which suggests automation, and the attackers tested for AI model access (listing foundation models, requesting model access, invoking models) and creating IAM users rather than only mining crypto.", "evidence": "Slide listing ListFoundationModels, PutUseCaseForModelAccess, InvokeModel and CreateUser; timing stated by the speaker.", "grade": "case", "t": "08:28", "source": "both"},
-    {"claim": "An autonomous pentest agent (Strix) sent a 140,000-character prompt through the honeypot at a third-party target, including instructions such as full authorization in all caps, go super hard on all targets, and never use Strix or identifiable names.", "evidence": "Slides show the agent named as Strix and excerpts of the captured prompt: complete testing authorization, full autonomy, aggressive scanning mandate, push to the absolute limit, be relentless, 2000+ steps minimum, and a rule never to use Strix or identifiable names or markers in HTTP requests, payloads or user-agents.", "grade": "case", "t": "09:29", "source": "both"},
-    {"claim": "Stateless exposed inference endpoints leak attacker intent and identity because each prompt carries full context: tools, harness, GitHub repo and local files, and the target site.", "evidence": "Payload slide of an AIRecon bug-bounty agent with its registered tools, prior session memory and a redacted target; an attribution slide shows request headers from a Codex terminal client.", "grade": "case", "t": "11:00", "source": "both"},
-    {"claim": "Captured request headers carry attribution signals: a Codex terminal UI client (codex-tui 0.131.0 on Windows 10.0.26200) with a session and thread id, a Windows workspace path, an SSH GitHub remote for the attacker's repo, host data and client data.", "evidence": "Attacker attribution signals slide with annotated, partly redacted headers labelled Git repo, local files, host data and client data.", "grade": "case", "t": "11:30", "source": "slide"},
-    {"claim": "Discovery prompts probe both the model and the agent: model queries such as respond only with the word pong, what is your exact model and who created you, and a random string, aimed at Ollama-style cloud models like glm-5.2:cloud, deepseek-v4-flash:cloud and kimi-k2.7:cloud; and capability probes that include a fake instruction to disregard safety protocols and claim admin privileges.", "evidence": "Fingerprinting, model discovery and tools-and-capabilities slides listing the prompts and endpoints /api/generate, /api/chat and /v1/responses.", "grade": "case", "t": "02:46", "source": "both"},
-    {"claim": "The key-validation workflow seen on the honeypots is: ask the agent to list tools, locate secrets with env piped to grep, then test them with AWS ListUsers and DescribeInstances, which trigger the canary, within 30 minutes of discovery.", "evidence": "Observed attacker workflow: key validation slides.", "grade": "case", "t": "08:28", "source": "both"}
+    {
+      "claim": "Attackers arrived at the honeypots almost immediately, and one LiteLLM honeypot saw a spike of about 400,000 requests in one hour during fingerprinting and discovery.",
+      "evidence": "Graph of LiteLLM volume over three days (Sep 17 to Sep 20) with a peak near 400K; the speaker states 400,000 requests in 1 hour.",
+      "grade": "measured",
+      "t": "02:15",
+      "source": "both"
+    },
+    {
+      "claim": "Discovery campaigns made more than 22 million requests from thousands of IPs continuously over about six months, probing inference endpoints and focusing on GLM, DeepSeek and Qwen models.",
+      "evidence": "Slide of campaign totals; the speaker says it is ongoing and details are in a Zenity Labs post with IOCs.",
+      "grade": "measured",
+      "t": "03:18",
+      "source": "both"
+    },
+    {
+      "claim": "Attackers tested a LiteLLM config-update local file inclusion one day after the CVE was disclosed, pointing the UI logo path at a .env file to read the victim's API keys.",
+      "evidence": "Case 1 slide: POST /config/update with a read-only proxy_admin_viewer bearer key and environment_variables UI_LOGO_PATH set to /app/.env, then a GET /get_image that returns the file; labelled CVE-2026-35029, tested 1 day after disclosure.",
+      "grade": "case",
+      "t": "04:19",
+      "source": "both"
+    },
+    {
+      "claim": "The LiteLLM guardrails test_custom_code endpoint was used for code execution as root: attackers spray default keys such as sk-1234, submit Python that bypasses the sandbox's keyword filter by fragmenting keywords, and dump environment variables to take the API key.",
+      "evidence": "Request slide with the endpoint, Bearer sk-1234 and custom_code fields; thousands of requests across multiple IPs.",
+      "grade": "case",
+      "t": "04:52",
+      "source": "both"
+    },
+    {
+      "claim": "The LiteLLM health test_connection endpoint was abused to exfiltrate the master key: the request sets api_base to an attacker server and api_key to the server's own environment variable, so the key arrives in the attacker's logs.",
+      "evidence": "Case 3 slide showing api_base at an attacker IP on port 18182 and api_key as os.environ/LITELLM_MASTER_KEY, with default-key spraying via Bearer sk-1234; the next slide, The attacker is handed the keys to the kingdom, is labelled CVE-2026-40217.",
+      "grade": "case",
+      "t": "05:54",
+      "source": "both"
+    },
+    {
+      "claim": "Attackers prompt exposed agents to run shell tools to hunt for credentials, pointing at paths like production credentials and grepping for API keys and tokens.",
+      "evidence": "Shell tools probing and abuse slide shows prompts, several written in Chinese, such as cat of ~/infra/prod-creds.env, id plus a grep for apiKey or token, and find under ~/.openclaw; a later slide shows env piped to grep for key, token, secret, pass or api.",
+      "grade": "case",
+      "t": "06:25",
+      "source": "both"
+    },
+    {
+      "claim": "Canary tokens planted on the honeypots across all tech stacks produced thousands of login attempts with stolen keys from multiple IPs and user agents.",
+      "evidence": "AWS canary-token alert slide; counts given only as thousands.",
+      "grade": "case",
+      "t": "07:26",
+      "source": "both"
+    },
+    {
+      "claim": "Stolen AWS keys were first tested about 30 minutes after discovery, which suggests automation, and the attackers tested for AI model access (listing foundation models, requesting model access, invoking models) and creating IAM users rather than only mining crypto.",
+      "evidence": "Slide listing ListFoundationModels, PutUseCaseForModelAccess, InvokeModel and CreateUser; timing stated by the speaker.",
+      "grade": "case",
+      "t": "08:28",
+      "source": "both"
+    },
+    {
+      "claim": "An autonomous pentest agent (Strix) sent a 140,000-character prompt through the honeypot at a third-party target, including instructions such as full authorization in all caps, go super hard on all targets, and never use Strix or identifiable names.",
+      "evidence": "Slides show the agent named as Strix and excerpts of the captured prompt: complete testing authorization, full autonomy, aggressive scanning mandate, push to the absolute limit, be relentless, 2000+ steps minimum, and a rule never to use Strix or identifiable names or markers in HTTP requests, payloads or user-agents.",
+      "grade": "case",
+      "t": "09:29",
+      "source": "both"
+    },
+    {
+      "claim": "Stateless exposed inference endpoints leak attacker intent and identity because each prompt carries full context: tools, harness, GitHub repo and local files, and the target site.",
+      "evidence": "Payload slide of an AIRecon bug-bounty agent with its registered tools, prior session memory and a redacted target; an attribution slide shows request headers from a Codex terminal client.",
+      "grade": "case",
+      "t": "11:00",
+      "source": "both"
+    },
+    {
+      "claim": "Captured request headers carry attribution signals: a Codex terminal UI client (codex-tui 0.131.0 on Windows 10.0.26200) with a session and thread id, a Windows workspace path, an SSH GitHub remote for the attacker's repo, host data and client data.",
+      "evidence": "Attacker attribution signals slide with annotated, partly redacted headers labelled Git repo, local files, host data and client data.",
+      "grade": "case",
+      "t": "11:30",
+      "source": "slide"
+    },
+    {
+      "claim": "Discovery prompts probe both the model and the agent: model queries such as respond only with the word pong, what is your exact model and who created you, and a random string, aimed at Ollama-style cloud models like glm-5.2:cloud, deepseek-v4-flash:cloud and kimi-k2.7:cloud; and capability probes that include a fake instruction to disregard safety protocols and claim admin privileges.",
+      "evidence": "Fingerprinting, model discovery and tools-and-capabilities slides listing the prompts and endpoints /api/generate, /api/chat and /v1/responses.",
+      "grade": "case",
+      "t": "02:46",
+      "source": "both"
+    },
+    {
+      "claim": "The key-validation workflow seen on the honeypots is: ask the agent to list tools, locate secrets with env piped to grep, then test them with AWS ListUsers and DescribeInstances, which trigger the canary, within 30 minutes of discovery.",
+      "evidence": "Observed attacker workflow: key validation slides.",
+      "grade": "case",
+      "t": "08:28",
+      "source": "both"
+    }
   ],
   "numbers": [
-    {"figure": "400,000 requests in 1 hour", "meaning": "peak of one fingerprinting and discovery spike on a LiteLLM honeypot", "t": "02:15"},
-    {"figure": "22M+", "meaning": "requests in the model and tool discovery campaigns over about six months", "t": "03:18"},
-    {"figure": "thousands", "meaning": "distinct attacker IPs in the discovery campaigns, and login attempts with stolen canary keys", "t": "03:18"},
-    {"figure": "1 day", "meaning": "time between CVE disclosure and first observed LiteLLM config-update exploitation attempt", "t": "04:52"},
-    {"figure": "30 minutes", "meaning": "time from secret discovery to first testing of the stolen AWS key", "t": "08:28"},
-    {"figure": "140,000 characters", "meaning": "length of the Strix autonomous pentest agent prompt captured", "t": "09:29"},
-    {"figure": "~6 months", "meaning": "duration of the continuous discovery activity", "t": "03:18"},
-    {"figure": "about 440K", "meaning": "main peak on the slide's LiteLLM volume graph on Sep 19, higher than the 400K the speaker cited", "t": "02:15"},
-    {"figure": "2000+ steps minimum", "meaning": "number of steps the captured Strix prompt demands for real vulnerability discovery", "t": "09:29"},
-    {"figure": "3 subdomains, 52 URLs, 21 injection points", "meaning": "prior-session memory preloaded into the captured AIRecon payload", "t": "11:30"},
-    {"figure": "CVE-2026-35029 and CVE-2026-40217", "meaning": "CVE identifiers shown on the LiteLLM case 1 and case 3 slides", "t": "04:19"}
+    {
+      "figure": "400,000 requests in 1 hour",
+      "meaning": "peak of one fingerprinting and discovery spike on a LiteLLM honeypot",
+      "t": "02:15"
+    },
+    {
+      "figure": "22M+",
+      "meaning": "requests in the model and tool discovery campaigns over about six months",
+      "t": "03:18"
+    },
+    {
+      "figure": "thousands",
+      "meaning": "distinct attacker IPs in the discovery campaigns, and login attempts with stolen canary keys",
+      "t": "03:18"
+    },
+    {
+      "figure": "1 day",
+      "meaning": "time between CVE disclosure and first observed LiteLLM config-update exploitation attempt",
+      "t": "04:52"
+    },
+    {
+      "figure": "30 minutes",
+      "meaning": "time from secret discovery to first testing of the stolen AWS key",
+      "t": "08:28"
+    },
+    {
+      "figure": "140,000 characters",
+      "meaning": "length of the Strix autonomous pentest agent prompt captured",
+      "t": "09:29"
+    },
+    {
+      "figure": "~6 months",
+      "meaning": "duration of the continuous discovery activity",
+      "t": "03:18"
+    },
+    {
+      "figure": "about 440K",
+      "meaning": "main peak on the slide's LiteLLM volume graph on Sep 19, higher than the 400K the speaker cited",
+      "t": "02:15"
+    },
+    {
+      "figure": "2000+ steps minimum",
+      "meaning": "number of steps the captured Strix prompt demands for real vulnerability discovery",
+      "t": "09:29"
+    },
+    {
+      "figure": "3 subdomains, 52 URLs, 21 injection points",
+      "meaning": "prior-session memory preloaded into the captured AIRecon payload",
+      "t": "11:30"
+    },
+    {
+      "figure": "CVE-2026-35029 and CVE-2026-40217",
+      "meaning": "CVE identifiers shown on the LiteLLM case 1 and case 3 slides",
+      "t": "04:19"
+    }
   ],
   "frameworks": [
-    {"name": "AI honeypot network", "description": "Decoy AI servers and agents built from LangChain, OpenClaw, LiteLLM and Ollama in various locations, with fake secrets planted to detect use; outbound connections are blocked so attack chains stop at third-party targets."},
-    {"name": "Campaign phases observed", "description": "Fingerprinting and discovery, model and tool probing (system prompt leak, tool lists), CVE exploitation of AI backends, secret theft through agent shell tools, use of stolen cloud keys to test AI access, and hijacking infrastructure for free inference to fuel autonomous attack agents."},
-    {"name": "Intent and attribution leakage", "description": "Because exposed inference endpoints are stateless, each attacker prompt contains its full context, leaking tools, harness, target and sometimes accounts. Slides split it into intent within payloads (agent name, registered tools, session memory, target) and attacker attribution signals (git repo, local files, host data, client data); a meme slide titled So many attacks, so little time offers intent versus attribution as the two things to analyze."},
-    {"name": "Observed attacker workflow: key validation", "description": "Sequence seen on the agent honeypots: capability discovery (say hello and list tools), locate secrets with a Bash env and grep command, validate stolen AWS keys with ListUsers and DescribeInstances, then test persistent AI access with ListFoundationModels, PutUseCaseForModelAccess, InvokeModel and CreateUser."},
-    {"name": "What we learned (closing summary)", "description": "Attackers are fingerprinting AI systems, probing for models and tools, exploiting new CVEs within days, stealing API keys and credentials, and hijacking your infrastructure to hack others."}
+    {
+      "name": "AI honeypot network",
+      "description": "Decoy AI servers and agents built from LangChain, OpenClaw, LiteLLM and Ollama in various locations, with fake secrets planted to detect use; outbound connections are blocked so attack chains stop at third-party targets."
+    },
+    {
+      "name": "Campaign phases observed",
+      "description": "Fingerprinting and discovery, model and tool probing (system prompt leak, tool lists), CVE exploitation of AI backends, secret theft through agent shell tools, use of stolen cloud keys to test AI access, and hijacking infrastructure for free inference to fuel autonomous attack agents."
+    },
+    {
+      "name": "Intent and attribution leakage",
+      "description": "Because exposed inference endpoints are stateless, each attacker prompt contains its full context, leaking tools, harness, target and sometimes accounts. Slides split it into intent within payloads (agent name, registered tools, session memory, target) and attacker attribution signals (git repo, local files, host data, client data); a meme slide titled So many attacks, so little time offers intent versus attribution as the two things to analyze."
+    },
+    {
+      "name": "Observed attacker workflow: key validation",
+      "description": "Sequence seen on the agent honeypots: capability discovery (say hello and list tools), locate secrets with a Bash env and grep command, validate stolen AWS keys with ListUsers and DescribeInstances, then test persistent AI access with ListFoundationModels, PutUseCaseForModelAccess, InvokeModel and CreateUser."
+    },
+    {
+      "name": "What we learned (closing summary)",
+      "description": "Attackers are fingerprinting AI systems, probing for models and tools, exploiting new CVEs within days, stealing API keys and credentials, and hijacking your infrastructure to hack others."
+    }
   ],
   "artifacts": [
-    {"name": "Scanning for AI: Live Campaigns Mapping the Internet's Exposed LLM Backends", "kind": "paper", "note": "Zenity Labs post by Ayush RoyChowdhury and Avishai Efrat on mass discovery and model-probing campaigns; the slide flags newly published IoCs and a QR code.", "url": "https://labs.zenity.io/post/scanning-for-ai-live-campaigns-mapping-the-internet-s-exposed-llm-backends"},
-    {"name": "What You Don't Know Can Hurt You: Why AI Security Research Needs to Move Out of the Lab and Into the Wild", "kind": "paper", "note": "Zenity Labs post by the same authors, shown on the closing More Information slide with a QR code and labs.zenity.io.", "url": "https://labs.zenity.io"},
-    {"name": "CVE-2026-35029", "kind": "cve", "note": "LiteLLM config-update local file inclusion shown on the case 1 slide, exploited one day after disclosure.", "url": ""},
-    {"name": "CVE-2026-40217", "kind": "cve", "note": "CVE label on the slide where the health test-connection abuse hands the attacker the server's master key (case 3).", "url": ""},
-    {"name": "Strix", "kind": "tool", "note": "Autonomous pentesting agent whose prompt was captured aimed at a third-party site through the honeypot.", "url": ""},
-    {"name": "AIRecon", "kind": "tool", "note": "Bug-bounty cybersecurity agent, described on the slide as developed by Pikpikcu Labs, seen in captured payloads with a Caido-based toolset.", "url": ""},
-    {"name": "Canarytokens", "kind": "tool", "note": "Fake credentials, here AWS keys, planted on honeypots to detect theft and use.", "url": ""}
+    {
+      "name": "Scanning for AI: Live Campaigns Mapping the Internet's Exposed LLM Backends",
+      "kind": "paper",
+      "note": "Zenity Labs post by Ayush RoyChowdhury and Avishai Efrat on mass discovery and model-probing campaigns; the slide flags newly published IoCs and a QR code.",
+      "url": "https://labs.zenity.io/post/scanning-for-ai-live-campaigns-mapping-the-internet-s-exposed-llm-backends"
+    },
+    {
+      "name": "What You Don't Know Can Hurt You: Why AI Security Research Needs to Move Out of the Lab and Into the Wild",
+      "kind": "paper",
+      "note": "Zenity Labs post by the same authors, shown on the closing More Information slide with a QR code and labs.zenity.io.",
+      "url": "https://labs.zenity.io"
+    },
+    {
+      "name": "CVE-2026-35029",
+      "kind": "cve",
+      "note": "LiteLLM config-update local file inclusion shown on the case 1 slide, exploited one day after disclosure.",
+      "url": ""
+    },
+    {
+      "name": "CVE-2026-40217",
+      "kind": "cve",
+      "note": "CVE label on the slide where the health test-connection abuse hands the attacker the server's master key (case 3).",
+      "url": ""
+    },
+    {
+      "name": "Strix",
+      "kind": "tool",
+      "note": "Autonomous pentesting agent whose prompt was captured aimed at a third-party site through the honeypot.",
+      "url": ""
+    },
+    {
+      "name": "AIRecon",
+      "kind": "tool",
+      "note": "Bug-bounty cybersecurity agent, described on the slide as developed by Pikpikcu Labs, seen in captured payloads with a Caido-based toolset.",
+      "url": ""
+    },
+    {
+      "name": "Canarytokens",
+      "kind": "tool",
+      "note": "Fake credentials, here AWS keys, planted on honeypots to detect theft and use.",
+      "url": ""
+    }
   ],
   "slide_only": [
     "Opening slides: AI Security is stuck in the lab, showing Zenity Labs posts by Tamir Ishay Sharbat (Indirect Prompt Injection, Aug 08 2024; AgentFlayer: ChatGPT Connectors 0click Attack, Aug 07 2025) and an Embrace The Red post on prompt injection along the CIA triad; then three questions: is anyone really attacking AI and agents, what attacks are out there, and what tools and techniques are they using.",
@@ -85,10 +260,26 @@
   ],
   "demos": [],
   "quotes": [
-    {"text": "The guardrail that was meant to protect the AI is actually the way for the attackers to get in and pwn the server.", "speaker": "Mike Takahashi", "t": "05:23"},
-    {"text": "Attackers are using your infrastructure for their operations. They don't even need to pay for their own LLM. They can use yours.", "speaker": "Mike Takahashi", "t": "10:30"},
-    {"text": "Usually the attackers are spying on us, but for once we can spy back on the attackers.", "speaker": "Mike Takahashi", "t": "12:00"},
-    {"text": "They just need the free inference, really.", "speaker": "Mike Takahashi", "t": "15:09"}
+    {
+      "text": "The guardrail that was meant to protect the AI is actually the way for the attackers to get in and pwn the server.",
+      "speaker": "Mike Takahashi",
+      "t": "05:23"
+    },
+    {
+      "text": "Attackers are using your infrastructure for their operations. They don't even need to pay for their own LLM. They can use yours.",
+      "speaker": "Mike Takahashi",
+      "t": "10:30"
+    },
+    {
+      "text": "Usually the attackers are spying on us, but for once we can spy back on the attackers.",
+      "speaker": "Mike Takahashi",
+      "t": "12:00"
+    },
+    {
+      "text": "They just need the free inference, really.",
+      "speaker": "Mike Takahashi",
+      "t": "15:09"
+    }
   ],
   "offense": [
     "Mass fingerprinting of inference endpoints (api generate, api chat) with benign prompts such as respond with the word pong or what model are you to find models and free inference, favoring GLM, DeepSeek and Qwen.",
@@ -144,22 +335,45 @@
     "Q: Same actor that exploits the system and uses the key, or a market? A: IP changes between key theft and key use were common, so it could be rotated infrastructure or sold keys; an underground market is suspected but unconfirmed.",
     "Q: Any other prompt types beyond pentest? A: Yes, other tasks such as adult subtitles, as people just use the free tokens; cut for time."
   ],
-  "tags": ["threat-intel-in-the-wild", "autonomous-offense", "vuln-discovery-exploit", "guardrails-runtime-controls"],
-  "key_frames": [
-    {"file": "t00203.jpg", "caption": "Campaign totals: more than 22M requests from thousands of IPs over about six months against LangChain, Ollama, LiteLLM and OpenClaw honeypots."},
-    {"file": "t00325.jpg", "caption": "Guardrail Python used for root code execution on LiteLLM, with string-fragment sandbox bypass and a dump of environment variables."},
-    {"file": "t00371.jpg", "caption": "LiteLLM health test_connection request pointing api_base at an attacker server and api_key at the server's master key."},
-    {"file": "t00532.jpg", "caption": "AWS calls attackers used on a stolen canary key to test persistent AI model access and create IAM users."},
-    {"file": "t00674.jpg", "caption": "Annotated Codex request headers showing the attacker's git repo, local files, host and client data as attribution signals."}
+  "tags": [
+    "threat-intel-in-the-wild",
+    "autonomous-offense",
+    "vuln-discovery-exploit",
+    "guardrails-runtime-controls"
   ],
-  "signal": {"score": 4, "reason": "Rare first-hand in-the-wild telemetry with concrete request-level exploitation cases and canary-token evidence, with several counts given only as thousands and CVE identifiers shown for two of the three LiteLLM cases."},
+  "key_frames": [
+    {
+      "file": "t00203.jpg",
+      "caption": "Campaign totals: more than 22M requests from thousands of IPs over about six months against LangChain, Ollama, LiteLLM and OpenClaw honeypots."
+    },
+    {
+      "file": "t00325.jpg",
+      "caption": "Guardrail Python used for root code execution on LiteLLM, with string-fragment sandbox bypass and a dump of environment variables."
+    },
+    {
+      "file": "t00371.jpg",
+      "caption": "LiteLLM health test_connection request pointing api_base at an attacker server and api_key at the server's master key."
+    },
+    {
+      "file": "t00532.jpg",
+      "caption": "AWS calls attackers used on a stolen canary key to test persistent AI model access and create IAM users."
+    },
+    {
+      "file": "t00674.jpg",
+      "caption": "Annotated Codex request headers showing the attacker's git repo, local files, host and client data as attribution signals."
+    }
+  ],
+  "signal": {
+    "score": 4,
+    "reason": "The talk reports honeypot telemetry from decoy AI stacks with request-level exploitation cases and canary-token results; several counts are given only as thousands and CVE identifiers are shown for two of the three LiteLLM cases."
+  },
   "caveats": [
-    "Slides now cover the whole talk; the Q&A frames are speaker camera only and carry no content.",
-    "Auto-captions garble names: Zenity appears as Zannity or Zenyte, OpenClaw as OpenCall, LiteLLM as light LLM, and Avishai as Abishai; names were taken from slides.",
-    "The Thanks slide titles Takahashi as AI Red Team Researcher; the Senior AI Security Researcher titles in slide_only came from a team slide in the first pass that is not among the regenerated frames and was kept unverified.",
+    "Slides cover the whole talk; the Q&A portion is speaker camera only and carries no slide content.",
+    "Auto-captions garble names: Zenity appears as Zannity or Zenyte, OpenClaw as OpenCall, LiteLLM as light LLM, and Avishai Efrat's first name as Abishai; names were taken from slides.",
+    "The Thanks slide titles Takahashi as AI Red Team Researcher; the Senior AI Security Researcher titles come from a team slide that is not among the captured slides and could not be verified.",
     "The graph's y-axis has no unit on the slide and peaks near 440K, whereas the speaker said 400,000 requests in an hour.",
-    "The campaign graph dates (Sep 17 to Sep 20) are shown without a year; the CVE identifiers suggest 2026.",
+    "The campaign graph dates (Sep 17 to Sep 20) are shown without a year; the CVE identifiers on the case slides carry 2026.",
     "The Strix and AIRecon identifications and the shell-probing prompts are read from partly redacted slides.",
-    "Description items not covered in the recorded talk: Ollama model-downloader SSRF, backdoored model uploads and telemetry exfiltration."
+    "Items in the published description that the recorded talk does not cover: Ollama model-downloader SSRF, backdoored model uploads and telemetry exfiltration."
   ]
 }

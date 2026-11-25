@@ -3,89 +3,349 @@
   "id": "0EuZdRJxuqs",
   "url": "https://www.youtube.com/watch?v=0EuZdRJxuqs",
   "title": "Engineering Context for SOC Agents: Lessons, Failures, and Open Questions",
-  "speakers": [{"name": "Dan Dye", "affiliation": "Google Cloud Security"}],
+  "speakers": [
+    {
+      "name": "Dan Dye",
+      "affiliation": "Google Cloud Security"
+    }
+  ],
   "format": "talk",
   "duration_min": 25,
   "thesis": "Context for SOC agents (runbooks, skills, system prompts) must be measured by ablation and evaluated across models and harnesses, because hand-tuned or even automatically evolved context overfits its original model and harness and may be neutral or harmful on newer frontier models.",
-  "summary": "Dan Dye, a Google Cloud Security engineer, gives an in-the-trenches account of building context for security operations agents. He started with Markdown AI runbooks and persona sub-agents on a local Cline harness, moved to Google's agent development kit with multi-agent delegation, and then found that platform knowledge bases now accept native Markdown in Drive. He sketches that context work briefly, then turns to what he calls the real problem: new frontier models arrive weekly, so he asks whether his skills help or hurt, and whether they will be in the next model's pre-training. He frames a skills ablation, 'does a skill earn its tokens?', and shows a table comparing prompt-only, monolithic runbooks, graph workflows and progressive-disclosure variants on one malware case. He says that embedding the grading rubric inside the runbooks contaminated later experiments. Evolving skills with GEPA looked like a miracle (99.8% lower simulated loss, 26.6% fewer tokens, 21.2% lower latency), but the gains vanished on another model or harness; he lists four failure modes such as literal environment-variable placeholders and Mermaid diagrams. On newer frontier models a threat-hunting benchmark showed no runbook scoring above his raw runbook, while newer harness-evolution frameworks (Harness squared) recovered nearly saturating scores. He closes by releasing a repo to deploy and benchmark open-weight Gemma and other models on Google Cloud, with GPU cost tables and an idle-GPU shutdown agent, and Q&A covers verbosity-biased judges, descriptive versus prescriptive skills, and whether sub-agents still pay off.",
+  "summary": "Dan Dye, a Google Cloud Security engineer, gives a first-hand account of building context for security operations agents. He started with Markdown AI runbooks and persona sub-agents on a local Cline harness, moved to Google's agent development kit with multi-agent delegation, and then found that platform knowledge bases now accept native Markdown in Drive. He sketches that context work briefly, then turns to what he calls the real problem: new frontier models arrive weekly, so he asks whether his skills help or hurt, and whether they will be in the next model's pre-training. He frames a skills ablation, 'does a skill earn its tokens?', and shows a table comparing prompt-only, monolithic runbooks, graph workflows and progressive-disclosure variants on one malware case. He says that embedding the grading rubric inside the runbooks contaminated later experiments. Evolving skills with GEPA (Genetic Pareto Prompt Evolution) looked like a miracle (99.8% lower simulated loss, 26.6% fewer tokens, 21.2% lower latency), but the gains vanished on another model or harness; he lists four failure modes such as literal environment-variable placeholders and Mermaid diagrams. On newer frontier models a threat-hunting benchmark showed no runbook scoring above his raw runbook, while newer harness-evolution frameworks (Harness squared) recovered nearly saturating scores. He closes by releasing a repo to deploy and benchmark open-weight Gemma and other models on Google Cloud, with GPU cost tables and an idle-GPU shutdown agent.",
   "argument": [
     "Context engineering for SOC agents now includes mixed knowledge bases, skills, runbooks and system prompts, but the weekly cadence of frontier models means each piece may become unnecessary or harmful.",
-    "Advice to simply delete prompts and see what happens is not scientific; a skill ablation that asks whether a skill earns its tokens is needed, with measured scores and token counts.",
+    "Advice to delete prompts and see what happens is not scientific; a skill ablation that asks whether a skill earns its tokens is needed, with measured scores and token counts.",
     "Convenience shortcuts such as embedding the rubric in the runbook can make agents complete tasks but contaminate evolution experiments and inflate results.",
     "Automated skill evolution (GEPA) produced dramatic in-harness gains that did not transfer, because the evolved context overfit the model and harness (placeholders, harness-specific pseudo-tools, diagram bloat, brittle branches).",
     "Newer harness-evolution methods and open-weight models give new ways to test and regularize skills across harnesses and model sizes, but evaluations for blue-team work saturate and need to get harder and more complete.",
     "As models improve, procedural workflows may collapse toward deterministic code or SOAR playbooks, with agents used to author them rather than reason through repeated tasks."
   ],
   "claims": [
-    {"claim": "Agent knowledge bases are shifting from self-configured vector stores and RAG to platform-managed connectors, and a corpus can now be native Markdown documents in a Drive folder that agents create, read, update, delete and comment on.", "evidence": "Cited a recent Drive and Docs release note (Oct 5, 2026) and an ADK Docs comment-assistant post; he has experiments in an ADK repo.", "grade": "case", "t": "00:37", "source": "both"},
-    {"claim": "On one Lokibot C2 malware case, prompt-only context used about 4.92M tokens and scored 75 (C), monolithic runbooks 1.88M tokens and 95 (A), ADK graph workflows 0.87M and 100, skills progressive disclosure 285K and 95, and dual progressive disclosure (skills plus MCP) 113K and 95.", "evidence": "Skills-ablation table on a slide for Experiment 1; the first two versions are the ablation baseline; judging was LLM-as-judge with rubrics and letter grades.", "grade": "measured", "t": "04:47", "source": "both"},
-    {"claim": "The ablation was run on four cases, not one: across Lokibot C2 (case 33279), Compromised User IRP (case 33284), a Honeytoken Rule alert and an AvosLocker triage alert, prompt-only used 4.2M to 4.9M tokens with scores of 70 to 75 (C range), while skills progressive disclosure and dual progressive disclosure used 250K to 313K and 99K to 125K tokens and scored 93 to 95; ADK graph workflows used about 870K tokens and scored 90 to 100.", "evidence": "adk_runbooks graph-workflows overview table on a slide, with three further percentage-reduction columns (-60.2% to -60.5%, -94.0% to -97.1%, -97.0% to -98.0%) whose headers are off frame.", "grade": "measured", "t": "05:15", "source": "slide"},
-    {"claim": "Embedding the grading rubric directly in skills and runbooks kept agents on task and completing steps, but it gave the LLM the answer to the test and seriously contaminated later evolution experiments.", "evidence": "The speaker's own account of his evaluation setup.", "grade": "case", "t": "05:49", "source": "said"},
-    {"claim": "GEPA evolution of four SOC runbooks with Gemini 2.5 Pro reflecting and Gemini 2.5 Flash-Lite as the agent model cut simulated breach loss 99.8% ($250,051 to $101), total tokens 26.6% (529k to 388k) and mean triage latency 21.2% (40.5 s to 31.9 s).", "evidence": "Slide titled 'In-Harness GEPA Looked Like a Miracle'.", "grade": "measured", "t": "07:54", "source": "both"},
-    {"claim": "The evolved improvements disappeared when tested on a different model or harness: evolving the harness works but does not transfer, as the changes overfit.", "evidence": "His experiments; four named failure modes on a slide; he cites a paper stating evolved harnesses overfit the benchmark.", "grade": "case", "t": "08:24", "source": "both"},
-    {"claim": "When the exact GEPA-evolved runbooks were transferred to the interactive Harbor soc-cli sandbox (90 trials), they lost to the clean human-written skill on every model: gemini-3.5-flash-lite 0.841 (90% pass, $5 simulated loss) to 0.746 (60%, $6.5k), -11.3%; gemini-2.5-flash 0.856 (90%, $505) to 0.703 (60%, $1.0k), -17.8%; gemini-2.5-flash-lite 0.655 (50%, $5.5k) to 0.436 (10%, $11.0k), -33.4%.", "evidence": "Slide 'Harbor Sandbox Collapse' with a transfer-delta column and a footer 'Evolved runbooks lost to the human baseline on every model, open-model-deploy-gcp PR #14'.", "grade": "measured", "t": "08:42", "source": "slide"},
-    {"claim": "Four things failed to transfer: literal ${VAR_NAME} placeholders copied into CLI flags by smaller models, harness-specific pseudo-tools (ask_followup_question, attempt_completion) invoked in headless containers, 3,648 words and 55-line Mermaid sequenceDiagrams that diluted instruction attention on Flash-Lite, and nested IF/ELSE branches that caused PREMATURE_TERMINATION_ZERO_TOOLS.", "evidence": "Slide 'Why Evolved Runbooks Failed to Transfer'; speaker added that he had championed Mermaid diagrams as human and machine readable.", "grade": "case", "t": "09:27", "source": "both"},
-    {"claim": "On a proactive threat-hunting benchmark (48 trajectories across 3 models and 4 runbook arms) a no-runbook arm scored mean hunt composite 0.8554 and Harbor 0.8673, above his raw hunt runbook at 0.8295 and 0.8575, with identical 92% verdict accuracy, 56% 168-hour widening rate and 100% LOLBin-safe rate.", "evidence": "Scorecard table in his open-model-deploy-gcp repo, shown with the first two rows highlighted; speaker said some newest models confirmed the bitter lesson and his handcrafted skills were harmful.", "grade": "measured", "t": "10:30", "source": "both"},
-    {"claim": "The Harness squared evolution framework picked the right direction and nearly saturated the threat-hunting runbook evaluation: its evolved hunt runbook scored mean hunt composite 0.9813 and Harbor 0.9587 with 100% verdict accuracy, 168-hour widening and LOLBin-safe rates, versus 0.9510 and 0.9337 for a compressed track-B runbook, and 0.8554 for no runbook; he says this shows blue-team evals need to be harder.", "evidence": "Full four-arm scorecard table in the open-model-deploy-gcp README (48 trajectories across 3 models and 4 arms).", "grade": "measured", "t": "11:02", "source": "both"},
-    {"claim": "Open-weight models can be used as proxies for older frontier models to test and retest skills at different sizes; the closed gemini-3.5-flash-lite nearly saturates the tests and tops the leaderboard (100% pass, 5 of 5, rubric 97.0, 11.36 s) ahead of gemma-3-12b-it (60%, 91.0), gemma-4-e4b-it (80%, 91.0), qwen3.8-27b (60%, 88.4) and llama-3.1-nemotron-70b-instruct (60%, 86.0), and score and tokens per second vary with model revision and size.", "evidence": "His hypothesis, a public repo with deployment recipes, a GPU cost table (for example gemma-4-e2b on one L4 at $0.70/hr, gemma-4-31b on two A100s at $7.34/hr) and a leaderboard table on a slide; pass rates are on a 5-case run of a 10-case Tier 1 suite.", "grade": "measured", "t": "15:07", "source": "both"},
-    {"claim": "Padding a skill with meandering but not factually wrong text improved his evaluation score, apparently because the LLM judge was impressed by verbose output and keyed on string presence rather than output length.", "evidence": "An accidental result of a test intended to degrade performance; explained by the agent in a follow-up chat; no numbers shown.", "grade": "anecdote", "t": "17:16", "source": "said"},
-    {"claim": "Skills compressed with Simplified Technical English gave a small lift in his evaluation.", "evidence": "Mentioned as part of the same experiment; no numbers.", "grade": "anecdote", "t": "17:16", "source": "said"},
-    {"claim": "A single agent may now replace persona-driven sub-agents, and graph workflows are approaching a plain Python file or SOAR playbook that an agent writes once and then executes procedurally.", "evidence": "Speculation in answer to a question; he has not evaluated the uplift of sub-agents against the base harness.", "grade": "assertion", "t": "23:03", "source": "said"}
+    {
+      "claim": "Agent knowledge bases are shifting from self-configured vector stores and RAG to platform-managed connectors, and a corpus can now be native Markdown documents in a Drive folder that agents create, read, update, delete and comment on.",
+      "evidence": "Cited a recent Drive and Docs release note (Oct 5, 2026) and an ADK Docs comment-assistant post; he has experiments in an ADK repo.",
+      "grade": "case",
+      "t": "00:37",
+      "source": "both"
+    },
+    {
+      "claim": "On one Lokibot C2 malware case, prompt-only context used about 4.92M tokens and scored 75 (C), monolithic runbooks 1.88M tokens and 95 (A), ADK graph workflows 0.87M and 100, skills progressive disclosure 285K and 95, and dual progressive disclosure (skills plus MCP) 113K and 95.",
+      "evidence": "Skills-ablation table on a slide for Experiment 1; the first two versions are the ablation baseline; judging was LLM-as-judge with rubrics and letter grades.",
+      "grade": "measured",
+      "t": "04:47",
+      "source": "both"
+    },
+    {
+      "claim": "The ablation was run on four cases, not one: across Lokibot C2 (case 33279), Compromised User IRP (case 33284), a Honeytoken Rule alert and an AvosLocker triage alert, prompt-only used 4.2M to 4.9M tokens with scores of 70 to 75 (C range), while skills progressive disclosure and dual progressive disclosure used 250K to 313K and 99K to 125K tokens and scored 93 to 95; ADK graph workflows used about 870K tokens and scored 90 to 100.",
+      "evidence": "adk_runbooks graph-workflows overview table on a slide, with three further percentage-reduction columns (-60.2% to -60.5%, -94.0% to -97.1%, -97.0% to -98.0%) whose headers are off frame.",
+      "grade": "measured",
+      "t": "05:15",
+      "source": "slide"
+    },
+    {
+      "claim": "Embedding the grading rubric directly in skills and runbooks kept agents on task and completing steps, but it gave the LLM the answer to the test and seriously contaminated later evolution experiments.",
+      "evidence": "The speaker's own account of his evaluation setup.",
+      "grade": "case",
+      "t": "05:49",
+      "source": "said"
+    },
+    {
+      "claim": "GEPA evolution of four SOC runbooks with Gemini 2.5 Pro reflecting and Gemini 2.5 Flash-Lite as the agent model cut simulated breach loss 99.8% ($250,051 to $101), total tokens 26.6% (529k to 388k) and mean triage latency 21.2% (40.5 s to 31.9 s).",
+      "evidence": "Slide titled 'In-Harness GEPA Looked Like a Miracle'.",
+      "grade": "measured",
+      "t": "07:54",
+      "source": "both"
+    },
+    {
+      "claim": "The evolved improvements disappeared when tested on a different model or harness: evolving the harness works but does not transfer, as the changes overfit.",
+      "evidence": "His experiments; four named failure modes on a slide; he cites a paper stating evolved harnesses overfit the benchmark.",
+      "grade": "case",
+      "t": "08:24",
+      "source": "both"
+    },
+    {
+      "claim": "When the exact GEPA-evolved runbooks were transferred to the interactive Harbor soc-cli sandbox (90 trials), they lost to the clean human-written skill on every model: gemini-3.5-flash-lite 0.841 (90% pass, $5 simulated loss) to 0.746 (60%, $6.5k), -11.3%; gemini-2.5-flash 0.856 (90%, $505) to 0.703 (60%, $1.0k), -17.8%; gemini-2.5-flash-lite 0.655 (50%, $5.5k) to 0.436 (10%, $11.0k), -33.4%.",
+      "evidence": "Slide 'Harbor Sandbox Collapse' with a transfer-delta column and a footer 'Evolved runbooks lost to the human baseline on every model, open-model-deploy-gcp PR #14'.",
+      "grade": "measured",
+      "t": "08:42",
+      "source": "slide"
+    },
+    {
+      "claim": "Four things failed to transfer: literal ${VAR_NAME} placeholders copied into CLI flags by smaller models, harness-specific pseudo-tools (ask_followup_question, attempt_completion) invoked in headless containers, 3,648 words and 55-line Mermaid sequenceDiagrams that diluted instruction attention on Flash-Lite, and nested IF/ELSE branches that caused PREMATURE_TERMINATION_ZERO_TOOLS.",
+      "evidence": "Slide 'Why Evolved Runbooks Failed to Transfer'; speaker added that he had championed Mermaid diagrams as human and machine readable.",
+      "grade": "case",
+      "t": "09:27",
+      "source": "both"
+    },
+    {
+      "claim": "On a proactive threat-hunting benchmark (48 trajectories across 3 models and 4 runbook arms) a no-runbook arm scored mean hunt composite 0.8554 and Harbor 0.8673, above his raw hunt runbook at 0.8295 and 0.8575, with identical 92% verdict accuracy, 56% 168-hour widening rate and 100% LOLBin-safe rate.",
+      "evidence": "Scorecard table in his open-model-deploy-gcp repo, shown with the first two rows highlighted; speaker said some newest models confirmed the bitter lesson and his handcrafted skills were harmful.",
+      "grade": "measured",
+      "t": "10:30",
+      "source": "both"
+    },
+    {
+      "claim": "The Harness squared evolution framework picked the right direction and nearly saturated the threat-hunting runbook evaluation: its evolved hunt runbook scored mean hunt composite 0.9813 and Harbor 0.9587 with 100% verdict accuracy, 168-hour widening and LOLBin-safe rates, versus 0.9510 and 0.9337 for a compressed track-B runbook, and 0.8554 for no runbook; he says this shows blue-team evals need to be harder.",
+      "evidence": "Full four-arm scorecard table in the open-model-deploy-gcp README (48 trajectories across 3 models and 4 arms).",
+      "grade": "measured",
+      "t": "11:02",
+      "source": "both"
+    },
+    {
+      "claim": "Open-weight models can be used as proxies for older frontier models to test and retest skills at different sizes; the closed gemini-3.5-flash-lite nearly saturates the tests and tops the leaderboard (100% pass, 5 of 5, rubric 97.0, 11.36 s) ahead of gemma-3-12b-it (60%, 91.0), gemma-4-e4b-it (80%, 91.0), qwen3.8-27b (60%, 88.4) and llama-3.1-nemotron-70b-instruct (60%, 86.0), and score and tokens per second vary with model revision and size.",
+      "evidence": "His hypothesis, a public repo with deployment recipes, a GPU cost table (for example gemma-4-e2b on one L4 at $0.70/hr, gemma-4-31b on two A100s at $7.34/hr) and a leaderboard table on a slide; pass rates are on a 5-case run of a 10-case Tier 1 suite.",
+      "grade": "measured",
+      "t": "15:07",
+      "source": "both"
+    },
+    {
+      "claim": "Padding a skill with meandering but not factually wrong text improved his evaluation score; the agent he asked attributed this to the LLM judge being impressed by verbose output and keying on string presence rather than output length.",
+      "evidence": "An accidental result of a test intended to degrade performance; explained by the agent in a follow-up chat; no numbers shown.",
+      "grade": "anecdote",
+      "t": "17:16",
+      "source": "said"
+    },
+    {
+      "claim": "Skills compressed with Simplified Technical English gave a small lift in his evaluation.",
+      "evidence": "Mentioned as part of the same experiment; no numbers.",
+      "grade": "anecdote",
+      "t": "17:16",
+      "source": "said"
+    },
+    {
+      "claim": "A single agent may now replace persona-driven sub-agents, and graph workflows are approaching a plain Python file or SOAR playbook that an agent writes once and then executes procedurally.",
+      "evidence": "Speculation in answer to a question; he has not evaluated the uplift of sub-agents against the base harness.",
+      "grade": "assertion",
+      "t": "23:03",
+      "source": "said"
+    }
   ],
   "numbers": [
-    {"figure": "4,921,680 tokens, score 75 (C)", "meaning": "prompt-only version A on Lokibot C2 malware case 33279", "t": "04:47"},
-    {"figure": "1,884,197 tokens, score 95 (A)", "meaning": "monolithic runbooks version B on the same case", "t": "04:47"},
-    {"figure": "870,767 tokens, score 100 (A+)", "meaning": "ADK graph workflows version C", "t": "04:47"},
-    {"figure": "285,410 tokens, score 95", "meaning": "skills progressive disclosure version D", "t": "04:47"},
-    {"figure": "112,860 tokens, score 95", "meaning": "dual progressive disclosure (skills plus MCP) version E", "t": "04:47"},
-    {"figure": "-99.8% ($250,051 to $101)", "meaning": "simulated breach loss after GEPA evolution of four SOC runbooks", "t": "07:54"},
-    {"figure": "-26.6% (529k to 388k)", "meaning": "total tokens across the suite after GEPA evolution", "t": "07:54"},
-    {"figure": "-21.2% (40.5 s to 31.9 s)", "meaning": "mean triage latency after GEPA evolution", "t": "07:54"},
-    {"figure": "3,648 words, 55-line sequenceDiagrams", "meaning": "runbook size and Mermaid diagrams that diluted instruction attention on Flash-Lite", "t": "09:27"},
-    {"figure": "0.8554 vs 0.8295", "meaning": "mean hunt composite for no_runbook vs raw hunt runbook arm in the threat-hunt transfer summary (Harbor 0.8673 vs 0.8575)", "t": "10:30"},
-    {"figure": "48 trajectories, 3 models x 4 arms", "meaning": "size of the threat-hunt transfer experiment", "t": "10:30"},
-    {"figure": "50-some runbooks, about 15 covered by evaluations", "meaning": "runbook inventory versus evaluation coverage", "t": "21:28"},
-    {"figure": "$0.70/hr, $0.76/hr, $7.34/hr", "meaning": "hourly cost to host gemma-4-e2b-it (1 L4), gemma-4-e4b-it (1 L4) and gemma-4-31b-it (2 A100) on Google Cloud", "t": "13:34"},
-    {"figure": "80%", "meaning": "share of Claude Code's system prompt removed for more advanced models, per the article on the 'Engineering context...deletion' slide (The new rules of context engineering for Claude 5 generation models, Thariq Shihipar, Jul 24, 2026)", "t": "02:43"},
-    {"figure": "0.9813 / 0.9587", "meaning": "harness2_evolved_hunt mean hunt composite and mean Harbor; compressed_track_b_hunt scored 0.9510 and 0.9337, both with 100% verdict accuracy", "t": "11:02"},
-    {"figure": "-11.3% / -17.8% / -33.4%", "meaning": "transfer delta of GEPA-evolved runbooks versus the human skill on gemini-3.5-flash-lite, gemini-2.5-flash and gemini-2.5-flash-lite in the Harbor soc-cli sandbox (90 trials)", "t": "08:42"},
-    {"figure": "90% to 60%, 90% to 60%, 50% to 10%", "meaning": "pass rate, human skill versus GEPA-evolved, for the same three models", "t": "08:42"},
-    {"figure": "100% (5/5), 97.0, 11.36 s", "meaning": "gemini-3.5-flash-lite pass rate, average rubric and latency at the top of the SOC Tier 1 leaderboard; next best gemma-4-e4b-it at 80% (4/5), 91.0, 40.24 s", "t": "15:07"},
-    {"figure": "4 cases, 4.2M to 4.9M tokens prompt-only", "meaning": "ablation cases in the adk_runbooks graph-workflows overview (33279, 33284, a Honeytoken Rule alert, an AvosLocker triage alert) and the prompt-only token range", "t": "05:15"},
-    {"figure": "300 to 350 words, 65.5%", "meaning": "hard word budget per runbook in the ten best practices, and the compression level of the backported GEPA/DSPy runbooks named in issue #35", "t": "09:58"},
-    {"figure": "250 to 350 tokens", "meaning": "tokens of non-executable syntax a 55-line Mermaid sequenceDiagram adds per runbook, per the authoring best-practices page", "t": "09:27"},
-    {"figure": "$0.70 / $0.83 / $3.36 per hr", "meaning": "hosting cost for gemma-2-2b-it (1 L4), gemma-2-9b-it (1 L4) and gemma-2-27b-it (4 L4)", "t": "13:03"}
+    {
+      "figure": "4,921,680 tokens, score 75 (C)",
+      "meaning": "prompt-only version A on Lokibot C2 malware case 33279",
+      "t": "04:47"
+    },
+    {
+      "figure": "1,884,197 tokens, score 95 (A)",
+      "meaning": "monolithic runbooks version B on the same case",
+      "t": "04:47"
+    },
+    {
+      "figure": "870,767 tokens, score 100 (A+)",
+      "meaning": "ADK graph workflows version C",
+      "t": "04:47"
+    },
+    {
+      "figure": "285,410 tokens, score 95",
+      "meaning": "skills progressive disclosure version D",
+      "t": "04:47"
+    },
+    {
+      "figure": "112,860 tokens, score 95",
+      "meaning": "dual progressive disclosure (skills plus MCP) version E",
+      "t": "04:47"
+    },
+    {
+      "figure": "-99.8% ($250,051 to $101)",
+      "meaning": "simulated breach loss after GEPA evolution of four SOC runbooks",
+      "t": "07:54"
+    },
+    {
+      "figure": "-26.6% (529k to 388k)",
+      "meaning": "total tokens across the suite after GEPA evolution",
+      "t": "07:54"
+    },
+    {
+      "figure": "-21.2% (40.5 s to 31.9 s)",
+      "meaning": "mean triage latency after GEPA evolution",
+      "t": "07:54"
+    },
+    {
+      "figure": "3,648 words, 55-line sequenceDiagrams",
+      "meaning": "runbook size and Mermaid diagrams that diluted instruction attention on Flash-Lite",
+      "t": "09:27"
+    },
+    {
+      "figure": "0.8554 vs 0.8295",
+      "meaning": "mean hunt composite for no_runbook vs raw hunt runbook arm in the threat-hunt transfer summary (Harbor 0.8673 vs 0.8575)",
+      "t": "10:30"
+    },
+    {
+      "figure": "48 trajectories, 3 models x 4 arms",
+      "meaning": "size of the threat-hunt transfer experiment",
+      "t": "10:30"
+    },
+    {
+      "figure": "50-some runbooks, about 15 covered by evaluations",
+      "meaning": "runbook inventory versus evaluation coverage",
+      "t": "21:28"
+    },
+    {
+      "figure": "$0.70/hr, $0.76/hr, $7.34/hr",
+      "meaning": "hourly cost to host gemma-4-e2b-it (1 L4), gemma-4-e4b-it (1 L4) and gemma-4-31b-it (2 A100) on Google Cloud",
+      "t": "13:34"
+    },
+    {
+      "figure": "80%",
+      "meaning": "share of Claude Code's system prompt removed for more advanced models, per the article on the 'Engineering context...deletion' slide (The new rules of context engineering for Claude 5 generation models, Thariq Shihipar, Jul 24, 2026)",
+      "t": "02:43"
+    },
+    {
+      "figure": "0.9813 / 0.9587",
+      "meaning": "harness2_evolved_hunt mean hunt composite and mean Harbor; compressed_track_b_hunt scored 0.9510 and 0.9337, both with 100% verdict accuracy",
+      "t": "11:02"
+    },
+    {
+      "figure": "-11.3% / -17.8% / -33.4%",
+      "meaning": "transfer delta of GEPA-evolved runbooks versus the human skill on gemini-3.5-flash-lite, gemini-2.5-flash and gemini-2.5-flash-lite in the Harbor soc-cli sandbox (90 trials)",
+      "t": "08:42"
+    },
+    {
+      "figure": "90% to 60%, 90% to 60%, 50% to 10%",
+      "meaning": "pass rate, human skill versus GEPA-evolved, for the same three models",
+      "t": "08:42"
+    },
+    {
+      "figure": "100% (5/5), 97.0, 11.36 s",
+      "meaning": "gemini-3.5-flash-lite pass rate, average rubric and latency at the top of the SOC Tier 1 leaderboard; next best gemma-4-e4b-it at 80% (4/5), 91.0, 40.24 s",
+      "t": "15:07"
+    },
+    {
+      "figure": "4 cases, 4.2M to 4.9M tokens prompt-only",
+      "meaning": "ablation cases in the adk_runbooks graph-workflows overview (33279, 33284, a Honeytoken Rule alert, an AvosLocker triage alert) and the prompt-only token range",
+      "t": "05:15"
+    },
+    {
+      "figure": "300 to 350 words, 65.5%",
+      "meaning": "hard word budget per runbook in the ten best practices, and the compression level of the backported GEPA/DSPy runbooks named in issue #35",
+      "t": "09:58"
+    },
+    {
+      "figure": "250 to 350 tokens",
+      "meaning": "tokens of non-executable syntax a 55-line Mermaid sequenceDiagram adds per runbook, per the authoring best-practices page",
+      "t": "09:27"
+    },
+    {
+      "figure": "$0.70 / $0.83 / $3.36 per hr",
+      "meaning": "hosting cost for gemma-2-2b-it (1 L4), gemma-2-9b-it (1 L4) and gemma-2-27b-it (4 L4)",
+      "t": "13:03"
+    }
   ],
   "frameworks": [
-    {"name": "Skills ablation: does a skill earn its tokens?", "description": "Compare versions of the same task with the skill removed and present, tracking tokens and an LLM-judge score. His versions: A prompt-only, B monolithic runbooks, C ADK graph workflows, D skills progressive disclosure, E dual progressive disclosure (skills and MCP tools)."},
-    {"name": "Evolving improvements lineup", "description": "GEPA (Genetic Pareto Prompt Evolution), DSPy, AQuA (Ambient Quality Agent) outer loop, Harness squared, RRSI (Regularized Recursive Self-Improvement, aimed at harness transfer), and Gemini Enterprise Eval Studio."},
-    {"name": "Why evolved runbooks fail to transfer", "description": "Four causes: placeholder syntax copied literally, harness-specific pseudo-tools, Mermaid and IF/ELSE bloat that dilutes instruction attention, and nested branches causing zero-tool premature termination."},
-    {"name": "Ten best practices for agentic SOC runbooks", "description": "Codified in docs/RUNBOOK_AUTHORING_BEST_PRACTICES.md and enforced in RunbookSafetyGuard (check_runbook_safety with strict_context_hygiene=True, max_words=350). Visible items: 1 hard 300 to 350 word budget (about 60% ordered investigation steps, 25% disposition and containment matrix, 15% output fields); 2 never include Mermaid diagrams in agent-consumed markdown; 3 never reference IDE pseudo-tools (ask_followup_question, attempt_completion, write_to_file), use deterministic conditional branches; 4 never use ${VAR_NAME} or placeholder template variables, name exact UDM or alert schema fields; 5 preserve all four mandatory disposition branches (escalate_incident, contain_and_patch, tune_detection, benign_or_inconclusive, the last two with zero destructive actions). Items 6 to 10 were not visible."},
-    {"name": "idle_compute_guard pipeline", "description": "Four stages: cloud telemetry (Idle Endpoint Guard, AI Usage Spike Guard, Cloud Billing Velocity alerts), a Cloud Pub/Sub event bus, an Antigravity SDK agent (parse_alert_notification routing idle, spike and billing alerts, running gemini-2.5-flash), and Vertex AI and SOAR tools (list_active_endpoints, undeploy_vertex_model, delete_vertex_endpoint, log_soar_remediation)."},
-    {"name": "Open-weight models as six-month-old frontier models", "description": "Use a range of open-weight sizes and revisions as cheaper, older proxies to test whether skills transfer, with hardware, cost per hour and tokens per second as extra axes."}
+    {
+      "name": "Skills ablation: does a skill earn its tokens?",
+      "description": "Compare versions of the same task with the skill removed and present, tracking tokens and an LLM-judge score. His versions: A prompt-only, B monolithic runbooks, C ADK graph workflows, D skills progressive disclosure, E dual progressive disclosure (skills and MCP tools)."
+    },
+    {
+      "name": "Evolving improvements lineup",
+      "description": "GEPA (Genetic Pareto Prompt Evolution), DSPy, AQuA (Ambient Quality Agent) outer loop, Harness squared, RRSI (Regularized Recursive Self-Improvement, aimed at harness transfer), and Gemini Enterprise Eval Studio."
+    },
+    {
+      "name": "Why evolved runbooks fail to transfer",
+      "description": "Four causes: placeholder syntax copied literally, harness-specific pseudo-tools, Mermaid and IF/ELSE bloat that dilutes instruction attention, and nested branches causing zero-tool premature termination."
+    },
+    {
+      "name": "Ten best practices for agentic SOC runbooks",
+      "description": "Codified in docs/RUNBOOK_AUTHORING_BEST_PRACTICES.md and enforced in RunbookSafetyGuard (check_runbook_safety with strict_context_hygiene=True, max_words=350). Visible items: 1 hard 300 to 350 word budget (about 60% ordered investigation steps, 25% disposition and containment matrix, 15% output fields); 2 never include Mermaid diagrams in agent-consumed markdown; 3 never reference IDE pseudo-tools (ask_followup_question, attempt_completion, write_to_file), use deterministic conditional branches; 4 never use ${VAR_NAME} or placeholder template variables, name exact UDM or alert schema fields; 5 preserve all four mandatory disposition branches (escalate_incident, contain_and_patch, tune_detection, benign_or_inconclusive, the last two with zero destructive actions). Items 6 to 10 were not visible."
+    },
+    {
+      "name": "idle_compute_guard pipeline",
+      "description": "Four stages: cloud telemetry (Idle Endpoint Guard, AI Usage Spike Guard, Cloud Billing Velocity alerts), a Cloud Pub/Sub event bus, an Antigravity SDK agent (parse_alert_notification routing idle, spike and billing alerts, running gemini-2.5-flash), and Vertex AI and SOAR tools (list_active_endpoints, undeploy_vertex_model, delete_vertex_endpoint, log_soar_remediation)."
+    },
+    {
+      "name": "Open-weight models as six-month-old frontier models",
+      "description": "Use a range of open-weight sizes and revisions as cheaper, older proxies to test whether skills transfer, with hardware, cost per hour and tokens per second as extra axes."
+    }
   ],
   "artifacts": [
-    {"name": "ADK runbooks repo and static site (dandye)", "kind": "repo", "note": "Holds his skills ablation experiments, token-saving findings and best-practice write-ups for SOC AI runbooks.", "url": "github.com/dandye"},
-    {"name": "open-model-deploy-gcp", "kind": "repo", "note": "Public as of the talk: deployment recipes (just vertex-deploy, cloudrun-deploy, openmodel-deploy) for Gemma 2, 3 and 4 and Model Garden models on Vertex AI and Cloud Run, benchmarking with Harbor, and the threat-hunt scorecard THREAT_HUNT_MULTI_MODEL_SCORECARD.md.", "url": "github.com/dandye/open-model-deploy-gcp"},
-    {"name": "idle_compute_guard (idle-GPU detector)", "kind": "repo", "note": "A second shared repo: an event-driven cost and security guard that connects Cloud Monitoring and Cloud Billing alerts through Pub/Sub to an Antigravity agent that can undeploy idle Vertex endpoints and log the action. The speaker described it as using Cloud Audit Logs, Pub/Sub and an agent with only specific tools; he plans to extend it to tool-call infinite loops and runaway costs.", "url": "github.com/dandye/idle_compute_guard"},
-    {"name": "dandye/ai-runbooks and RUNBOOK_AUTHORING_BEST_PRACTICES", "kind": "repo", "note": "GitHub issue #35 'Enforce Agentic Runbook Context Hygiene and Backport 65.5%-Compressed GEPA/DSPy Runbooks' lists the ten best practices; the open-model-deploy-gcp static site carries the authoring page plus GEPA, Harness squared, DSPy and RRSI campaign reports, a Jev vs Gemini judge evaluation and an agent-harness literature page.", "url": "dandye.github.io/open-model-deploy-gcp/RUNBOOK_AUTHORING_BEST_PRACTICES/"},
-    {"name": "dandye/gusto-mcp-gepa", "kind": "repo", "note": "Pull request #1 'add GEPA defaults and curate Chronicle saved searches into benchmark dataset', shown as proof of life that GEPA evolved MCP tool descriptions (for example get_file_report in the GTI MCP server).", "url": "github.com/dandye/gusto-mcp-gepa"},
-    {"name": "Drive remote MCP runbooks branch", "kind": "tool", "note": "drive_runbooks_overview.md in adk_runbooks: makes Google Drive the source of truth for Markdown runbooks and a destination for reports through the Drive remote MCP server, so analyst edits no longer need a pull request.", "url": "drivemcp.googleapis.com/mcp/v1"},
-    {"name": "GEPA", "kind": "tool", "note": "Prompt and context evolution framework used to evolve SOC runbooks, skills and MCP tool definitions.", "url": ""},
-    {"name": "Harness squared: Recursive Agent Harnessing for an Open World", "kind": "paper", "note": "Dated 2026-10-12; authors Ruiyao Xu (Northwestern) with Google Cloud AI Research colleagues including Tomas Pfister. The speaker's evolved hunt runbook with it scored 0.9813.", "url": ""},
-    {"name": "RRSI: Regularized Recursive Self-Improvement of Agent Harnesses", "kind": "paper", "note": "Google, 2026-10-06, arXiv 2609.24972 (v3 revised Oct 4 per the abstract page); first author Peng Xia. Abstract and project page say evolved harnesses overfit the benchmark they are scored on and RRSI transfers; the speaker cites it as the paper that stated his overfitting finding.", "url": ""},
-    {"name": "AQuA: The Outer Loop, Insights First, an Ambient Quality Agent That Diagnoses Your Production Agent", "kind": "paper", "note": "Oct 8, 2026 Google Cloud post by Dima Melnyk (Product Manager, Cloud AI) and Elia Secchi (Solutions Specialist); one of the October 2026 evolution approaches the speaker tried.", "url": ""},
-    {"name": "GEPA and DSPy", "kind": "tool", "note": "Shown as project homepages: GEPA 'automatically optimize prompts for any AI system' (used by Shopify, Databricks, Dropbox) and DSPy 'Program, don't prompt, your LLMs'.", "url": ""},
-    {"name": "Harbor", "kind": "benchmark", "note": "Evaluation harness/CLI in which the transfer experiments were run; scores are reported as Harbor (60/20/20) composites.", "url": ""},
-    {"name": "Google Cloud Security Community post: Evaluating Agent Graphs for SecOps AI Runbooks", "kind": "paper", "note": "His before and after evaluation of graph-based agent workflows for Google Security Operations and Google Threat Intelligence.", "url": ""}
+    {
+      "name": "ADK runbooks repo and static site (dandye)",
+      "kind": "repo",
+      "note": "Holds his skills ablation experiments, token-saving findings and best-practice write-ups for SOC AI runbooks.",
+      "url": "github.com/dandye"
+    },
+    {
+      "name": "open-model-deploy-gcp",
+      "kind": "repo",
+      "note": "Public as of the talk: deployment recipes (just vertex-deploy, cloudrun-deploy, openmodel-deploy) for Gemma 2, 3 and 4 and Model Garden models on Vertex AI and Cloud Run, benchmarking with Harbor, and the threat-hunt scorecard THREAT_HUNT_MULTI_MODEL_SCORECARD.md.",
+      "url": "github.com/dandye/open-model-deploy-gcp"
+    },
+    {
+      "name": "idle_compute_guard (idle-GPU detector)",
+      "kind": "repo",
+      "note": "A second shared repo: an event-driven cost and security guard that connects Cloud Monitoring and Cloud Billing alerts through Pub/Sub to an Antigravity agent that can undeploy idle Vertex endpoints and log the action. The speaker described it as using Cloud Audit Logs, Pub/Sub and an agent with only specific tools; he plans to extend it to tool-call infinite loops and runaway costs.",
+      "url": "github.com/dandye/idle_compute_guard"
+    },
+    {
+      "name": "dandye/ai-runbooks and RUNBOOK_AUTHORING_BEST_PRACTICES",
+      "kind": "repo",
+      "note": "GitHub issue #35 'Enforce Agentic Runbook Context Hygiene and Backport 65.5%-Compressed GEPA/DSPy Runbooks' lists the ten best practices; the open-model-deploy-gcp static site carries the authoring page plus GEPA, Harness squared, DSPy and RRSI campaign reports, a Jev vs Gemini judge evaluation and an agent-harness literature page.",
+      "url": "dandye.github.io/open-model-deploy-gcp/RUNBOOK_AUTHORING_BEST_PRACTICES/"
+    },
+    {
+      "name": "dandye/gusto-mcp-gepa",
+      "kind": "repo",
+      "note": "Pull request #1 'add GEPA defaults and curate Chronicle saved searches into benchmark dataset', shown as proof of life that GEPA evolved MCP tool descriptions (for example get_file_report in the GTI MCP server).",
+      "url": "github.com/dandye/gusto-mcp-gepa"
+    },
+    {
+      "name": "Drive remote MCP runbooks branch",
+      "kind": "tool",
+      "note": "drive_runbooks_overview.md in adk_runbooks: makes Google Drive the source of truth for Markdown runbooks and a destination for reports through the Drive remote MCP server, so analyst edits no longer need a pull request.",
+      "url": "drivemcp.googleapis.com/mcp/v1"
+    },
+    {
+      "name": "GEPA",
+      "kind": "tool",
+      "note": "Prompt and context evolution framework used to evolve SOC runbooks, skills and MCP tool definitions.",
+      "url": ""
+    },
+    {
+      "name": "Harness squared: Recursive Agent Harnessing for an Open World",
+      "kind": "paper",
+      "note": "Dated 2026-10-12; authors Ruiyao Xu (Northwestern) with Google Cloud AI Research colleagues including Tomas Pfister. The speaker's evolved hunt runbook with it scored 0.9813.",
+      "url": ""
+    },
+    {
+      "name": "RRSI: Regularized Recursive Self-Improvement of Agent Harnesses",
+      "kind": "paper",
+      "note": "Google, 2026-10-06, arXiv 2609.24972 (v3 revised Oct 4 per the abstract page); first author Peng Xia. Abstract and project page say evolved harnesses overfit the benchmark they are scored on and RRSI transfers; the speaker cites it as the paper that stated his overfitting finding.",
+      "url": ""
+    },
+    {
+      "name": "AQuA: The Outer Loop, Insights First, an Ambient Quality Agent That Diagnoses Your Production Agent",
+      "kind": "paper",
+      "note": "Oct 8, 2026 Google Cloud post by Dima Melnyk (Product Manager, Cloud AI) and Elia Secchi (Solutions Specialist); one of the October 2026 evolution approaches the speaker tried.",
+      "url": ""
+    },
+    {
+      "name": "GEPA and DSPy",
+      "kind": "tool",
+      "note": "Shown as project homepages: GEPA 'automatically optimize prompts for any AI system' (used by Shopify, Databricks, Dropbox) and DSPy 'Program, don't prompt, your LLMs'.",
+      "url": ""
+    },
+    {
+      "name": "Harbor",
+      "kind": "benchmark",
+      "note": "Evaluation harness/CLI in which the transfer experiments were run; scores are reported as Harbor (60/20/20) composites.",
+      "url": ""
+    },
+    {
+      "name": "Google Cloud Security Community post: Evaluating Agent Graphs for SecOps AI Runbooks",
+      "kind": "paper",
+      "note": "His before and after evaluation of graph-based agent workflows for Google Security Operations and Google Threat Intelligence.",
+      "url": ""
+    }
   ],
   "slide_only": [
     "Slide of Drive and Docs release note dated October 5, 2026: preview, edit and collaborate on Markdown files natively across Drive and Docs; alongside a Medium post 'Building an @ai Comment Assistant in Google Docs with ADK and the New Docs API v1 Comment Primitives' (Romin Irani, Oct 12, 2026) and a Gemini Enterprise Business edition connectors panel (Calendar, Chat, Drive, Gmail).",
     "Social post (translated from French by Grok) saying Fields medalist Hugo Duminil-Copin cried after OpenAI published hundreds of papers claiming to solve open problems, including 16 he was working on; used to illustrate the pace of model capability change. Not verified.",
     "Blog post 'Claude Code subagents + MCP + SOC AI Runbooks' (Aug 12, 2025) with a terminal showing agents soc-analyst-tier-2, cti-researcher, incident-responder and security-engineer running phases Identification and Containment, with token and time counts (for example 107.0k tokens in 1m 19.1s).",
-    "Skills-ablation slide: the first frames show only Exp 1 (Case 33279, Lokibot C2 Malware) with a red box grouping Version A (prompt-only) and Version B (monolithic runbooks); the adk_runbooks graph-workflows overview slide shows all four experiments. Exp 2 (case 33284, Compromised User IRP): 4,214,500 tokens 70.0 (C-), 3,878,700 90.0 (A-), 874,238 93.0 (A), 313,100 93.0, 124,520 93.0. Exp 5 (alert de_4ee5885c, Honeytoken Rule): 4,921,680 70.0 (C-), 3,361,652 85.0 (B+), 870,838 90.0 (A-), 249,500 95.0 (A), 98,700 95.0. Exp 6 (alert de_4ee5885c, AvosLocker Triage): 4,653,500 72.0 (C-), 3,124,500 90.0 (A-), 869,200 90.0 (A-), 276,100 95.0 (A), 109,590 95.0 (A). Three further columns show -60.2% to -60.5%, -94.0% to -97.1% and -97.0% to -98.0%.",
+    "Skills-ablation slide: the first captures show only Exp 1 (Case 33279, Lokibot C2 Malware) with a red box grouping Version A (prompt-only) and Version B (monolithic runbooks); the adk_runbooks graph-workflows overview slide shows all four experiments. Exp 2 (case 33284, Compromised User IRP): 4,214,500 tokens 70.0 (C-), 3,878,700 90.0 (A-), 874,238 93.0 (A), 313,100 93.0, 124,520 93.0. Exp 5 (alert de_4ee5885c, Honeytoken Rule): 4,921,680 70.0 (C-), 3,361,652 85.0 (B+), 870,838 90.0 (A-), 249,500 95.0 (A), 98,700 95.0. Exp 6 (alert de_4ee5885c, AvosLocker Triage): 4,653,500 72.0 (C-), 3,124,500 90.0 (A-), 869,200 90.0 (A-), 276,100 95.0 (A), 109,590 95.0 (A). Three further columns show -60.2% to -60.5%, -94.0% to -97.1% and -97.0% to -98.0%.",
     "Key Architectural Insights text under that table: Context Bloat Elimination (pre-compiling procedural logic into Python DAG nodes collapses multi-turn tool loops), Guaranteed Execution Determinism (containment steps such as session revocation and endpoint isolation run in exact order), and an evolutionary path to progressive disclosure via skills_v0001 and progressive_mcp_discovery_v0001, cutting tokens from 870k to about 112k per incident.",
-    "Threat-hunt scorecard (Track 2 ThreatHuntEnvironment, 48 trajectories across 3 models x 4 arms; columns mean hunt composite, mean Harbor 60/20/20, verdict accuracy, 168h widening rate, LOLBin safe rate): no_runbook 0.8554, 0.8673, 92%, 56%, 100%; raw_clinerules_hunt 0.8295, 0.8575, 92%, 56%, 100%; compressed_track_b_hunt 0.9510, 0.9337, 100%, 100%, 100%; harness2_evolved_hunt (gti_collection_threat_hunt.md) 0.9813, 0.9587, 100%, 100%, 100%. The first two rows are boxed in red on one frame.",
+    "Threat-hunt scorecard (Track 2 ThreatHuntEnvironment, 48 trajectories across 3 models x 4 arms; columns mean hunt composite, mean Harbor 60/20/20, verdict accuracy, 168h widening rate, LOLBin safe rate): no_runbook 0.8554, 0.8673, 92%, 56%, 100%; raw_clinerules_hunt 0.8295, 0.8575, 92%, 56%, 100%; compressed_track_b_hunt 0.9510, 0.9337, 100%, 100%, 100%; harness2_evolved_hunt (gti_collection_threat_hunt.md) 0.9813, 0.9587, 100%, 100%, 100%. The first two rows are boxed in red on one captured slide.",
     "Context-engineering diagram (system prompt, agents.md files, skills, memory, knowledge bases and other sources around 'The Context' feeding an AI agent operational layer): the system prompt is struck out first, then skills and agents.md files, as the deletion theme builds; the knowledge bases box is highlighted on the first slide.",
     "Slide 'Engineering context' lists two worked knowledge-base uses: (1) CISA reports into knowledge bases (Neo4j, AlloyDB, Elastic), generate and ingest synthetic events, write a rule and raise an alert, show the investigating agent's report cites sources from the knowledge bases; (2) after action reports, chats about entities (host, user), standard operating procedures and runbooks.",
     "Gemini Enterprise connectors panel lists Google Search, AlloyDB, a BigQuery data store and a SecOps MCP entry awaiting authorization.",
@@ -103,10 +363,26 @@
   ],
   "demos": [],
   "quotes": [
-    {"text": "Evolving the harness totally works, but it doesn't transfer. My changes had overfitted to my model and my harness.", "speaker": "Dan Dye", "t": "08:24"},
-    {"text": "It's basically giving the LLM the answer to the test.", "speaker": "Dan Dye", "t": "06:20"},
-    {"text": "We're getting dangerously close to this is just a Python file at this point.", "speaker": "Dan Dye", "t": "23:33"},
-    {"text": "My handcrafted pre-evolution skills were not contributing. They were harmful.", "speaker": "Dan Dye", "t": "11:02"}
+    {
+      "text": "Evolving the harness totally works, but it doesn't transfer. My changes had overfitted to my model and my harness.",
+      "speaker": "Dan Dye",
+      "t": "08:24"
+    },
+    {
+      "text": "It's basically giving the LLM the answer to the test.",
+      "speaker": "Dan Dye",
+      "t": "06:20"
+    },
+    {
+      "text": "We're getting dangerously close to this is just a Python file at this point.",
+      "speaker": "Dan Dye",
+      "t": "23:33"
+    },
+    {
+      "text": "My handcrafted pre-evolution skills were not contributing. They were harmful.",
+      "speaker": "Dan Dye",
+      "t": "11:02"
+    }
   ],
   "offense": [
     "Context overfitting: evolved skills tuned to one model and harness lose their gains or hurt elsewhere.",
@@ -158,17 +434,40 @@
     "Q: Did you try the RLM module in DSPy? A: No, but he will check it out.",
     "Q: Did you evaluate the uplift of multi-agent systems over the plain harness with sub-agents? A: Not yet; delegation helped when context windows were small, but a single agent may now replace persona-driven sub-agents, though offloading to smaller, cheaper models is good, and mature graph workflows look like a SOAR playbook an agent writes once."
   ],
-  "tags": ["ai-soc-detection-response", "evals-benchmarks-metrics", "mcp-tools-skills", "agent-memory-context"],
-  "key_frames": [
-    {"file": "t00420.jpg", "caption": "Skills ablation across four SOC cases: prompt-only 4.2M to 4.9M tokens at C grades versus progressive disclosure at 99K to 313K tokens and 93 to 95, with the architectural insights that explain it."},
-    {"file": "t00522.jpg", "caption": "Harbor Sandbox Collapse: GEPA-evolved runbooks lose to the human skill on every model, from -11.3% to -33.4%, with pass rates falling from 90% to 60% and 50% to 10%."},
-    {"file": "t00547.jpg", "caption": "Four reasons evolved runbooks failed to transfer: placeholders, harness-specific pseudo-tools, Mermaid and IF/ELSE bloat, and zero-tool termination."},
-    {"file": "t00676.jpg", "caption": "Full threat-hunt scorecard: no runbook 0.8554 and raw runbook 0.8295 versus compressed 0.9510 and Harness-squared-evolved 0.9813 across 48 trajectories."},
-    {"file": "t00917.jpg", "caption": "Open-weight leaderboard on the SOC Tier 1 suite: closed gemini-3.5-flash-lite at 100% and 97.0 versus Gemma, Qwen and Nemotron models at 60% to 80%, with latency and tokens per second."}
+  "tags": [
+    "ai-soc-detection-response",
+    "evals-benchmarks-metrics",
+    "mcp-tools-skills",
+    "agent-memory-context"
   ],
-  "signal": {"score": 4, "reason": "A measurement-based account of context and skill evolution failing to transfer, with concrete numbers and failure modes; the evidence comes from one author's experiments in simulated environments."},
+  "key_frames": [
+    {
+      "file": "t00420.jpg",
+      "caption": "Skills ablation across four SOC cases: prompt-only 4.2M to 4.9M tokens at C grades versus progressive disclosure at 99K to 313K tokens and 93 to 95, with the architectural insights that explain it."
+    },
+    {
+      "file": "t00522.jpg",
+      "caption": "Harbor Sandbox Collapse: GEPA-evolved runbooks lose to the human skill on every model, from -11.3% to -33.4%, with pass rates falling from 90% to 60% and 50% to 10%."
+    },
+    {
+      "file": "t00547.jpg",
+      "caption": "Four reasons evolved runbooks failed to transfer: placeholders, harness-specific pseudo-tools, Mermaid and IF/ELSE bloat, and zero-tool termination."
+    },
+    {
+      "file": "t00676.jpg",
+      "caption": "Full threat-hunt scorecard: no runbook 0.8554 and raw runbook 0.8295 versus compressed 0.9510 and Harness-squared-evolved 0.9813 across 48 trajectories."
+    },
+    {
+      "file": "t00917.jpg",
+      "caption": "Open-weight leaderboard on the SOC Tier 1 suite: closed gemini-3.5-flash-lite at 100% and 97.0 versus Gemma, Qwen and Nemotron models at 60% to 80%, with latency and tokens per second."
+    }
+  ],
+  "signal": {
+    "score": 4,
+    "reason": "The talk reports one author's experiments in simulated environments in which evolved SOC runbooks and skills did not transfer across models and harnesses, with token, score and failure-mode figures."
+  },
   "caveats": [
-    "Metadata marks this talk camera-only, but about 38 of the 44 frames show slides and all were read; frames are still sparse (about one per 30 to 90 seconds), so some slides in between were not captured.",
+    "Slides were captured about once every 30 to 90 seconds, so some slides in between were not captured.",
     "The three percentage columns in the graph-workflows table have their headers off frame, so their definitions are not recorded; item 6 to 10 of the ten best practices are not visible.",
     "Auto-captions garble names: 'Jeppa' is GEPA, 'Harness II' is Harness squared, 'Aqua' is AQuA, 'D-Spy' is DSPy, 'SORE playbook' is a SOAR playbook, and 'dandai' is the GitHub user dandye per the slide.",
     "The captions call the model that sets the baseline 'Gemma 3.5 Flash Light'; the leaderboard slide confirms it is gemini-3.5-flash-lite served as Google MaaS. The captions also say Gemma 2 comes in '3, 9 or 27 billion' parameters; the slide shows gemma-2-2b-it (2.6B), 9b (9.2B) and 27b (27.2B).",

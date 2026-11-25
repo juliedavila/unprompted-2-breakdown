@@ -10,7 +10,7 @@
   "format": "talk",
   "duration_min": 28,
   "thesis": "A small open-weight reasoning model can run on an employee endpoint for data classification if you quantize the right half of it: in Gemma 4 E2B the per-layer embedding (PLE) lookup table can drop to 2 bits with almost no loss, while squeezing the compute layers cannot, which takes the model from about 8.7 GiB to about 2 GiB.",
-  "summary": "Brandon Dixon opens with why endpoint security lacks context: analysts see log lines, not what the user was doing, and identical action sequences can be benign or risky depending on role and approvals. Data classification is the entry problem, because sensitive files sit among clutter in places like a Downloads folder and shipping everything to the cloud does not scale or protect privacy. The target was to shrink Gemma 4 E2B from an 8 GB footprint to 2 GB. Ajaya Neupane explains that the model's roughly five billion parameters split into a compute half that touches every token and a PLE lookup table that adds hints to each layer. They evaluated builds on three axes: decision agreement with the full-precision model, next-token distribution agreement, and general ability. On 40 curated pastes (30 sensitive, 10 safe), quantizing compute to 3 bits raised false positives from 1 to 6 regardless of table precision, while quantizing the table to 2 bits matched full precision. Larger disagreement counts on Nemotron-PII and CredData agree. Because the model still misses things, they wrap it in a harness: regex first, then the classifier, then a verifier that can only clear a flag, with the prompt tuned using the GEPA optimizer in DSPy. Dixon then shows a live endpoint demo of file classification and a policy blocking a labeled document from removable media, and the Q&A covers vision stripping, model choice, queueing and importance matrices, ending on a backup slide showing 0.29 GiB more buys back most of the lost quality.",
+  "summary": "Brandon Dixon opens with why endpoint security lacks context: analysts see log lines, not what the user was doing, and identical action sequences can be benign or risky depending on role and approvals. Data classification is the entry problem, because sensitive files sit among clutter in places like a Downloads folder and shipping everything to the cloud does not scale or protect privacy. The target was to shrink Gemma 4 E2B from an 8 GB footprint to 2 GB. Ajaya Neupane explains that the model's roughly five billion parameters split into a compute half that touches every token and a per-layer embedding (PLE) lookup table that adds hints to each layer. They evaluated builds on three axes: decision agreement with the full-precision model, next-token distribution agreement, and general ability. On 40 curated pastes (30 sensitive, 10 safe), quantizing compute to 3 bits raised false positives from 1 to 6 regardless of table precision, while quantizing the table to 2 bits matched full precision. Larger disagreement counts on Nemotron-PII (documents with PII) and CredData (real secrets and look-alikes) agree. Because the model still misses things, they wrap it in a harness: regex first, then the classifier, then a verifier that can only clear a flag, with the prompt tuned using the GEPA (genetic-Pareto) optimizer in DSPy. Dixon then shows a live endpoint demo of file classification and a policy blocking a labeled document from removable media, and a backup slide shown in Q&A reports that 0.29 GiB more buys back most of the lost quality.",
   "argument": [
     "Endpoint security tools see actions without context, and risk judgments need content plus user role and intent, so a reasoning model needs to run where the work happens.",
     "Sending all data to the cloud or a frontier provider does not scale and exposes the very content being classified, so a small open-weight model on the endpoint is the alternative, if it fits in a roughly 2 GB budget.",
@@ -124,7 +124,7 @@
     "Evaluate any quantized model against the full-precision model on decisions, token distribution and general ability, with held-out data, before shipping."
   ],
   "takeaways": [
-    "If you plan to run a small model on endpoints, test quantization per component rather than uniformly; here the lookup table was far more compressible than the compute path.",
+    "Neupane and Dixon's lesson, spend bits where they multiply: if you plan to run a small model on endpoints, test quantization per component rather than uniformly; here the lookup table was far more compressible than the compute path.",
     "Build a small held-out evaluation (decision agreement, distribution agreement, general ability) before choosing a quantization recipe, and track disagreement with the full-precision model, not just accuracy.",
     "Design endpoint classification as a cheapest-first pipeline with a clear-only verifier, and measure precision and recall of the whole harness, not the bare model.",
     "Treat model labels as inputs to policy (block, warn, explain) and decide which actions need an explanation, since the generative model was chosen partly to explain why.",
@@ -135,13 +135,13 @@
     "There was a small gap on general knowledge benchmarks that they judged irrelevant to the DLP task.",
     "Real throughput varies: modifying thousands of files can consume more resources, so the harness queues work and uses layers.",
     "Doing the same work needs expertise to build evaluations and data, and training a custom small model may not be worth the people cost.",
-    "Dixon acknowledged the demo is product-based and not an eval-set result."
+    "Dixon said the demo is product-based and not an eval-set result."
   ],
   "critique": [
     "The key experiment rests on 40 curated pastes (30 sensitive, 10 safe) with synthetic values, and the 2-bit versus 6-bit difference is one sample; the larger datasets help, but disagreement with full precision rises from 135 to 149 and 75 to 90, so a meaningful number of verdicts still changes.",
     "The explanation (PLE output is added rather than multiplied) is offered as a hypothesis; no ablation across layers or other models is shown, and generality beyond Gemma 4 E2B is untested.",
     "Harness gains are large (884 to 16 false alarms on Nemotron-PII); they come from the harness (regex, verifier, prompt tuning) rather than from quantization, and the CredData result still has 82 false alarms at 0.824 precision, which the recording does not discuss at scale.",
-    "Datasets and tuning data overlap risk is unclear; only CredData is labeled unseen, and Nemotron-PII was used for both evaluation and possibly prompt tuning.",
+    "Overlap between evaluation data and tuning data is not stated; only CredData is labeled unseen, and the talk did not say whether Nemotron-PII was also used for prompt tuning.",
     "Latency and throughput are not given in the talk body, so the feasibility claim for busy developer machines rests on a queueing answer given without figures.",
     "The speakers work for Ent AI, a company that sells endpoint data-loss and insider-risk products, and the demo used that product; the risk scoring layers (peer baselines, intent) were shown as a diagram without results.",
     "The only comparison with another open quantized build is the backup slide (Unsloth UD-Q4_K_XL); it shows the recovered 2.34 GiB build slightly ahead on divergence and equal on MMLU-Pro, but it is one comparison on one model and was shown only in response to a question.",
@@ -163,14 +163,14 @@
     {"file": "t00756.jpg", "caption": "Harness results: recall and precision per dataset, model alone versus the cheapest-first harness."},
     {"file": "t01578.jpg", "caption": "Backup ladder: 0.29 GiB of targeted extra precision recovers the loss and beats Unsloth's tuned 4-bit on divergence."}
   ],
-  "signal": {"score": 4, "reason": "Measured quantization results (2-bit PLE table with near-parity at 2 GiB) with comparisons against compute squeezing and a measured harness across several datasets; the core test set is 40 samples and the speakers work for the company whose product was demonstrated."},
+  "signal": {"score": 4, "reason": "The talk reports measured quantization results (a 2-bit PLE table with near-parity at 2 GiB) compared against compute squeezing, and a measured harness across several datasets; the core test set is 40 samples and the speakers work for the company whose product was demonstrated."},
   "caveats": [
-    "The video shows the speakers with slides picture-in-picture; slide frames were readable, including the backup slide shown during Q&A.",
-    "Auto-captions garble numbers and names: the company appears as End or Ent, Nemotron appears as Nemon, Gemma 2E2B and E4B appear for Gemma 4 E2B, and the transcript's recall line (1020, 1042 to 1116) reads as 1,025 and 1,042 of 1,116 on the slide; slide numbers were used.",
+    "The video shows the speakers with slides picture-in-picture; the slides were readable, including the backup slide shown during Q&A.",
+    "Auto-captions garble numbers and names: the company appears as End or Ent, Nemotron appears as Nemon, Gemma 2E2B and E4B appear for Gemma 4 E2B, and the transcript's recall line (1020, 1042 to 1116) reads as 1,025 and 1,042 of 1,116 on the slide; this record uses the slide numbers.",
     "The video description cites figures not stated in the talk body (34 of 40 for builds with the table at F16, Q8_0 and Q3_K_S, 39 of 40 falling to 34 between Q4 and Q3 compute, memory 1,137 MiB to 125 MiB at 9.1x, 51 ms per call, and a compaction and risk scoring pipeline); the in-talk slides show 3-bit compute at 30 caught with 6 false positives, which is consistent with 34 of 40, but the others could not be checked and are not recorded as claims.",
     "The percentage of disagreement in the larger datasets is derived by dividing counts by the answers count on the slide; the transcript says 'share of answers' on the bars.",
-    "The removable-media block was not narrated but is visible in the frames as a dialog.",
-    "Q&A frames are camera-only except the backup slide; one Q&A questioner's name badge is unreadable and was not recorded.",
-    "The demo document contains a bank contact, phone number and account number; these appear fictitious and were not recorded."
+    "The removable-media block was not narrated but is visible in the recording as a dialog.",
+    "The Q&A portion shows only the camera, except for the backup slide; one Q&A questioner's name badge is unreadable and was not recorded.",
+    "The demo document contains a bank contact, phone number and account number; the document is described as fictitious and these details are not recorded."
   ]
 }

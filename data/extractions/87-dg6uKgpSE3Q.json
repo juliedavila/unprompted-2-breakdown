@@ -3,11 +3,16 @@
   "id": "dg6uKgpSE3Q",
   "url": "https://www.youtube.com/watch?v=dg6uKgpSE3Q",
   "title": "AI Inference and its Privacy and Confidentiality Challenges",
-  "speakers": [{"name": "Yolan Romailler", "affiliation": "Head of Security, Confidential AI"}],
+  "speakers": [
+    {
+      "name": "Yolan Romailler",
+      "affiliation": "Head of Security, Confidential AI"
+    }
+  ],
   "format": "talk",
   "duration_min": 20,
   "thesis": "Most AI inference today gives users no privacy or confidentiality guarantee, but running the whole serving stack inside hardware trusted execution environments with remote attestation already works in production at low single-digit GPU overhead, so there is no excuse not to offer it.",
-  "summary": "Romailler frames confidentiality as the neglected leg of the CIA triad for AI and compares today's state to the era before end-to-end encrypted messaging. He argues most providers offer no guarantees while people confide medical, psychological and work material to chatbots, and cites two examples: OpenAI's statement that it cannot rule out de-identified usage data improving its models in the dispute with an NYU mathematician, and a 22.7 TB aggregator breach exposing chat logs and corporate documents. He then walks through a typical inference pipeline (load balancers, API gateway, inference router, prefill and decode nodes, secret weight shards) and a messier real one with multiple routers and providers where nothing is verifiably private. He lists inference threats: prompt and response privacy, harvest-now-decrypt-later, targeted serving of custom responses to a specific user (non-targetability), weight leakage, and trojanized models. He asks where to draw the trust boundary. His answer is TEEs and confidential VMs with remote attestation rooted in hardware manufacturers, with the trust boundary drawn around Kubernetes rather than including it. A table of Blackwell GPU overheads (about 2 percent, under 1 percent, about 1.5 percent on four GPUs, 10 to 13 percent for training) supports the cost claim. He closes with three takeaways and a Q&A on trust and safety monitoring inside enclaves, Meta and Apple deployments, and industry demand.",
+  "summary": "Romailler frames confidentiality as the neglected leg of the CIA triad for AI and compares today's state to the era before end-to-end encrypted messaging. He argues most providers offer no guarantees while people confide medical, psychological and work material to chatbots, and cites two examples: OpenAI's statement that it cannot rule out de-identified usage data improving its models in the dispute with an NYU mathematician, and a 22.7 TB aggregator breach exposing chat logs and corporate documents. He then walks through a typical inference pipeline (load balancers, API gateway, inference router, prefill and decode nodes, secret weight shards) and a messier real one with multiple routers and providers where nothing is verifiably private. He lists inference threats: prompt and response privacy, harvest-now-decrypt-later, targeted serving of custom responses to a specific user (non-targetability), weight leakage, and trojanized models. He asks where to draw the trust boundary. His answer is TEEs (trusted execution environments) and confidential VMs with remote attestation rooted in hardware manufacturers, with the trust boundary drawn around Kubernetes rather than including it. A table of NVIDIA Blackwell GPU overheads (about 2 percent, under 1 percent, about 1.5 percent on four GPUs, 10 to 13 percent for training) supports the cost claim.",
   "argument": [
     "Confidentiality of user prompts and responses matters and is not guaranteed by most AI providers, as shown by the aggregator breach and the training-data uncertainty.",
     "Real inference pipelines span gateways, routers and multiple providers, so TLS hops alone give no end-to-end privacy assurance.",
@@ -17,43 +22,193 @@
     "Measured overhead for confidential GPU inference is small, so cost and complexity are not valid reasons to withhold private inference."
   ],
   "claims": [
-    {"claim": "Most AI providers do not come with any privacy or confidentiality guarantees for user data.", "evidence": "Stated on a slide; a few notable exceptions were mentioned but not named.", "grade": "assertion", "t": "01:39", "source": "both"},
-    {"claim": "OpenAI said it cannot rule out that de-identified data derived from product usage may have helped improve its models, in connection with a Navier-Stokes proof dispute with an NYU mathematician.", "evidence": "A New York Times headline and an OpenAI statement shown on a slide; the speaker explicitly said no causal link to missing confidentiality is established.", "grade": "case", "t": "02:10", "source": "both"},
-    {"claim": "The 302.ai aggregator breach exposed 22.7 terabytes through an unsecured database, including chat logs, prompts, AI responses and confidential corporate documents.", "evidence": "Slide text and a news screenshot dated October 22, 2026 referring to over 18 million files; the speaker said 22 terabytes.", "grade": "case", "t": "02:41", "source": "both"},
-    {"claim": "A model can be steered to serve a specific user custom responses, and the user would most likely not notice; this non-targetability threat is hard to solve and complicates billing.", "evidence": "Reasoned argument; the slide cites 26 percent of users ending their browsing session after reading an AI summary (sample size 900 individuals) and says steering a model to be evil is easy.", "grade": "assertion", "t": "06:21", "source": "both"},
-    {"claim": "Confidential virtual machines give hardware isolation and encrypted memory, so sysadmins and cloud providers cannot read data during processing; the residual trust is in hardware vendors such as AMD, Intel and NVIDIA.", "evidence": "Conceptual explanation with a slide listing TEE technologies (Intel SGX deprecated, Arm TrustZone, Apple Secure Enclave, Intel TDX, AMD SEV-SNP, Nvidia CC).", "grade": "assertion", "t": "09:01", "source": "both"},
-    {"claim": "Remote attestation is the keystone: a hardware-manufacturer-rooted trust chain and challenge-response show the TEE is running the expected software through launch measurements and report data.", "evidence": "Explained on slides without a demo.", "grade": "assertion", "t": "10:33", "source": "both"},
-    {"claim": "Confidential Kubernetes lets the TEE boundary wrap the gateway, router and nodes so Kubernetes control plane is outside the trust boundary, and many companies have run this in production for months.", "evidence": "Trust-boundary diagrams comparing standard and confidential Kubernetes; the production claim is asserted without named companies.", "grade": "assertion", "t": "11:34", "source": "both"},
-    {"claim": "Single-GPU confidential-computing overhead is about 2 percent with the overlap scheduler off and under 1 percent with full CUDA graphs plus CC patches.", "evidence": "Table citing Asad and Grunseid, arXiv 2608.26575 (benchmarking confidential computing on NVIDIA Blackwell GPUs) and an NVIDIA blog with similar single-digit results.", "grade": "measured", "t": "12:06", "source": "both"},
-    {"claim": "Mixture-of-experts serving on four GPUs (TP4) costs about 1.5 percent overhead from prefill all-reduce over encrypted NVLink, scaling roughly linearly with GPU count (about 3 percent on eight GPUs).", "evidence": "Table row for 4 GPUs; the eight-GPU inference figure is an extrapolation stated aloud, not a measured table row.", "grade": "measured", "t": "12:38", "source": "both"},
-    {"claim": "Training is much costlier in confidential mode, at roughly 10 to 13 percent on eight GPUs, a hardware floor, but training need not run in a TEE.", "evidence": "Table row citing encrypted NVLink collectives.", "grade": "measured", "t": "13:08", "source": "both"},
-    {"claim": "Trust-and-safety monitoring is still possible inside an enclave by baking in auditable observability, such as a classifier running inside the TEE, and TEEs can verify each other through attestation.", "evidence": "Q&A answer with no implementation shown.", "grade": "assertion", "t": "16:14", "source": "said"},
-    {"claim": "Meta's confidential computing for Muse is probably not yet running in a TEE, and users should verify attestations; Apple Private Cloud Compute already uses TEEs.", "evidence": "Q&A opinion; the speaker said not to trust that it currently runs in a TEE and to verify.", "grade": "assertion", "t": "17:46", "source": "said"},
-    {"claim": "Every big tech company has a confidential computing team, so confidential computing is here to stay.", "evidence": "Q&A assertion naming OpenAI, Intel, NVIDIA and others, without sources.", "grade": "assertion", "t": "19:18", "source": "said"}
+    {
+      "claim": "Most AI providers do not come with any privacy or confidentiality guarantees for user data.",
+      "evidence": "Stated on a slide; a few notable exceptions were mentioned but not named.",
+      "grade": "assertion",
+      "t": "01:39",
+      "source": "both"
+    },
+    {
+      "claim": "OpenAI said it cannot rule out that de-identified data derived from product usage may have helped improve its models, in connection with a Navier-Stokes proof dispute with an NYU mathematician.",
+      "evidence": "A New York Times headline and an OpenAI statement shown on a slide; the speaker explicitly said no causal link to missing confidentiality is established.",
+      "grade": "case",
+      "t": "02:10",
+      "source": "both"
+    },
+    {
+      "claim": "The 302.ai aggregator breach exposed 22.7 terabytes through an unsecured database, including chat logs, prompts, AI responses and confidential corporate documents.",
+      "evidence": "Slide text and a news screenshot dated October 22, 2026 referring to over 18 million files; the speaker said 22 terabytes.",
+      "grade": "case",
+      "t": "02:41",
+      "source": "both"
+    },
+    {
+      "claim": "A model can be steered to serve a specific user custom responses, and the user would most likely not notice; this non-targetability threat is hard to solve and complicates billing.",
+      "evidence": "Reasoned argument; the slide cites 26 percent of users ending their browsing session after reading an AI summary (sample size 900 individuals) and says steering a model to be evil is easy.",
+      "grade": "assertion",
+      "t": "06:21",
+      "source": "both"
+    },
+    {
+      "claim": "Confidential virtual machines give hardware isolation and encrypted memory, so sysadmins and cloud providers cannot read data during processing; the residual trust is in hardware vendors such as AMD, Intel and NVIDIA.",
+      "evidence": "Conceptual explanation with a slide listing TEE technologies (Intel SGX deprecated, Arm TrustZone, Apple Secure Enclave, Intel TDX, AMD SEV-SNP, Nvidia CC).",
+      "grade": "assertion",
+      "t": "09:01",
+      "source": "both"
+    },
+    {
+      "claim": "Remote attestation is the keystone: a hardware-manufacturer-rooted trust chain and challenge-response show the TEE is running the expected software through launch measurements and report data.",
+      "evidence": "Explained on slides without a demo.",
+      "grade": "assertion",
+      "t": "10:33",
+      "source": "both"
+    },
+    {
+      "claim": "Confidential Kubernetes lets the TEE boundary wrap the gateway, router and nodes so Kubernetes control plane is outside the trust boundary, and many companies have run this in production for months.",
+      "evidence": "Trust-boundary diagrams comparing standard and confidential Kubernetes; the production claim is asserted without named companies.",
+      "grade": "assertion",
+      "t": "11:34",
+      "source": "both"
+    },
+    {
+      "claim": "Single-GPU confidential-computing overhead is about 2 percent with the overlap scheduler off and under 1 percent with full CUDA graphs plus CC patches.",
+      "evidence": "Table citing Asad and Grunseid, arXiv 2608.26575 (benchmarking confidential computing on NVIDIA Blackwell GPUs) and an NVIDIA blog with similar single-digit results.",
+      "grade": "measured",
+      "t": "12:06",
+      "source": "both"
+    },
+    {
+      "claim": "Mixture-of-experts serving on four GPUs (TP4) costs about 1.5 percent overhead from prefill all-reduce over encrypted NVLink, scaling roughly linearly with GPU count (about 3 percent on eight GPUs).",
+      "evidence": "Table row for 4 GPUs; the eight-GPU inference figure is an extrapolation stated aloud, not a measured table row.",
+      "grade": "measured",
+      "t": "12:38",
+      "source": "both"
+    },
+    {
+      "claim": "Training is much costlier in confidential mode, at roughly 10 to 13 percent on eight GPUs, a hardware floor, but training need not run in a TEE.",
+      "evidence": "Table row citing encrypted NVLink collectives.",
+      "grade": "measured",
+      "t": "13:08",
+      "source": "both"
+    },
+    {
+      "claim": "Trust-and-safety monitoring is still possible inside an enclave by baking in auditable observability, such as a classifier running inside the TEE, and TEEs can verify each other through attestation.",
+      "evidence": "Q&A answer with no implementation shown.",
+      "grade": "assertion",
+      "t": "16:14",
+      "source": "said"
+    },
+    {
+      "claim": "Meta's confidential computing for Muse is probably not yet running in a TEE, and users should verify attestations; Apple Private Cloud Compute already uses TEEs.",
+      "evidence": "Q&A opinion; the speaker said not to trust that it currently runs in a TEE and to verify.",
+      "grade": "assertion",
+      "t": "17:46",
+      "source": "said"
+    },
+    {
+      "claim": "Every big tech company has a confidential computing team, so confidential computing is here to stay.",
+      "evidence": "Q&A assertion naming OpenAI, Intel, NVIDIA and others, without sources.",
+      "grade": "assertion",
+      "t": "19:18",
+      "source": "said"
+    }
   ],
   "numbers": [
-    {"figure": "22.7 TB", "meaning": "data exposed in the 302.ai aggregator breach (slide); speaker said 22 terabytes", "t": "02:41"},
-    {"figure": "18 million", "meaning": "files in the aggregator breach headline shown on the slide", "t": "02:41"},
-    {"figure": "26%", "meaning": "users ending their browsing session after reading an AI summary (sample 900 individuals)", "t": "06:21"},
-    {"figure": "~2%", "meaning": "GPU confidential computing overhead, one GPU with overlap scheduler off", "t": "12:06"},
-    {"figure": "<1%", "meaning": "overhead, one GPU with full CUDA graphs and CC patches", "t": "12:06"},
-    {"figure": "~1.5%", "meaning": "overhead for mixture-of-experts serving on four GPUs (TP4)", "t": "12:38"},
-    {"figure": "~3%", "meaning": "extrapolated overhead for an eight-GPU inference node, said aloud only", "t": "12:38"},
-    {"figure": "10-13%", "meaning": "overhead for eight-GPU training due to encrypted NVLink collectives", "t": "13:08"}
+    {
+      "figure": "22.7 TB",
+      "meaning": "data exposed in the 302.ai aggregator breach (slide); speaker said 22 terabytes",
+      "t": "02:41"
+    },
+    {
+      "figure": "18 million",
+      "meaning": "files in the aggregator breach headline shown on the slide",
+      "t": "02:41"
+    },
+    {
+      "figure": "26%",
+      "meaning": "users ending their browsing session after reading an AI summary (sample 900 individuals)",
+      "t": "06:21"
+    },
+    {
+      "figure": "~2%",
+      "meaning": "GPU confidential computing overhead, one GPU with overlap scheduler off",
+      "t": "12:06"
+    },
+    {
+      "figure": "<1%",
+      "meaning": "overhead, one GPU with full CUDA graphs and CC patches",
+      "t": "12:06"
+    },
+    {
+      "figure": "~1.5%",
+      "meaning": "overhead for mixture-of-experts serving on four GPUs (TP4)",
+      "t": "12:38"
+    },
+    {
+      "figure": "~3%",
+      "meaning": "extrapolated overhead for an eight-GPU inference node, said aloud only",
+      "t": "12:38"
+    },
+    {
+      "figure": "10-13%",
+      "meaning": "overhead for eight-GPU training due to encrypted NVLink collectives",
+      "t": "13:08"
+    }
   ],
   "frameworks": [
-    {"name": "Inference pipeline model", "description": "Client, L4 and L7 load balancers around an API gateway, inference router with KV-cache tracker map, prefill nodes, decode nodes sharing KV cache, and secret weight shards; split into network-based routing and token-aware routing."},
-    {"name": "Inference threat list", "description": "Prompt and response privacy, harvest-now-decrypt-later (quantum), targeted attacks serving a specific user custom responses, proprietary model weight leaks, trojanized models."},
-    {"name": "Where do you draw the line", "description": "Trust boundary choice: at the load balancer, after it excluding the inference router, or only around weights and inference; each reflects a different threat model."},
-    {"name": "TEE mechanics", "description": "Hardware isolation, dedicated core per enclave, random secret key in a register encrypting memory, remote attestation via launch measurements, report data and append-only registers; some add a dedicated coprocessor and underclocked core against side channels."},
-    {"name": "Confidential Kubernetes trust boundary", "description": "A TEE boundary enclosing load balancers, API gateway, router and GPU nodes, leaving the Kubernetes control plane outside it."}
+    {
+      "name": "Inference pipeline model",
+      "description": "Client, L4 and L7 load balancers around an API gateway, inference router with KV-cache tracker map, prefill nodes, decode nodes sharing KV cache, and secret weight shards; split into network-based routing and token-aware routing."
+    },
+    {
+      "name": "Inference threat list",
+      "description": "Prompt and response privacy, harvest-now-decrypt-later (quantum), targeted attacks serving a specific user custom responses, proprietary model weight leaks, trojanized models."
+    },
+    {
+      "name": "Where do you draw the line",
+      "description": "Trust boundary choice: at the load balancer, after it excluding the inference router, or only around weights and inference; each reflects a different threat model."
+    },
+    {
+      "name": "TEE mechanics",
+      "description": "Hardware isolation, dedicated core per enclave, random secret key in a register encrypting memory, remote attestation via launch measurements, report data and append-only registers; some add a dedicated coprocessor and underclocked core against side channels."
+    },
+    {
+      "name": "Confidential Kubernetes trust boundary",
+      "description": "A TEE boundary enclosing load balancers, API gateway, router and GPU nodes, leaving the Kubernetes control plane outside it."
+    }
   ],
   "artifacts": [
-    {"name": "Benchmarking Confidential Computing Performance on NVIDIA Blackwell GPUs", "kind": "paper", "note": "Asad and Grunseid, arXiv 2608.26575 v2, 1 Sep 2026; source of all GPU overhead figures on the table slide.", "url": ""},
-    {"name": "Hardware-Rooted AI Security That Won't Slow You Down", "kind": "paper", "note": "NVIDIA material cited as independently reporting a similar low single-digit result.", "url": ""},
-    {"name": "302.ai aggregator breach", "kind": "dataset", "note": "Incident used as a motivating example, with a news screenshot dated October 22, 2026.", "url": ""},
-    {"name": "Intel TDX, AMD SEV-SNP, Nvidia CC", "kind": "standard", "note": "Confidential VM and GPU confidential-computing technologies listed as the current industry TEE options.", "url": ""},
-    {"name": "Apple Private Cloud Compute", "kind": "product", "note": "Named in Q&A as an at-scale TEE-based deployment.", "url": ""}
+    {
+      "name": "Benchmarking Confidential Computing Performance on NVIDIA Blackwell GPUs",
+      "kind": "paper",
+      "note": "Asad and Grunseid, arXiv 2608.26575 v2, 1 Sep 2026; source of all GPU overhead figures on the table slide.",
+      "url": ""
+    },
+    {
+      "name": "Hardware-Rooted AI Security That Won't Slow You Down",
+      "kind": "paper",
+      "note": "NVIDIA material cited as independently reporting a similar low single-digit result.",
+      "url": ""
+    },
+    {
+      "name": "302.ai aggregator breach",
+      "kind": "dataset",
+      "note": "Incident used as a motivating example, with a news screenshot dated October 22, 2026.",
+      "url": ""
+    },
+    {
+      "name": "Intel TDX, AMD SEV-SNP, Nvidia CC",
+      "kind": "standard",
+      "note": "Confidential VM and GPU confidential-computing technologies listed as the current industry TEE options.",
+      "url": ""
+    },
+    {
+      "name": "Apple Private Cloud Compute",
+      "kind": "product",
+      "note": "Named in Q&A as an at-scale TEE-based deployment.",
+      "url": ""
+    }
   ],
   "slide_only": [
     "Slide wording on the NYT item: 'An N.Y.U. Mathematician Clashed With OpenAI Over a $1 Million Proof' (Tristan Buckmaster) and the OpenAI statement that no specific user data or Codex sessions were accessed but it cannot rule out de-identified usage data improving its models over time.",
@@ -66,10 +221,26 @@
   ],
   "demos": [],
   "quotes": [
-    {"text": "Please don't trust, do verify.", "speaker": "Yolan Romailler", "t": "11:03"},
-    {"text": "There is no excuse nowadays not to provide private confidential inference.", "speaker": "Yolan Romailler", "t": "13:39"},
-    {"text": "Non-targetability is a new issue we are not too used to dealing with when it comes to cyber security, and yet it is a very concerning threat when it comes to AI inference.", "speaker": "Yolan Romailler", "t": "06:53"},
-    {"text": "If you don't have any attestations, be careful about what's going on here.", "speaker": "Yolan Romailler", "t": "18:18"}
+    {
+      "text": "Please don't trust, do verify.",
+      "speaker": "Yolan Romailler",
+      "t": "11:03"
+    },
+    {
+      "text": "There is no excuse nowadays not to provide private confidential inference.",
+      "speaker": "Yolan Romailler",
+      "t": "13:39"
+    },
+    {
+      "text": "Non-targetability is a new issue we are not too used to dealing with when it comes to cyber security, and yet it is a very concerning threat when it comes to AI inference.",
+      "speaker": "Yolan Romailler",
+      "t": "06:53"
+    },
+    {
+      "text": "If you don't have any attestations, be careful about what's going on here.",
+      "speaker": "Yolan Romailler",
+      "t": "18:18"
+    }
   ],
   "offense": [
     "Targeted serving: routing a specific user to a customized or steered model to shape their opinions, undetectable to the user.",
@@ -114,21 +285,44 @@
     "Q: Are you encouraged that Meta announced confidential computing for Muse? A: Yes, he is excited by any adoption; Meta reportedly collaborated with Moxie Marlinspike, but he does not believe the current version runs in a TEE, so verify; Apple Private Cloud Compute uses TEEs and attestations should be verified.",
     "Q: Opaque Systems (organizer of the Confidential Computing Summit) was reportedly acquired by an AI lab; is that encouraging? A: Every big tech company has a confidential computing team; the community must create demand and refuse to surrender chat confidentiality."
   ],
-  "tags": ["privacy-confidential-compute", "model-internals", "supply-chain-model-integrity", "guardrails-runtime-controls"],
-  "key_frames": [
-    {"file": "t00256.jpg", "caption": "Real-world inference topology: users reach multiple routers that fan out to several AI providers, each with its own gateway, router, nodes and secret weight shards, so no hop is verifiably private."},
-    {"file": "t00301.jpg", "caption": "List of inference threats: prompt and response privacy, harvest-now-decrypt-later, targeted custom responses, weight leaks and trojanized models."},
-    {"file": "t00707.jpg", "caption": "Trust boundaries diagram: confidential Kubernetes draws the TEE boundary around gateway, router and nodes while the control plane stays outside."},
-    {"file": "t00790.jpg", "caption": "Confidential inference overhead table with the cited Blackwell paper: about 2 percent, under 1 percent, about 1.5 percent on four GPUs, and 10 to 13 percent for eight-GPU training."},
-    {"file": "t00562.jpg", "caption": "TEE overview: hardware isolation, memory encryption key and remote attestation via launch measurements, report data and append-only registers."}
+  "tags": [
+    "privacy-confidential-compute",
+    "model-internals",
+    "supply-chain-model-integrity",
+    "guardrails-runtime-controls"
   ],
-  "signal": {"score": 3, "reason": "A summary of TEE-based confidential inference with an overhead table drawn from one cited benchmark; attacks on TEEs themselves were not covered in detail."},
+  "key_frames": [
+    {
+      "file": "t00256.jpg",
+      "caption": "Real-world inference topology: users reach multiple routers that fan out to several AI providers, each with its own gateway, router, nodes and secret weight shards, so no hop is verifiably private."
+    },
+    {
+      "file": "t00301.jpg",
+      "caption": "List of inference threats: prompt and response privacy, harvest-now-decrypt-later, targeted custom responses, weight leaks and trojanized models."
+    },
+    {
+      "file": "t00707.jpg",
+      "caption": "Trust boundaries diagram: confidential Kubernetes draws the TEE boundary around gateway, router and nodes while the control plane stays outside."
+    },
+    {
+      "file": "t00790.jpg",
+      "caption": "Confidential inference overhead table with the cited Blackwell paper: about 2 percent, under 1 percent, about 1.5 percent on four GPUs, and 10 to 13 percent for eight-GPU training."
+    },
+    {
+      "file": "t00562.jpg",
+      "caption": "TEE overview: hardware isolation, memory encryption key and remote attestation via launch measurements, report data and append-only registers."
+    }
+  ],
+  "signal": {
+    "score": 3,
+    "reason": "The talk presents TEE-based confidential inference with an overhead table drawn from one cited benchmark and does not cover attacks on TEEs in detail."
+  },
   "caveats": [
     "Auto-caption garbles: speaker's name appears as Yolan Romayer; the slide spells Romailler. Moxie Marlinspike appears as Maxi Marlinspike.",
     "In the Q&A an audience member said an organizer of the Confidential Computing Summit was acquired by a lab the captions render as 'Entropic'; the acquirer and the organizer name are not confirmed on any slide and are not recorded as fact. The first question's opening remark was partly garbled.",
     "The transcript says 22 terabytes and 'users and sex dolls' as a joke about the breach contents; the slide says 22.7 terabytes and lists chat logs, prompts, responses and confidential corporate documents.",
     "The speaker's 8 GPU inference overhead (about 3 percent) was spoken as an extrapolation and is not in the table.",
-    "Arxiv ID 2608.26575 and the version date are read from small footer text on the slide.",
-    "No live demos; frames after the contact slide are Q&A camera shots with no slide content."
+    "Arxiv ID 2608.26575 and the version date are legible only in small footer text on the slide.",
+    "No live demos; the recording after the contact slide shows only Q&A camera shots with no slide content."
   ]
 }

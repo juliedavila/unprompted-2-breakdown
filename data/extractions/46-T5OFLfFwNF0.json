@@ -3,11 +3,16 @@
   "id": "T5OFLfFwNF0",
   "url": "https://www.youtube.com/watch?v=T5OFLfFwNF0",
   "title": "Opened Is Not Fixed: The Last Mile of AI Vulnerability Remediation",
-  "speakers": [{"name": "Shayaun (Sean) Nejad", "affiliation": "Lead Product Security Engineer, Rubrik"}],
+  "speakers": [
+    {
+      "name": "Shayaun (Sean) Nejad",
+      "affiliation": "Lead Product Security Engineer, Rubrik"
+    }
+  ],
   "format": "talk",
   "duration_min": 21,
   "thesis": "With AI making vulnerability discovery cheap, the bottleneck is patching, and AI-written fixes that pass their own tests often leave variants open, so a fix validation loop must include an independent variant hunt before a finding is closed.",
-  "summary": "Shayaun Nejad draws on Rubrik's participation in Project Glasswing, where Anthropic gave early access to find bugs in Rubrik's own systems. He says the ratio inverted: finding bugs got easy, and patching became the constraint, pulling top engineers off the product roadmap, much as Bank of America reportedly brought in 1,000 contractors. The main problem was that bugs marked fixed kept coming back, either as variants next to the original or when a stronger model arrived. He illustrates with a public case, the vm2 JavaScript sandbox package: a critical advisory fixed with a commit co-authored by Claude and 28 passing tests, which he bypassed during slide preparation with a one-line change to which file endings the sandbox trusts, shown in a recorded demo that exfiltrates a synthetic host token. He cites a P2Patch preprint finding that 41 of 101 AI-patched CVEs had variants. Rubrik runs separate scanning, validation and patching pipelines and added a variant-hunt stage after tests pass, with recurring variants routed to a human. He also classifies bugs by whether they can be auto-patched, keeps a unified vulnerability record so new models can reopen fixes, uses recurring bug classes to direct investment (fuzzing for memory errors, design-phase work for logic bugs), and notes Rubrik productized the harness as Code Guardian. His one takeaway is to build variant analysis into hunting and patching pipelines. Q&A covers fix validation, variant generation, escalation classification, and whether only top severities were fixed.",
+  "summary": "Shayaun Nejad draws on Rubrik's participation in Project Glasswing, where Anthropic gave early access to find bugs in Rubrik's own systems. He says the ratio inverted: finding bugs got easy, and patching became the constraint, pulling top engineers off the product roadmap, much as Bank of America reportedly brought in 1,000 contractors. The main problem was that bugs marked fixed kept coming back, either as variants next to the original or when a stronger model arrived. He illustrates with a public case, the vm2 JavaScript sandbox package: a critical advisory fixed with a commit co-authored by Claude and 28 passing tests, which he bypassed during slide preparation with a one-line change to which file endings the sandbox trusts, shown in a recorded demo that exfiltrates a synthetic host token. He cites a P2Patch preprint finding that 41 of 101 AI-patched CVEs had variants. Rubrik runs separate scanning, validation and patching pipelines and added a variant-hunt stage after tests pass, with recurring variants routed to a human. He also classifies bugs by whether they can be auto-patched, keeps a unified vulnerability record so new models can reopen fixes, uses recurring bug classes to direct investment (fuzzing for memory errors, design-phase work for logic bugs), and notes Rubrik productized the harness as Code Guardian. His one takeaway is to build variant analysis into hunting and patching pipelines.",
   "argument": [
     "Discovery has become cheap, so the backlog and patching capacity are now the constraint, and engineering time shifts from product work to remediation.",
     "AI-generated fixes are validated by AI-written tests, so a passing test suite shows only that the known exploit is blocked, not that the root cause is fixed.",
@@ -16,44 +21,199 @@
     "Add an explicit variant hunt after tests pass, classify which fixes are safe to auto-patch, keep history for re-evaluation under new models, and use recurring bug classes to direct investment."
   ],
   "claims": [
-    {"claim": "Finding bugs got easy and the backlog did not: a slide cites 1,596 found and disclosed versus 97 patched.", "evidence": "Slide figure attributed to Anthropic, Using LLMs to secure source code, May 2026.", "grade": "measured", "t": "00:43", "source": "slide"},
-    {"claim": "Bank of America brought in 1,000 outside contractors, next to about 3,000 of its own people, to fix flaws AI models found.", "evidence": "Slide citing CNBC, Oct 14, 2026.", "grade": "case", "t": "02:14", "source": "both"},
-    {"claim": "Rubrik reshuffled top engineers from product work to patching because AI-found vulnerabilities were hitting the product roadmap.", "evidence": "First-hand account from Project Glasswing engagement; no counts disclosed.", "grade": "case", "t": "02:14", "source": "said"},
-    {"claim": "Bugs marked fixed kept coming back, sometimes only caught when a better model or deeper chaining was used.", "evidence": "First-hand account across multiple model iterations; no counts disclosed.", "grade": "anecdote", "t": "03:17", "source": "both"},
-    {"claim": "The vm2 critical advisory fix (patched in 3.12.2), co-authored by Claude with a 28-case test, could still be bypassed by a one-line change to which file endings the sandbox trusts, leaking a host token.", "evidence": "Recorded terminal demo on a fresh npm install of vm2 3.12.2 with a synthetic token; reported privately to the maintainer.", "grade": "demo", "t": "06:55", "source": "both"},
-    {"claim": "vm2 shipped 34 security-fix commits from Aug 9 to Sept 8, 2026, and 19 carried a Claude co-author line.", "evidence": "Slide figures. The speaker said 15 aloud, which conflicts with the slide.", "grade": "measured", "t": "05:53", "source": "slide"},
-    {"claim": "An AI patching experiment found 41 of 101 CVEs had variants of the fixes put out.", "evidence": "P2Patch preprint, Oct 2026, 101 C/C++ and Java CVEs, cited on a slide; study not described further.", "grade": "measured", "t": "08:31", "source": "both"},
-    {"claim": "Adding a separate variant-hunt agent stage after tests pass increased Rubrik's patching success rate.", "evidence": "Stated by the speaker without numbers.", "grade": "assertion", "t": "10:03", "source": "both"},
-    {"claim": "Classifying bugs by whether they can be auto-patched is necessary because some need architectural change, customer communication, or cannot be fixed.", "evidence": "Operational experience; SQL injection treated as auto-patchable, authentication bypass needs a human.", "grade": "anecdote", "t": "10:34", "source": "said"},
-    {"claim": "Tracking recurring bug classes directed investment: a spike in memory errors led to a fuzzing pipeline and a rise in logic bugs led to more design-phase SDLC work.", "evidence": "Rubrik's own experience, no figures.", "grade": "anecdote", "t": "12:08", "source": "said"},
-    {"claim": "Advisories and security commits are context magnets that disclose the vulnerability types a platform is susceptible to.", "evidence": "Illustrated by the vm2 advisory, which lists source-to-sink path with file and line ranges.", "grade": "assertion", "t": "04:18", "source": "both"},
-    {"claim": "Only the top severity findings were fixed at volume, but chains are analyzed and lower severities that chain to critical are escalated and patched.", "evidence": "Q&A answer, no numbers.", "grade": "assertion", "t": "20:06", "source": "said"}
+    {
+      "claim": "Finding bugs got easy and the backlog did not: a slide cites 1,596 found and disclosed versus 97 patched.",
+      "evidence": "Slide figure attributed to Anthropic, Using LLMs to secure source code, May 2026.",
+      "grade": "measured",
+      "t": "00:43",
+      "source": "slide"
+    },
+    {
+      "claim": "Bank of America brought in 1,000 outside contractors, next to about 3,000 of its own people, to fix flaws AI models found.",
+      "evidence": "Slide citing CNBC, Oct 14, 2026.",
+      "grade": "case",
+      "t": "02:14",
+      "source": "both"
+    },
+    {
+      "claim": "Rubrik reshuffled top engineers from product work to patching because AI-found vulnerabilities were hitting the product roadmap.",
+      "evidence": "First-hand account from Project Glasswing engagement; no counts disclosed.",
+      "grade": "case",
+      "t": "02:14",
+      "source": "said"
+    },
+    {
+      "claim": "Bugs marked fixed kept coming back, sometimes only caught when a better model or deeper chaining was used.",
+      "evidence": "First-hand account across multiple model iterations; no counts disclosed.",
+      "grade": "anecdote",
+      "t": "03:17",
+      "source": "both"
+    },
+    {
+      "claim": "The vm2 critical advisory fix (patched in 3.12.2), co-authored by Claude with a 28-case test, could still be bypassed by a one-line change to which file endings the sandbox trusts, leaking a host token.",
+      "evidence": "Recorded terminal demo on a fresh npm install of vm2 3.12.2 with a synthetic token; reported privately to the maintainer.",
+      "grade": "demo",
+      "t": "06:55",
+      "source": "both"
+    },
+    {
+      "claim": "vm2 shipped 34 security-fix commits from Aug 9 to Sept 8, 2026, and 19 carried a Claude co-author line.",
+      "evidence": "Slide figures. The speaker said 15 aloud, which conflicts with the slide.",
+      "grade": "measured",
+      "t": "05:53",
+      "source": "slide"
+    },
+    {
+      "claim": "An AI patching experiment found 41 of 101 CVEs had variants of the fixes put out.",
+      "evidence": "P2Patch preprint, Oct 2026, 101 C/C++ and Java CVEs, cited on a slide; study not described further.",
+      "grade": "measured",
+      "t": "08:31",
+      "source": "both"
+    },
+    {
+      "claim": "Adding a separate variant-hunt agent stage after tests pass increased Rubrik's patching success rate.",
+      "evidence": "Stated by the speaker without numbers.",
+      "grade": "assertion",
+      "t": "10:03",
+      "source": "both"
+    },
+    {
+      "claim": "Classifying bugs by whether they can be auto-patched is necessary because some need architectural change, customer communication, or cannot be fixed.",
+      "evidence": "Operational experience; SQL injection treated as auto-patchable, authentication bypass needs a human.",
+      "grade": "anecdote",
+      "t": "10:34",
+      "source": "said"
+    },
+    {
+      "claim": "Tracking recurring bug classes directed investment: a spike in memory errors led to a fuzzing pipeline and a rise in logic bugs led to more design-phase SDLC work.",
+      "evidence": "Rubrik's own experience, no figures.",
+      "grade": "anecdote",
+      "t": "12:08",
+      "source": "said"
+    },
+    {
+      "claim": "Advisories and security commits are context magnets that disclose the vulnerability types a platform is susceptible to.",
+      "evidence": "Illustrated by the vm2 advisory, which lists source-to-sink path with file and line ranges.",
+      "grade": "assertion",
+      "t": "04:18",
+      "source": "both"
+    },
+    {
+      "claim": "Only the top severity findings were fixed at volume, but chains are analyzed and lower severities that chain to critical are escalated and patched.",
+      "evidence": "Q&A answer, no numbers.",
+      "grade": "assertion",
+      "t": "20:06",
+      "source": "said"
+    }
   ],
   "numbers": [
-    {"figure": "1,596", "meaning": "vulnerabilities found and disclosed, per slide citing Anthropic, May 2026", "t": "00:43"},
-    {"figure": "97", "meaning": "of those that were patched, per the same slide", "t": "00:43"},
-    {"figure": "1,000", "meaning": "outside contractors Bank of America brought in, beside about 3,000 of its own people, per slide citing CNBC Oct 14, 2026", "t": "02:14"},
-    {"figure": "700,000", "meaning": "approximate weekly downloads of vm2, as said by the speaker", "t": "04:49"},
-    {"figure": "34", "meaning": "vm2 security-fix commits from Aug 9 to Sept 8, 2026", "t": "05:53"},
-    {"figure": "19", "meaning": "of those 34 with a Claude co-author line, per slide (speaker said 15)", "t": "05:53"},
-    {"figure": "28", "meaning": "test cases in the vm2 fix, all passing on the version the speaker bypassed", "t": "07:26"},
-    {"figure": "41 of 101", "meaning": "AI-patched CVEs found to have variants in the P2Patch preprint (C/C++ and Java)", "t": "08:31"},
-    {"figure": "681", "meaning": "lines inserted in the vm2 fix commit across 5 files (681 insertions, 33 deletions), per slide terminal output", "t": "06:55"}
+    {
+      "figure": "1,596",
+      "meaning": "vulnerabilities found and disclosed, per slide citing Anthropic, May 2026",
+      "t": "00:43"
+    },
+    {
+      "figure": "97",
+      "meaning": "of those that were patched, per the same slide",
+      "t": "00:43"
+    },
+    {
+      "figure": "1,000",
+      "meaning": "outside contractors Bank of America brought in, beside about 3,000 of its own people, per slide citing CNBC Oct 14, 2026",
+      "t": "02:14"
+    },
+    {
+      "figure": "700,000",
+      "meaning": "approximate weekly downloads of vm2, as said by the speaker",
+      "t": "04:49"
+    },
+    {
+      "figure": "34",
+      "meaning": "vm2 security-fix commits from Aug 9 to Sept 8, 2026",
+      "t": "05:53"
+    },
+    {
+      "figure": "19",
+      "meaning": "of those 34 with a Claude co-author line, per slide (speaker said 15)",
+      "t": "05:53"
+    },
+    {
+      "figure": "28",
+      "meaning": "test cases in the vm2 fix, all passing on the version the speaker bypassed",
+      "t": "07:26"
+    },
+    {
+      "figure": "41 of 101",
+      "meaning": "AI-patched CVEs found to have variants in the P2Patch preprint (C/C++ and Java)",
+      "t": "08:31"
+    },
+    {
+      "figure": "681",
+      "meaning": "lines inserted in the vm2 fix commit across 5 files (681 insertions, 33 deletions), per slide terminal output",
+      "t": "06:55"
+    }
   ],
   "frameworks": [
-    {"name": "Variant hunt in fix validation", "description": "Before: fix, tests pass, closed. After: fix, tests pass, variant hunt, then if any variant, fix and retest, otherwise close."},
-    {"name": "Variant sweep loop", "description": "Fix feeds a variant sweep, which finds misses; recurring variants go to a human; a new model feeds into the sweep and can reopen any fix. Each variant caught makes the next sweep smaller."},
-    {"name": "Separated security agent pipelines", "description": "Distinct pipelines for vulnerability scanning, validation, patching, then back to validation, with variant analysis added as its own agentic hunt after patching."},
-    {"name": "KNighter-style variant brief", "description": "Chain on a slide: fix, rule, nearby mistake, impact, test. Input is a published fix plus adjacent source; the model is asked for a rule, a candidate, a potential impact, and a check."}
+    {
+      "name": "Variant hunt in fix validation",
+      "description": "Before: fix, tests pass, closed. After: fix, tests pass, variant hunt, then if any variant, fix and retest, otherwise close."
+    },
+    {
+      "name": "Variant sweep loop",
+      "description": "Fix feeds a variant sweep, which finds misses; recurring variants go to a human; a new model feeds into the sweep and can reopen any fix. Each variant caught makes the next sweep smaller."
+    },
+    {
+      "name": "Separated security agent pipelines",
+      "description": "Distinct pipelines for vulnerability scanning, validation, patching, then back to validation, with variant analysis added as its own agentic hunt after patching."
+    },
+    {
+      "name": "KNighter-style variant brief",
+      "description": "Chain on a slide: fix, rule, nearby mistake, impact, test. Input is a published fix plus adjacent source; the model is asked for a rule, a candidate, a potential impact, and a check."
+    }
   ],
   "artifacts": [
-    {"name": "Project Glasswing", "kind": "product", "note": "Anthropic program through which Rubrik scanned its own code; the source of the speaker's experience.", "url": ""},
-    {"name": "Anthropic, Using LLMs to secure source code (May 2026)", "kind": "paper", "note": "Source of the 1,596 found versus 97 patched slide.", "url": ""},
-    {"name": "vm2 (npm) GHSA-5h3f-q97h-ccvc", "kind": "cve", "note": "Critical advisory titled NodeVM custom resolution bypasses external path boundaries; affected <= 3.12.1, patched 3.12.2; fix commit fb4977f. Used as the public worked example, with a bypass reported privately to the maintainer.", "url": ""},
-    {"name": "KNighter", "kind": "paper", "note": "Paper on variant analysis whose strategies the speaker used; transcript spells it K Nider and the slide path vm2-knighter.", "url": ""},
-    {"name": "P2Patch", "kind": "paper", "note": "Oct 2026 preprint on an AI patching experiment across 101 C/C++ and Java CVEs; 41 of 101 had variants.", "url": ""},
-    {"name": "Rubrik Code Guardian", "kind": "product", "note": "Rubrik product that productionizes the harness on GitHub backups using frontier models and the methods described.", "url": ""},
-    {"name": "CNBC report on Bank of America contractors (Oct 14, 2026)", "kind": "paper", "note": "News source for the 1,000 contractors slide.", "url": ""}
+    {
+      "name": "Project Glasswing",
+      "kind": "product",
+      "note": "Anthropic program through which Rubrik scanned its own code; the source of the speaker's experience.",
+      "url": ""
+    },
+    {
+      "name": "Anthropic, Using LLMs to secure source code (May 2026)",
+      "kind": "paper",
+      "note": "Source of the 1,596 found versus 97 patched slide.",
+      "url": ""
+    },
+    {
+      "name": "vm2 (npm) GHSA-5h3f-q97h-ccvc",
+      "kind": "cve",
+      "note": "Critical advisory titled NodeVM custom resolution bypasses external path boundaries; affected <= 3.12.1, patched 3.12.2; fix commit fb4977f. Used as the public worked example, with a bypass reported privately to the maintainer.",
+      "url": ""
+    },
+    {
+      "name": "KNighter",
+      "kind": "paper",
+      "note": "Paper on variant analysis whose strategies the speaker used; transcript spells it K Nider and the slide path vm2-knighter.",
+      "url": ""
+    },
+    {
+      "name": "P2Patch",
+      "kind": "paper",
+      "note": "Oct 2026 preprint on an AI patching experiment across 101 C/C++ and Java CVEs; 41 of 101 had variants.",
+      "url": ""
+    },
+    {
+      "name": "Rubrik Code Guardian",
+      "kind": "product",
+      "note": "Rubrik product that productionizes the harness on GitHub backups using frontier models and the methods described.",
+      "url": ""
+    },
+    {
+      "name": "CNBC report on Bank of America contractors (Oct 14, 2026)",
+      "kind": "paper",
+      "note": "News source for the 1,000 contractors slide.",
+      "url": ""
+    }
   ],
   "slide_only": [
     "The backlog slide gives exact counts 1,596 found and disclosed and 97 patched, attributed to Anthropic's May 2026 article.",
@@ -70,10 +230,26 @@
     "Slide terminal session in which Claude is run with no tools against a variant brief built from the published fix, producing a rule, candidate, potential impact and check for the bypass."
   ],
   "quotes": [
-    {"text": "The problem has inverted. So now the issue has become, can we patch? Can we keep up?", "speaker": "Shayaun Nejad", "t": "01:12"},
-    {"text": "Every advisory is a map for the next attacker.", "speaker": "Shayaun Nejad", "t": "06:24"},
-    {"text": "Your majority of your bugs are probably not going to be novel. There's just going to be new ways of bypassing any application layer controls that you put on.", "speaker": "Shayaun Nejad", "t": "13:43"},
-    {"text": "Hunt your own fixes before someone else does.", "speaker": "Shayaun Nejad", "t": "13:43"}
+    {
+      "text": "The problem has inverted. So now the issue has become, can we patch? Can we keep up?",
+      "speaker": "Shayaun Nejad",
+      "t": "01:12"
+    },
+    {
+      "text": "Every advisory is a map for the next attacker.",
+      "speaker": "Shayaun Nejad",
+      "t": "06:24"
+    },
+    {
+      "text": "Your majority of your bugs are probably not going to be novel. There's just going to be new ways of bypassing any application layer controls that you put on.",
+      "speaker": "Shayaun Nejad",
+      "t": "13:43"
+    },
+    {
+      "text": "Hunt your own fixes before someone else does.",
+      "speaker": "Shayaun Nejad",
+      "t": "13:43"
+    }
   ],
   "offense": [
     "Variant analysis against a published fix: feed the advisory, the fix commit and adjacent source to a model and ask for the rule the fix enforced, the nearby mistake, the impact and a test.",
@@ -113,27 +289,50 @@
   ],
   "qa": [
     "Question on validating that a fix works and does not break anything: Rubrik relies on an extensive CI/CD pipeline with many unit tests, adds tests as needed, and classifies bugs by type, using simple heuristics before (SQL injection easily patched; authentication bypass needs a human) so risky fixes get a human in the loop.",
-    "Question on how variants are generated: pass the threat model and historical vulnerabilities to an LLM and have it generate variants; with a capable model you can simply point it at a repo and ask it to hunt for bypasses of the advisory and security-fix commits.",
+    "Question on how variants are generated: pass the threat model and historical vulnerabilities to an LLM and have it generate variants; with a capable model you can point it at a repo and ask it to hunt for bypasses of the advisory and security-fix commits.",
     "Question on how a decision model was used in triage: the classifier decided which fixes needed more human resourcing, so complex versions of an otherwise easy class such as SQL injection went to a human; the speaker described it as escalation classification and said they were also trying it in the SDLC. The model name is garbled in the transcript.",
     "Question on whether the sloppy patches improved: the patches were AI-generated at volume and could pass tests into production, which motivated adding classification and a better process.",
     "Question on whether all severities were fixed: only the top ones, because volume was too high; all the scary ones were handled.",
     "Challenge that low severities chain: agreed, Rubrik runs chaining analysis and patches lower severities when chains escalate to critical, rather than blindly patching all mediums and lows."
   ],
-  "tags": ["vuln-discovery-exploit", "appsec-secure-development", "coding-agent-security", "org-adoption-culture"],
-  "key_frames": [
-    {"file": "t00535.jpg", "caption": "Before and after validation loop: fix, tests pass, closed becomes fix, tests pass, variant hunt, then fix and retest if a variant is found."},
-    {"file": "t00402.jpg", "caption": "vm2 demo ending: the one-line variant lets the host process send the token after the original unlisted-file attempt was blocked."},
-    {"file": "t00043.jpg", "caption": "Backlog slide: 1,596 found and disclosed versus 97 patched, from Anthropic May 2026."},
-    {"file": "t00289.jpg", "caption": "vm2 advisory source-to-sink path with file and line ranges, shown as a map for the next attacker."},
-    {"file": "t00502.jpg", "caption": "41 of 101 AI-patched CVEs had variants, from the P2Patch preprint."}
+  "tags": [
+    "vuln-discovery-exploit",
+    "appsec-secure-development",
+    "coding-agent-security",
+    "org-adoption-culture"
   ],
-  "signal": {"score": 3, "reason": "A described practice with a recorded public demo and a cited preprint figure; results from Rubrik's own pipeline were given without numbers."},
+  "key_frames": [
+    {
+      "file": "t00535.jpg",
+      "caption": "Before and after validation loop: fix, tests pass, closed becomes fix, tests pass, variant hunt, then fix and retest if a variant is found."
+    },
+    {
+      "file": "t00402.jpg",
+      "caption": "vm2 demo ending: the one-line variant lets the host process send the token after the original unlisted-file attempt was blocked."
+    },
+    {
+      "file": "t00043.jpg",
+      "caption": "Backlog slide: 1,596 found and disclosed versus 97 patched, from Anthropic May 2026."
+    },
+    {
+      "file": "t00289.jpg",
+      "caption": "vm2 advisory source-to-sink path with file and line ranges, shown as a map for the next attacker."
+    },
+    {
+      "file": "t00502.jpg",
+      "caption": "41 of 101 AI-patched CVEs had variants, from the P2Patch preprint."
+    }
+  ],
+  "signal": {
+    "score": 3,
+    "reason": "The talk describes a practice with a recorded public demo and a cited preprint figure; results from Rubrik's own pipeline were given without numbers."
+  },
   "caveats": [
-    "Auto-captions garble names: K Nider (KNighter), Jev (unclear; possibly a decision or classification model), GS GH GHSA, Mythos, Rubrik spelled correctly in the slide.",
+    "Auto-captions garble names: K Nider (KNighter), Jev (not identified), GS GH GHSA, Mythos, Rubrik spelled correctly in the slide.",
     "Speaker said Claude co-wrote 15 of 34 vm2 fixes; the slide says 19. The slide is used.",
     "The speaker said P2Patch published last month and described 41 of 101 CVEs; the slide says P2Patch preprint, Oct 2026, 101 C/C++ and Java CVEs.",
     "The slide commit co-author reads Claude Fable 5.1.",
-    "The demo video was captured at several moments; later frames add the variant lines.",
+    "The demo video appears at several moments in the recording; later appearances add the variant lines.",
     "The Q&A slide displays WiFi credentials, deliberately not copied here."
   ]
 }

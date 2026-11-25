@@ -3,11 +3,16 @@
   "id": "lMxMZMAk0Uw",
   "url": "https://www.youtube.com/watch?v=lMxMZMAk0Uw",
   "title": "Your Harness Needs a Security Constitution",
-  "speakers": [{"name": "Kat Traxler", "affiliation": "Principal Security Researcher, Vectra AI"}],
+  "speakers": [
+    {
+      "name": "Kat Traxler",
+      "affiliation": "Principal Security Researcher, Vectra AI"
+    }
+  ],
   "format": "talk",
   "duration_min": 25,
   "thesis": "Instead of prescribing steps to a bug-hunting agent, give the model a short descriptive Security Constitution of how trust should be held in a multi-tenant platform, and it will generate novel design-flaw candidates that models miss out of the box.",
-  "summary": "Kat Traxler opens with her results: about 109 bugs filed with three major cloud providers over roughly three months, 11 ruled working as intended, 98 real issues, of which 53 were accepted and 45 were still in triage. All were found by reading public API specifications and documentation and then validating against live infrastructure. She separates bugs in code, which models already find well, from flaws in design such as missing authorization checks, unauditable actions and unrevocable credentials, which need a point of view to see. The talk is explicitly not about the bug-hunting harness or adjudication, only about novel candidate generation at the top of the funnel. She contrasts a prescriptive agent skill (Cloudflare's security-audit skill, a six-step procedure) with a descriptive Security Constitution of twelve principles, eleven lessons and thirteen anchors, released on GitHub the day before. She walks through case studies, each tied to a principle: a Vertex AI confused deputy, the BigQuery Data Transfer Service network-attachment deputy that led to principles 11 and 12, an Azure Managed Grafana credential redirect, and a missing act-as check in Google Integration Connectors. Each confirmed finding is codified as a shape, a reusable pattern, then farmed across providers; her register holds 36 shapes and 40 discovery signals. A reasonable customer test separates feature abuse from insecure-by-design flaws. She closes with the claim that harnesses may need less scaffolding and more point of view, and takes questions on specificity, tooling split and descriptive versus prescriptive comparisons.",
+  "summary": "Kat Traxler opens with her results: about 109 bugs filed with three major cloud providers over roughly three months, 11 ruled working as intended, 98 real issues, of which 53 were accepted and 45 were still in triage. All were found by reading public API specifications and documentation and then validating against live infrastructure. She separates bugs in code, which models already find well, from flaws in design such as missing authorization checks, unauditable actions and unrevocable credentials, which need a point of view to see. The talk is explicitly not about the bug-hunting harness or adjudication, only about novel candidate generation at the top of the funnel. She contrasts a prescriptive agent skill (Cloudflare's security-audit skill, a six-step procedure) with a descriptive Security Constitution of twelve principles, eleven lessons and thirteen anchors (points for rooting an understanding of trust), released on GitHub the day before. She walks through case studies, each tied to a principle: a Vertex AI confused deputy, the BigQuery Data Transfer Service network-attachment deputy that led to principles 11 and 12, an Azure Managed Grafana credential redirect, and a missing act-as check in Google Integration Connectors. Each confirmed finding is codified as a shape, a reusable pattern, then farmed across providers; her register holds 36 shapes and 40 discovery signals (API-documentation clues that route the model to a shape). A reasonable customer test separates feature abuse from insecure-by-design flaws. She closes with the claim that harnesses may need less scaffolding and more point of view.",
   "argument": [
     "Models are good at code-level bugs such as SQL injection and XSS but weak at insecure-by-design flaws, which can only be seen if you know what should be there.",
     "A descriptive Security Constitution, a set of principles about how trust should be held, gives the model that point of view without telling it what steps to take.",
@@ -17,52 +22,238 @@
     "The constitution is not specific to cloud, so the same method should transfer to Kubernetes and other multi-tenant platforms, and harness builders should favor a point of view over more scaffolding."
   ],
   "claims": [
-    {"claim": "About 109 bugs were filed with three major cloud providers in roughly three months; 11 were ruled working as intended, leaving 98 real issues, of which 53 were accepted and 45 were still in triage.", "evidence": "Counts shown on the opening results slide and repeated aloud; the speaker did not show the reports themselves.", "grade": "measured", "t": "00:07", "source": "both"},
-    {"claim": "All findings came from reading publicly available docs and API specifications, then validating against live infrastructure.", "evidence": "Stated as method; the prompt slide names the public API reference as the input.", "grade": "assertion", "t": "00:39", "source": "both"},
-    {"claim": "A principle of authorization at every trust boundary surfaced a Vertex AI confused deputy where an ordinary Vertex user could read GCS objects they could not access and write into a bucket they did not control, with no caller authorization check on input or output.", "evidence": "Case study with a Google bug ID shown (b/516599995), marked fixed.", "grade": "case", "t": "05:54", "source": "both"},
-    {"claim": "Codifying the Vertex finding as a shape (managed identity acts on a caller-named resource with its own permissions) and farming it out produced about 35 instances across providers.", "evidence": "Stated by the speaker with a hedge ('I believe'); the bar chart shows relative counts only.", "grade": "assertion", "t": "06:57", "source": "said"},
-    {"claim": "BigQuery Data Transfer Service lets an attacker who knows a victim's private service connect network attachment name exfiltrate data from the victim's VPC into the attacker's BigQuery, because the shared transfer infrastructure never checks the caller's permission on the named attachment.", "evidence": "Case study with Google bug ID b/518828428, accepted but not fixed; the slide gives prerequisites on the victim side (attachment set to ACCEPT_AUTOMATIC, or ACCEPT_MANUAL with a Google shared fleet project allowed). Google closed the shape-level pattern as won't fix according to the speaker.", "grade": "case", "t": "09:34", "source": "both"},
-    {"claim": "The BigQuery finding led to two new principles: a network is a protected resource too (11), and when a request crosses two services one of them must check the caller (12).", "evidence": "Slide titled 10 principles grew to 12; principles 11 and 12 written after the BigQuery Data Transfer finding.", "grade": "case", "t": "07:59", "source": "both"},
-    {"claim": "Azure Managed Grafana let a configuration editor who was denied read on the stored SMTP password redirect the SMTP host to a server of their choosing and receive the password, violating credential lifecycle governance.", "evidence": "Case study with Azure ID VULN-209280, marked fixed.", "grade": "case", "t": "11:41", "source": "both"},
-    {"claim": "The reasonable customer test, asking whether a reasonable customer would be alarmed, separates insecure-by-design flaws from feature abuse where all expected controls exist.", "evidence": "Applied to the Grafana case; the speaker did not report how many candidates it filtered.", "grade": "case", "t": "13:15", "source": "both"},
-    {"claim": "A missing act-as check in Google Integration Connectors let a connectors editor run as any service account in the project, a privilege escalation found by applying the bounded blast radius for delegation principle.", "evidence": "Case study with Google bug ID b/529292612, accepted, past the 90 day window without a fix.", "grade": "case", "t": "16:24", "source": "both"},
-    {"claim": "The credential redirect shape (SHAPE-032) was mined into about 30 filings across three providers after one true positive.", "evidence": "Slide shows 30 filings from this one shape with a per-provider bar chart (CSP 2 largest); the speaker said the figure may be out of date.", "grade": "measured", "t": "14:52", "source": "both"},
-    {"claim": "The register holds 36 vulnerability shapes and 40 discovery signals, five shapes of which were released on GitHub.", "evidence": "Counts on the catalogue slide; the slide charts six shapes by instance count without axis values.", "grade": "measured", "t": "15:22", "source": "both"},
-    {"claim": "Descriptive steering leaves headroom for newer models, while prescriptive steering seems to constrain them; her results with a given frontier model tapered after two or three weeks.", "evidence": "Her own impression in Q&A; she said she had no formal comparison.", "grade": "anecdote", "t": "22:40", "source": "said"},
-    {"claim": "The constitution should transfer beyond cloud to Kubernetes managed add-ons, OIDC bridges and any multi-tenant SaaS or neo-cloud platform.", "evidence": "Forward-looking statement; she has started a fourth domain but showed no results.", "grade": "assertion", "t": "17:27", "source": "both"}
+    {
+      "claim": "About 109 bugs were filed with three major cloud providers in roughly three months; 11 were ruled working as intended, leaving 98 real issues, of which 53 were accepted and 45 were still in triage.",
+      "evidence": "Counts shown on the opening results slide and repeated aloud; the speaker did not show the reports themselves.",
+      "grade": "measured",
+      "t": "00:07",
+      "source": "both"
+    },
+    {
+      "claim": "All findings came from reading publicly available docs and API specifications, then validating against live infrastructure.",
+      "evidence": "Stated as method; the prompt slide names the public API reference as the input.",
+      "grade": "assertion",
+      "t": "00:39",
+      "source": "both"
+    },
+    {
+      "claim": "A principle of authorization at every trust boundary surfaced a Vertex AI confused deputy where an ordinary Vertex user could read GCS objects they could not access and write into a bucket they did not control, with no caller authorization check on input or output.",
+      "evidence": "Case study with a Google bug ID shown (b/516599995), marked fixed.",
+      "grade": "case",
+      "t": "05:54",
+      "source": "both"
+    },
+    {
+      "claim": "Codifying the Vertex finding as a shape (managed identity acts on a caller-named resource with its own permissions) and farming it out produced about 35 instances across providers.",
+      "evidence": "Stated by the speaker with a hedge ('I believe'); the bar chart shows relative counts only.",
+      "grade": "assertion",
+      "t": "06:57",
+      "source": "said"
+    },
+    {
+      "claim": "BigQuery Data Transfer Service lets an attacker who knows a victim's private service connect network attachment name exfiltrate data from the victim's VPC into the attacker's BigQuery, because the shared transfer infrastructure never checks the caller's permission on the named attachment.",
+      "evidence": "Case study with Google bug ID b/518828428, accepted but not fixed; the slide gives prerequisites on the victim side (attachment set to ACCEPT_AUTOMATIC, or ACCEPT_MANUAL with a Google shared fleet project allowed). Google closed the shape-level pattern as won't fix according to the speaker.",
+      "grade": "case",
+      "t": "09:34",
+      "source": "both"
+    },
+    {
+      "claim": "The BigQuery finding led to two new principles: a network is a protected resource too (11), and when a request crosses two services one of them must check the caller (12).",
+      "evidence": "Slide titled 10 principles grew to 12; principles 11 and 12 written after the BigQuery Data Transfer finding.",
+      "grade": "case",
+      "t": "07:59",
+      "source": "both"
+    },
+    {
+      "claim": "Azure Managed Grafana let a configuration editor who was denied read on the stored SMTP password redirect the SMTP host to a server of their choosing and receive the password, violating credential lifecycle governance.",
+      "evidence": "Case study with Azure ID VULN-209280, marked fixed.",
+      "grade": "case",
+      "t": "11:41",
+      "source": "both"
+    },
+    {
+      "claim": "The reasonable customer test, asking whether a reasonable customer would be alarmed, separates insecure-by-design flaws from feature abuse where all expected controls exist.",
+      "evidence": "Applied to the Grafana case; the speaker did not report how many candidates it filtered.",
+      "grade": "case",
+      "t": "13:15",
+      "source": "both"
+    },
+    {
+      "claim": "A missing act-as check in Google Integration Connectors let a connectors editor run as any service account in the project, a privilege escalation found by applying the bounded blast radius for delegation principle.",
+      "evidence": "Case study with Google bug ID b/529292612, accepted, past the 90 day window without a fix.",
+      "grade": "case",
+      "t": "16:24",
+      "source": "both"
+    },
+    {
+      "claim": "The credential redirect shape (SHAPE-032) was mined into about 30 filings across three providers after one true positive.",
+      "evidence": "Slide shows 30 filings from this one shape with a per-provider bar chart (CSP 2 largest); the speaker said the figure may be out of date.",
+      "grade": "measured",
+      "t": "14:52",
+      "source": "both"
+    },
+    {
+      "claim": "The register holds 36 vulnerability shapes and 40 discovery signals, five shapes of which were released on GitHub.",
+      "evidence": "Counts on the catalogue slide; the slide charts six shapes by instance count without axis values.",
+      "grade": "measured",
+      "t": "15:22",
+      "source": "both"
+    },
+    {
+      "claim": "Descriptive steering leaves headroom for newer models, while prescriptive steering seems to constrain them; her results with a given frontier model tapered after two or three weeks.",
+      "evidence": "Her own impression in Q&A; she said she had no formal comparison.",
+      "grade": "anecdote",
+      "t": "22:40",
+      "source": "said"
+    },
+    {
+      "claim": "The constitution should transfer beyond cloud to Kubernetes managed add-ons, OIDC bridges and any multi-tenant SaaS or neo-cloud platform.",
+      "evidence": "Forward-looking statement; she has started a fourth domain but showed no results.",
+      "grade": "assertion",
+      "t": "17:27",
+      "source": "both"
+    }
   ],
   "numbers": [
-    {"figure": "109", "meaning": "bugs filed across three cloud providers in about three months", "t": "00:07"},
-    {"figure": "11", "meaning": "filed bugs ruled working as intended", "t": "00:07"},
-    {"figure": "98", "meaning": "real issues after removing working-as-intended", "t": "00:39"},
-    {"figure": "53", "meaning": "issues accepted (slide: accepted, rewarded or duplicates of a tracked bug)", "t": "00:39"},
-    {"figure": "45", "meaning": "issues still in triage or awaiting determination or in dispute", "t": "00:39"},
-    {"figure": "12", "meaning": "principles in the Security Constitution", "t": "05:22"},
-    {"figure": "11", "meaning": "operational lessons on how to be wrong less", "t": "03:19"},
-    {"figure": "13", "meaning": "anchor points for rooting an understanding of trust", "t": "05:22"},
-    {"figure": "36", "meaning": "vulnerability shapes in the personal register", "t": "15:22"},
-    {"figure": "40", "meaning": "discovery signals, API-doc clues that route to a shape", "t": "15:22"},
-    {"figure": "30", "meaning": "filings from SHAPE-032 across three providers", "t": "14:52"},
-    {"figure": "5", "meaning": "shapes released to GitHub", "t": "15:22"},
-    {"figure": "3 / 16 / 44 / 25 / 4 / 11", "meaning": "filings per month, May through October; these sum to 103, not 109", "t": "18:29"}
+    {
+      "figure": "109",
+      "meaning": "bugs filed across three cloud providers in about three months",
+      "t": "00:07"
+    },
+    {
+      "figure": "11",
+      "meaning": "filed bugs ruled working as intended",
+      "t": "00:07"
+    },
+    {
+      "figure": "98",
+      "meaning": "real issues after removing working-as-intended",
+      "t": "00:39"
+    },
+    {
+      "figure": "53",
+      "meaning": "issues accepted (slide: accepted, rewarded or duplicates of a tracked bug)",
+      "t": "00:39"
+    },
+    {
+      "figure": "45",
+      "meaning": "issues still in triage or awaiting determination or in dispute",
+      "t": "00:39"
+    },
+    {
+      "figure": "12",
+      "meaning": "principles in the Security Constitution",
+      "t": "05:22"
+    },
+    {
+      "figure": "11",
+      "meaning": "operational lessons on how to be wrong less",
+      "t": "03:19"
+    },
+    {
+      "figure": "13",
+      "meaning": "anchor points for rooting an understanding of trust",
+      "t": "05:22"
+    },
+    {
+      "figure": "36",
+      "meaning": "vulnerability shapes in the personal register",
+      "t": "15:22"
+    },
+    {
+      "figure": "40",
+      "meaning": "discovery signals, API-doc clues that route to a shape",
+      "t": "15:22"
+    },
+    {
+      "figure": "30",
+      "meaning": "filings from SHAPE-032 across three providers",
+      "t": "14:52"
+    },
+    {
+      "figure": "5",
+      "meaning": "shapes released to GitHub",
+      "t": "15:22"
+    },
+    {
+      "figure": "3 / 16 / 44 / 25 / 4 / 11",
+      "meaning": "filings per month, May through October; these sum to 103, not 109",
+      "t": "18:29"
+    }
   ],
   "frameworks": [
-    {"name": "Security Constitution", "description": "Twelve principles for how trust is held, eleven operational lessons on how to be wrong less, and thirteen anchor points; descriptive rather than prescriptive and loaded as an alignment layer ahead of any model."},
-    {"name": "The twelve principles", "description": "1 Authorization at every trust boundary; 2 Auditable security-relevant actions; 3 Least privilege for both humans and NHIs alike (slide text cropped); 4 Customer control over risky functionality; 5 Tenant isolation; 6 Internal protocols held to standards (cropped); 7 Credential lifecycle governance; 8 Bounded blast radius for delegation; 9 Cross-domain authority (cropped); 10 Secret custody follows secret use; 11 Network and connectivity resources are protected resources; 12 Cross-service authorization completeness."},
-    {"name": "Shapes and discovery signals", "description": "A shape is a descriptive, domain-specific vulnerability pattern codified from a confirmed finding (for example SHAPE-001 managed deputy r/w, 013 network-attachment deputy, 016 missing PrivEsc mitigation, 020 guardrail bypasses, 021 secret read, 032 credential redirect); a signal is an API-documentation clue that routes the model to a shape."},
-    {"name": "Reasonable customer test", "description": "Would a reasonable customer be alarmed to learn of the behavior? No means a control is in place and the feature could be abused, so it is feature abuse and not reportable; yes means the control a customer would expect is absent, so it is an insecure-by-design flaw and reportable."},
-    {"name": "Candidate-generation funnel", "description": "Security Constitution (principles, lessons, anchors), then candidate, then prove or disprove, adversarial review, live test and later steps; the talk covers only the first two stages and treats the rest as ordinary plumbing."},
-    {"name": "Discovery loop", "description": "Apply a principle to a surface, filter with the reasonable customer test, codify a new pattern as a shape if one is found, stamp out new instances, then mine across surfaces and providers."},
-    {"name": "Prescriptive versus descriptive steering", "description": "Prescriptive tells the agent what to do (Cloudflare's six step audit skill: map the codebase, hunt area by area, a fresh agent confirms each finding, write structured results, verify each record again, write the report); descriptive tells the model what security is and what a violation of trust looks like."}
+    {
+      "name": "Security Constitution",
+      "description": "Twelve principles for how trust is held, eleven operational lessons on how to be wrong less, and thirteen anchor points; descriptive rather than prescriptive and loaded as an alignment layer ahead of any model."
+    },
+    {
+      "name": "The twelve principles",
+      "description": "1 Authorization at every trust boundary; 2 Auditable security-relevant actions; 3 Least privilege for both humans and NHIs alike (slide text cropped); 4 Customer control over risky functionality; 5 Tenant isolation; 6 Internal protocols held to standards (cropped); 7 Credential lifecycle governance; 8 Bounded blast radius for delegation; 9 Cross-domain authority (cropped); 10 Secret custody follows secret use; 11 Network and connectivity resources are protected resources; 12 Cross-service authorization completeness."
+    },
+    {
+      "name": "Shapes and discovery signals",
+      "description": "A shape is a descriptive, domain-specific vulnerability pattern codified from a confirmed finding (for example SHAPE-001 managed deputy r/w, 013 network-attachment deputy, 016 missing PrivEsc mitigation, 020 guardrail bypasses, 021 secret read, 032 credential redirect); a signal is an API-documentation clue that routes the model to a shape."
+    },
+    {
+      "name": "Reasonable customer test",
+      "description": "Would a reasonable customer be alarmed to learn of the behavior? No means a control is in place and the feature could be abused, so it is feature abuse and not reportable; yes means the control a customer would expect is absent, so it is an insecure-by-design flaw and reportable."
+    },
+    {
+      "name": "Candidate-generation funnel",
+      "description": "Security Constitution (principles, lessons, anchors), then candidate, then prove or disprove, adversarial review, live test and later steps; the talk covers only the first two stages and treats the rest as ordinary plumbing."
+    },
+    {
+      "name": "Discovery loop",
+      "description": "Apply a principle to a surface, filter with the reasonable customer test, codify a new pattern as a shape if one is found, stamp out new instances, then mine across surfaces and providers."
+    },
+    {
+      "name": "Prescriptive versus descriptive steering",
+      "description": "Prescriptive tells the agent what to do (Cloudflare's six step audit skill: map the codebase, hunt area by area, a fresh agent confirms each finding, write structured results, verify each record again, write the report); descriptive tells the model what security is and what a violation of trust looks like."
+    }
   ],
   "artifacts": [
-    {"name": "Security Constitution", "kind": "repo", "note": "Twelve principles, eleven lessons and thirteen anchors, released on GitHub the day before the talk; linked from the speaker's site.", "url": ""},
-    {"name": "kattraxler.cloud", "kind": "tool", "note": "Speaker's site hosting the blog posts, including one on BigQuery Data Transfer Service, and the link to the constitution.", "url": "kattraxler.cloud"},
-    {"name": "Cloudflare security-audit skill", "kind": "tool", "note": "Open-source (MIT) prescriptive audit skill used as the contrast case.", "url": ""},
-    {"name": "GCP b/516599995", "kind": "cve", "note": "Vertex AI evaluateDataset confused deputy, fixed.", "url": ""},
-    {"name": "GCP b/518828428", "kind": "cve", "note": "BigQuery Data Transfer Service transferConfigs.create confused deputy, accepted.", "url": ""},
-    {"name": "GCP b/529292612", "kind": "cve", "note": "Integration Connectors connections.create and siblings missing actAs check, accepted.", "url": ""},
-    {"name": "Azure VULN-209280", "kind": "cve", "note": "Azure Managed Grafana credential redirect via smtp.host, fixed.", "url": ""}
+    {
+      "name": "Security Constitution",
+      "kind": "repo",
+      "note": "Twelve principles, eleven lessons and thirteen anchors, released on GitHub the day before the talk; linked from the speaker's site.",
+      "url": ""
+    },
+    {
+      "name": "kattraxler.cloud",
+      "kind": "tool",
+      "note": "Speaker's site hosting the blog posts, including one on BigQuery Data Transfer Service, and the link to the constitution.",
+      "url": "kattraxler.cloud"
+    },
+    {
+      "name": "Cloudflare security-audit skill",
+      "kind": "tool",
+      "note": "Open-source (MIT) prescriptive audit skill used as the contrast case.",
+      "url": ""
+    },
+    {
+      "name": "GCP b/516599995",
+      "kind": "cve",
+      "note": "Vertex AI evaluateDataset confused deputy, fixed.",
+      "url": ""
+    },
+    {
+      "name": "GCP b/518828428",
+      "kind": "cve",
+      "note": "BigQuery Data Transfer Service transferConfigs.create confused deputy, accepted.",
+      "url": ""
+    },
+    {
+      "name": "GCP b/529292612",
+      "kind": "cve",
+      "note": "Integration Connectors connections.create and siblings missing actAs check, accepted.",
+      "url": ""
+    },
+    {
+      "name": "Azure VULN-209280",
+      "kind": "cve",
+      "note": "Azure Managed Grafana credential redirect via smtp.host, fixed.",
+      "url": ""
+    }
   ],
   "slide_only": [
     "Two kinds of bug slide: a bug in code (SQL injection, XSS, memory corruption, bad lines of code models are great at finding) versus a flaw in design (a missing authorization check, an action you cannot audit, a credential nobody can revoke; the code is correct but the design contains the flaw; you can only see what is missing if you know what should be there; needs a point of view).",
@@ -81,10 +272,26 @@
   ],
   "demos": [],
   "quotes": [
-    {"text": "It only tells the model what should be true in a secure system.", "speaker": "Kat Traxler", "t": "02:47"},
-    {"text": "Your harness doesn't need more scaffolding. It needs a point of view.", "speaker": "Kat Traxler", "t": "19:01"},
-    {"text": "Would a reasonable customer be alarmed that a configuration editor who cannot read the stored SMTP password could redirect where the managed service delivers it, to a host the editor chose?", "speaker": "Kat Traxler", "t": "13:15"},
-    {"text": "I can only come to the conclusion that you need to leave room for that expansiveness of a new model to come in and not be constrained by it.", "speaker": "Kat Traxler", "t": "22:40"}
+    {
+      "text": "It only tells the model what should be true in a secure system.",
+      "speaker": "Kat Traxler",
+      "t": "02:47"
+    },
+    {
+      "text": "Your harness doesn't need more scaffolding. It needs a point of view.",
+      "speaker": "Kat Traxler",
+      "t": "19:01"
+    },
+    {
+      "text": "Would a reasonable customer be alarmed that a configuration editor who cannot read the stored SMTP password could redirect where the managed service delivers it, to a host the editor chose?",
+      "speaker": "Kat Traxler",
+      "t": "13:15"
+    },
+    {
+      "text": "I can only come to the conclusion that you need to leave room for that expansiveness of a new model to come in and not be constrained by it.",
+      "speaker": "Kat Traxler",
+      "t": "22:40"
+    }
   ],
   "offense": [
     "Confused deputy through a caller-named resource: a managed identity uses its own permissions on a resource the caller names without checking the caller's rights (Vertex AI evaluateDataset reading and writing GCS objects).",
@@ -118,10 +325,10 @@
   "critique": [
     "The headline counts are vendor-side outcomes and are not severity-weighted; the talk gives no distribution of impact, no false-positive rate for the constitution-led candidates, and no baseline run without the constitution.",
     "The claim that descriptive steering beats prescriptive is based on the speaker's impression and a fall-off after a few weeks, which she said was not a formal comparison; no ablation was shown, so the effect cannot be separated from her own domain expertise and the shape and signal register.",
-    "Much of the yield appears to come from the shape register (one finding farmed into about 30 filings) in addition to the principles themselves, and the shape register is the part that looks most transferable.",
-    "Monthly filings on the slide sum to 103 while the headline is 109, and the description says 90+ valid versus 98 in the talk, so the counts need reconciling before being quoted.",
-    "Accepted includes duplicates and rewarded issues per the slide label, and the confused deputy class is long-known, so some novelty is in the systematic coverage more than the bug class.",
-    "Google reportedly declined to fix the BigQuery Data Transfer shape, so some accepted findings may remain exploitable; this is a point worth tracking against the vendors' own model of intended behavior."
+    "One finding was farmed into about 30 filings through the shape register, in addition to the principles themselves; the talk did not separate the yield of the two.",
+    "Monthly filings on the slide sum to 103 while the headline is 109, and the published description says 90+ valid versus 98 in the talk, so the counts need reconciling before being quoted.",
+    "Accepted includes duplicates and rewarded issues per the slide label, and the confused deputy class is long-known, the talk does not separate new bug classes from new instances.",
+    "According to the speaker, Google closed the BigQuery Data Transfer shape-level pattern as won't fix, and the accepted finding b/518828428 is not fixed."
   ],
   "qa": [
     "Most unexpected principle? Principle 11, extending confused deputy to network references, which she found especially applicable in the cloud where IAM layers over network controls.",
@@ -130,19 +337,42 @@
     "How much more effective is descriptive than prescriptive, any comparison? No formal comparison; she has headroom with the latest frontier models until descriptiveness starts to constrain them after a few weeks, so she leaves room for new models.",
     "Is this specific to cloud or does it extend to SaaS? She started with cloud because it is her home domain and expects it to work for other multi-tenant authorization systems."
   ],
-  "tags": ["vuln-discovery-exploit", "agent-authz-identity", "appsec-secure-development", "evals-benchmarks-metrics"],
-  "key_frames": [
-    {"file": "t00046.jpg", "caption": "Results slide: 109 filed, 11 working as intended, 98 real issues, 53 accepted and 45 in triage."},
-    {"file": "t00356.jpg", "caption": "Twelve principles of the Security Constitution with the five case-study principles highlighted (1, 7, 8, 11, 12)."},
-    {"file": "t00812.jpg", "caption": "Reasonable customer test splitting feature abuse (not reportable) from insecure-by-design flaw (reportable)."},
-    {"file": "t00926.jpg", "caption": "Catalogue slide: 36 shapes, 40 discovery signals and per-shape instance counts."},
-    {"file": "t00677.jpg", "caption": "BigQuery Data Transfer finding with victim-side prerequisites and the network-attachment deputy shape."}
+  "tags": [
+    "vuln-discovery-exploit",
+    "agent-authz-identity",
+    "appsec-secure-development",
+    "evals-benchmarks-metrics"
   ],
-  "signal": {"score": 4, "reason": "Specific, reproducible method (principles, shapes, signals, reasonable customer test) with concrete vendor-confirmed cases and counts, though without a baseline comparison."},
+  "key_frames": [
+    {
+      "file": "t00046.jpg",
+      "caption": "Results slide: 109 filed, 11 working as intended, 98 real issues, 53 accepted and 45 in triage."
+    },
+    {
+      "file": "t00356.jpg",
+      "caption": "Twelve principles of the Security Constitution with the five case-study principles highlighted (1, 7, 8, 11, 12)."
+    },
+    {
+      "file": "t00812.jpg",
+      "caption": "Reasonable customer test splitting feature abuse (not reportable) from insecure-by-design flaw (reportable)."
+    },
+    {
+      "file": "t00926.jpg",
+      "caption": "Catalogue slide: 36 shapes, 40 discovery signals and per-shape instance counts."
+    },
+    {
+      "file": "t00677.jpg",
+      "caption": "BigQuery Data Transfer finding with victim-side prerequisites and the network-attachment deputy shape."
+    }
+  ],
+  "signal": {
+    "score": 4,
+    "reason": "The talk presents a method of principles, shapes, discovery signals and a reasonable customer test, with vendor-side counts and four named cases, and no baseline comparison."
+  },
   "caveats": [
     "Auto-captions garble the name Kat Traxler (Pat, cat track so dot cloud) and the site is kattraxler.cloud per the slide.",
     "Slide text is cropped at the right edge of several slides: principles 3, 6 and 9 and parts of the finding descriptions are incomplete.",
-    "Monthly filings on the slide sum to 103 while the headline says 109; the description says 90+ valid issues while the talk says 98.",
+    "Monthly filings on the slide sum to 103 while the headline says 109; the published description says 90+ valid issues while the talk says 98.",
     "Slide label for accepted includes accepted, rewarded and duplicates of a tracked bug.",
     "Speaker said the shape 32 figure may be out of date and that Google closed the shape-level BigQuery pattern with a won't fix style response; the transcript wording is garbled ('said client to fix this').",
     "Transcript has principle numbers spoken as 1, 2, 3 or 5 and the number of shapes as shape number 32; the slide confirms SHAPE-032.",

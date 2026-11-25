@@ -16,7 +16,7 @@
   "format": "talk",
   "duration_min": 30,
   "thesis": "For detecting phishing and network attacks, zero-shot frontier LLMs are not the best tool: fine-tuned small encoders win on text, tabular models or XGBoost win on network flows, and LLM-plus-ML ensembles do not pay for their complexity.",
-  "summary": "Mountrouidou and Wilson test whether an LLM can replace a purpose-built detector, answering with measurements instead of impressions. They build the experiment from interchangeable parts: open labelled data (18K phishing emails, a Mirai capture rebuilt as statistics, flows and packets, and CIC-IDS2017), numeric and embedding features, and models ranging from XGBoost and zero-shot LLMs and small models to fine-tuned encoders and decoders, a tabular foundation model (TabPFN-3), two System 1 decision models (Laya, which is open, and Jev), and two ensembles (a router and a stacked meta-learner). They score with area under the precision-recall curve (AUCPR) against the class prior. On phishing, zero-shot Claude Sonnet 4.6 reaches 0.970 and Gemini 3.1 Pro 0.990, but fine-tuned ModernBERT reaches 0.998 and a LoRA-tuned Llama 3.2 3B reaches 0.999, up from 0.780 untuned. On network flows, zero-shot LLMs sit at the class prior, XGBoost is strong, fine-tuning does not beat it, and TabPFN-3 alone is best at 0.856. Ensembles help on email but never beat fine-tuning, and on flows routing makes results worse. Cost and latency strongly favour small and classical models. They close with a decision tree and advice to get a few hundred labels, and take questions on class prior, harnesses, drift and labelling cost.",
+  "summary": "Mountrouidou and Wilson test whether an LLM can replace a purpose-built detector, answering with measurements instead of impressions. They build the experiment from interchangeable parts: open labelled data (18K phishing emails, a Mirai capture rebuilt as statistics, flows and packets, and CIC-IDS2017), numeric and embedding features, and models ranging from XGBoost and zero-shot LLMs and small models to fine-tuned encoders and decoders, a tabular foundation model (TabPFN-3), two System 1 decision models, which return a calibrated probability without generating text (Laya, which is open, and Jev), and two ensembles (a router and a stacked meta-learner). They score with area under the precision-recall curve (AUCPR) against the class prior, the share of malicious examples, which is the score chance would earn. On phishing, zero-shot Claude Sonnet 4.6 reaches 0.970 and Gemini 3.1 Pro 0.990, but fine-tuned ModernBERT reaches 0.998 and a LoRA-tuned Llama 3.2 3B reaches 0.999, up from 0.780 untuned. On network flows, zero-shot LLMs sit at the class prior, XGBoost is strong, fine-tuning does not beat it, and TabPFN-3 alone is best at 0.856. Ensembles help on email but never beat fine-tuning, and on flows routing makes results worse. Cost and latency strongly favour small and classical models. They close with a decision tree and advice to get a few hundred labels.",
   "argument": [
     "Stakeholders ask why train models when a zero-shot LLM is easy to deploy, so the question needs a controlled test with hard numbers.",
     "On text-heavy phishing, zero-shot LLMs do well, but fine-tuned small encoders and decoders do better, at a fraction of the cost and latency.",
@@ -367,9 +367,9 @@
   ],
   "critique": [
     "The experiment reports many numbers on fixed splits, but it uses one seed and shows no confidence intervals, so small gaps such as 0.998 vs 0.999 cannot be distinguished from noise.",
-    "Zero-shot results depend heavily on the prompt and the representation of numeric rows as text, and the talk does not show the prompts; the finding that LLMs sit at the class prior may partly reflect that choice.",
+    "Zero-shot results depend heavily on the prompt and the representation of numeric rows as text, and the talk does not show the prompts, so the finding that LLMs sit at the class prior cannot be separated from that choice.",
     "Phishing text is a task where LLMs are strong and the fine-tuned models trained on the same distribution as the test set; real-world phishing has distribution shift that the talk did not test.",
-    "Mirai and CIC-IDS2017 (the Mirai-derived Kitsune data) are old, narrow benchmarks; the findings about TabPFN-3 and XGBoost may not transfer to enterprise traffic with a 99% benign ratio.",
+    "Mirai and CIC-IDS2017 (the Mirai-derived Kitsune data) are old, narrow benchmarks; the talk did not test whether the findings about TabPFN-3 and XGBoost transfer to enterprise traffic with a 99% benign ratio.",
     "No product was presented in the talk. The Laya and Jev recommendations were given with limited detail on the Jev vendor model.",
     "Comparing against frontier models ignores tool use and retrieval, a point an audience member raised and the speakers only partly answered.",
     "The Claude phishing score of 0.970 is on a 22% stratified subset and Claude has no flows result, so the headline comparison against fine-tuned models is not on identical test data.",
@@ -412,10 +412,10 @@
   ],
   "signal": {
     "score": 4,
-    "reason": "A controlled, quantitative benchmark with many specific numbers and a usable decision guide that challenges the default of using zero-shot LLMs for detection."
+    "reason": "The talk reports a controlled comparison of zero-shot LLMs, fine-tuned encoders, XGBoost, a tabular foundation model and two ensemble designs on phishing and network-flow detection, with AUCPR, cost and latency figures and a decision guide."
   },
   "caveats": [
-    "meta.json lists the frames as camera-only, but the 44 frames in the corpus include many slides; all 44 were read, and the slides are the authority for model names and numbers.",
+    "Much of the recording shows slides, and the slides are the authority for model names and numbers.",
     "Auto-caption garbles: 'Upstream' is AppGate per the description; 'Rage System One' is System 1; 'Leia' and 'Lea' are Laya; 'Jev' is as written on the slide; 'TaPFN' and 'Tap FFN' are TabPFN; 'Katsune' is Kitsune; 'Haging Face' is Hugging Face.",
     "Spoken class priors (about 40%, 20%) differ from the data table slide (37.4%, 84%, 40.3%, 17%); the slide is used.",
     "The speaker said fine-tuned Llama and ModernBERT 'almost exactly the same score' and listed Gemini and Sonnet at 99 and 97; slide values are 0.990 and 0.970.",
@@ -423,7 +423,7 @@
     "The talk text refers to Mirai-based datasets while results slides label the flows task Kitsune; the Q&A says they are the same.",
     "The video description mentions that a high class prior or a leaky split can fake an 'LLMs work' result; the audio only touches this through the decision tree note on a flow-aware split.",
     "The phishing ensemble panel title on the slide shows two percentages (17% / 11% routed) whose exact meaning is not explained in the talk.",
-    "The final camera frames show Q&A with no slides.",
+    "The closing portion of the recording shows Q&A with no slides.",
     "Claude phishing 0.970 is on a 22% stratified subset and Claude flows were omitted (5% coverage), per a slide footnote; Laya and Jev standalone values differ by 0.001 between the ensemble slide (0.958, 0.948) and the newer-models slide (0.959, 0.949). Label-efficiency values were read off a log-axis plot and are approximate."
   ]
 }

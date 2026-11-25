@@ -2,15 +2,21 @@
   "nn": "21",
   "id": "1aygTesiag8",
   "url": "https://www.youtube.com/watch?v=1aygTesiag8",
-  "title": "Guardrails for Coding Agents (slide and abstract title: Permission Fatigue Is a Security Bug: Dynamic Guardrails for Coding Agents)",
+  "title": "Guardrails for Coding Agents",
   "speakers": [
-    {"name": "Sahana Chennabasappa", "affiliation": "Security Engineer, Meta"},
-    {"name": "Chris Puderbaugh", "affiliation": "Security Engineer, Agent Security and Access, Meta"}
+    {
+      "name": "Sahana Chennabasappa",
+      "affiliation": "Security Engineer, Meta"
+    },
+    {
+      "name": "Chris Puderbaugh",
+      "affiliation": "Security Engineer, Agent Security and Access, Meta"
+    }
   ],
   "format": "talk",
   "duration_min": 23,
-  "thesis": "Asking a human to approve every coding-agent tool call trains people to rubber-stamp or disable the check, so permission fatigue is itself a security bug. Meta replaced static gates with a layered runtime (identity, profile ceiling, session-aware dynamic guardrails) that decides allow, ask or deny per tool call from accumulated session taint, and reports an 80 percent drop in permission prompts at 100 percent rollout.",
-  "summary": "Chris Puderbaugh opens with three facts: coding agents act as the developer with delegated credentials, every action is a tool call, and tool output feeds back into the model so injected content can steer the next call. Per-action human approval is the instinctive control, but people rubber-stamp, build suppress flags or turn checks off, so the control fails past a volume threshold. He maps a security versus friction grid and names context-aware runtime permissioning as the target, resting on three primitives: a delegated agent identity (a short-lived certificate marked as an agent), an agent profile that sets an upper bound on capability fixed before the session, and dynamic guardrails. Sahana Chennabasappa then walks the runtime. Policies are static (invariants such as never read or move credentials) or dynamic (judge intent, such as sudo not traceable to the user's request). Signal collectors hook the agent lifecycle and write to an append-only session store the agent cannot edit, recording user intent, whether external content was ingested and a taint level. Before every tool call a decision engine evaluates call, store and policy to return allow, ask or deny, enforced by the framework outside the agent loop. Risk rises as the session reads untrusted content. She covers three scaling problems: latency (a cheapest-first four-tier cascade resolves about 90 percent of calls without a model), false positives (a nightly cluster-and-fix loop) and portability (a standalone sidecar bound to five hook events). Results: about 80 percent fewer prompts, 0.5 percent added latency, recall gated by red-team replay. The talk ends with three lessons and Q&A on isolation, taint reversibility and escalation.",
+  "thesis": "Asking a human to approve every coding-agent tool call trains people to rubber-stamp or disable the check, so permission fatigue is itself a security bug. Meta replaced static gates with a layered runtime (identity, profile ceiling, session-aware dynamic guardrails) that decides allow, ask or deny per tool call from accumulated session taint (a running measure of how much untrusted content the session has read), and reports an 80 percent drop in permission prompts at 100 percent rollout.",
+  "summary": "Chris Puderbaugh opens with three facts: coding agents act as the developer with delegated credentials, every action is a tool call, and tool output feeds back into the model so injected content can steer the next call. Per-action human approval is the instinctive control, but people rubber-stamp, build suppress flags or turn checks off, so the control fails past a volume threshold. He maps a security versus friction grid and names context-aware runtime permissioning as the target, resting on three primitives: a delegated agent identity (a short-lived certificate marked as an agent), an agent profile that sets an upper bound on capability fixed before the session, and dynamic guardrails. Sahana Chennabasappa then walks the runtime. Policies are static (invariants such as never read or move credentials) or dynamic (judge intent, such as sudo not traceable to the user's request). Signal collectors hook the agent lifecycle and write to an append-only session store the agent cannot edit, recording user intent, whether external content was ingested and a taint level (how much untrusted content the session has read). Before every tool call a decision engine evaluates call, store and policy to return allow, ask or deny, enforced by the framework outside the agent loop. Risk rises as the session reads untrusted content. She covers three scaling problems: latency (a cheapest-first four-tier cascade resolves about 90 percent of calls without a model), false positives (a nightly cluster-and-fix loop) and portability (a standalone sidecar bound to five hook events). Results: about 80 percent fewer prompts, 0.5 percent added latency, recall (the share of known attacks still caught) gated by red-team replay.",
   "argument": [
     "Coding agents hold the developer's delegated identity, act only through tool calls, and read untrusted content back into their own context, so every tool call is a privileged action chosen by a model that may be reading attacker input.",
     "Prompting on every action produces rubber-stamping and then suppressed or disabled checks, so past a volume threshold friction stops being a security control and becomes a control failure.",
@@ -20,36 +26,153 @@
     "Result: friction down about 80 percent with about 0.5 percent added latency while red-team recall is gated on every change; human approval becomes the exception rather than the default."
   ],
   "claims": [
-    {"claim": "More than 93 percent of permission prompts are approved without reading, and about 3 in 4 are answered in under 2 seconds.", "evidence": "A slide statistic with no source or method given in the talk; the speaker said industry-wide numbers would be shown but did not state them aloud.", "grade": "assertion", "t": "02:50", "source": "slide"},
-    {"claim": "Prompt-on-everything leads to rubber-stamping and then checks turned off through skip-permission modes, custom suppress flags and blanket allowlists.", "evidence": "Described as observed behavior; slide shows the chain prompt on every action, rubber-stamping, checks turned off.", "grade": "anecdote", "t": "02:39", "source": "both"},
-    {"claim": "Effective agent access is the intersection of the user's existing access and an agent profile, a ceiling never a grant, fixed before the session starts.", "evidence": "Profile slide: open_source_developer has open public internet but blocked internal data and writes; data_analyst blocks the internet, reads internal data broadly and writes almost nothing; rule of two, internet or user data, never both.", "grade": "assertion", "t": "05:42", "source": "both"},
-    {"claim": "Taint is accumulated in an append-only session store outside the agent's reach and is never cleared, so the agent cannot launder its own history.", "evidence": "Design described and diagrammed; confirmed in Q&A that taint is one-way and rarely reaches tier three, so no downgrade was needed.", "grade": "assertion", "t": "09:21", "source": "both"},
-    {"claim": "A web fetch of a public issue thread raises session taint to 0.50, after which every call is evaluated, and a sudo command not traceable to the user's request yields an ask verdict.", "evidence": "Worked example on slides: user prompt fix the failing test, reads and test runs at taint 0, web fetch of an issue thread, then sudo sysctl suggested in the issue returns ASK because it came from a GitHub comment, not the user.", "grade": "demo", "t": "09:21", "source": "slide"},
-    {"claim": "A cheapest-first four-tier cascade decides about 90 percent of tool calls in under a millisecond with no model call.", "evidence": "Slide production figures, rounded: tier 0 passthrough about 28 percent, static rules about 40 percent, stateful rules about 20 percent, LLM classifier about 10 percent; the speaker said 90 percent in the first two tiers.", "grade": "measured", "t": "13:33", "source": "both"},
-    {"claim": "Rollout at 100 percent of one coding-agent population cut permission prompts per user by about 80 percent with about 0.5 percent added end-to-end latency.", "evidence": "Results slide with a before and after bar; footnote reads 100 percent rolled, one coding-agent population. No absolute prompt counts, population size or time window given.", "grade": "measured", "t": "15:37", "source": "both"},
-    {"claim": "Security posture was not degraded by tuning down false positives because recall is checked against an internal adversarial red-team set on every change.", "evidence": "Stated and shown as a gate (changes do not ship if fewer attacks are caught); no recall figures shown.", "grade": "assertion", "t": "16:08", "source": "both"},
-    {"claim": "False positives are fixed in a nightly loop: flag, LLM auto-review, cluster by shape and root cause, propose rule fixes, backtest against real sessions and ship; known-safe shapes get promoted to the static tier.", "evidence": "Process described by the speaker (top three clusters fixed regularly) and diagrammed as running every night; no false-positive rates shown.", "grade": "assertion", "t": "14:35", "source": "both"},
-    {"claim": "The decision engine and signal collector ship as a standalone sidecar (thin fail-open client plus per-host daemon over a local socket) that ports to any agent framework through five hook events.", "evidence": "Portability slide lists SessionStart, UserPromptSubmit, PreToolUse, PostToolUse and PermissionRequest; deployed on every developer machine; Q&A says execution environments vary (laptop, container in prod, hosted service).", "grade": "case", "t": "15:07", "source": "both"}
+    {
+      "claim": "More than 93 percent of permission prompts are approved without reading, and about 3 in 4 are answered in under 2 seconds.",
+      "evidence": "A slide statistic with no source or method given in the talk; the speaker said industry-wide numbers would be shown but did not state them aloud.",
+      "grade": "assertion",
+      "t": "02:50",
+      "source": "slide"
+    },
+    {
+      "claim": "Prompt-on-everything leads to rubber-stamping and then checks turned off through skip-permission modes, custom suppress flags and blanket allowlists.",
+      "evidence": "Described as observed behavior; slide shows the chain prompt on every action, rubber-stamping, checks turned off.",
+      "grade": "anecdote",
+      "t": "02:39",
+      "source": "both"
+    },
+    {
+      "claim": "Effective agent access is the intersection of the user's existing access and an agent profile, a ceiling never a grant, fixed before the session starts.",
+      "evidence": "Profile slide: open_source_developer has open public internet but blocked internal data and writes; data_analyst blocks the internet, reads internal data broadly and writes almost nothing; rule of two, internet or user data, never both.",
+      "grade": "assertion",
+      "t": "05:42",
+      "source": "both"
+    },
+    {
+      "claim": "Taint is accumulated in an append-only session store outside the agent's reach and is never cleared, so the agent cannot launder its own history.",
+      "evidence": "Design described and diagrammed; confirmed in Q&A that taint is one-way and rarely reaches tier three, so no downgrade was needed.",
+      "grade": "assertion",
+      "t": "09:21",
+      "source": "both"
+    },
+    {
+      "claim": "A web fetch of a public issue thread raises session taint to 0.50, after which every call is evaluated, and a sudo command not traceable to the user's request yields an ask verdict.",
+      "evidence": "Worked example on slides: user prompt fix the failing test, reads and test runs at taint 0, web fetch of an issue thread, then sudo sysctl suggested in the issue returns ASK because it came from a GitHub comment, not the user.",
+      "grade": "demo",
+      "t": "09:21",
+      "source": "slide"
+    },
+    {
+      "claim": "A cheapest-first four-tier cascade decides about 90 percent of tool calls in under a millisecond with no model call.",
+      "evidence": "Slide production figures, rounded: tier 0 passthrough about 28 percent, static rules about 40 percent, stateful rules about 20 percent, LLM classifier about 10 percent; the speaker said 90 percent in the first two tiers.",
+      "grade": "measured",
+      "t": "13:33",
+      "source": "both"
+    },
+    {
+      "claim": "Rollout at 100 percent of one coding-agent population cut permission prompts per user by about 80 percent with about 0.5 percent added end-to-end latency.",
+      "evidence": "Results slide with a before and after bar; footnote reads 100 percent rolled, one coding-agent population. No absolute prompt counts, population size or time window given.",
+      "grade": "measured",
+      "t": "15:37",
+      "source": "both"
+    },
+    {
+      "claim": "Security posture was not degraded by tuning down false positives because recall is checked against an internal adversarial red-team set on every change.",
+      "evidence": "Stated and shown as a gate (changes do not ship if fewer attacks are caught); no recall figures shown.",
+      "grade": "assertion",
+      "t": "16:08",
+      "source": "both"
+    },
+    {
+      "claim": "False positives are fixed in a nightly loop: flag, LLM auto-review, cluster by shape and root cause, propose rule fixes, backtest against real sessions and ship; known-safe shapes get promoted to the static tier.",
+      "evidence": "Process described by the speaker (top three clusters fixed regularly) and diagrammed as running every night; no false-positive rates shown.",
+      "grade": "assertion",
+      "t": "14:35",
+      "source": "both"
+    },
+    {
+      "claim": "The decision engine and signal collector ship as a standalone sidecar (thin fail-open client plus per-host daemon over a local socket) that ports to any agent framework through five hook events.",
+      "evidence": "Portability slide lists SessionStart, UserPromptSubmit, PreToolUse, PostToolUse and PermissionRequest; deployed on every developer machine; Q&A says execution environments vary (laptop, container in prod, hosted service).",
+      "grade": "case",
+      "t": "15:07",
+      "source": "both"
+    }
   ],
   "numbers": [
-    {"figure": ">93%", "meaning": "permission prompts approved without reading (slide, no source given)", "t": "02:50"},
-    {"figure": "~3 in 4, under 2 seconds", "meaning": "share of prompts answered in under 2 seconds (slide)", "t": "02:50"},
-    {"figure": "4 prompts, 0.6 s, 1 dangerous", "meaning": "illustrative first-instinct slide: four prompts approved, average 0.6 s to decide, one dangerous one approved (curl piped to sh)", "t": "02:08"},
-    {"figure": "0.50", "meaning": "taint level after a web fetch of a public issue thread in the worked example", "t": "09:21"},
-    {"figure": "~28% / ~40% / ~20% / ~10%", "meaning": "share of tool calls resolved by passthrough, static rules, stateful rules and LLM classifier tiers (slide, rounded)", "t": "13:33"},
-    {"figure": "~90%", "meaning": "tool calls decided in under a millisecond with no model call (speaker said about 90 percent cut in the first two tiers; captions read 94 90%)", "t": "14:04"},
-    {"figure": "-80%", "meaning": "permission prompts per user after 100 percent guardrail rollout", "t": "15:37"},
-    {"figure": "+0.5%", "meaning": "added end-to-end agent latency", "t": "15:37"},
-    {"figure": "thousands", "meaning": "tool calls per session, as a reason for the latency optimization", "t": "13:02"}
+    {
+      "figure": ">93%",
+      "meaning": "permission prompts approved without reading (slide, no source given)",
+      "t": "02:50"
+    },
+    {
+      "figure": "~3 in 4, under 2 seconds",
+      "meaning": "share of prompts answered in under 2 seconds (slide)",
+      "t": "02:50"
+    },
+    {
+      "figure": "4 prompts, 0.6 s, 1 dangerous",
+      "meaning": "illustrative first-instinct slide: four prompts approved, average 0.6 s to decide, one dangerous one approved (curl piped to sh)",
+      "t": "02:08"
+    },
+    {
+      "figure": "0.50",
+      "meaning": "taint level after a web fetch of a public issue thread in the worked example",
+      "t": "09:21"
+    },
+    {
+      "figure": "~28% / ~40% / ~20% / ~10%",
+      "meaning": "share of tool calls resolved by passthrough, static rules, stateful rules and LLM classifier tiers (slide, rounded)",
+      "t": "13:33"
+    },
+    {
+      "figure": "~90%",
+      "meaning": "tool calls decided in under a millisecond with no model call (speaker said about 90 percent cut in the first two tiers; captions read 94 90%)",
+      "t": "14:04"
+    },
+    {
+      "figure": "-80%",
+      "meaning": "permission prompts per user after 100 percent guardrail rollout",
+      "t": "15:37"
+    },
+    {
+      "figure": "+0.5%",
+      "meaning": "added end-to-end agent latency",
+      "t": "15:37"
+    },
+    {
+      "figure": "thousands",
+      "meaning": "tool calls per session, as a reason for the latency optimization",
+      "t": "13:02"
+    }
   ],
   "frameworks": [
-    {"name": "Three facts of coding-agent security", "description": "Agents act as us (delegated identity), every action is a tool call, and output feeds straight back into the model's context."},
-    {"name": "Security versus friction quadrants", "description": "Checks off is easy but exposed; ask on everything and allowlists sit in secure-on-paper but, through fatigue, worst of both in practice; context-aware runtime is the secure and usable target."},
-    {"name": "Three layers, three questions", "description": "Identity primitives (who is acting, tainted certificates), agent profiles (what is the most it could ever do, a permission ceiling), dynamic guardrails (what can it do right now, runtime policy). Each layer can only narrow what the layer above allows."},
-    {"name": "Define, Observe, Decide, Enforce", "description": "Define static and dynamic policies; observe with signal collectors writing to an append-only session store; decide per tool call with a decision engine returning allow, ask or deny; enforce in the agent framework's own hooks outside the agent loop."},
-    {"name": "Four-tier cascade", "description": "Tier 0 passthrough of known no-ops, tier 1 static rules, tier 2 stateful rules using session context, tier 3 LLM classifier for what is still ambiguous (novel scripts, tainted shells)."},
-    {"name": "Rule of two on profiles", "description": "A profile grants internet access or user data access, never both."},
-    {"name": "Summary: what transfers", "description": "Human approval should be the exception, not the default; bound first, then relax; make dynamic decisions from enriched session context. Move the decision out of the human, into a runtime that reads the session."}
+    {
+      "name": "Three facts of coding-agent security",
+      "description": "Agents act as us (delegated identity), every action is a tool call, and output feeds straight back into the model's context."
+    },
+    {
+      "name": "Security versus friction quadrants",
+      "description": "Checks off is easy but exposed; ask on everything and allowlists sit in secure-on-paper but, through fatigue, worst of both in practice; context-aware runtime is the secure and usable target."
+    },
+    {
+      "name": "Three layers, three questions",
+      "description": "Identity primitives (who is acting, tainted certificates), agent profiles (what is the most it could ever do, a permission ceiling), dynamic guardrails (what can it do right now, runtime policy). Each layer can only narrow what the layer above allows."
+    },
+    {
+      "name": "Define, Observe, Decide, Enforce",
+      "description": "Define static and dynamic policies; observe with signal collectors writing to an append-only session store; decide per tool call with a decision engine returning allow, ask or deny; enforce in the agent framework's own hooks outside the agent loop."
+    },
+    {
+      "name": "Four-tier cascade",
+      "description": "Tier 0 passthrough of known no-ops, tier 1 static rules, tier 2 stateful rules using session context, tier 3 LLM classifier for what is still ambiguous (novel scripts, tainted shells)."
+    },
+    {
+      "name": "Rule of two on profiles",
+      "description": "A profile grants internet access or user data access, never both."
+    },
+    {
+      "name": "Summary: what transfers",
+      "description": "Human approval should be the exception, not the default; bound first, then relax; make dynamic decisions from enriched session context. Move the decision out of the human, into a runtime that reads the session."
+    }
   ],
   "artifacts": [],
   "slide_only": [
@@ -64,11 +187,31 @@
   ],
   "demos": [],
   "quotes": [
-    {"text": "Permission fatigue is a security bug. Past a volume threshold, friction isn't a security control. It's a control failure.", "speaker": "Chris Puderbaugh (slide)", "t": "03:09"},
-    {"text": "The control trained people to defeat it.", "speaker": "slide", "t": "02:50"},
-    {"text": "Move the decision out of the human, into a runtime that reads the session.", "speaker": "slide", "t": "17:41"},
-    {"text": "Every tool call is a privileged action chosen by a model that may be reading untrusted input.", "speaker": "slide", "t": "00:19"},
-    {"text": "We should bound first and then relax.", "speaker": "Chris Puderbaugh", "t": "17:09"}
+    {
+      "text": "Permission fatigue is a security bug. Past a volume threshold, friction isn't a security control. It's a control failure.",
+      "speaker": "Chris Puderbaugh (slide)",
+      "t": "03:09"
+    },
+    {
+      "text": "The control trained people to defeat it.",
+      "speaker": "slide",
+      "t": "02:50"
+    },
+    {
+      "text": "Move the decision out of the human, into a runtime that reads the session.",
+      "speaker": "slide",
+      "t": "17:41"
+    },
+    {
+      "text": "Every tool call is a privileged action chosen by a model that may be reading untrusted input.",
+      "speaker": "slide",
+      "t": "00:19"
+    },
+    {
+      "text": "We should bound first and then relax.",
+      "speaker": "Chris Puderbaugh",
+      "t": "17:09"
+    }
   ],
   "offense": [
     "Prompt injection through tool output: web pages, repo files, docs or command output land in the context that chooses the next call and can steer the agent toward credential exfiltration, tampering or disruption.",
@@ -87,10 +230,10 @@
   ],
   "takeaways": [
     "Treat approval prompt volume as a security metric: measure prompts per user and the share approved quickly, and treat high volume as a control defect, not a user problem.",
-    "Reduce what authorization has to police first: issue agents a marked identity and a role-based profile ceiling, then relax inside it.",
+    "Puderbaugh's rule, bound first and then relax: reduce what authorization has to police by issuing agents a marked identity and a role-based profile ceiling, then relax inside it.",
     "Prefer session-aware decisions over flat allowlists: track user intent and exposure to untrusted content, and let the same command be allowed early and challenged after taint.",
-    "Keep the decision point and the session state outside the agent loop and fail-open on infrastructure errors, so safety tooling cannot block developers or be edited by the agent.",
-    "Gate friction reduction on a red-team replay set so tuning for fewer prompts cannot silently lower recall."
+    "Keep the decision point and the session state outside the agent loop so the agent cannot edit them, and decide deliberately whether to let the guardrail fail open (allow the call when the guardrail itself errors), as the speakers' sidecar does so that an infrastructure error never blocks a developer.",
+    "Do not ship a rule change that lowers recall on a red-team replay set, so tuning for fewer prompts cannot silently lower recall."
   ],
   "limits": [
     "The speakers said they are still working on reducing false positives, making the solution more robust and handling multi-agent workflows (the abstract adds subagent propagation as open).",
@@ -104,8 +247,8 @@
     "Recall is described as gated, but no recall, precision or red-team set size is given, so the claim that security was retained cannot be checked from the talk. A friction metric alone rewards allowing more.",
     "Taint is one scalar that only accumulates and a single web fetch sets 0.50 in the example; the talk does not say how much legitimate work (doc lookups, package installs) trips it or how the prompt-injection classifier performs.",
     "The identity layer is described as short-lived certificates with an agent marking, but the slide says tainted certificates while the abstract says a signed X509 attribute; the mechanism and how marking survives token exchange are not detailed.",
-    "The enforcement point is the agent framework's own hooks, which a compromised or cooperating agent process on the same host might reach; the Q&A answer on isolation was that it varies by environment, which leaves the sidecar's tamper resistance dependent on deployment.",
-    "Subagent propagation of taint, named as open in the abstract, is the likely gap for modern multi-agent coding workflows and was only mentioned in passing.",
+    "The enforcement point is the agent framework's own hooks; the Q&A answer on isolation was that it varies by environment, and a sidecar in the same container could be disabled by the agent, which leaves its tamper resistance dependent on deployment.",
+    "Subagent propagation of taint, named as open in the abstract, was only mentioned in passing; the speakers said multi-agent workflows are still being worked on.",
     "Largely an internal Meta design with no code or policy set released; useful as an architecture pattern, hard to adopt directly."
   ],
   "qa": [
@@ -116,19 +259,43 @@
     "Q: Is there tiered escalation beyond 2FA, such as two-person or management approval? A: They do not go into process escalations; they use human-presence verification in variants, but manager approval is impractical given agent trajectory turnaround.",
     "Q: Have you looked at signing agent behavior with hardware-backed credentials to guarantee integrity? A: Not yet explored; called an interesting idea."
   ],
-  "tags": ["guardrails-runtime-controls", "coding-agent-security", "agent-authz-identity", "prompt-injection"],
-  "key_frames": [
-    {"file": "t00019.jpg", "caption": "Setup slide: agents act as the developer, every action is a tool call, tool output feeds back, shown with an injected exfiltration note."},
-    {"file": "t00223.jpg", "caption": "Security versus friction quadrants showing ask-on-everything and allowlists degrading in practice versus a context-aware runtime."},
-    {"file": "t00495.jpg", "caption": "Observe slide: session events and the append-only session store with taint rising to 0.50 after a web fetch."},
-    {"file": "t00578.jpg", "caption": "Decision flow: tool call plus session store plus policies through the decision engine to an ASK verdict."},
-    {"file": "t00858.jpg", "caption": "Nightly false-positive loop: flag, auto-review, cluster, update rules, backtest and ship."}
+  "tags": [
+    "guardrails-runtime-controls",
+    "coding-agent-security",
+    "agent-authz-identity",
+    "prompt-injection"
   ],
-  "signal": {"score": 4, "reason": "A deployed architecture described in specific terms (marked identity, profile ceiling, taint store, cheapest-first cascade); the headline results were shown without baseline counts or recall figures."},
+  "key_frames": [
+    {
+      "file": "t00019.jpg",
+      "caption": "Setup slide: agents act as the developer, every action is a tool call, tool output feeds back, shown with an injected exfiltration note."
+    },
+    {
+      "file": "t00223.jpg",
+      "caption": "Security versus friction quadrants showing ask-on-everything and allowlists degrading in practice versus a context-aware runtime."
+    },
+    {
+      "file": "t00495.jpg",
+      "caption": "Observe slide: session events and the append-only session store with taint rising to 0.50 after a web fetch."
+    },
+    {
+      "file": "t00578.jpg",
+      "caption": "Decision flow: tool call plus session store plus policies through the decision engine to an ASK verdict."
+    },
+    {
+      "file": "t00858.jpg",
+      "caption": "Nightly false-positive loop: flag, auto-review, cluster, update rules, backtest and ship."
+    }
+  ],
+  "signal": {
+    "score": 4,
+    "reason": "The talk describes a deployed architecture with a marked identity, a profile ceiling, a taint store and a cheapest-first cascade; the headline results were shown without baseline counts or recall figures."
+  },
   "caveats": [
-    "Auto-captions garbled some phrases: 'tainted certificate' likely refers to an agent-marked certificate (slide says tainted certificates, abstract says signed X509 attribute); 'cut almost 94 90% of the traffic' read as about 90 percent per the slide.",
+    "The slide and abstract title is 'Permission Fatigue Is a Security Bug: Dynamic Guardrails for Coding Agents'.",
+    "Auto-captions garbled some phrases: the captions say 'tainted certificate' (the slide says tainted certificates, the abstract says signed X509 attribute); the captions 'cut almost 94 90% of the traffic' are read as about 90 percent per the slide.",
     "Slide text partly small or truncated in the recording: the results-slide line about time the agent sat waiting on a human and the session hash on the certificate slide could not be read in full.",
-    "Chris said industry-wide numbers would be shown; the slide percentages were not read aloud, and their source is not stated.",
-    "The Q&A questioners are not identified; the last frames are speaker shots only."
+    "Puderbaugh said industry-wide numbers would be shown; the slide percentages were not read aloud, and their source is not stated.",
+    "The Q&A questioners are not identified; the end of the recording shows only the speakers."
   ]
 }

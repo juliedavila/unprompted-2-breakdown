@@ -76,7 +76,7 @@
   "critique": [
     "The talk reports no detection rates, false positive or false negative figures, latency or cost numbers, so the claim that the right balance was found cannot be checked.",
     "The control screens inputs only; the talk does not cover outputs, tool-call authorization or what happens when a screened input is later transformed.",
-    "A pre-inference classifier is a mitigation; the recording does not discuss evasion or adaptive attackers, which a nine-minute lightning talk may leave out.",
+    "A pre-inference classifier is a mitigation; the recording does not discuss evasion or adaptive attackers.",
     "The architecture follows a common guardrail gateway pattern; the operating experience at Indeed scale is described in general terms."
   ],
   "qa": [
@@ -88,10 +88,10 @@
     {"file": "t00211.jpg", "caption": "Platform-level rail barrier sitting between the untrusted input stream and model surfaces A, B and C."},
     {"file": "t00331.jpg", "caption": "Optimization for high-volume protection: shared configs, parallel rails, retries, circuit breakers, fallback providers and telemetry."}
   ],
-  "signal": {"score": 3, "reason": "A platform-guardrail architecture from a large operator, with no measured results presented in the recording."},
+  "signal": {"score": 3, "reason": "The talk describes a platform-level guardrail architecture used at Indeed, with no measured results presented in the recording."},
   "caveats": [
     "Auto-captions render the model names as GPT 6.0 Luna and GPT 5.6 Luna; no slide shows these names, so they could not be confirmed.",
-    "Captions give the speaker's surname as Tejwani only on the slide and description; one caption line has Rayet Tejwani.",
+    "Captions give the speaker's surname as Tejwani only on the slide and the published description; one caption line has Rayet Tejwani.",
     "Transcript says the verdict is passed, allowed or flagged; the slide shows Pass/Allow and Flag/Block.",
     "The final slide shows event Wi-Fi details; not recorded."
   ]

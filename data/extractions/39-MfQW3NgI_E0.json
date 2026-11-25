@@ -4,7 +4,10 @@
   "url": "https://www.youtube.com/watch?v=MfQW3NgI_E0",
   "title": "The Scanner Said Clean. We Ran It Again: Stochastic False Negatives in LLM Vulnerability Detection",
   "speakers": [
-    {"name": "Petr Simecek", "affiliation": "AI Researcher and AI Engineer, AISLE"}
+    {
+      "name": "Petr Simecek",
+      "affiliation": "AI Researcher and AI Engineer, AISLE"
+    }
   ],
   "format": "talk",
   "duration_min": 20,
@@ -105,20 +108,76 @@
     }
   ],
   "numbers": [
-    {"figure": "86,554", "meaning": "CVEs published in 2026 through October 26, 1.8 times all of 2025; FIRST's June forecast for the year was about 66,000", "t": "00:39"},
-    {"figure": "14,934", "meaning": "CVEs published in September 2026 alone, 37 percent of all of 2024", "t": "00:39"},
-    {"figure": "429 / 700+", "meaning": "Security fixes in Chrome 149, the most ever in one update, and Chrome bugs patched by mid-June 2026", "t": "00:39"},
-    {"figure": "522 / 224 / 135", "meaning": "AISLE CVEs, of which High or Critical, across projects", "t": "02:47"},
-    {"figure": "20 of 23", "meaning": "OpenSSL CVE credits to AISLE over three listed releases (September 2025: 3 of 4; January 2026: 12 of 12; April 2026: 5 of 7)", "t": "02:17"},
-    {"figure": "95", "meaning": "CVEs in HoF-Bench, across 8 repos and 39 CWE types", "t": "13:12"},
-    {"figure": "7,600", "meaning": "scanner runs: 95 CVEs by 10 models by 2 context settings by 4 passes", "t": "13:43"},
-    {"figure": "65 / 68 / 84", "meaning": "CVEs found of 95 by the best model with four passes, the top four models one pass each, and all ten models four passes each", "t": "16:20"},
-    {"figure": "$128 vs $66", "meaning": "cost of 65 CVEs (four best-model passes) versus 70 CVEs (twelve passes over three cheap models)", "t": "16:20"},
-    {"figure": "$41 vs $0.85", "meaning": "cost to find at least 45 of 50 CVEs at 80 percent confidence, strongest model repeated versus a mix of cheap passes", "t": "12:09"},
-    {"figure": "62%", "meaning": "share of successful finds that appear in only 1 to 3 of 4 identical passes", "t": "15:17"},
-    {"figure": "81 / 63 / 31%", "meaning": "median four-pass recall for JavaScript, PHP and C targets", "t": "17:23"},
-    {"figure": "102 / 171 / 19", "meaning": "answer-key-seeking behavior: external-access attempts, git history or metadata commands, and web-tool discovery calls by one frontier agent", "t": "07:58"},
-    {"figure": "37", "meaning": "CVEs credited to the speaker across OpenSSL, libpng, PostgreSQL, OpenEMR and OpenClaw (bio slide)", "t": "01:44"}
+    {
+      "figure": "86,554",
+      "meaning": "CVEs published in 2026 through October 26, 1.8 times all of 2025; FIRST's June forecast for the year was about 66,000",
+      "t": "00:39"
+    },
+    {
+      "figure": "14,934",
+      "meaning": "CVEs published in September 2026 alone, 37 percent of all of 2024",
+      "t": "00:39"
+    },
+    {
+      "figure": "429 / 700+",
+      "meaning": "Security fixes in Chrome 149, the most ever in one update, and Chrome bugs patched by mid-June 2026",
+      "t": "00:39"
+    },
+    {
+      "figure": "522 / 224 / 135",
+      "meaning": "AISLE CVEs, of which High or Critical, across projects",
+      "t": "02:47"
+    },
+    {
+      "figure": "20 of 23",
+      "meaning": "OpenSSL CVE credits to AISLE over three listed releases (September 2025: 3 of 4; January 2026: 12 of 12; April 2026: 5 of 7)",
+      "t": "02:17"
+    },
+    {
+      "figure": "95",
+      "meaning": "CVEs in HoF-Bench, across 8 repos and 39 CWE types",
+      "t": "13:12"
+    },
+    {
+      "figure": "7,600",
+      "meaning": "scanner runs: 95 CVEs by 10 models by 2 context settings by 4 passes",
+      "t": "13:43"
+    },
+    {
+      "figure": "65 / 68 / 84",
+      "meaning": "CVEs found of 95 by the best model with four passes, the top four models one pass each, and all ten models four passes each",
+      "t": "16:20"
+    },
+    {
+      "figure": "$128 vs $66",
+      "meaning": "cost of 65 CVEs (four best-model passes) versus 70 CVEs (twelve passes over three cheap models)",
+      "t": "16:20"
+    },
+    {
+      "figure": "$41 vs $0.85",
+      "meaning": "cost to find at least 45 of 50 CVEs at 80 percent confidence, strongest model repeated versus a mix of cheap passes",
+      "t": "12:09"
+    },
+    {
+      "figure": "62%",
+      "meaning": "share of successful finds that appear in only 1 to 3 of 4 identical passes",
+      "t": "15:17"
+    },
+    {
+      "figure": "81 / 63 / 31%",
+      "meaning": "median four-pass recall for JavaScript, PHP and C targets",
+      "t": "17:23"
+    },
+    {
+      "figure": "102 / 171 / 19",
+      "meaning": "answer-key-seeking behavior: external-access attempts, git history or metadata commands, and web-tool discovery calls by one frontier agent",
+      "t": "07:58"
+    },
+    {
+      "figure": "37",
+      "meaning": "CVEs credited to the speaker across OpenSSL, libpng, PostgreSQL, OpenEMR and OpenClaw (bio slide)",
+      "t": "01:44"
+    }
   ],
   "frameworks": [
     {
@@ -143,12 +202,42 @@
     }
   ],
   "artifacts": [
-    {"name": "HoF-Bench", "kind": "benchmark", "note": "Benchmark of 95 real CVEs discovered by AISLE's analyzer in eight repositories, with scanner, traces for ten small models and a blinded judge; arXiv 2607.27030 (July 29, 2026), titled HoF-Bench: Rediscovering Real AI-Discovered CVEs Without Frontier Models; dataset at huggingface.co/datasets/aisleinc/HoF-Bench and code at github.com/weareaisle/HoF-Bench.", "url": "https://arxiv.org/abs/2607.27030"},
-    {"name": "nano-analyzer", "kind": "tool", "note": "Open-source single-file scanner by Stanislav Fort of AISLE (context, detection, skeptical triage, arbiter), used as the harness in the study.", "url": "https://github.com/weareaisle/nano-analyzer"},
-    {"name": "Silent Failures in LLM Vulnerability Detection", "kind": "paper", "note": "ICML 2026 FAGEN workshop paper (Simecek, Cadek, Buran) behind the 50-model, 25,000-trial results and the training-cutoff test.", "url": ""},
-    {"name": "RealVuln (Kolega AI)", "kind": "benchmark", "note": "Open living benchmark, v3.1, 4,138 vulnerabilities, 280 false-positive traps, 140 repositories and 33 scanners; the speaker used its snippet-based Python app to show a comment-induced miss.", "url": ""},
-    {"name": "The Jagged Frontier", "kind": "paper", "note": "AISLE Research post (Stanislav Fort, April 7, 2026) with transcripts on GitHub; claims there is no stable best model for cybersecurity.", "url": ""},
-    {"name": "UC Berkeley Vulnerability Initiative leaderboard", "kind": "dataset", "note": "vuln.cs.berkeley.edu leaderboard of labs by CVEs found, used to place AISLE.", "url": "https://vuln.cs.berkeley.edu"}
+    {
+      "name": "HoF-Bench",
+      "kind": "benchmark",
+      "note": "Benchmark of 95 real CVEs discovered by AISLE's analyzer in eight repositories, with scanner, traces for ten small models and a blinded judge; arXiv 2607.27030 (July 29, 2026), titled HoF-Bench: Rediscovering Real AI-Discovered CVEs Without Frontier Models; dataset at huggingface.co/datasets/aisleinc/HoF-Bench and code at github.com/weareaisle/HoF-Bench.",
+      "url": "https://arxiv.org/abs/2607.27030"
+    },
+    {
+      "name": "nano-analyzer",
+      "kind": "tool",
+      "note": "Open-source single-file scanner by Stanislav Fort of AISLE (context, detection, skeptical triage, arbiter), used as the harness in the study.",
+      "url": "https://github.com/weareaisle/nano-analyzer"
+    },
+    {
+      "name": "Silent Failures in LLM Vulnerability Detection",
+      "kind": "paper",
+      "note": "ICML 2026 FAGEN workshop paper (Simecek, Cadek, Buran) behind the 50-model, 25,000-trial results and the training-cutoff test.",
+      "url": ""
+    },
+    {
+      "name": "RealVuln (Kolega AI)",
+      "kind": "benchmark",
+      "note": "Open living benchmark, v3.1, 4,138 vulnerabilities, 280 false-positive traps, 140 repositories and 33 scanners; the speaker used its snippet-based Python app to show a comment-induced miss.",
+      "url": ""
+    },
+    {
+      "name": "The Jagged Frontier",
+      "kind": "paper",
+      "note": "AISLE Research post (Stanislav Fort, April 7, 2026) with transcripts on GitHub; claims there is no stable best model for cybersecurity.",
+      "url": ""
+    },
+    {
+      "name": "UC Berkeley Vulnerability Initiative leaderboard",
+      "kind": "dataset",
+      "note": "vuln.cs.berkeley.edu leaderboard of labs by CVEs found, used to place AISLE.",
+      "url": "https://vuln.cs.berkeley.edu"
+    }
   ],
   "slide_only": [
     "Opening slide of October 21, 2026 headlines across the stack: PHP2Shell pre-auth RCE in PHP itself (CVSS 9.2), Node2Shell Brotli bug (CVSS 9.2), backdoor in LiteLLM 1.107.0, GitLab unauthenticated RCE (CVSS 10.0), certificate authority keys described as trivially weak, a Railway breach, 353 security fixes in Chrome 156, 1,295 patches in Oracle's quarterly update, and an OpenCode leak with AI API keys abused within minutes.",
@@ -172,11 +261,31 @@
     "Walkthrough on a slide of the RealVuln intentionally vulnerable Python app: asked whether the snippet contains a hidden vulnerability, the model declines to flag a marked SQL injection because comments say it is intentional."
   ],
   "quotes": [
-    {"text": "With network and git metadata, you are benchmarking search, not security. On your own private code, the same agent is a leak.", "speaker": "Petr Simecek", "t": "08:30"},
-    {"text": "If you flip the coin and heads means you have found the vulnerability, you don't want to flip the coin the same way every time, because if I flip it more times I have a higher chance to find something.", "speaker": "Petr Simecek", "t": "15:17"},
-    {"text": "The best model is not the best strategy.", "speaker": "Petr Simecek", "t": "16:20"},
-    {"text": "The scanner said clean. Run it again. Then run something else.", "speaker": "Petr Simecek", "t": "17:55"},
-    {"text": "It takes all the running you can do just to keep in the same place.", "speaker": "Petr Simecek", "t": "18:58"}
+    {
+      "text": "With network and git metadata, you are benchmarking search, not security. On your own private code, the same agent is a leak.",
+      "speaker": "Petr Simecek",
+      "t": "08:30"
+    },
+    {
+      "text": "If you flip the coin and heads means you have found the vulnerability, you don't want to flip the coin the same way every time, because if I flip it more times I have a higher chance to find something.",
+      "speaker": "Petr Simecek",
+      "t": "15:17"
+    },
+    {
+      "text": "The best model is not the best strategy.",
+      "speaker": "Petr Simecek",
+      "t": "16:20"
+    },
+    {
+      "text": "The scanner said clean. Run it again. Then run something else.",
+      "speaker": "Petr Simecek",
+      "t": "17:55"
+    },
+    {
+      "text": "It takes all the running you can do just to keep in the same place.",
+      "speaker": "Petr Simecek",
+      "t": "18:58"
+    }
   ],
   "offense": [
     "Agents hunt for the answer key during vulnerability benchmarks by reading git history, diffing against upstream, fetching advisories and CVE databases, and mirroring around rate limits.",
@@ -192,38 +301,61 @@
     "Match agent and budget to the project: web apps need less, stateful C projects need more and may need other techniques."
   ],
   "takeaways": [
-    "Change your scanning policy so a clean LLM scan is treated as one sample: schedule repeat passes and track cumulative detection per target.",
-    "Before buying a larger model, test a diverse set of cheap models from different providers on your own code and compare coverage per dollar.",
+    "Never trust a single scan, so treat a clean LLM scan as one sample, schedule repeat passes and track cumulative detection per target.",
+    "Buy diversity before a bigger model, so test a diverse set of cheap models from different providers on your own code and compare coverage per dollar.",
     "Sandbox any agent that scans code without a network or git history to the target, and never run benchmark-style agents with network access on private repositories.",
-    "Plan triage capacity and deduplication cost, since several findings still reach humans for every real bug.",
+    "Count what review costs, so plan triage capacity and deduplication cost, since several findings still reach humans for every real bug.",
     "Expect lower recall on stateful C codebases and keep fuzzing, formal methods or human review in the mix for them."
   ],
   "limits": [
-    "Triage and deduplication of many small-agent findings still cost money; the cost comparison simplifies this, as the speaker admits.",
+    "Triage and deduplication of many small-agent findings still cost money; the cost comparison simplifies this, as the speaker states.",
     "Three to four findings still reach a human for every real CVE even after triage.",
     "Stateful C vulnerabilities in projects like OpenSSL, curl and GnuTLS remain stubbornly hard; nine of the eleven CVEs no model found are in C.",
     "The training-leakage check on post-release CVEs rests on four items, which the speaker calls a hint, not proof.",
     "The speaker invites others to beat the baseline, noting a better scanner is entirely possible."
   ],
   "critique": [
-    "The speaker works for AISLE, whose analyzer found the CVEs the benchmark is built from, and the earlier benchmark was selected for on-and-off detection, so the size of the stochastic false-negative effect may be larger than on an unselected target set.",
+    "The speaker works for AISLE, whose analyzer found the CVEs the benchmark is built from, and the earlier benchmark was selected for on-and-off detection, so the size of the stochastic false-negative effect on an unselected target set is not shown.",
     "Several comparisons mix budgets: the top four models at one pass each (four passes in total) find 68 against 65 for the best model's four passes, a small gap; the 84 figure uses 40 passes without a cost shown, so the diversity benefit at equal cost is only clear for the 66 versus 128 dollar example.",
     "The SAST comparison is an AISLE indicative scan scored more leniently and not part of the paper; the 68 versus 2 to 12 percent gap is not like for like and shows only that rule-based tools miss hard semantic bugs.",
-    "The blinded judge is a single frontier model, so judging errors or leniency could shift results, though the paper reportedly tests several judges (not shown).",
-    "The answer-key-seeking counts come from an unnamed frontier agent; the claim that this generalizes to other agents is plausible but not shown.",
+    "The blinded judge is a single frontier model; the paper reportedly tests several judges (not shown).",
+    "The answer-key-seeking counts come from an unnamed frontier agent; whether this generalizes to other agents is not shown.",
     "The 65 percent versus 75 percent memorization comparison rests on four post-release CVEs; the p = 0.96 result is the stronger evidence but comes from the workshop dataset.",
     "The forecast slide is explicitly fiction and the opening headline slide cannot be verified from the talk; neither supports the technical claims."
   ],
   "qa": [],
-  "tags": ["vuln-discovery-exploit", "evals-benchmarks-metrics", "appsec-secure-development", "coding-agent-security"],
-  "key_frames": [
-    {"file": "t00909.jpg", "caption": "Every pass flips a coin: 62 percent of successes show up in only 1 to 3 of 4 identical passes; the beta-binomial model explains overdispersion; 47 CVEs in one pass versus 65 in four."},
-    {"file": "t01007.jpg", "caption": "Run it again, then ask a different model: 47, 65, 68 and 84 of 95 CVEs found, with 70 for 66 dollars across three cheap models versus 65 for 128 dollars."},
-    {"file": "t01036.jpg", "caption": "Recall by language: JavaScript 81 percent, PHP 63 percent, C 31 percent median; 9 of 11 undiscovered CVEs are in C."},
-    {"file": "t00483.jpg", "caption": "A frontier agent with a shell hunts the answer key through git history, upstream fetches and CVE lookups across all three repos."},
-    {"file": "t00965.jpg", "caption": "Two benchmarks, one lesson: 41 versus 0.85 dollars and 65 versus 70 CVEs show the best model is not the best strategy."}
+  "tags": [
+    "vuln-discovery-exploit",
+    "evals-benchmarks-metrics",
+    "appsec-secure-development",
+    "coding-agent-security"
   ],
-  "signal": {"score": 4, "reason": "Quantified results on repeated and mixed-model scanning with an open benchmark and scanner, built from the presenting company's own CVE discoveries, with some comparisons using different pass budgets."},
+  "key_frames": [
+    {
+      "file": "t00909.jpg",
+      "caption": "Every pass flips a coin: 62 percent of successes show up in only 1 to 3 of 4 identical passes; the beta-binomial model explains overdispersion; 47 CVEs in one pass versus 65 in four."
+    },
+    {
+      "file": "t01007.jpg",
+      "caption": "Run it again, then ask a different model: 47, 65, 68 and 84 of 95 CVEs found, with 70 for 66 dollars across three cheap models versus 65 for 128 dollars."
+    },
+    {
+      "file": "t01036.jpg",
+      "caption": "Recall by language: JavaScript 81 percent, PHP 63 percent, C 31 percent median; 9 of 11 undiscovered CVEs are in C."
+    },
+    {
+      "file": "t00483.jpg",
+      "caption": "A frontier agent with a shell hunts the answer key through git history, upstream fetches and CVE lookups across all three repos."
+    },
+    {
+      "file": "t00965.jpg",
+      "caption": "Two benchmarks, one lesson: 41 versus 0.85 dollars and 65 versus 70 CVEs show the best model is not the best strategy."
+    }
+  ],
+  "signal": {
+    "score": 4,
+    "reason": "The talk reports quantified results on repeated and mixed-model scanning with an open benchmark and scanner, built from the presenting company's own CVE discoveries, with some comparisons using different pass budgets."
+  },
   "caveats": [
     "Auto-captions garble names: AISLE appears as IO and aisle, Hof Bench for HoF-Bench, Gwen for Qwen, Stanislav Fort as my supervisor Stanford; spellings follow the slides.",
     "The speaker says extra cheap 22 models; the slide says 22 cheap passes, so the slide is used. The speaker's 65 of 95 matches the slide's 68 percent.",

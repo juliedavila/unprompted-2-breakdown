@@ -3,7 +3,12 @@
   "id": "ullh_QSEU_U",
   "url": "https://www.youtube.com/watch?v=ullh_QSEU_U",
   "title": "The Model Is NOT a Security Control",
-  "speakers": [{"name": "Vince Ovando", "affiliation": "IOActive (AI Security Researcher and Engineer)"}],
+  "speakers": [
+    {
+      "name": "Vince Ovando",
+      "affiliation": "IOActive (AI Security Researcher and Engineer)"
+    }
+  ],
   "format": "talk",
   "duration_min": 18,
   "thesis": "Prompt injection cannot be solved by trusting or filtering model behavior; grammar-constrained decoding, which allow-lists what tokens can be generated before sampling, blocked every attack in the speaker's 6-million-call study, while behavioral controls failed or cost far more tokens.",
@@ -16,50 +21,225 @@
     "Even without grammar support, provider structured outputs give much of the benefit by fixing the tool set, and grammars can be tightened per task and per user permission."
   ],
   "claims": [
-    {"claim": "Across about 6 million inference calls, 2.46 million attack trials and 544 million generated tokens on models from 1.7B to 119B (Qwen, Mistral, Gemma), only grammar and the allow-list gate reached 0.00 percent attack success.", "evidence": "Results table in the speaker's white paper, shown on a slide.", "grade": "measured", "t": "04:56", "source": "both"},
-    {"claim": "With no control, 56.77 percent of attacks got through; defensive prompting 56.50 percent and input filtering 56.85 percent were in the same band as having no control.", "evidence": "Results table, annotated 'same band as attacker' for both.", "grade": "measured", "t": "04:56", "source": "slide"},
-    {"claim": "Output filtering with a heuristic denylist reduced success from 56.77 percent to 2.15 percent but did not reach zero.", "evidence": "Results table and the Never Trust the Model slide.", "grade": "measured", "t": "03:16", "source": "slide"},
-    {"claim": "The allow-list gate also reached 0.00 percent but needed 791 output tokens per attack versus 240 with no control, because of retries (3 retries).", "evidence": "Results table; speaker described the policy engine telling the model to try again.", "grade": "measured", "t": "03:47", "source": "both"},
-    {"claim": "Grammar-constrained decoding reached 0.00 percent at 208 output tokens per attack, the lowest in the table.", "evidence": "Results table with grammar labeled before generation.", "grade": "measured", "t": "04:48", "source": "both"},
-    {"claim": "On Qwen3-1.7B over 282,000 attacks each, the allow-list gate generated 73.5M output tokens with 133,221 retries and 44 stranded agents (about 14,700 tokens per attack), while grammar generated 33.5M with zero retries and zero stranded agents (about 3,300 per attack): up to 4.5 times the tokens for the same 0.00 percent result.", "evidence": "'Second Best vs. Best' slide comparing the two controls.", "grade": "measured", "t": "03:45", "source": "slide"},
-    {"claim": "Grammar raises valid tool-call rates: Mistral 119B went from 59.2 percent to 99.8 percent and Qwen3 1.7B from 90.0 percent to 98.9 percent, so a 1.7B model with a grammar beats a 119B model without one.", "evidence": "'Filters vs. Grammars' slide table of valid tool calls with and without a grammar; no run counts shown.", "grade": "measured", "t": "04:59", "source": "slide"},
-    {"claim": "A grammar can override the model's instructions and refusals: a prompt forbidding orange, apple and banana still produced one of those words when the grammar admitted only those three, and the same model that refused to explain bypassing login rate limiting complied when the grammar committed 'Sure, here is'.", "evidence": "Side-by-side demos at gcd.tantalus.io with the same system prompt and model; refusal in 195 tokens against a compliant answer in 421 tokens.", "grade": "demo", "t": "05:20", "source": "both"},
-    {"claim": "In the Tantalus arena round one, an agent triaging IT tickets followed hidden instructions in a poisoned ticket and exfiltrated an API key file to an attacker URL; in round two with grammar the payload could not be sent to a disallowed endpoint.", "evidence": "Live walkthrough of both rounds on tantalus.io; the exfil-target tracker went from 1 of 6 in round one to 0 of 6 in round two.", "grade": "demo", "t": "06:54", "source": "both"},
-    {"claim": "Grammars are an inference-engine feature applied per call and can be tightened dynamically by task, user authorization and read or write permission, so the model can only emit actions the user could take.", "evidence": "Explanation in Q&A with a 50-tool example narrowed to about five.", "grade": "assertion", "t": "11:10", "source": "said"},
-    {"claim": "Grammar overhead is usually small because tokens that are forced can be pushed into prefill, though the overhead was larger in the past.", "evidence": "Stated in Q&A; no measurements shown.", "grade": "assertion", "t": "13:14", "source": "said"},
-    {"claim": "Structured outputs from most providers are free and 'get you 80 percent of the way' even though they are JSON only, while full context-free grammar control is offered by OpenAI and not yet by Anthropic.", "evidence": "Speaker's statement about provider support; the slide notes grammars are usually limited to Structured Outputs, if at all, via third-party APIs.", "grade": "assertion", "t": "09:35", "source": "both"}
+    {
+      "claim": "Across about 6 million inference calls, 2.46 million attack trials and 544 million generated tokens on models from 1.7B to 119B (Qwen, Mistral, Gemma), only grammar and the allow-list gate reached 0.00 percent attack success.",
+      "evidence": "Results table in the speaker's white paper, shown on a slide.",
+      "grade": "measured",
+      "t": "04:56",
+      "source": "both"
+    },
+    {
+      "claim": "With no control, 56.77 percent of attacks got through; defensive prompting 56.50 percent and input filtering 56.85 percent were in the same band as having no control.",
+      "evidence": "Results table, annotated 'same band as attacker' for both.",
+      "grade": "measured",
+      "t": "04:56",
+      "source": "slide"
+    },
+    {
+      "claim": "Output filtering with a heuristic denylist reduced success from 56.77 percent to 2.15 percent but did not reach zero.",
+      "evidence": "Results table and the Never Trust the Model slide.",
+      "grade": "measured",
+      "t": "03:16",
+      "source": "slide"
+    },
+    {
+      "claim": "The allow-list gate also reached 0.00 percent but needed 791 output tokens per attack versus 240 with no control, because of retries (3 retries).",
+      "evidence": "Results table; speaker described the policy engine telling the model to try again.",
+      "grade": "measured",
+      "t": "03:47",
+      "source": "both"
+    },
+    {
+      "claim": "Grammar-constrained decoding reached 0.00 percent at 208 output tokens per attack, the lowest in the table.",
+      "evidence": "Results table with grammar labeled before generation.",
+      "grade": "measured",
+      "t": "04:48",
+      "source": "both"
+    },
+    {
+      "claim": "On Qwen3-1.7B over 282,000 attacks each, the allow-list gate generated 73.5M output tokens with 133,221 retries and 44 stranded agents (about 14,700 tokens per attack), while grammar generated 33.5M with zero retries and zero stranded agents (about 3,300 per attack): up to 4.5 times the tokens for the same 0.00 percent result.",
+      "evidence": "'Second Best vs. Best' slide comparing the two controls.",
+      "grade": "measured",
+      "t": "03:45",
+      "source": "slide"
+    },
+    {
+      "claim": "Grammar raises valid tool-call rates: Mistral 119B went from 59.2 percent to 99.8 percent and Qwen3 1.7B from 90.0 percent to 98.9 percent, so a 1.7B model with a grammar beats a 119B model without one.",
+      "evidence": "'Filters vs. Grammars' slide table of valid tool calls with and without a grammar; no run counts shown.",
+      "grade": "measured",
+      "t": "04:59",
+      "source": "slide"
+    },
+    {
+      "claim": "A grammar can override the model's instructions and refusals: a prompt forbidding orange, apple and banana still produced one of those words when the grammar admitted only those three, and the same model that refused to explain bypassing login rate limiting complied when the grammar committed 'Sure, here is'.",
+      "evidence": "Side-by-side demos at gcd.tantalus.io with the same system prompt and model; refusal in 195 tokens against a compliant answer in 421 tokens.",
+      "grade": "demo",
+      "t": "05:20",
+      "source": "both"
+    },
+    {
+      "claim": "In the Tantalus arena round one, an agent triaging IT tickets followed hidden instructions in a poisoned ticket and exfiltrated an API key file to an attacker URL; in round two with grammar the payload could not be sent to a disallowed endpoint.",
+      "evidence": "Live walkthrough of both rounds on tantalus.io; the exfil-target tracker went from 1 of 6 in round one to 0 of 6 in round two.",
+      "grade": "demo",
+      "t": "06:54",
+      "source": "both"
+    },
+    {
+      "claim": "Grammars are an inference-engine feature applied per call and can be tightened dynamically by task, user authorization and read or write permission, so the model can only emit actions the user could take.",
+      "evidence": "Explanation in Q&A with a 50-tool example narrowed to about five.",
+      "grade": "assertion",
+      "t": "11:10",
+      "source": "said"
+    },
+    {
+      "claim": "Grammar overhead is usually small because tokens that are forced can be pushed into prefill, though the overhead was larger in the past.",
+      "evidence": "Stated in Q&A; no measurements shown.",
+      "grade": "assertion",
+      "t": "13:14",
+      "source": "said"
+    },
+    {
+      "claim": "Structured outputs from most providers are free and 'get you 80 percent of the way' even though they are JSON only, while full context-free grammar control is offered by OpenAI and not yet by Anthropic.",
+      "evidence": "Speaker's statement about provider support; the slide notes grammars are usually limited to Structured Outputs, if at all, via third-party APIs.",
+      "grade": "assertion",
+      "t": "09:35",
+      "source": "both"
+    }
   ],
   "numbers": [
-    {"figure": "~6M", "meaning": "inference calls in the study (about 6.1 million per the Tantalus README and the description)", "t": "01:10"},
-    {"figure": "544M", "meaning": "tokens generated", "t": "04:56"},
-    {"figure": "2.46M", "meaning": "attack trials", "t": "04:56"},
-    {"figure": "1.7B-119B", "meaning": "model size range tested (Qwen, Mistral, Gemma); the speaker said 122B aloud", "t": "03:47"},
-    {"figure": "56.77%", "meaning": "attacks through with no control", "t": "04:56"},
-    {"figure": "56.50%", "meaning": "attacks through with defensive prompting", "t": "04:56"},
-    {"figure": "56.85%", "meaning": "attacks through with input filtering", "t": "04:56"},
-    {"figure": "2.15%", "meaning": "attacks through with output filtering using a heuristic denylist", "t": "03:16"},
-    {"figure": "0.00%", "meaning": "attacks through with the allow-list gate and with grammar", "t": "04:56"},
-    {"figure": "240 / 240 / 239 / 216 / 791 / 208", "meaning": "output tokens per attack for no control, defensive prompting, input filtering, output filtering, allow-list gate, grammar", "t": "04:56"},
-    {"figure": "282,000", "meaning": "attacks each for the Qwen3-1.7B comparison of allow-list gate and grammar", "t": "03:45"},
-    {"figure": "73.5M vs 33.5M", "meaning": "output tokens generated by the gate versus grammar on Qwen3-1.7B", "t": "03:45"},
-    {"figure": "133,221 / 0", "meaning": "retries for the gate versus grammar on Qwen3-1.7B", "t": "03:45"},
-    {"figure": "44 / 0", "meaning": "agents stranded under the gate versus grammar on Qwen3-1.7B", "t": "03:45"},
-    {"figure": "~14,700 vs ~3,300", "meaning": "tokens per attack for the gate versus grammar on Qwen3-1.7B (up to 4.5x)", "t": "03:45"},
-    {"figure": "59.2% to 99.8%", "meaning": "valid tool calls for Mistral 119B without and with a grammar", "t": "04:59"},
-    {"figure": "90.0% to 98.9%", "meaning": "valid tool calls for Qwen3 1.7B without and with a grammar", "t": "04:59"}
+    {
+      "figure": "~6M",
+      "meaning": "inference calls in the study (about 6.1 million per the Tantalus README and the description)",
+      "t": "01:10"
+    },
+    {
+      "figure": "544M",
+      "meaning": "tokens generated",
+      "t": "04:56"
+    },
+    {
+      "figure": "2.46M",
+      "meaning": "attack trials",
+      "t": "04:56"
+    },
+    {
+      "figure": "1.7B-119B",
+      "meaning": "model size range tested (Qwen, Mistral, Gemma); the speaker said 122B aloud",
+      "t": "03:47"
+    },
+    {
+      "figure": "56.77%",
+      "meaning": "attacks through with no control",
+      "t": "04:56"
+    },
+    {
+      "figure": "56.50%",
+      "meaning": "attacks through with defensive prompting",
+      "t": "04:56"
+    },
+    {
+      "figure": "56.85%",
+      "meaning": "attacks through with input filtering",
+      "t": "04:56"
+    },
+    {
+      "figure": "2.15%",
+      "meaning": "attacks through with output filtering using a heuristic denylist",
+      "t": "03:16"
+    },
+    {
+      "figure": "0.00%",
+      "meaning": "attacks through with the allow-list gate and with grammar",
+      "t": "04:56"
+    },
+    {
+      "figure": "240 / 240 / 239 / 216 / 791 / 208",
+      "meaning": "output tokens per attack for no control, defensive prompting, input filtering, output filtering, allow-list gate, grammar",
+      "t": "04:56"
+    },
+    {
+      "figure": "282,000",
+      "meaning": "attacks each for the Qwen3-1.7B comparison of allow-list gate and grammar",
+      "t": "03:45"
+    },
+    {
+      "figure": "73.5M vs 33.5M",
+      "meaning": "output tokens generated by the gate versus grammar on Qwen3-1.7B",
+      "t": "03:45"
+    },
+    {
+      "figure": "133,221 / 0",
+      "meaning": "retries for the gate versus grammar on Qwen3-1.7B",
+      "t": "03:45"
+    },
+    {
+      "figure": "44 / 0",
+      "meaning": "agents stranded under the gate versus grammar on Qwen3-1.7B",
+      "t": "03:45"
+    },
+    {
+      "figure": "~14,700 vs ~3,300",
+      "meaning": "tokens per attack for the gate versus grammar on Qwen3-1.7B (up to 4.5x)",
+      "t": "03:45"
+    },
+    {
+      "figure": "59.2% to 99.8%",
+      "meaning": "valid tool calls for Mistral 119B without and with a grammar",
+      "t": "04:59"
+    },
+    {
+      "figure": "90.0% to 98.9%",
+      "meaning": "valid tool calls for Qwen3 1.7B without and with a grammar",
+      "t": "04:59"
+    }
   ],
   "frameworks": [
-    {"name": "Security versus safety, and the harness", "description": "AI security is the technical integrity of the system; AI safety is human interpretation of danger; the harness is the code that takes LLM text and executes it. Controls belong in the harness, not the model."},
-    {"name": "CPU analogy", "description": "Malware does not exist to a CPU, it is just instructions in and actions out; prompt injection does not exist to an LLM, it is just tokens in and tokens out."},
-    {"name": "Filters versus grammars", "description": "Output filters catch bad calls after generation, force a retry that resends the entire context, and serve as defense in depth for third-party APIs; grammars make bad calls ungenerable, need zero retries, and are usually limited to Structured Outputs, if available at all."},
-    {"name": "Constrain the sampler, secure the system", "description": "Summary principle stated aloud: the model is not a security control; output filters are for defense in depth; grammars make bad calls ungenerable. Allow-list over tokens that can exist before generation, rather than filtering after."},
-    {"name": "Control comparison in the study", "description": "Six conditions: no control, defensive prompting, input filtering, output filtering (heuristic denylist), allow-list gate (policy engine with 3 retries), grammar (before generation)."}
+    {
+      "name": "Security versus safety, and the harness",
+      "description": "AI security is the technical integrity of the system; AI safety is human interpretation of danger; the harness is the code that takes LLM text and executes it. Controls belong in the harness, not the model."
+    },
+    {
+      "name": "CPU analogy",
+      "description": "Malware does not exist to a CPU, it is just instructions in and actions out; prompt injection does not exist to an LLM, it is just tokens in and tokens out."
+    },
+    {
+      "name": "Filters versus grammars",
+      "description": "Output filters catch bad calls after generation, force a retry that resends the entire context, and serve as defense in depth for third-party APIs; grammars make bad calls ungenerable, need zero retries, and are usually limited to Structured Outputs, if available at all."
+    },
+    {
+      "name": "Constrain the sampler, secure the system",
+      "description": "Summary principle stated aloud: the model is not a security control; output filters are for defense in depth; grammars make bad calls ungenerable. Allow-list over tokens that can exist before generation, rather than filtering after."
+    },
+    {
+      "name": "Control comparison in the study",
+      "description": "Six conditions: no control, defensive prompting, input filtering, output filtering (heuristic denylist), allow-list gate (policy engine with 3 retries), grammar (before generation)."
+    }
   ],
   "artifacts": [
-    {"name": "Tantalus", "kind": "benchmark", "note": "Public two-round indirect prompt injection arena: an AI assistant on sysadmin Jordan Reeves's workstation at Cybershark Consulting with poisoned tools and tickets, and six exfiltration targets (SSH key, API key, infra monitor, ticket assist forward, chat data, email); round two replaces other controls with grammar. Runs a Qwen3.6-35B-A3B-Abliterated model on the speaker's own server.", "url": "tantalus.io"},
-    {"name": "GCD showcase", "kind": "tool", "note": "Side-by-side demo of grammar-constrained decoding in six steps (fruit, your words, a letter, two alphabets, the opening, where next), including forcing a compliant opening.", "url": "gcd.tantalus.io"},
-    {"name": "Ovando white paper", "kind": "paper", "note": "Study of defensive prompting, input and output filtering, allow-list gate and grammar over about 6.1 million inference calls.", "url": "https://doi.org/10.17605/OSF.IO/S9GU6"},
-    {"name": "BAML", "kind": "tool", "note": "Typed structured-output language raised by an audience member, reportedly used by an AWS Alexa effort.", "url": ""}
+    {
+      "name": "Tantalus",
+      "kind": "benchmark",
+      "note": "Public two-round indirect prompt injection arena: an AI assistant on sysadmin Jordan Reeves's workstation at Cybershark Consulting with poisoned tools and tickets, and six exfiltration targets (SSH key, API key, infra monitor, ticket assist forward, chat data, email); round two replaces other controls with grammar. Runs a Qwen3.6-35B-A3B-Abliterated model on the speaker's own server.",
+      "url": "tantalus.io"
+    },
+    {
+      "name": "GCD showcase",
+      "kind": "tool",
+      "note": "Side-by-side demo of grammar-constrained decoding in six steps (fruit, your words, a letter, two alphabets, the opening, where next), including forcing a compliant opening.",
+      "url": "gcd.tantalus.io"
+    },
+    {
+      "name": "Ovando white paper",
+      "kind": "paper",
+      "note": "Study of defensive prompting, input and output filtering, allow-list gate and grammar over about 6.1 million inference calls.",
+      "url": "https://doi.org/10.17605/OSF.IO/S9GU6"
+    },
+    {
+      "name": "BAML",
+      "kind": "tool",
+      "note": "Typed structured-output language raised by an audience member, reportedly used by an AWS Alexa effort.",
+      "url": ""
+    }
   ],
   "slide_only": [
     "Title slide: 'The Model Is NOT a Security Control', subtitle 'Prompt Injection Dies at the Token Sampler', Vince Ovando, AI Security Researcher && Engineer @ IOActive.",
@@ -83,10 +263,26 @@
     "Tantalus round two with grammar: the same attack ran but the payload could only go to the allowed consulting-domain URL; goal count showed 0 of 6."
   ],
   "quotes": [
-    {"text": "As malware does not exist to a CPU, prompt injection does not exist to an LLM. There is no delineation between good and bad tokens. It's just tokens in.", "speaker": "Vince Ovando", "t": "02:13"},
-    {"text": "Instead of allowing it to generate what you know is bad up front, you make it ungenerable.", "speaker": "Vince Ovando", "t": "04:48"},
-    {"text": "I'm not going to trust the model. I'm going to make it structurally impossible for it to fail.", "speaker": "Vince Ovando", "t": "06:23"},
-    {"text": "Constrain the sampler, secure the system.", "speaker": "Vince Ovando", "t": "07:30"}
+    {
+      "text": "As malware does not exist to a CPU, prompt injection does not exist to an LLM. There is no delineation between good and bad tokens. It's just tokens in.",
+      "speaker": "Vince Ovando",
+      "t": "02:13"
+    },
+    {
+      "text": "Instead of allowing it to generate what you know is bad up front, you make it ungenerable.",
+      "speaker": "Vince Ovando",
+      "t": "04:48"
+    },
+    {
+      "text": "I'm not going to trust the model. I'm going to make it structurally impossible for it to fail.",
+      "speaker": "Vince Ovando",
+      "t": "06:23"
+    },
+    {
+      "text": "Constrain the sampler, secure the system.",
+      "speaker": "Vince Ovando",
+      "t": "07:30"
+    }
   ],
   "offense": [
     "Indirect prompt injection through a poisoned IT help desk ticket that tells an agent to read a secret file and post it to an attacker URL with curl.",
@@ -102,7 +298,7 @@
   ],
   "takeaways": [
     "Stop counting on system prompts and input filters for agent safety; in this study they left attack success near 57 percent.",
-    "Move controls from after generation to before it: enumerate allowed tool calls, arguments and destinations and enforce them with structured outputs or grammars where the provider supports them.",
+    "Move controls from after generation to before it by enumerating allowed tool calls, arguments and destinations and enforcing them with structured outputs or grammars where the provider supports them.",
     "Generate the tool allow-list per step and per user entitlement instead of exposing the full tool catalogue.",
     "If you use a retry-based policy gate, budget for its token cost: it matched grammar on security but used about 3.8 times the output tokens in the main table and up to 4.5 times the tokens per attack on Qwen3-1.7B, with some agents stranded.",
     "Check which constraint features your model provider exposes, and prefer self-hosted inference where you need full context-free grammar control."
@@ -118,7 +314,7 @@
     "Grammar blocks disallowed action shapes but not misuse of permitted ones; the study as shown does not report attacks that stay inside the allowed grammar, such as injected content that changes the content of an allowed action.",
     "The tested models include an abliterated Qwen in the public arena and a custom harness on the speaker's hardware, so generalization to commercial agents with provider-hosted inference is untested here.",
     "The statement that all behavioral and structural controls were bypassed except one differs from the table, where the allow-list gate also reached 0.00 percent; the distinction shown is cost, not security.",
-    "The cost comparisons use different units across slides: 791 versus 208 output tokens per attack in the main table, but about 14,700 versus 3,300 tokens per attack on the Qwen3-1.7B slide, where the totals (73.5M and 33.5M over 282,000 attacks) imply far fewer; the basis for 'tokens per attack' was not defined in the talk and may be defined in the white paper.",
+    "The cost comparisons use different units across slides: 791 versus 208 output tokens per attack in the main table, but about 14,700 versus 3,300 tokens per attack on the Qwen3-1.7B slide, where the totals (73.5M and 33.5M over 282,000 attacks) imply far fewer; the basis for 'tokens per attack' was not defined in the talk.",
     "The valid-tool-call table (59.2 to 99.8 percent, 90.0 to 98.9 percent) shows no sample sizes or tool-set definition, and the claims about low overhead and dynamic per-user grammars are stated without data in the talk.",
     "The talk leans on the white paper for method detail, such as attack set, success criteria and sampling, none of which were shown."
   ],
@@ -132,20 +328,43 @@
     "Do you need to own the inference stack? No; it is an extra argument on the API call, and structured outputs work when deeper control is unavailable. OpenAI exposes context-free grammars; Anthropic does not yet.",
     "A moderator noted BAML as a typed structured-output language used for Alexa; the speaker said he was familiar with it."
   ],
-  "tags": ["prompt-injection", "guardrails-runtime-controls", "evals-benchmarks-metrics", "model-internals"],
-  "key_frames": [
-    {"file": "t00225.jpg", "caption": "Second Best vs. Best: allow-list gate versus grammar on Qwen3-1.7B, both 0.00 percent, with 73.5M versus 33.5M tokens, 133,221 versus 0 retries and up to 4.5x the tokens."},
-    {"file": "t00280.jpg", "caption": "The study's results table: six controls by attacks-through and output tokens per attack, with study scale (6M calls, 544M tokens, 2.46M trials)."},
-    {"file": "t00299.jpg", "caption": "Filters vs. Grammars: valid tool calls with and without grammar (a 1.7B with a grammar beats a 119B without) and how filters and grammars differ."},
-    {"file": "t00382.jpg", "caption": "GCD showcase: same model refuses under policy but complies when the grammar commits the opening."},
-    {"file": "t00433.jpg", "caption": "Tantalus round one: agent follows a poisoned ticket and posts an API key file to a lookalike SSO URL; the exfil target tracker shows success."}
+  "tags": [
+    "prompt-injection",
+    "guardrails-runtime-controls",
+    "evals-benchmarks-metrics",
+    "model-internals"
   ],
-  "signal": {"score": 4, "reason": "Specific controlled comparison of controls with a clear cost-versus-security result and public arena; the results cover one attack objective."},
+  "key_frames": [
+    {
+      "file": "t00225.jpg",
+      "caption": "Second Best vs. Best: allow-list gate versus grammar on Qwen3-1.7B, both 0.00 percent, with 73.5M versus 33.5M tokens, 133,221 versus 0 retries and up to 4.5x the tokens."
+    },
+    {
+      "file": "t00280.jpg",
+      "caption": "The study's results table: six controls by attacks-through and output tokens per attack, with study scale (6M calls, 544M tokens, 2.46M trials)."
+    },
+    {
+      "file": "t00299.jpg",
+      "caption": "Filters vs. Grammars: valid tool calls with and without grammar (a 1.7B with a grammar beats a 119B without) and how filters and grammars differ."
+    },
+    {
+      "file": "t00382.jpg",
+      "caption": "GCD showcase: same model refuses under policy but complies when the grammar commits the opening."
+    },
+    {
+      "file": "t00433.jpg",
+      "caption": "Tantalus round one: agent follows a poisoned ticket and posts an API key file to a lookalike SSO URL; the exfil target tracker shows success."
+    }
+  ],
+  "signal": {
+    "score": 4,
+    "reason": "The talk reports a controlled comparison of five controls and a no-control baseline with attack-success and output-token figures, plus a public two-round arena; the results cover one attack objective."
+  },
   "caveats": [
-    "meta.json lists the frames as camera-only but about 26 of the 34 frames show slides and demos; the last frames are camera and Q&A only.",
-    "The speaker said '122 billion' parameters; the slide and description show 119B, which is used here.",
+    "The recording metadata lists the frames as camera-only but about 26 of the 34 captured frames show slides and demos; the last frames are camera and Q&A only.",
+    "The speaker said '122 billion' parameters; the slide and the published description show 119B, which is used here.",
     "The tokens-per-attack figures differ between the main table (791 and 208 output tokens) and the Qwen3-1.7B slide (about 14,700 and 3,300); both are recorded as shown and the basis for the difference is not stated.",
-    "A closing summary slide with 'Constrain the sampler, secure the system' does not appear in the frames; the line is attributed from speech.",
+    "A closing summary slide with 'Constrain the sampler, secure the system' does not appear in the captured slides; the line is attributed from speech.",
     "Auto-captions garble some terms: 'tantalus' appears as Tantalus on slides, 'Grammar is' corresponds to grammar, 'Jev' in the Q&A is unclear.",
     "The slide with the study definition of the attack and the white paper method were not shown, so the attack set composition is unknown.",
     "Speaker affiliation is IOActive per the title slide; he said he joined the previous week."

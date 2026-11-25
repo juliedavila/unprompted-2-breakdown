@@ -3,11 +3,16 @@
   "id": "L_1uZy9sDOI",
   "url": "https://www.youtube.com/watch?v=L_1uZy9sDOI",
   "title": "Lightning Talk",
-  "speakers": [{"name": "Greg McCord", "affiliation": "Chief Security Officer, Confide Group (description: Cybersecurity Strategist and CISO Advisor, Confide Group)"}],
+  "speakers": [
+    {
+      "name": "Greg McCord",
+      "affiliation": "Chief Security Officer, Confide Group (description: Cybersecurity Strategist and CISO Advisor, Confide Group)"
+    }
+  ],
   "format": "lightning",
   "duration_min": 5,
   "thesis": "CISOs under pressure from fast AI adoption feel overwhelmed, and a deliberate pause and different perspective is a better coping mechanism than spiraling or working 16-hour days chasing shiny objects.",
-  "summary": "McCord uses his lightning slot to talk about mental health rather than technology. He recounts the start of the agentic rush at his previous employer, a technology company where he was CISO: leadership wanted to turn everything on, he argued for guardrails, and being against the grain left him isolated, followed by a management change that put him on the chopping block. He describes spiraling through self-doubt before concluding he was right because of customer data and other risks, then deciding to study the organization's culture and define his approach. He told his team to research every model in front of them quickly so they would not end up where he did. He then describes how he copes with feeling overwhelmed: step away from the keyboard, touch a surface with rough edges, and change his state of mind, drawing on somatic processing techniques from his therapist wife. He says he knows to stop when he is spending 16 hours a day chasing shiny objects and to return with more energy and a different angle. At Confide, building AI products and helping other CISOs roll out AI at scale, he says he can now share the process. He closes with a short audience breathing exercise, admitting he is nervous, and notes there are better and worse coping mechanisms.",
+  "summary": "McCord uses his lightning slot to talk about mental health rather than technology. He recounts the start of the agentic rush at his previous employer, a technology company where he was CISO: leadership wanted to turn everything on, he argued for guardrails, and being against the grain left him isolated, followed by a management change that put him on the chopping block. He describes spiraling through self-doubt before concluding he was right because of customer data and other risks, then deciding to study the organization's culture and define his approach. He told his team to research every model in front of them quickly so they would not end up where he did. He then describes how he copes with feeling overwhelmed: step away from the keyboard, touch a surface with rough edges, and change his state of mind, drawing on somatic processing techniques from his therapist wife. He says he knows to stop when he is spending 16 hours a day chasing shiny objects and to return with more energy and a different angle. At Confide, building AI products and helping other CISOs roll out AI at scale, he says he can now share the process. He closes with a short audience breathing exercise, says he is nervous, and notes there are better and worse coping mechanisms.",
   "argument": [
     "A CISO who pushes for guardrails during an AI rollout can end up isolated and professionally at risk, which produces an overwhelming spiral.",
     "The feeling is normal and manageable: step away, change state, and come back to the problem with energy and a different perspective.",
@@ -15,13 +20,41 @@
     "Having done this, he can now give other CISOs a process for rolling AI out at scale."
   ],
   "claims": [
-    {"claim": "Pushing for guardrails when leadership wanted everything turned on put him against the grain of his organization, and a management change then left him on the chopping block.", "evidence": "Personal account of his time as CISO at an unnamed technology company; no details of outcome beyond the spiral.", "grade": "anecdote", "t": "00:39", "source": "said"},
-    {"claim": "Stepping away from the keyboard, using a tactile reset and somatic processing techniques reduces the feeling of being overwhelmed and restores energy.", "evidence": "His own practice and advice from his therapist wife; a short audience breathing exercise was offered as a demonstration.", "grade": "anecdote", "t": "02:11", "source": "said"},
-    {"claim": "Spending 16 hours a day chasing shiny objects while researching a problem is the signal that a break is needed.", "evidence": "Personal rule of thumb.", "grade": "assertion", "t": "03:12", "source": "said"},
-    {"claim": "He has a repeatable process for rolling out AI at scale that he is using at Confide with customers and will share with other CISOs.", "evidence": "Stated but not described in the talk.", "grade": "assertion", "t": "03:43", "source": "said"}
+    {
+      "claim": "Pushing for guardrails when leadership wanted everything turned on put him against the grain of his organization, and a management change then left him on the chopping block.",
+      "evidence": "Personal account of his time as CISO at an unnamed technology company; no details of outcome beyond the spiral.",
+      "grade": "anecdote",
+      "t": "00:39",
+      "source": "said"
+    },
+    {
+      "claim": "Stepping away from the keyboard, using a tactile reset and somatic processing techniques reduces the feeling of being overwhelmed and restores energy.",
+      "evidence": "His own practice and advice from his therapist wife; a short audience breathing exercise was offered as a demonstration.",
+      "grade": "anecdote",
+      "t": "02:11",
+      "source": "said"
+    },
+    {
+      "claim": "Spending 16 hours a day chasing shiny objects while researching a problem is the signal that a break is needed.",
+      "evidence": "Personal rule of thumb.",
+      "grade": "assertion",
+      "t": "03:12",
+      "source": "said"
+    },
+    {
+      "claim": "He has a repeatable process for rolling out AI at scale that he is using at Confide with customers and will share with other CISOs.",
+      "evidence": "Stated but not described in the talk.",
+      "grade": "assertion",
+      "t": "03:43",
+      "source": "said"
+    }
   ],
   "numbers": [
-    {"figure": "16 hours a day", "meaning": "time he spends researching when chasing shiny objects, which he treats as the cue to stop", "t": "03:12"}
+    {
+      "figure": "16 hours a day",
+      "meaning": "time he spends researching when chasing shiny objects, which he treats as the cue to stop",
+      "t": "03:12"
+    }
   ],
   "frameworks": [],
   "artifacts": [],
@@ -30,8 +63,16 @@
     "A guided breathing exercise with the audience: eyes closed, a deep breath in, hold, release, then asking who felt a change in demeanor."
   ],
   "quotes": [
-    {"text": "I immediately felt overwhelmed.", "speaker": "Greg McCord", "t": "01:11"},
-    {"text": "There's better coping mechanisms and there's not so great coping mechanisms.", "speaker": "Greg McCord", "t": "04:44"}
+    {
+      "text": "I immediately felt overwhelmed.",
+      "speaker": "Greg McCord",
+      "t": "01:11"
+    },
+    {
+      "text": "There's better coping mechanisms and there's not so great coping mechanisms.",
+      "speaker": "Greg McCord",
+      "t": "04:44"
+    }
   ],
   "offense": [],
   "defense": [
@@ -42,7 +83,7 @@
   "takeaways": [
     "Treat CISO overload during an AI rollout as an operational risk and give yourself and your team permission to pause.",
     "Have the team learn the models in front of them early so that they can argue guardrails with knowledge rather than from the sidelines.",
-    "Use a concrete signal (such as 16-hour research days) to trigger a break."
+    "Use a concrete signal, such as 16-hour research days, to trigger a break."
   ],
   "limits": [
     "Speaker said he could talk about this for hours and limited the talk to a short personal account; no process for AI rollout at scale was presented."
@@ -53,15 +94,26 @@
     "The employer in the story is unnamed, and the speaker's current role is at a company that builds AI products and advises CISOs; the rollout process he mentions is not described, so it cannot be checked."
   ],
   "qa": [],
-  "tags": ["org-adoption-culture"],
-  "key_frames": [
-    {"file": "t00039.jpg", "caption": "Camera-only shot of the speaker at the opening, with his name and Confide Group on the badge; no slides were used."},
-    {"file": "t00275.jpg", "caption": "Speaker leading the audience breathing exercise near the end of the talk."}
+  "tags": [
+    "org-adoption-culture"
   ],
-  "signal": {"score": 2, "reason": "A short personal reflection on coping with overload, containing no technical claims or checkable data."},
+  "key_frames": [
+    {
+      "file": "t00039.jpg",
+      "caption": "Camera-only shot of the speaker at the opening, with his name and Confide Group on the badge; no slides were used."
+    },
+    {
+      "file": "t00275.jpg",
+      "caption": "Speaker leading the audience breathing exercise near the end of the talk."
+    }
+  ],
+  "signal": {
+    "score": 2,
+    "reason": "The talk gives a short personal account of coping with overload during an AI rollout and contains no technical claims or checkable data."
+  },
   "caveats": [
     "Camera-only talk: there were no slides, so all content comes from the transcript.",
     "Auto-captions render the company as Confide Group; the description and badge agree.",
-    "The speaker describes himself as Chief Security Officer for Confide Group and a protector of the CISO Society (transcript garble possible); the description lists Cybersecurity Strategist and CISO Advisor."
+    "The speaker describes himself as Chief Security Officer for Confide Group and a protector of the CISO Society, wording that could not be confirmed from the captions; the description lists Cybersecurity Strategist and CISO Advisor."
   ]
 }

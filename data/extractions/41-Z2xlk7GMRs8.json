@@ -4,13 +4,19 @@
   "url": "https://www.youtube.com/watch?v=Z2xlk7GMRs8",
   "title": "There Isn't a Security Problem an Agent Can't Help Solve",
   "speakers": [
-    {"name": "Amol Deshpande", "affiliation": "Stripe"},
-    {"name": "Namita Prakash", "affiliation": "Stripe"}
+    {
+      "name": "Amol Deshpande",
+      "affiliation": "Stripe"
+    },
+    {
+      "name": "Namita Prakash",
+      "affiliation": "Stripe"
+    }
   ],
   "format": "talk",
   "duration_min": 30,
   "thesis": "Rather than layering AI over every stage of the secure development lifecycle, Stripe picked the stages where security review was a bottleneck and built agents for each, putting every agent through a trial of offline evals, shadow mode and risk-based rollout while keeping humans on the loop.",
-  "summary": "Deshpande and Prakash follow a fictional engineer, Alex, through the secure software development lifecycle and show four places where Stripe applied agents to remove a security bottleneck, concentrating on the design and implementation stages. They state three principles each agent is held to: security should be automatic, seamless and readily available in developer workflows. The first stop is the design doc, where an agent injects a security considerations section; a three-condition experiment (plain prompt, focused prompt, dedicated skill) scored on coverage, specificity, actionability, accuracy and bottleneck prevention found the dedicated skill won, though the focused prompt was nearly as good but failed the automatic principle. The second stop replaces manual security review intake with risk-based intake: lower-risk reviews get a self-service, agent-generated threat model that the requesting team marks relevant or not, with an asynchronous audit, while critical or ambiguous reviews stay in the human queue. Stripe reports average completion falling from about 55 days to 13 over August to October 2026, with caveats. The third stop handles policy exception requests with a split between deterministic rules, an agent for contextual judgment and human review above medium risk, rolled out in offline evals, shadow mode and risk-based phases. The fourth stop is an agent that checks remediation fixes against code and returns addressed, partially addressed or not addressed with citations. The talk closes with the human-on-the-loop model and a Q&A on knowledge sources, policy drift, compliance and outcome measurement.",
+  "summary": "Deshpande and Prakash follow a fictional engineer, Alex, through the secure software development lifecycle and show four places where Stripe applied agents to remove a security bottleneck, concentrating on the design and implementation stages. They state three principles each agent is held to: security should be automatic, seamless and readily available in developer workflows. The first stop is the design doc, where an agent injects a security considerations section; a three-condition experiment (plain prompt, focused prompt, dedicated skill) scored on coverage, specificity, actionability, accuracy and bottleneck prevention found the dedicated skill won, though the focused prompt was nearly as good but failed the automatic principle. The second stop replaces manual security review intake with risk-based intake: lower-risk reviews get a self-service, agent-generated threat model that the requesting team marks relevant or not, with an asynchronous audit, while critical or ambiguous reviews stay in the human queue. Stripe reports average completion falling from about 55 days to 13 over August to October 2026, with caveats. The third stop handles policy exception requests with a split between deterministic rules, an agent for contextual judgment and human review above medium risk, rolled out in offline evals, shadow mode and risk-based phases. The fourth stop is an agent that checks remediation fixes against code and returns addressed, partially addressed or not addressed with citations.",
   "argument": [
     "Adding AI across every SDLC stage is not enough; each stage's actual security pain point should be understood and an agent built to reduce that specific bottleneck.",
     "Agents must meet three design principles: security that is automatic, seamless and readily available inside existing developer workflows.",
@@ -113,31 +119,112 @@
     }
   ],
   "numbers": [
-    {"figure": "54.9 days, 63 reviews", "meaning": "average completion time of manual security reviews in the baseline process, Aug to Oct 2026 comparison", "t": "11:33"},
-    {"figure": "13.0 days, 70 reviews", "meaning": "average completion time of self-service security reviews in the new flow", "t": "11:33"},
-    {"figure": "4.2x", "meaning": "speedup factor compared with manual security reviews, per the slide", "t": "11:33"},
-    {"figure": "76.4%", "meaning": "reduction in overall time to completion on the slide (the speaker said 74 percent)", "t": "11:33"},
-    {"figure": "more than half", "meaning": "organizations using AI in the SDLC that reported reduced process time but still found security testing and remediation a bottleneck, attributed to a Gartner survey", "t": "00:38"},
-    {"figure": "6 stages", "meaning": "SDLC stops in Alex's journey: planning and requirements, design, implementation, verification, deployment, maintenance; talk covers design and implementation", "t": "01:41"},
-    {"figure": "5 scorecard dimensions", "meaning": "coverage, specificity, actionability, accuracy and bottleneck prevention for the design-doc trial", "t": "06:20"},
-    {"figure": "3 conditions", "meaning": "plain prompt, focused prompt and dedicated skill in the design-doc experiment", "t": "05:49"}
+    {
+      "figure": "54.9 days, 63 reviews",
+      "meaning": "average completion time of manual security reviews in the baseline process, Aug to Oct 2026 comparison",
+      "t": "11:33"
+    },
+    {
+      "figure": "13.0 days, 70 reviews",
+      "meaning": "average completion time of self-service security reviews in the new flow",
+      "t": "11:33"
+    },
+    {
+      "figure": "4.2x",
+      "meaning": "speedup factor compared with manual security reviews, per the slide",
+      "t": "11:33"
+    },
+    {
+      "figure": "76.4%",
+      "meaning": "reduction in overall time to completion on the slide (the speaker said 74 percent)",
+      "t": "11:33"
+    },
+    {
+      "figure": "more than half",
+      "meaning": "organizations using AI in the SDLC that reported reduced process time but still found security testing and remediation a bottleneck, attributed to a Gartner survey",
+      "t": "00:38"
+    },
+    {
+      "figure": "6 stages",
+      "meaning": "SDLC stops in Alex's journey: planning and requirements, design, implementation, verification, deployment, maintenance; talk covers design and implementation",
+      "t": "01:41"
+    },
+    {
+      "figure": "5 scorecard dimensions",
+      "meaning": "coverage, specificity, actionability, accuracy and bottleneck prevention for the design-doc trial",
+      "t": "06:20"
+    },
+    {
+      "figure": "3 conditions",
+      "meaning": "plain prompt, focused prompt and dedicated skill in the design-doc experiment",
+      "t": "05:49"
+    }
   ],
   "frameworks": [
-    {"name": "Three design principles for security agents", "description": "Automatic (built in by default and auto-activating), Seamless (minimal manual churn, reviewer back-and-forth and friction points), Readily Available (actionable context inside existing developer workflows). Used as the trial standard throughout."},
-    {"name": "Alex's journey through the secure SDLC", "description": "Six stops: planning and requirements (security objectives), design (threat model and secure architecture), implementation (secure coding and pre-commit scans), verification (penetration testing), deployment (hardening and IaC guardrails), maintenance (telemetry and patch management). The talk covers design and implementation."},
-    {"name": "Three-condition experiment and scorecard", "description": "Conditions: plain prompt, focused prompt, dedicated skill. Scorecard: coverage (did the agent catch what the reviewer caught), specificity, actionability, accuracy, and bottleneck prevention."},
-    {"name": "Agentic review queue", "description": "Risk intake routes to either a manual queue (critical or ambiguous) or an agentic self-service queue, followed by an async audit. Self-service workflow: submit, analyze, review evidence, accept or reject, remediate or escalate."},
-    {"name": "Deterministic, agentic, governance split", "description": "Clear facts use rules; where context matters use an agent; ambiguous or consequential decisions use human judgment. Applied to policy exception reviews."},
-    {"name": "Phase-based rollout", "description": "Offline evals on past cases for baseline accuracy and agent-appropriate use cases; shadow mode in live environments logging decisions without acting and comparing to human judgment; risk-based rollout starting with low-risk, low-repercussion tasks, adding risk-based human approval guardrails and expanding scope as trust grows."},
-    {"name": "Quality pillars", "description": "Evals, groundedness checks, and user feedback."},
-    {"name": "Human-on-the-loop model", "description": "Continuous supervision without reviewing every output: shadow mode, feedback, spot checks, trend analysis, rapid rollback and manual handling for ambiguous cases."}
+    {
+      "name": "Three design principles for security agents",
+      "description": "Automatic (built in by default and auto-activating), Seamless (minimal manual churn, reviewer back-and-forth and friction points), Readily Available (actionable context inside existing developer workflows). Used as the trial standard throughout."
+    },
+    {
+      "name": "Alex's journey through the secure SDLC",
+      "description": "Six stops: planning and requirements (security objectives), design (threat model and secure architecture), implementation (secure coding and pre-commit scans), verification (penetration testing), deployment (hardening and IaC guardrails), maintenance (telemetry and patch management). The talk covers design and implementation."
+    },
+    {
+      "name": "Three-condition experiment and scorecard",
+      "description": "Conditions: plain prompt, focused prompt, dedicated skill. Scorecard: coverage (did the agent catch what the reviewer caught), specificity, actionability, accuracy, and bottleneck prevention."
+    },
+    {
+      "name": "Agentic review queue",
+      "description": "Risk intake routes to either a manual queue (critical or ambiguous) or an agentic self-service queue, followed by an async audit. Self-service workflow: submit, analyze, review evidence, accept or reject, remediate or escalate."
+    },
+    {
+      "name": "Deterministic, agentic, governance split",
+      "description": "Clear facts use rules; where context matters use an agent; ambiguous or consequential decisions use human judgment. Applied to policy exception reviews."
+    },
+    {
+      "name": "Phase-based rollout",
+      "description": "Offline evals on past cases for baseline accuracy and agent-appropriate use cases; shadow mode in live environments logging decisions without acting and comparing to human judgment; risk-based rollout starting with low-risk, low-repercussion tasks, adding risk-based human approval guardrails and expanding scope as trust grows."
+    },
+    {
+      "name": "Quality pillars",
+      "description": "Evals, groundedness checks, and user feedback."
+    },
+    {
+      "name": "Human-on-the-loop model",
+      "description": "Continuous supervision without reviewing every output: shadow mode, feedback, spot checks, trend analysis, rapid rollback and manual handling for ambiguous cases."
+    }
   ],
   "artifacts": [
-    {"name": "Guardrails Beyond Vibes", "kind": "paper", "note": "Previous [un]prompted talk by Stripe colleagues on building guardrails and evaluation for assistive threat-modeling agents; the current self-service model builds on it.", "url": ""},
-    {"name": "Agent-enhanced design doc", "kind": "product", "note": "Stripe's agent that injects a security considerations section into design docs in the standard agentic environment used to write them, implemented as a dedicated skill.", "url": ""},
-    {"name": "Self-service security review workflow", "kind": "product", "note": "Risk-based intake plus agent-generated threat models with requesting-team review and async audit.", "url": ""},
-    {"name": "Policy exception reviewer", "kind": "product", "note": "Rules plus agent plus human triage for policy exception and deadline extension requests.", "url": ""},
-    {"name": "Remediation checking agent", "kind": "product", "note": "Triggered at sign-off; evaluates each remediation requirement against code with citations and returns addressed, partially addressed or not addressed.", "url": ""}
+    {
+      "name": "Guardrails Beyond Vibes",
+      "kind": "paper",
+      "note": "Previous [un]prompted talk by Stripe colleagues on building guardrails and evaluation for assistive threat-modeling agents; the current self-service model builds on it.",
+      "url": ""
+    },
+    {
+      "name": "Agent-enhanced design doc",
+      "kind": "product",
+      "note": "Stripe's agent that injects a security considerations section into design docs in the standard agentic environment used to write them, implemented as a dedicated skill.",
+      "url": ""
+    },
+    {
+      "name": "Self-service security review workflow",
+      "kind": "product",
+      "note": "Risk-based intake plus agent-generated threat models with requesting-team review and async audit.",
+      "url": ""
+    },
+    {
+      "name": "Policy exception reviewer",
+      "kind": "product",
+      "note": "Rules plus agent plus human triage for policy exception and deadline extension requests.",
+      "url": ""
+    },
+    {
+      "name": "Remediation checking agent",
+      "kind": "product",
+      "note": "Triggered at sign-off; evaluates each remediation requirement against code with citations and returns addressed, partially addressed or not addressed.",
+      "url": ""
+    }
   ],
   "slide_only": [
     "Thanks slide lists core contributors Amol Deshpande (Security Engineer), Namita Prakash (Software Engineer) and Siddh Shah (Software Engineer) with LinkedIn handles, and credits Security Teams at Stripe (Security Partnerships, SecDev Platform) and Stripe engineers who provided feedback.",
@@ -150,10 +237,26 @@
   ],
   "demos": [],
   "quotes": [
-    {"text": "There isn't a security problem an agent can't help solve.", "speaker": "Amol Deshpande", "t": "01:09"},
-    {"text": "Our agent loves to name every possible issue that he could think of.", "speaker": "Namita Prakash", "t": "27:08"},
-    {"text": "Humans are still in the process, but instead of being in the loop, they are now on the loop.", "speaker": "Amol Deshpande", "t": "18:50"},
-    {"text": "If we start rating our users it raises the competition and incentivizes not the ideal behavior. Instead we try to make the process so easy that it is impossible to bypass.", "speaker": "Amol Deshpande", "t": "29:44"}
+    {
+      "text": "There isn't a security problem an agent can't help solve.",
+      "speaker": "Amol Deshpande",
+      "t": "01:09"
+    },
+    {
+      "text": "Our agent loves to name every possible issue that he could think of.",
+      "speaker": "Namita Prakash",
+      "t": "27:08"
+    },
+    {
+      "text": "Humans are still in the process, but instead of being in the loop, they are now on the loop.",
+      "speaker": "Amol Deshpande",
+      "t": "18:50"
+    },
+    {
+      "text": "If we start rating our users it raises the competition and incentivizes not the ideal behavior. Instead we try to make the process so easy that it is impossible to bypass.",
+      "speaker": "Amol Deshpande",
+      "t": "29:44"
+    }
   ],
   "offense": [
     "Coding agents fed a design doc without security instructions may guess at secure coding and produce insecure choices.",
@@ -173,7 +276,7 @@
   ],
   "takeaways": [
     "Pick agent targets by locating the human-capacity bottleneck in each stage of your SDLC instead of adding agents everywhere.",
-    "Use the three-condition test (plain prompt, focused prompt, dedicated skill) on historical cases before choosing how to deliver a security assist, and judge delivery by whether it runs automatically.",
+    "Run the three conditions (plain prompt, focused prompt, dedicated skill) on historical cases before choosing how to deliver a security assist, and judge delivery by whether it runs automatically.",
     "Route reviews by risk and keep critical and ambiguous cases with humans, so reviewer attention goes where it is needed.",
     "Adopt the shadow-mode phase between offline evals and live action, and expand scope by action risk.",
     "Plan for measuring security outcomes, not just cycle time, since Stripe reports only stage-level measurement so far."
@@ -188,7 +291,7 @@
   ],
   "critique": [
     "The headline result compares two different populations (63 manual reviews versus 70 self-service reviews) and measures elapsed time, which includes waiting on humans; it does not show review quality or that the self-service threat models found the same risks.",
-    "No security outcome data is shown, as an audience member pressed; faster completion may reflect more risks marked not relevant by requesting teams, which only an async audit would catch, and no audit results were presented.",
+    "No security outcome data is shown, as an audience member asked; no audit results were presented, so it is not known whether faster completion reflects more risks marked not relevant by requesting teams, which only an async audit would catch.",
     "The design-doc experiment reports a ranking but no scores, sample size or number of historical cases, so the strength of the dedicated skill advantage cannot be judged.",
     "The spoken 74 percent differs from the slide's 76.4 percent reduction, and the spoken 55 days is a rounding of the slide's 54.9; the slide figures are the ones recorded.",
     "Remediation checking and policy exception results were described without accuracy or volume figures, so those parts are design claims, not results.",
@@ -202,20 +305,43 @@
     "How are overzealous threat-model agents handled? Answer: an eval framework, historical cases and gold test cases to keep the output grounded, and plans to let users challenge the threat model.",
     "Could the system score engineers on how well they do security? Answer: no; user interviews showed developers care about security and want accuracy, and rating teams would incentivize the wrong behavior, so the goal is to make secure behavior automatic and hard to bypass."
   ],
-  "tags": ["appsec-secure-development", "guardrails-runtime-controls", "evals-benchmarks-metrics", "org-adoption-culture"],
-  "key_frames": [
-    {"file": "t00583.jpg", "caption": "Self-service review workflow with the three quality pillars (evals, groundedness checks, user feedback)."},
-    {"file": "t00662.jpg", "caption": "Result slide: 54.9 days across 63 manual reviews versus 13.0 days across 70 self-service reviews, 4.2x faster, 76.4 percent less time."},
-    {"file": "t00769.jpg", "caption": "Deterministic, agentic and governance split for policy exception reviews."},
-    {"file": "t00889.jpg", "caption": "Phase-based rollout: offline evals, shadow mode and risk-based rollout."},
-    {"file": "t01077.jpg", "caption": "Remediation checking agent: triggered at sign-off, evaluates every requirement against code with citations and returns addressed, partially addressed or not addressed."}
+  "tags": [
+    "appsec-secure-development",
+    "guardrails-runtime-controls",
+    "evals-benchmarks-metrics",
+    "org-adoption-culture"
   ],
-  "signal": {"score": 3, "reason": "A production deployment described with one headline metric and a rollout pattern; results on review quality and security outcomes were not shown."},
+  "key_frames": [
+    {
+      "file": "t00583.jpg",
+      "caption": "Self-service review workflow with the three quality pillars (evals, groundedness checks, user feedback)."
+    },
+    {
+      "file": "t00662.jpg",
+      "caption": "Result slide: 54.9 days across 63 manual reviews versus 13.0 days across 70 self-service reviews, 4.2x faster, 76.4 percent less time."
+    },
+    {
+      "file": "t00769.jpg",
+      "caption": "Deterministic, agentic and governance split for policy exception reviews."
+    },
+    {
+      "file": "t00889.jpg",
+      "caption": "Phase-based rollout: offline evals, shadow mode and risk-based rollout."
+    },
+    {
+      "file": "t01077.jpg",
+      "caption": "Remediation checking agent: triggered at sign-off, evaluates every requirement against code with citations and returns addressed, partially addressed or not addressed."
+    }
+  ],
+  "signal": {
+    "score": 3,
+    "reason": "The talk describes a production deployment with one headline metric and a rollout pattern; results on review quality and security outcomes were not shown."
+  },
   "caveats": [
     "Auto-captions are mostly clean; the Gartner survey attribution comes from the transcript only and no slide shows it.",
     "The spoken result was 74 percent and 55 days; the slide says 76.4 percent less time and 54.9 days, and the slide is used.",
     "No slide showed the design-doc experiment scores; only the condition names and scorecard dimensions were shown.",
-    "Frame coverage was 39 slides over 44 frames, and some frames show only a speaker shot; the Q&A had no slides beyond the Q&A card.",
+    "The recording shows 39 slides, some shots show only the speaker, and the Q&A had no slides beyond the Q&A card.",
     "Prakash's title on the opening slide is Software Engineer; Deshpande's is Staff Security Engineer on the lower-third and Security Engineer on the thanks slide."
   ]
 }

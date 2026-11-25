@@ -4,12 +4,15 @@
   "url": "https://www.youtube.com/watch?v=uvgc0qHZRyY",
   "title": "Cyber Ontology for Agent Governance",
   "speakers": [
-    {"name": "David Chismon", "affiliation": "CTO for Architecture, National Cyber Security Centre (NCSC), UK, part of GCHQ"}
+    {
+      "name": "David Chismon",
+      "affiliation": "CTO for Architecture, National Cyber Security Centre (NCSC), UK, part of GCHQ"
+    }
   ],
   "format": "talk",
   "duration_min": 22,
-  "thesis": "Modeling cyber security as a graph ontology, so that defensive decisions can be calculated deterministically rather than asked of an LLM, led the NCSC to a model of controls in three orders. On that model, attackers and agent swarms care only about controls that change the graph, while most compliance regimes consist of controls that never appear in it, so governance, risk and compliance may be organised wrongly.",
-  "summary": "David Chismon of the UK NCSC describes early research for Cyber Shield, a national-scale agentic defence effort. His starting problem is Halvar Flake's line that offensive problems are technical and defensive ones political: how can an agent be trusted to take defensive actions. His proposal is to make defensive decisions deterministic by modeling the world as a graph. He explains ontology, knowledge graph and world model, then describes building the NCSC's own ontology with in-house experts, using agent workflows to test it against datasets such as MITRE ATT&CK and ASD guidance, and keeping a modelling decisions file to hold the agents to earlier choices. The core primitive is an interface (reachability, permissions, action), with a vulnerability defined as an unintended interface. He generated simulated networks of up to about 100,000 nodes, found that iterative reachability-privilege-execution discovery worked where pure graph queries did not, and saw it derive attacks it had not been given. Early findings: a gap in NCSC privileged access workstation guidance, and a suggestion that authentication is better modeled as credential properties than as factors. He then turns to controls. Prior art on ranking controls is thin, so he proposes first, second and third order controls, argues attackers and agent swarms care only about first order, and sketches a compliance scheme built from second order evidence and control-enforcing controls. Q&A covered zero-knowledge proofs, ranking controls by cost ablation, trusting models, and risk quantification.",
+  "thesis": "Modeling cyber security as a graph ontology, so that defensive decisions can be calculated deterministically rather than asked of an LLM, led the UK National Cyber Security Centre (NCSC) to a model of controls in three orders. On that model, attackers and agent swarms care only about controls that change the graph, while most compliance regimes consist of controls that never appear in it, so governance, risk and compliance may be organised wrongly.",
+  "summary": "David Chismon of the UK National Cyber Security Centre (NCSC) describes early research for Cyber Shield, a national-scale agentic defence effort. His starting problem is Halvar Flake's line that offensive problems are technical and defensive ones political: how can an agent be trusted to take defensive actions. His proposal is to make defensive decisions deterministic by modeling the world as a graph. He explains ontology, knowledge graph and world model, then describes building the NCSC's own ontology with in-house experts, using agent workflows to test it against datasets such as MITRE ATT&CK and ASD guidance, and keeping a modelling decisions file to hold the agents to earlier choices. The core primitive is an interface (reachability, permissions, action), with a vulnerability defined as an unintended interface. He generated simulated networks of up to about 100,000 nodes, found that iterative reachability-privilege-execution discovery worked where pure graph queries did not, and saw it derive attacks it had not been given. Early findings: a gap in NCSC privileged access workstation guidance, and a suggestion that authentication is better modeled as credential properties than as factors. He then turns to controls. Prior art on ranking controls is thin, so he proposes first, second and third order controls, argues attackers and agent swarms care only about first order, and sketches a compliance scheme built from second order evidence and control-enforcing controls.",
   "argument": [
     "Defence is political as much as technical, so agents acting defensively need decisions that can be explained and checked, which suggests calculating them over a graph rather than asking an LLM.",
     "No existing cyber ontology fit the purpose, so the NCSC built a minimal one with domain experts and tested it by having agents express real datasets in it, iterating where it failed.",
@@ -19,45 +22,203 @@
     "A threat-centric scheme would weight effort toward first order controls, ask compliance for second order evidence such as scans and asset registers, and use control-enforcing controls so a workload gets access only if it can prove other controls are in place."
   ],
   "claims": [
-    {"claim": "Every ontology the NCSC found in prior art solved a slightly different problem, so they built their own.", "evidence": "Prior art slide lists MITRE D3FEND, Spyderisk, UCO, CASE, Fenz and Ekelhart, Herzog et al., and Souag et al.; the speaker states none fit.", "grade": "assertion", "t": "04:14", "source": "both"},
-    {"claim": "A vulnerability can be defined as an unintended interface, where an interface is the combination of where you can talk to a thing, what permission you hold, and what it lets you do.", "evidence": "Definition slide with two VPN examples: reachable from internet with privilege vpn_user and capability proxy_traffic is an interface, while reachable from internet with no privilege and capability code_execution is a vulnerability.", "grade": "assertion", "t": "06:22", "source": "both"},
-    {"claim": "Pure graph queries did not scale for modelling attacks, but iterating reachability, privilege and execution from the attacker node until no new path appears was efficient and ran on a laptop for very complex networks.", "evidence": "Described from his own experiments on simulated networks up to about 100,000 nodes and users; no timings shown.", "grade": "case", "t": "08:59", "source": "both"},
-    {"claim": "The model derived attacks it had not been told about, including credential theft via a browser-stored cookie replayed by another process on the host, and drive-by download as a combination of browser internet access, file write and user execution.", "evidence": "Reported from his simulation runs; no output shown.", "grade": "case", "t": "09:30", "source": "said"},
-    {"claim": "In every modelled network, privileged access workstations did not by themselves stop the attack paths, because another route to the critical asset or data always existed, such as a missing patch or a stray backup; NCSC guidance does not make sole access via a PAW its first step.", "evidence": "Reported from modeling a bunch of networks, followed by checking the published NCSC PAW guidance; the number of networks was not given.", "grade": "case", "t": "10:31", "source": "both"},
-    {"claim": "Authentication may be better modeled as properties of a credential (destination bound, host bound, unguessable, encrypted in transit, possibly asymmetric) than as factors, because factors could not be expressed sensibly in the graph.", "evidence": "Stated as an early, partly untested finding; the asymmetric property is marked with a question mark on the slide.", "grade": "assertion", "t": "11:03", "source": "both"},
-    {"claim": "There is surprisingly little prior art on ranking or taxonomising security controls; he found only FAIR control analytics modules (blocking versus visibility) and safety theory (boundaries versus controls that support them).", "evidence": "Control lists and ordering slides; based on his own literature search.", "grade": "assertion", "t": "12:38", "source": "both"},
-    {"claim": "Controls fall into three orders: first order removes a transition in the graph (patching), second order technically validates a first order control (vulnerability scanning), third order does not appear in the graph (a patching policy).", "evidence": "Framework slides and explanation; the third order slide was not captured in the extracted frames.", "grade": "assertion", "t": "13:41", "source": "both"},
-    {"claim": "Compliance schemes are entirely third order controls, so organisations that start from compliance begin at third order and only occasionally reach first order, unless they are breached.", "evidence": "Reasoning from how organisations come to care about security, illustrated by a flow slide.", "grade": "assertion", "t": "14:11", "source": "both"},
-    {"claim": "Agent swarms only care about first order controls and are more interested in interfaces than vulnerabilities, going for capabilities, misconfigurations and credential replay rather than new code execution bugs or N-days.", "evidence": "Based on his observation of reported loss-of-control incidents and the Hugging Face example mentioned in passing; no data shown.", "grade": "anecdote", "t": "14:41", "source": "both"},
-    {"claim": "Ablating links in the simulated attack graph, with a dollar cost assigned to each transition, ranked air gaps as the control that removes the most attack paths, without being prompted toward that answer.", "evidence": "Described in Q&A; costing and ablation ongoing, no results table shown.", "grade": "case", "t": "19:59", "source": "said"},
-    {"claim": "Calculating a decision over a graph gives explainable agent decisions without mechanistic interpretability, because anyone can recompute the answer.", "evidence": "Offered as a hoped-for benefit if the approach works; not demonstrated.", "grade": "assertion", "t": "16:47", "source": "both"}
+    {
+      "claim": "Every ontology the NCSC found in prior art solved a slightly different problem, so they built their own.",
+      "evidence": "Prior art slide lists MITRE D3FEND, Spyderisk, UCO, CASE, Fenz and Ekelhart, Herzog et al., and Souag et al.; the speaker states none fit.",
+      "grade": "assertion",
+      "t": "04:14",
+      "source": "both"
+    },
+    {
+      "claim": "A vulnerability can be defined as an unintended interface, where an interface is the combination of where you can talk to a thing, what permission you hold, and what it lets you do.",
+      "evidence": "Definition slide with two VPN examples: reachable from internet with privilege vpn_user and capability proxy_traffic is an interface, while reachable from internet with no privilege and capability code_execution is a vulnerability.",
+      "grade": "assertion",
+      "t": "06:22",
+      "source": "both"
+    },
+    {
+      "claim": "Pure graph queries did not scale for modelling attacks, but iterating reachability, privilege and execution from the attacker node until no new path appears was efficient and ran on a laptop for very complex networks.",
+      "evidence": "Described from his own experiments on simulated networks up to about 100,000 nodes and users; no timings shown.",
+      "grade": "case",
+      "t": "08:59",
+      "source": "both"
+    },
+    {
+      "claim": "The model derived attacks it had not been told about, including credential theft via a browser-stored cookie replayed by another process on the host, and drive-by download as a combination of browser internet access, file write and user execution.",
+      "evidence": "Reported from his simulation runs; no output shown.",
+      "grade": "case",
+      "t": "09:30",
+      "source": "said"
+    },
+    {
+      "claim": "In every modelled network, privileged access workstations did not by themselves stop the attack paths, because another route to the critical asset or data always existed, such as a missing patch or a stray backup; NCSC guidance does not make sole access via a PAW its first step.",
+      "evidence": "Reported from modeling a bunch of networks, followed by checking the published NCSC PAW guidance; the number of networks was not given.",
+      "grade": "case",
+      "t": "10:31",
+      "source": "both"
+    },
+    {
+      "claim": "Authentication may be better modeled as properties of a credential (destination bound, host bound, unguessable, encrypted in transit, possibly asymmetric) than as factors, because factors could not be expressed sensibly in the graph.",
+      "evidence": "Stated as an early, partly untested finding; the asymmetric property is marked with a question mark on the slide.",
+      "grade": "assertion",
+      "t": "11:03",
+      "source": "both"
+    },
+    {
+      "claim": "There is surprisingly little prior art on ranking or taxonomising security controls; he found only FAIR control analytics modules (blocking versus visibility) and safety theory (boundaries versus controls that support them).",
+      "evidence": "Control lists and ordering slides; based on his own literature search.",
+      "grade": "assertion",
+      "t": "12:38",
+      "source": "both"
+    },
+    {
+      "claim": "Controls fall into three orders: first order removes a transition in the graph (patching), second order technically validates a first order control (vulnerability scanning), third order does not appear in the graph (a patching policy).",
+      "evidence": "Framework slides and explanation; the third order slide was not captured.",
+      "grade": "assertion",
+      "t": "13:41",
+      "source": "both"
+    },
+    {
+      "claim": "Compliance schemes are entirely third order controls, so organisations that start from compliance begin at third order and only occasionally reach first order, unless they are breached.",
+      "evidence": "Reasoning from how organisations come to care about security, illustrated by a flow slide.",
+      "grade": "assertion",
+      "t": "14:11",
+      "source": "both"
+    },
+    {
+      "claim": "Agent swarms only care about first order controls and are more interested in interfaces than vulnerabilities, going for capabilities, misconfigurations and credential replay rather than new code execution bugs or N-days.",
+      "evidence": "Based on his observation of reported loss-of-control incidents and the Hugging Face example mentioned in passing; no data shown.",
+      "grade": "anecdote",
+      "t": "14:41",
+      "source": "both"
+    },
+    {
+      "claim": "Ablating links in the simulated attack graph, with a dollar cost assigned to each transition, ranked air gaps as the control that removes the most attack paths, without being prompted toward that answer.",
+      "evidence": "Described in Q&A; costing and ablation ongoing, no results table shown.",
+      "grade": "case",
+      "t": "19:59",
+      "source": "said"
+    },
+    {
+      "claim": "Calculating a decision over a graph gives explainable agent decisions without mechanistic interpretability, because anyone can recompute the answer.",
+      "evidence": "Offered as a hoped-for benefit if the approach works; not demonstrated.",
+      "grade": "assertion",
+      "t": "16:47",
+      "source": "both"
+    }
   ],
   "numbers": [
-    {"figure": "100,000", "meaning": "approximate upper size, in nodes and users, of the simulated networks", "t": "08:26"},
-    {"figure": "20 percent", "meaning": "example statistic used to skew simulated users: users who reuse the same password across services, so their credentials are treated as likely known", "t": "08:26"},
-    {"figure": "4", "meaning": "hosts in the small example network whose full graph already looks complex", "t": "08:26"},
-    {"figure": "40, 604 and 64,099", "meaning": "links between entities in the tiny team, growing, and real organisation example graphs shown on the slide, with 400 people in the largest", "t": "08:26"},
-    {"figure": "3", "meaning": "orders of controls in the proposed model", "t": "13:41"},
-    {"figure": "5", "meaning": "candidate credential properties: destination bound, host bound, unguessable, encrypted in transit, asymmetric (uncertain)", "t": "11:03"},
-    {"figure": "15", "meaning": "illustrative decision number in the modelling decisions log that an agent might flag as violated", "t": "05:51"}
+    {
+      "figure": "100,000",
+      "meaning": "approximate upper size, in nodes and users, of the simulated networks",
+      "t": "08:26"
+    },
+    {
+      "figure": "20 percent",
+      "meaning": "example statistic used to skew simulated users: users who reuse the same password across services, so their credentials are treated as likely known",
+      "t": "08:26"
+    },
+    {
+      "figure": "4",
+      "meaning": "hosts in the small example network whose full graph already looks complex",
+      "t": "08:26"
+    },
+    {
+      "figure": "40, 604 and 64,099",
+      "meaning": "links between entities in the tiny team, growing, and real organisation example graphs shown on the slide, with 400 people in the largest",
+      "t": "08:26"
+    },
+    {
+      "figure": "3",
+      "meaning": "orders of controls in the proposed model",
+      "t": "13:41"
+    },
+    {
+      "figure": "5",
+      "meaning": "candidate credential properties: destination bound, host bound, unguessable, encrypted in transit, asymmetric (uncertain)",
+      "t": "11:03"
+    },
+    {
+      "figure": "15",
+      "meaning": "illustrative decision number in the modelling decisions log that an agent might flag as violated",
+      "t": "05:51"
+    }
   ],
   "frameworks": [
-    {"name": "Ontology to knowledge graph to world model", "description": "A taxonomy is MECE buckets, an ontology is the graph-database schema of classes and relations, populating it gives a knowledge graph, and a graph of a specific organisation or network is a world model."},
-    {"name": "Interface model", "description": "Capability is an action; an interface is reachability, permissions and action; a vulnerability is an unintended interface. It scales from a service on a port down to components inside a binary."},
-    {"name": "Weird machines framing", "description": "Citing Thomas Dullien (Halvar Flake), Weird Machines, Exploitability, and Provable Unexploitability: an intended finite state machine (IFSM) maps to sane states, surrounded by transitory states and a larger set of weird states reachable outside that mapping. Offence explores the gap between the IFSM and the real system; defence minimises it."},
-    {"name": "Three orders of controls", "description": "First order: removes a transition in the graph (patching a vulnerable system). Second order: technically validates a first order control (vulnerability scanning). Third order: does not appear in the graph (a patching policy). A possible further class, control-enforcing controls such as conditional access that gate access on proof of other controls, was left unnamed."},
-    {"name": "Threat-centric compliance scheme", "description": "Relative security effort is large on first order, medium on second order and minimal on third order; the proposed compliance scheme would consist of second order evidence only."},
-    {"name": "Ontology development loop", "description": "Ontology, trial automated population from datasets, model and assess, derive tweaks to the ontology, repeat; supported by a modelling decisions file that agents check against."}
+    {
+      "name": "Ontology to knowledge graph to world model",
+      "description": "A taxonomy is MECE buckets, an ontology is the graph-database schema of classes and relations, populating it gives a knowledge graph, and a graph of a specific organisation or network is a world model."
+    },
+    {
+      "name": "Interface model",
+      "description": "Capability is an action; an interface is reachability, permissions and action; a vulnerability is an unintended interface. It scales from a service on a port down to components inside a binary."
+    },
+    {
+      "name": "Weird machines framing",
+      "description": "Citing Thomas Dullien (Halvar Flake), Weird Machines, Exploitability, and Provable Unexploitability: an intended finite state machine (IFSM) maps to sane states, surrounded by transitory states and a larger set of weird states reachable outside that mapping. Offence explores the gap between the IFSM and the real system; defence minimises it."
+    },
+    {
+      "name": "Three orders of controls",
+      "description": "First order: removes a transition in the graph (patching a vulnerable system). Second order: technically validates a first order control (vulnerability scanning). Third order: does not appear in the graph (a patching policy). A possible further class, control-enforcing controls such as conditional access that gate access on proof of other controls, was left unnamed."
+    },
+    {
+      "name": "Threat-centric compliance scheme",
+      "description": "Relative security effort is large on first order, medium on second order and minimal on third order; the proposed compliance scheme would consist of second order evidence only."
+    },
+    {
+      "name": "Ontology development loop",
+      "description": "Ontology, trial automated population from datasets, model and assess, derive tweaks to the ontology, repeat; supported by a modelling decisions file that agents check against."
+    }
   ],
   "artifacts": [
-    {"name": "Cyber Shield", "kind": "product", "note": "The UK national-scale agentic cyber defence initiative the work supports; a July 2026 NCSC blog post on it is shown on a slide, and the talk description calls it a five year plan.", "url": ""},
-    {"name": "One does not simply defend agentically", "kind": "paper", "note": "NCSC blog post by Dave Chismon dated 21 September 2026, shown as a research challenge reference.", "url": ""},
-    {"name": "AI chapter in the NCSC research problem book", "kind": "paper", "note": "NCSC post dated 20 October 2026 introducing an AI chapter in the problem book, shown on the same slide.", "url": ""},
-    {"name": "Weird Machines, Exploitability, and Provable Unexploitability", "kind": "paper", "note": "Thomas Dullien (Halvar Flake), IEEE Transactions on Emerging Topics in Computing vol. 8 no. 2 pp. 391-403, preprint 2017, issue April to June 2020; used as the intended-versus-real system framing.", "url": ""},
-    {"name": "NCSC Principles for secure privileged access workstations (PAWs)", "kind": "standard", "note": "Existing guidance in which the modeling found a gap: it does not start by requiring the PAW to be the only route to the sensitive asset.", "url": ""},
-    {"name": "Prior art ontologies", "kind": "standard", "note": "MITRE D3FEND, Spyderisk, UCO, CASE, Fenz and Ekelhart, Herzog et al., Souag et al., listed on a slide as reviewed prior art.", "url": ""},
-    {"name": "Control catalogues", "kind": "standard", "note": "Critical Security Controls, ENISA security roles, MITRE D3FEND and ISO and NIST, cited as lists with no ranking.", "url": ""},
-    {"name": "FAIR control analytics modules", "kind": "standard", "note": "One of two prior approaches to ordering controls, distinguishing those that block from those that provide visibility.", "url": ""}
+    {
+      "name": "Cyber Shield",
+      "kind": "product",
+      "note": "The UK national-scale agentic cyber defence initiative the work supports; a July 2026 NCSC blog post on it is shown on a slide, and the talk description calls it a five year plan.",
+      "url": ""
+    },
+    {
+      "name": "One does not simply defend agentically",
+      "kind": "paper",
+      "note": "NCSC blog post by Dave Chismon dated 21 September 2026, shown as a research challenge reference.",
+      "url": ""
+    },
+    {
+      "name": "AI chapter in the NCSC research problem book",
+      "kind": "paper",
+      "note": "NCSC post dated 20 October 2026 introducing an AI chapter in the problem book, shown on the same slide.",
+      "url": ""
+    },
+    {
+      "name": "Weird Machines, Exploitability, and Provable Unexploitability",
+      "kind": "paper",
+      "note": "Thomas Dullien (Halvar Flake), IEEE Transactions on Emerging Topics in Computing vol. 8 no. 2 pp. 391-403, preprint 2017, issue April to June 2020; used as the intended-versus-real system framing.",
+      "url": ""
+    },
+    {
+      "name": "NCSC Principles for secure privileged access workstations (PAWs)",
+      "kind": "standard",
+      "note": "Existing guidance in which the modeling found a gap: it does not start by requiring the PAW to be the only route to the sensitive asset.",
+      "url": ""
+    },
+    {
+      "name": "Prior art ontologies",
+      "kind": "standard",
+      "note": "MITRE D3FEND, Spyderisk, UCO, CASE, Fenz and Ekelhart, Herzog et al., Souag et al., listed on a slide as reviewed prior art.",
+      "url": ""
+    },
+    {
+      "name": "Control catalogues",
+      "kind": "standard",
+      "note": "Critical Security Controls, ENISA security roles, MITRE D3FEND and ISO and NIST, cited as lists with no ranking.",
+      "url": ""
+    },
+    {
+      "name": "FAIR control analytics modules",
+      "kind": "standard",
+      "note": "One of two prior approaches to ordering controls, distinguishing those that block from those that provide visibility.",
+      "url": ""
+    }
   ],
   "slide_only": [
     "Agenda slide titled crontab -l lists: the project (how do you explain the world as cyber people see it to an agent), building the ontology, and measuring control efficacy.",
@@ -77,11 +238,31 @@
   ],
   "demos": [],
   "quotes": [
-    {"text": "Offensive problems are technical, defensive problems are political.", "speaker": "David Chismon, quoting Halvar Flake", "t": "01:40"},
-    {"text": "I think we might be doing governance, risk, and compliance wrong.", "speaker": "David Chismon", "t": "16:16"},
-    {"text": "Attackers only care about the first order. They only care about things which stop their attacks. But organizations pretty much only care about third order.", "speaker": "David Chismon", "t": "14:11"},
-    {"text": "I almost don't care about the model. I kind of want a system that means you don't have to trust the model to get the right decision out of it.", "speaker": "David Chismon", "t": "21:02"},
-    {"text": "LLMs are just desperate to give you an answer.", "speaker": "David Chismon", "t": "05:51"}
+    {
+      "text": "Offensive problems are technical, defensive problems are political.",
+      "speaker": "David Chismon, quoting Halvar Flake",
+      "t": "01:40"
+    },
+    {
+      "text": "I think we might be doing governance, risk, and compliance wrong.",
+      "speaker": "David Chismon",
+      "t": "16:16"
+    },
+    {
+      "text": "Attackers only care about the first order. They only care about things which stop their attacks. But organizations pretty much only care about third order.",
+      "speaker": "David Chismon",
+      "t": "14:11"
+    },
+    {
+      "text": "I almost don't care about the model. I kind of want a system that means you don't have to trust the model to get the right decision out of it.",
+      "speaker": "David Chismon",
+      "t": "21:02"
+    },
+    {
+      "text": "LLMs are just desperate to give you an answer.",
+      "speaker": "David Chismon",
+      "t": "05:51"
+    }
   ],
   "offense": [
     "Agent swarms appear to look for capabilities, misconfigurations, over-broad access and replayable credentials rather than new code execution bugs or N-day exploits.",
@@ -100,7 +281,7 @@
   "takeaways": [
     "Ask which of your controls actually remove a path an attacker or agent could take, and which only generate evidence or policy, and shift effort toward the former.",
     "Before adopting an LLM to rank patches or recommend defensive actions, ask whether the decision can be computed over a graph model and recomputed on demand.",
-    "Check that any privileged access workstation programme begins with making the PAW the sole route to the sensitive assets.",
+    "Chismon's PAW finding: check that any privileged access workstation programme begins with making the PAW the sole route to the sensitive assets.",
     "If you build a security ontology or knowledge graph with agents, run a facilitated session with your own experts first and keep a decisions log that agents must respect.",
     "Consider asking auditors or customers for second order evidence such as scan results and asset registers rather than policy documents, and design agent access so it is gated on proof of controls."
   ],
@@ -113,7 +294,7 @@
   ],
   "critique": [
     "No quantitative results were shown: network sizes and the reuse-rate assumption are described, but there are no timings, attack-path counts, accuracy measures or comparison against a baseline, so the efficiency and derivation claims rest on the speaker's report.",
-    "The PAW finding comes from simulated networks built by the same model, so it may reflect how the simulations were generated rather than real estates; the speaker did not say how many networks or how realistic the configurations were.",
+    "The PAW finding comes from simulated networks built by the same model; the speaker did not say how many networks or how realistic the configurations were, so whether it holds for real estates is not shown.",
     "The claim that agent swarms care only about first order controls is supported by the speaker's observation and a passing reference to public incident reports; no data was shown, and attackers also exploit people and process.",
     "The three-order model is defined so that compliance controls fall in the third order, and the conclusion that regimes are misdirected follows from that definition; the talk did not present evidence on how often compliance work fails to produce first order controls.",
     "The air gap result from ablation depends on how dollar costs were assigned to transitions, and no cost model was shown.",
@@ -126,17 +307,39 @@
     "Question: Do we need to control our models, go open source, or demand more transparency from the labs? Answer: No model should be trusted with a global admin credential; the aim is a system where you can calculate what will happen so you do not need to trust the model.",
     "Question: Will you use the ontology to drive risk quantification next? Answer: Not something he had framed that way; current work is populating the graph from real systems, such as BloodHound scrapes, and proving it against them, with more discussion offered after the session."
   ],
-  "tags": ["governance-policy", "ai-soc-detection-response", "agent-authz-identity"],
-  "key_frames": [
-    {"file": "t00406.jpg", "caption": "The interface model: capability is an action, an interface is reachability plus permissions plus action, and a vulnerability is an unintended interface, with two VPN examples."},
-    {"file": "t00548.jpg", "caption": "How attacks are modeled: agents build world models, pure graph queries failed, and iterative discovery over reachability, privilege and execution worked."},
-    {"file": "t00618.jpg", "caption": "Early benefit: modeling found that PAWs never closed the attack paths, exposing a gap in NCSC privileged access workstation guidance."},
-    {"file": "t00831.jpg", "caption": "Orders of controls: first order removes a transition in the graph, second order technically validates a first order control."},
-    {"file": "t00929.jpg", "caption": "Relative security effort by order beside the proposed compliance scheme made only of second order evidence."}
+  "tags": [
+    "governance-policy",
+    "ai-soc-detection-response",
+    "agent-authz-identity"
   ],
-  "signal": {"score": 3, "reason": "A proposed model of controls and one early finding on PAWs; results were described rather than shown, and the governance conclusions are argued from the model."},
+  "key_frames": [
+    {
+      "file": "t00406.jpg",
+      "caption": "The interface model: capability is an action, an interface is reachability plus permissions plus action, and a vulnerability is an unintended interface, with two VPN examples."
+    },
+    {
+      "file": "t00548.jpg",
+      "caption": "How attacks are modeled: agents build world models, pure graph queries failed, and iterative discovery over reachability, privilege and execution worked."
+    },
+    {
+      "file": "t00618.jpg",
+      "caption": "Early benefit: modeling found that PAWs never closed the attack paths, exposing a gap in NCSC privileged access workstation guidance."
+    },
+    {
+      "file": "t00831.jpg",
+      "caption": "Orders of controls: first order removes a transition in the graph, second order technically validates a first order control."
+    },
+    {
+      "file": "t00929.jpg",
+      "caption": "Relative security effort by order beside the proposed compliance scheme made only of second order evidence."
+    }
+  ],
+  "signal": {
+    "score": 3,
+    "reason": "The talk proposes a model of controls in three orders and reports one early finding on privileged access workstations; results were described rather than shown, and the governance conclusions are argued from the model."
+  },
   "caveats": [
-    "The slide for third order controls and the build-up to the compliance scheme were not all captured in the extracted frames, so the third order definition comes from the transcript.",
+    "The slide for third order controls and the build-up to the compliance scheme were not all captured, so the third order definition comes from the spoken explanation.",
     "Captions garble some terms: the controls prior art is transcribed as FAIR and R theory, which the slides identify as FAIR control analytics modules and safety theory; the description calls the speaker Chief Security Architect while the slides say CTO for Architecture, and the slide title is used.",
     "The Q&A transcript ends mid-exchange, so the last answer is incomplete and no later question is recorded.",
     "Figures on the example network graph slide (40, 604 and 64,099 links, 400 people) are small text and were read from the slide image.",

@@ -4,13 +4,19 @@
   "url": "https://www.youtube.com/watch?v=oP-Vll3Lo70",
   "title": "Closing Remarks & Awards",
   "speakers": [
-    {"name": "Gadi Evron", "affiliation": "CEO, Knostic; CFP Chair, [un]prompted"},
-    {"name": "Dan Hubbard", "affiliation": "speaker ops, [un]prompted (per the organizer slide); read the opening poem"}
+    {
+      "name": "Gadi Evron",
+      "affiliation": "CEO, Knostic; CFP Chair, [un]prompted"
+    },
+    {
+      "name": "Dan Hubbard",
+      "affiliation": "speaker ops, [un]prompted (per the organizer slide); read the opening poem"
+    }
   ],
   "format": "closing",
   "duration_min": 28,
   "thesis": "The closing session recaps [un]prompted 2 (October 27 to 29, 2026, San Francisco and online) with program, attendance and CTF statistics, awards and thanks, and ends on the message that defenders need to build AI defense that is genuinely new rather than automation of old work.",
-  "summary": "The session opens with a poem by Dan Hubbard, titled The Bull, the Bear, and the Machine, that recaps the three days: rogue agents, sandboxes failing, prompt injection everywhere, an AI badge, and the contrast between a bear future of attacks at scale and a bull future of defenders moving at machine speed. Gadi Evron then goes through the recap slides. He pays tribute to Patrick Stewart and quotes his optimism about humanity's future, which he uses to reject doomerism. Program numbers follow: about 100 talks, 108 speakers, three evening debates, four villages (AI Harness, Defender's, CTF, AI Art), and accepted-over-submitted counts per track, with Break the largest. He notes the CFP statistics, a NotebookLM notebook of all sessions built by Rob T. Lee, online attendance, the venue Wi-Fi failures, and the Art Village and Slop awards. He thanks organizers, volunteers, vendors and sponsors by name. The CTF section, sponsored by OpenAI, reports 87 players, 71 teams, 29 challenges, and 141 novel bugs in Linux and selected open source software, plus an AlexBot challenge in which players tried to extract flags from a persona-driven bot. He gives provisional winners, then what comes next: recordings, next dates, Slack, and OpenAI Pro accounts for attendees. He closes with the line that the attackers' singularity moment already happened and now it is the defenders' turn, and a surprise thank-you for the event's operations lead.",
+  "summary": "The session opens with a poem by Dan Hubbard, titled The Bull, the Bear, and the Machine, that recaps the three days: rogue agents, sandboxes failing, prompt injection everywhere, an AI badge, and the contrast between a bear future of attacks at scale and a bull future of defenders moving at machine speed. Gadi Evron then goes through the recap slides. He pays tribute to Patrick Stewart and quotes his optimism about humanity's future, which he uses to reject doomerism. Program numbers follow: about 100 talks, 108 speakers, three evening debates, four villages (AI Harness, Defender's, CTF, AI Art), and accepted-over-submitted counts per talk track (Break, Build, Operate, Govern, Train), with Break the largest. He notes the CFP statistics, a NotebookLM notebook of all sessions built by Rob T. Lee, online attendance, the venue Wi-Fi failures, and the Art Village and Slop awards. He thanks organizers, volunteers, vendors and sponsors by name. The CTF section, sponsored by OpenAI, reports 87 players, 71 teams, 29 challenges, and 141 novel bugs in Linux and selected open source software, plus an AlexBot challenge in which players tried to extract flags from a persona-driven bot. He gives provisional winners, then what comes next: recordings, next dates, Slack, and OpenAI Pro accounts for attendees. He closes with the line that the attackers' singularity moment already happened and now it is the defenders' turn, and a surprise thank-you for the event's operations lead.",
   "argument": [
     "The conference's value is the community itself, the only moat being humans and each other.",
     "Optimism about the future, not doomerism, is the right stance for a consequential era.",
@@ -19,42 +25,184 @@
     "Defenders should build AI defense that means something, not automate or orchestrate what was already done five years ago."
   ],
   "claims": [
-    {"claim": "The conference had about 100 talks, 108 speakers and 3 evening debates over three days and two stages, plus four villages.", "evidence": "Program slide and speaker statement.", "grade": "measured", "t": "05:57", "source": "both"},
-    {"claim": "Accepted over submitted talks by track were Break 22 of 168, Build 22 of 121, Operate 15 of 90, Govern 14 of 59 and Train 10 of 55.", "evidence": "Bar chart slide; the Train track was added at the last minute.", "grade": "measured", "t": "09:04", "source": "both"},
-    {"claim": "The CFP drew 167 submissions on the September 8 deadline day, 183 of 500 titles contained the word agent, and reviewers left 1,481 comments (about 32,500 words); Steve Orrin led with 130 comments over Gary McGraw with 129.", "evidence": "CFP statistics slides.", "grade": "measured", "t": "10:06", "source": "both"},
-    {"claim": "797 people attended online, about 66 percent live and about 22 percent via recordings, with about 83 percent from the United States.", "evidence": "Attendance slide; speaker said 20 percent recordings.", "grade": "measured", "t": "11:42", "source": "both"},
-    {"claim": "The CTF had 87 players, 71 teams, 36 teams on the board and 29 challenges, of which 8 required a zero day.", "evidence": "CTF statistics slide.", "grade": "measured", "t": "20:34", "source": "both"},
-    {"claim": "The CTF produced 141 novel bugs in Linux and selected open source software, reproduced and sanitizer-confirmed, with 9 turning out to be already public, and 3 syzbot bugs got their first working C reproducer out of 31 submissions.", "evidence": "Results slide; the speaker's spoken figures differ (28 confirmed kernel zero days, 41 novel bugs).", "grade": "measured", "t": "21:04", "source": "both"},
-    {"claim": "From an earlier cut of 138 novel bugs, 95 were memory-safety bugs proven by KASAN or KFENCE, 21 involved a kernel-logged write, 43 were found independently by two or more teams, and 60 submissions shipped with a patch; 166 submissions did not reproduce.", "evidence": "Slide with an explicit note that this is from an earlier cut.", "grade": "measured", "t": "21:36", "source": "both"},
-    {"claim": "In the AlexBot challenge 46 people took on a persona-driven Telegram bot controlling aspects of a house, 31 of 38 flags fell, and 44 or more front-door attempts did not open the door.", "evidence": "Slide statistics plus sample chat exchanges with personas such as nightblood and mandalorian; the speaker said the bot has 12 personalities.", "grade": "measured", "t": "22:37", "source": "both"},
-    {"claim": "Provisional CTF winners were peanuts (265,095 points), Pluh (162,937) and confidor (123,828); final scores were still being verified.", "evidence": "Podium slide and statement that results are preliminary.", "grade": "measured", "t": "24:12", "source": "both"},
-    {"claim": "OpenAI sponsored the CTF and will give every in-person attendee and CTF winner a free one-month Pro account.", "evidence": "Sponsor slide and What's Next slide; speaker mentioned a figure of 1,000 accounts at $200 each.", "grade": "assertion", "t": "19:32", "source": "both"}
+    {
+      "claim": "The conference had about 100 talks, 108 speakers and 3 evening debates over three days and two stages, plus four villages.",
+      "evidence": "Program slide and speaker statement.",
+      "grade": "measured",
+      "t": "05:57",
+      "source": "both"
+    },
+    {
+      "claim": "Accepted over submitted talks by track were Break 22 of 168, Build 22 of 121, Operate 15 of 90, Govern 14 of 59 and Train 10 of 55.",
+      "evidence": "Bar chart slide; the Train track was added at the last minute.",
+      "grade": "measured",
+      "t": "09:04",
+      "source": "both"
+    },
+    {
+      "claim": "The CFP drew 167 submissions on the September 8 deadline day, 183 of 500 titles contained the word agent, and reviewers left 1,481 comments (about 32,500 words); Steve Orrin led with 130 comments over Gary McGraw with 129.",
+      "evidence": "CFP statistics slides.",
+      "grade": "measured",
+      "t": "10:06",
+      "source": "both"
+    },
+    {
+      "claim": "797 people attended online, about 66 percent live and about 22 percent via recordings, with about 83 percent from the United States.",
+      "evidence": "Attendance slide; speaker said 20 percent recordings.",
+      "grade": "measured",
+      "t": "11:42",
+      "source": "both"
+    },
+    {
+      "claim": "The CTF had 87 players, 71 teams, 36 teams on the board and 29 challenges, of which 8 required a zero day.",
+      "evidence": "CTF statistics slide.",
+      "grade": "measured",
+      "t": "20:34",
+      "source": "both"
+    },
+    {
+      "claim": "The CTF produced 141 novel bugs in Linux and selected open source software, reproduced and sanitizer-confirmed, with 9 turning out to be already public, and 3 syzbot bugs got their first working C reproducer out of 31 submissions.",
+      "evidence": "Results slide; the speaker's spoken figures differ (28 confirmed kernel zero days, 41 novel bugs).",
+      "grade": "measured",
+      "t": "21:04",
+      "source": "both"
+    },
+    {
+      "claim": "From an earlier cut of 138 novel bugs, 95 were memory-safety bugs proven by KASAN or KFENCE, 21 involved a kernel-logged write, 43 were found independently by two or more teams, and 60 submissions shipped with a patch; 166 submissions did not reproduce.",
+      "evidence": "Slide with an explicit note that this is from an earlier cut.",
+      "grade": "measured",
+      "t": "21:36",
+      "source": "both"
+    },
+    {
+      "claim": "In the AlexBot challenge 46 people took on a persona-driven Telegram bot controlling aspects of a house, 31 of 38 flags fell, and 44 or more front-door attempts did not open the door.",
+      "evidence": "Slide statistics plus sample chat exchanges with personas such as nightblood and mandalorian; the speaker said the bot has 12 personalities.",
+      "grade": "measured",
+      "t": "22:37",
+      "source": "both"
+    },
+    {
+      "claim": "Provisional CTF winners were peanuts (265,095 points), Pluh (162,937) and confidor (123,828); final scores were still being verified.",
+      "evidence": "Podium slide and statement that results are preliminary.",
+      "grade": "measured",
+      "t": "24:12",
+      "source": "both"
+    },
+    {
+      "claim": "OpenAI sponsored the CTF and will give every in-person attendee and CTF winner a free one-month Pro account.",
+      "evidence": "Sponsor slide and What's Next slide; speaker mentioned a figure of 1,000 accounts at $200 each.",
+      "grade": "assertion",
+      "t": "19:32",
+      "source": "both"
+    }
   ],
   "numbers": [
-    {"figure": "~100 / 108 / 3", "meaning": "talks, speakers and evening debates", "t": "06:27"},
-    {"figure": "22/168, 22/121, 15/90, 14/59, 10/55", "meaning": "accepted over submitted for Break, Build, Operate, Govern, Train", "t": "09:04"},
-    {"figure": "167", "meaning": "CFP submissions on the September 8 deadline", "t": "10:06"},
-    {"figure": "183 of 500", "meaning": "submission titles containing the word agent", "t": "10:06"},
-    {"figure": "1,481 / ~32,500", "meaning": "reviewer comments and words of feedback", "t": "10:06"},
-    {"figure": "130 vs 129", "meaning": "comments left by Steve Orrin versus Gary McGraw", "t": "10:40"},
-    {"figure": "797", "meaning": "online attendees", "t": "11:42"},
-    {"figure": "~66% / ~22% / ~83%", "meaning": "online share watching live, share also using recordings, share from the United States", "t": "11:42"},
-    {"figure": "0x1337", "meaning": "Wi-Fi crashes at the venue, counted in hex as a joke", "t": "12:43"},
-    {"figure": "87 / 71 / 36 / 29 / 8", "meaning": "CTF players, teams, teams on the board, challenges, and challenges requiring a zero day", "t": "20:34"},
-    {"figure": "141", "meaning": "novel bugs found in Linux and selected OSS, sanitizer-confirmed (9 already public)", "t": "21:04"},
-    {"figure": "95 / 21 / 43 / 60", "meaning": "memory-safety bugs proven by KASAN or KFENCE, kernel-logged writes, bugs found independently by 2+ teams, submissions with patches (earlier cut of 138)", "t": "21:36"},
-    {"figure": "46 / 31 of 38 / 44+", "meaning": "AlexBot participants, flags captured, front-door attempts", "t": "22:37"},
-    {"figure": "114,100", "meaning": "top displayed score on the ranks 4 to 10 slide (javier)", "t": "23:09"}
+    {
+      "figure": "~100 / 108 / 3",
+      "meaning": "talks, speakers and evening debates",
+      "t": "06:27"
+    },
+    {
+      "figure": "22/168, 22/121, 15/90, 14/59, 10/55",
+      "meaning": "accepted over submitted for Break, Build, Operate, Govern, Train",
+      "t": "09:04"
+    },
+    {
+      "figure": "167",
+      "meaning": "CFP submissions on the September 8 deadline",
+      "t": "10:06"
+    },
+    {
+      "figure": "183 of 500",
+      "meaning": "submission titles containing the word agent",
+      "t": "10:06"
+    },
+    {
+      "figure": "1,481 / ~32,500",
+      "meaning": "reviewer comments and words of feedback",
+      "t": "10:06"
+    },
+    {
+      "figure": "130 vs 129",
+      "meaning": "comments left by Steve Orrin versus Gary McGraw",
+      "t": "10:40"
+    },
+    {
+      "figure": "797",
+      "meaning": "online attendees",
+      "t": "11:42"
+    },
+    {
+      "figure": "~66% / ~22% / ~83%",
+      "meaning": "online share watching live, share also using recordings, share from the United States",
+      "t": "11:42"
+    },
+    {
+      "figure": "0x1337",
+      "meaning": "Wi-Fi crashes at the venue, counted in hex as a joke",
+      "t": "12:43"
+    },
+    {
+      "figure": "87 / 71 / 36 / 29 / 8",
+      "meaning": "CTF players, teams, teams on the board, challenges, and challenges requiring a zero day",
+      "t": "20:34"
+    },
+    {
+      "figure": "141",
+      "meaning": "novel bugs found in Linux and selected OSS, sanitizer-confirmed (9 already public)",
+      "t": "21:04"
+    },
+    {
+      "figure": "95 / 21 / 43 / 60",
+      "meaning": "memory-safety bugs proven by KASAN or KFENCE, kernel-logged writes, bugs found independently by 2+ teams, submissions with patches (earlier cut of 138)",
+      "t": "21:36"
+    },
+    {
+      "figure": "46 / 31 of 38 / 44+",
+      "meaning": "AlexBot participants, flags captured, front-door attempts",
+      "t": "22:37"
+    },
+    {
+      "figure": "114,100",
+      "meaning": "top displayed score on the ranks 4 to 10 slide (javier)",
+      "t": "23:09"
+    }
   ],
   "frameworks": [
-    {"name": "Bull versus bear", "description": "From the opening poem: the bear sees agents running wild, attacks at scale and defenses failing; the bull sees defenders moving at machine speed. Neither future is certain."},
-    {"name": "Conference track structure", "description": "Five talk tracks: Break, Build, Operate, Govern, Train (Train added late), plus four villages (AI Harness, Defender's, CTF, AI Art) and three evening debates."}
+    {
+      "name": "Bull versus bear",
+      "description": "From the opening poem: the bear sees agents running wild, attacks at scale and defenses failing; the bull sees defenders moving at machine speed. Neither future is certain."
+    },
+    {
+      "name": "Conference track structure",
+      "description": "Five talk tracks: Break, Build, Operate, Govern, Train (Train added late), plus four villages (AI Harness, Defender's, CTF, AI Art) and three evening debates."
+    }
   ],
   "artifacts": [
-    {"name": "[un]prompted 2 NotebookLM notebook", "kind": "dataset", "note": "Notebook of every session's decks and transcripts built by Rob T. Lee for conference attendees; link shared on Slack.", "url": ""},
-    {"name": "[un]prompted CTF challenges", "kind": "benchmark", "note": "29 challenges built by Tobias Heldt (2), Phil Brass (8) and Jenny Guanni Qu (19); the zero-day challenges and the kernel and userspace bounties have embargoed writeups.", "url": ""},
-    {"name": "AlexBot", "kind": "tool", "note": "Persona-driven Telegram bot built by Alex Liverant and xFreed0m for a flag-capture challenge.", "url": ""},
-    {"name": "unpromptedcon.org", "kind": "product", "note": "Conference website shown on the final slide.", "url": "unpromptedcon.org"}
+    {
+      "name": "[un]prompted 2 NotebookLM notebook",
+      "kind": "dataset",
+      "note": "Notebook of every session's decks and transcripts built by Rob T. Lee for conference attendees; link shared on Slack.",
+      "url": ""
+    },
+    {
+      "name": "[un]prompted CTF challenges",
+      "kind": "benchmark",
+      "note": "29 challenges built by Tobias Heldt (2), Phil Brass (8) and Jenny Guanni Qu (19); the zero-day challenges and the kernel and userspace bounties have embargoed writeups.",
+      "url": ""
+    },
+    {
+      "name": "AlexBot",
+      "kind": "tool",
+      "note": "Persona-driven Telegram bot built by Alex Liverant and xFreed0m for a flag-capture challenge.",
+      "url": ""
+    },
+    {
+      "name": "unpromptedcon.org",
+      "kind": "product",
+      "note": "Conference website shown on the final slide.",
+      "url": "unpromptedcon.org"
+    }
   ],
   "slide_only": [
     "The villages slide names the village leads: AI Harness by Rob T. Lee, Defender's by Emanuel Gawrieh, CTF by Jenny Guanni Qu and Ed Brindley, AI Art by Max Kovalsky, with villages overseen by Steve Orrin.",
@@ -67,15 +215,35 @@
     "The CTF scoreboard slide for ranks 4 to 10 gives scores: javier 114,100, Prompt Patrol 77,825, Random-Player-Killer 43,142, Liminal 29,655, Relativ3pa1n 25,482, RedAsgard 22,083, yeehaw 17,872, split between jeopardy solves and kernel bounty.",
     "AlexBot sample exchanges include persona replies such as nightblood and mandalorian, for example denying a flag with the line that flags are not given for honesty.",
     "What's Next slide: recordings in the next few weeks at youtube.com/@un_prompted, next dates soon, Slack invite QR code, and OpenAI Pro accounts for every CTF winner and in-person attendee.",
-    "The final slide shows two dogs and the line out of scope, the site unpromptedcon.org and the tag hack --the-planet; a later frame shows the earlier welcome slide with Wi-Fi network details, which are not reproduced here."
+    "The final slide shows two dogs and the line out of scope, the site unpromptedcon.org and the tag hack --the-planet; a later part of the recording shows the earlier welcome slide with Wi-Fi network details, which are not reproduced here."
   ],
   "demos": [],
   "quotes": [
-    {"text": "The only moat we truly have is humans and each other.", "speaker": "Gadi Evron", "t": "03:49"},
-    {"text": "Let's just stop for a second and think how uninspiring and boring it is to be a doomer.", "speaker": "Gadi Evron", "t": "05:25"},
-    {"text": "The attackers' singularity moment already happened. Now it's time for ours.", "speaker": "Gadi Evron", "t": "25:15"},
-    {"text": "Let's create AI defense that actually means something, because I'm so sick and tired of seeing automation and orchestration of what we've already done five years ago.", "speaker": "Gadi Evron", "t": "25:45"},
-    {"text": "Zero days, while critical, are almost meaningless to the discussion. This is our daily life now. What do we do with that?", "speaker": "Gadi Evron", "t": "08:02"}
+    {
+      "text": "The only moat we truly have is humans and each other.",
+      "speaker": "Gadi Evron",
+      "t": "03:49"
+    },
+    {
+      "text": "Let's just stop for a second and think how uninspiring and boring it is to be a doomer.",
+      "speaker": "Gadi Evron",
+      "t": "05:25"
+    },
+    {
+      "text": "The attackers' singularity moment already happened. Now it's time for ours.",
+      "speaker": "Gadi Evron",
+      "t": "25:15"
+    },
+    {
+      "text": "Let's create AI defense that actually means something, because I'm so sick and tired of seeing automation and orchestration of what we've already done five years ago.",
+      "speaker": "Gadi Evron",
+      "t": "25:45"
+    },
+    {
+      "text": "Zero days, while critical, are almost meaningless to the discussion. This is our daily life now. What do we do with that?",
+      "speaker": "Gadi Evron",
+      "t": "08:02"
+    }
   ],
   "offense": [
     "Zero-day discovery at conference scale: the CTF produced 141 sanitizer-confirmed novel bugs in Linux and selected open source software, including eight challenges that required a zero day.",
@@ -103,22 +271,44 @@
     "The poem and awards sections contain no technical claims."
   ],
   "qa": [],
-  "tags": ["org-adoption-culture", "vuln-discovery-exploit", "prompt-injection"],
-  "key_frames": [
-    {"file": "t00565.jpg", "caption": "CFP acceptance by track: Break 22 of 168 down to Train 10 of 55, showing submission interest skewed toward breaking."},
-    {"file": "t01172.jpg", "caption": "CTF headline results: 141 novel bugs in Linux and selected OSS, 9 already public, and 3 syzbot first reproducers."},
-    {"file": "t01231.jpg", "caption": "Earlier-cut CTF receipts: 95 memory-safety bugs proven by KASAN or KFENCE, 60 submissions shipped with patches."},
-    {"file": "t01302.jpg", "caption": "AlexBot results: 46 participants, 31 of 38 flags, no front door opened."},
-    {"file": "t01482.jpg", "caption": "Closing thesis slide: the attackers' singularity moment already happened, now it is the defenders' turn."}
+  "tags": [
+    "org-adoption-culture",
+    "vuln-discovery-exploit",
+    "prompt-injection"
   ],
-  "signal": {"score": 2, "reason": "A conference closing session covering logistics, awards and thanks, with CTF statistics and a closing statement on AI defense."},
+  "key_frames": [
+    {
+      "file": "t00565.jpg",
+      "caption": "CFP acceptance by track: Break 22 of 168 down to Train 10 of 55, showing submission interest skewed toward breaking."
+    },
+    {
+      "file": "t01172.jpg",
+      "caption": "CTF headline results: 141 novel bugs in Linux and selected OSS, 9 already public, and 3 syzbot first reproducers."
+    },
+    {
+      "file": "t01231.jpg",
+      "caption": "Earlier-cut CTF receipts: 95 memory-safety bugs proven by KASAN or KFENCE, 60 submissions shipped with patches."
+    },
+    {
+      "file": "t01302.jpg",
+      "caption": "AlexBot results: 46 participants, 31 of 38 flags, no front door opened."
+    },
+    {
+      "file": "t01482.jpg",
+      "caption": "Closing thesis slide: the attackers' singularity moment already happened, now it is the defenders' turn."
+    }
+  ],
+  "signal": {
+    "score": 2,
+    "reason": "The talk recaps conference logistics, awards and thanks, reports CTF statistics, and ends with a statement on AI defense."
+  },
   "caveats": [
     "Transcript is auto-captioned and garbles many names (for example Hibernia as Liberia, Britta as Breida, Alex Liverant as Alex Liberan, tellybob as Teleob); spellings taken from slides where available.",
     "Spoken CTF figures conflict with the slide: speaker said 28 confirmed kernel zero days and 41 novel bugs, the slide says 141 novel bugs; the slide is used.",
     "Speaker said 20 percent of online attendees mostly used recordings; the slide shows about 22 percent.",
     "The AlexBot persona count (12) was spoken; the slide shows only samples.",
-    "The honoree of the surprise thank-you at the end is not named in the transcript; frame names on badges are not confirmed to be the honoree.",
+    "The honoree of the surprise thank-you at the end is not named in the transcript; names on badges in the recording are not confirmed to be the honoree.",
     "The final minutes include no slides beyond the thank-you and a re-shown welcome slide, so the last section is camera only.",
-    "The opening poem is attributed to Dan Hubbard from the transcript and the organizer slide, and its text was captioned imperfectly."
+    "The opening poem is attributed to Hubbard from the transcript and the organizer slide, and its text was captioned imperfectly."
   ]
 }

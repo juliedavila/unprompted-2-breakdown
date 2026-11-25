@@ -3,11 +3,16 @@
   "id": "C_yqOtsT8ZM",
   "url": "https://www.youtube.com/watch?v=C_yqOtsT8ZM",
   "title": "Your Sandbox Degrades Gracefully",
-  "speakers": [{"name": "Daniel Cuthbert", "affiliation": ""}],
+  "speakers": [
+    {
+      "name": "Daniel Cuthbert",
+      "affiliation": ""
+    }
+  ],
   "format": "talk",
   "duration_min": 23,
   "thesis": "A sandbox for an agent that runs untrusted code is much harder than it looks: the RAPTOR team's own sandbox shipped fail-open fallbacks and leaked credentials, and the fix is to refuse to run when a requested protection cannot be enforced, then verify with real-host tests.",
-  "summary": "After an introduction by the RAPTOR project lead, Cuthbert presents RAPTOR, an open-source agentic security harness that has an LLM find bugs in unvetted repositories, binaries and mobile apps, write proof-of-concepts through an eight-stage mechanical process, and execute them on the researcher's machine. Because prompt injection makes an instruction like 'do not read ~/.ssh' worthless, the team built an agent-specific sandbox starting in April. He sketches the lineage (chroot, jails, namespaces, seccomp, Landlock, Seatbelt) and the Linux design: namespaces, a private filesystem with a fake home, Landlock, seccomp and a guarded proxy, built by forking twice so the parent keeps credentials, the child builds the box and the grandchild runs the payload. A fallback ladder degrades from the full Linux stack down to no sandbox. The middle of the talk is a list of the team's own bugs: a failed /proc mount that warned and carried on and let the payload read the session credential, API keys that could not be shown to be unexposed, a network block that failed open, a port allow-list that disabled the block, bypassed startup checks, and a signing key the target could read and use to forge evidence logs. He then covers the fix pattern (a floor below which untrusted work is refused), a Mac refusal with a misleading error, GitHub Actions tests that passed on models but failed on real runners, growth of the suite from 250 to 3,656 tests, shared-storage risk between agents, and planned work: whole-job cgroup budgets, run receipts, SandboxCheckr with canary-style bait credentials, and throwaway VMs.",
+  "summary": "After an introduction by the RAPTOR project lead, Cuthbert presents RAPTOR, an open-source agentic security harness that has an LLM find bugs in unvetted repositories, binaries and mobile apps, write proof-of-concepts through an eight-stage mechanical process, and execute them on the researcher's machine. Because prompt injection makes an instruction like 'do not read ~/.ssh' worthless, the team built an agent-specific sandbox starting in April. He sketches the lineage (chroot, jails, namespaces, seccomp, Landlock, Seatbelt) and the Linux design: namespaces, a private filesystem with a fake home, Landlock, seccomp and a guarded proxy, built by forking twice so the parent keeps credentials, the child builds the box and the grandchild runs the payload. A fallback ladder degrades from the full Linux stack down to no sandbox. The middle of the talk is a list of the team's own bugs: a failed /proc mount that warned and carried on and let the payload read the session credential, API keys that could not be shown to be unexposed, a network block that failed open, a port allow-list that disabled the block, bypassed startup checks, and a signing key the target could read and use to forge evidence logs. He then covers the fix pattern (a floor below which untrusted work is refused), a Mac refusal with a misleading error, GitHub Actions tests that passed on models but failed on real runners, growth of the suite from 250 to 3,656 tests, shared-storage risk between agents, and planned work: whole-job cgroup budgets, run receipts, SandboxCheckr (a prototype that reports what a host can do for sandboxing) with canary-style bait credentials, and throwaway VMs.",
   "argument": [
     "Agents that build and execute untrusted code on a researcher's machine need a sandbox because a prompt asking the model not to touch secrets is not a control.",
     "A graceful-degradation ladder of fallbacks sounds sensible but each rung has different gaps, and the lower rungs silently gave the payload more access than the caller asked for.",
@@ -17,46 +22,205 @@
     "Next steps are whole-job resource budgets, per-run receipts of attempted actions, inline proxy inspection with bait credentials, and disposable VMs per job."
   ],
   "claims": [
-    {"claim": "Bug 1: a private /proc mount was refused by Landlock because the mount ran in the grandchild after Landlock was applied in the child, the code warned and continued, and the host process list stayed visible.", "evidence": "Commit 4708eb2c shown on slides, with dated comments (22 Aug said this was fine, 26 Aug 'The assumption has a hole').", "grade": "case", "t": "08:53", "source": "both"},
-    {"claim": "Because the setup child had joined the payload's user namespace and still held the parent's environment after fork, the payload could read /proc/<setup-child-pid>/environ and obtain the orchestrator's session credential.", "evidence": "Slide walks through the assumption (host processes sit outside the namespace, so Linux denies reads) and the missed step; fix is to mount /proc before Landlock and scrub helper secrets.", "grade": "case", "t": "09:25", "source": "both"},
-    {"claim": "By default the LLM worker could still carry a provider API key (only an opt-in mode kept keys in a separate dispatcher), and the team could not say whether provider keys had been exposed.", "evidence": "Stated by the speaker and shown on the 'What leaked, what we tested' slide.", "grade": "assertion", "t": "10:58", "source": "both"},
-    {"claim": "block_network=True failed open: when neither a network namespace nor a Landlock TCP deny was available the payload ran with open network, warned once on the first call, and gave no warning on later calls.", "evidence": "Bug 2 slide; the fallback had been added to fix open network access and carried an explanatory comment.", "grade": "case", "t": "11:29", "source": "both"},
-    {"claim": "Supplying allowed_tcp_ports=[443] skipped the whole network block, so a request for TCP limited to 443 produced TCP to every port on the degraded host.", "evidence": "Code condition 'and not allowed_tcp_ports' shown on the slide.", "grade": "case", "t": "12:00", "source": "both"},
-    {"claim": "Several checks were bypassable: the Landlock check at setup was skipped by five fallback routes, a different binary ran than the one specified (a PATH clean-up chose it), and a symlink repointed the output directory.", "evidence": "Three-row 'we checked / what happened' slide, with a 21 Aug PATH clean-up comment that proved wrong eight days later.", "grade": "case", "t": "12:30", "source": "both"},
-    {"claim": "Evidence logs were HMAC-signed with a key on the filesystem; without a private mount tree or read restrictions the target could read the key, and chained with the namespace bug an agent could re-sign malicious logs as its own, so the signature could not say who wrote the evidence.", "evidence": "Described as a chain of the earlier bugs; the speaker says it still bothers him. The slide says the report flags possible tampering. No demonstration is shown.", "grade": "case", "t": "13:01", "source": "both"},
-    {"claim": "On the speaker's Mac, running RAPTOR from an agent tool that had already sandboxed it made RAPTOR's sandbox-exec (Seatbelt) profile fail to apply, and the floor correctly refused the untrusted run, but the error message told the user to verify Command Line Tools were installed.", "evidence": "Live check by the speaker just before the talk, shown on slide 17.", "grade": "demo", "t": "14:37", "source": "both"},
-    {"claim": "On a real Ubuntu AppArmor GitHub Actions runner, a combined user-plus-process isolation check passed but the real launch sequence (user isolation, then process isolation) was denied at step two; modelled tests were green while the real runner showed 10 failures in 3 runs.", "evidence": "Slide dated 13 Sep with the figures; the fix was to make the check run the same two steps as the launcher.", "grade": "measured", "t": "15:39", "source": "both"},
-    {"claim": "The sandbox test suite grew from about 250 tests (26 April) to 3,656 (17 October), written from a threat model with LLM assistance and kept in the repo.", "evidence": "Figures on the slide; the speaker says about 250 tests in April. In the Q&A he says tests were a mix of manual and LLM-written work from a threat model.", "grade": "measured", "t": "16:43", "source": "both"},
-    {"claim": "RAPTOR's own sandbox test on 21 Aug changed file permissions outside Landlock's allowed write paths, and no agent-to-agent messages were observed; the slide contrasts this with an OpenAI report (8 Jul) of about 1,200 eval agents passing 70,000+ messages through directory names in a shared cache.", "evidence": "Slide figures for the OpenAI report. Speaker did not explain the source of the OpenAI report, and the transcript for this section is garbled.", "grade": "assertion", "t": "17:14", "source": "slide"},
-    {"claim": "Planned for 3.2: a single Linux cgroup over child, grandchild and further children to enforce whole-job CPU, memory and process budgets, refusing when a required budget cannot be enforced, plus a run receipt listing denied and allowed file, network and credential attempts and the coverage achieved.", "evidence": "Planned-work slides tagged #1004 and #1005, with a mock-up receipt; no implementation shown.", "grade": "assertion", "t": "17:46", "source": "both"}
+    {
+      "claim": "Bug 1: a private /proc mount was refused by Landlock because the mount ran in the grandchild after Landlock was applied in the child, the code warned and continued, and the host process list stayed visible.",
+      "evidence": "Commit 4708eb2c shown on slides, with dated comments (22 Aug said this was fine, 26 Aug 'The assumption has a hole').",
+      "grade": "case",
+      "t": "08:53",
+      "source": "both"
+    },
+    {
+      "claim": "Because the setup child had joined the payload's user namespace and still held the parent's environment after fork, the payload could read /proc/<setup-child-pid>/environ and obtain the orchestrator's session credential.",
+      "evidence": "Slide walks through the assumption (host processes sit outside the namespace, so Linux denies reads) and the missed step; fix is to mount /proc before Landlock and scrub helper secrets.",
+      "grade": "case",
+      "t": "09:25",
+      "source": "both"
+    },
+    {
+      "claim": "By default the LLM worker could still carry a provider API key (only an opt-in mode kept keys in a separate dispatcher), and the team could not say whether provider keys had been exposed.",
+      "evidence": "Stated by the speaker and shown on the 'What leaked, what we tested' slide.",
+      "grade": "assertion",
+      "t": "10:58",
+      "source": "both"
+    },
+    {
+      "claim": "block_network=True failed open: when neither a network namespace nor a Landlock TCP deny was available the payload ran with open network, warned once on the first call, and gave no warning on later calls.",
+      "evidence": "Bug 2 slide; the fallback had been added to fix open network access and carried an explanatory comment.",
+      "grade": "case",
+      "t": "11:29",
+      "source": "both"
+    },
+    {
+      "claim": "Supplying allowed_tcp_ports=[443] skipped the whole network block, so a request for TCP limited to 443 produced TCP to every port on the degraded host.",
+      "evidence": "Code condition 'and not allowed_tcp_ports' shown on the slide.",
+      "grade": "case",
+      "t": "12:00",
+      "source": "both"
+    },
+    {
+      "claim": "Several checks were bypassable: the Landlock check at setup was skipped by five fallback routes, a different binary ran than the one specified (a PATH clean-up chose it), and a symlink repointed the output directory.",
+      "evidence": "Three-row 'we checked / what happened' slide, with a 21 Aug PATH clean-up comment that proved wrong eight days later.",
+      "grade": "case",
+      "t": "12:30",
+      "source": "both"
+    },
+    {
+      "claim": "Evidence logs were HMAC-signed with a key on the filesystem; without a private mount tree or read restrictions the target could read the key, and chained with the namespace bug an agent could re-sign malicious logs as its own, so the signature could not say who wrote the evidence.",
+      "evidence": "Described as a chain of the earlier bugs; the speaker says it still bothers him. The slide says the report flags possible tampering. No demonstration is shown.",
+      "grade": "case",
+      "t": "13:01",
+      "source": "both"
+    },
+    {
+      "claim": "On the speaker's Mac, running RAPTOR from an agent tool that had already sandboxed it made RAPTOR's sandbox-exec (Seatbelt) profile fail to apply, and the floor correctly refused the untrusted run, but the error message told the user to verify Command Line Tools were installed.",
+      "evidence": "Live check by the speaker just before the talk, shown on slide 17.",
+      "grade": "demo",
+      "t": "14:37",
+      "source": "both"
+    },
+    {
+      "claim": "On a real Ubuntu AppArmor GitHub Actions runner, a combined user-plus-process isolation check passed but the real launch sequence (user isolation, then process isolation) was denied at step two; modelled tests were green while the real runner showed 10 failures in 3 runs.",
+      "evidence": "Slide dated 13 Sep with the figures; the fix was to make the check run the same two steps as the launcher.",
+      "grade": "measured",
+      "t": "15:39",
+      "source": "both"
+    },
+    {
+      "claim": "The sandbox test suite grew from about 250 tests (26 April) to 3,656 (17 October), written from a threat model with LLM assistance and kept in the repo.",
+      "evidence": "Figures on the slide; the speaker says about 250 tests in April. In the Q&A he says tests were a mix of manual and LLM-written work from a threat model.",
+      "grade": "measured",
+      "t": "16:43",
+      "source": "both"
+    },
+    {
+      "claim": "RAPTOR's own sandbox test on 21 Aug changed file permissions outside Landlock's allowed write paths, and no agent-to-agent messages were observed; the slide contrasts this with an OpenAI report (8 Jul) of about 1,200 eval agents passing 70,000+ messages through directory names in a shared cache.",
+      "evidence": "Slide figures for the OpenAI report. Speaker did not explain the source of the OpenAI report, and the transcript for this section is garbled.",
+      "grade": "assertion",
+      "t": "17:14",
+      "source": "slide"
+    },
+    {
+      "claim": "Planned for 3.2: a single Linux cgroup over child, grandchild and further children to enforce whole-job CPU, memory and process budgets, refusing when a required budget cannot be enforced, plus a run receipt listing denied and allowed file, network and credential attempts and the coverage achieved.",
+      "evidence": "Planned-work slides tagged #1004 and #1005, with a mock-up receipt; no implementation shown.",
+      "grade": "assertion",
+      "t": "17:46",
+      "source": "both"
+    }
   ],
   "numbers": [
-    {"figure": "250 -> 3,656", "meaning": "sandbox test count from 26 April to 17 October", "t": "16:43"},
-    {"figure": "10 failures / 3 runs", "meaning": "failures seen on a real GitHub Actions runner while modelled tests were green", "t": "16:12"},
-    {"figure": "5", "meaning": "fallback routes that skipped the Landlock check at setup", "t": "12:30"},
-    {"figure": "600", "meaning": "forks of RAPTOR, cited as evidence of heavy CI/CD use (spoken only)", "t": "15:39"},
-    {"figure": "~500", "meaning": "tests built at the start for the Ubuntu AppArmor GitHub/GitLab case (spoken only; slide says about 250 in April, so the two do not clearly reconcile)", "t": "15:39"},
-    {"figure": "22 Aug / 26 Aug", "meaning": "date a comment called the /proc behaviour fine, and the commit (4708eb2c) that said the assumption has a hole", "t": "09:25"},
-    {"figure": "~1,200 agents, 70,000+ messages", "meaning": "OpenAI eval agents that passed messages through directory names in a shared cache (8 Jul), as cited on the slide", "t": "17:14"},
-    {"figure": "20%", "meaning": "example CPU cap used when describing the planned cgroup budget (spoken only)", "t": "17:46"},
-    {"figure": "6 months", "meaning": "time the speaker says he has spent building Sandbox Checker", "t": "18:17"}
+    {
+      "figure": "250 -> 3,656",
+      "meaning": "sandbox test count from 26 April to 17 October",
+      "t": "16:43"
+    },
+    {
+      "figure": "10 failures / 3 runs",
+      "meaning": "failures seen on a real GitHub Actions runner while modelled tests were green",
+      "t": "16:12"
+    },
+    {
+      "figure": "5",
+      "meaning": "fallback routes that skipped the Landlock check at setup",
+      "t": "12:30"
+    },
+    {
+      "figure": "600",
+      "meaning": "forks of RAPTOR, cited as evidence of heavy CI/CD use (spoken only)",
+      "t": "15:39"
+    },
+    {
+      "figure": "~500",
+      "meaning": "tests built at the start for the Ubuntu AppArmor GitHub/GitLab case (spoken only; slide says about 250 in April, so the two do not clearly reconcile)",
+      "t": "15:39"
+    },
+    {
+      "figure": "22 Aug / 26 Aug",
+      "meaning": "date a comment called the /proc behaviour fine, and the commit (4708eb2c) that said the assumption has a hole",
+      "t": "09:25"
+    },
+    {
+      "figure": "~1,200 agents, 70,000+ messages",
+      "meaning": "OpenAI eval agents that passed messages through directory names in a shared cache (8 Jul), as cited on the slide",
+      "t": "17:14"
+    },
+    {
+      "figure": "20%",
+      "meaning": "example CPU cap used when describing the planned cgroup budget (spoken only)",
+      "t": "17:46"
+    },
+    {
+      "figure": "6 months",
+      "meaning": "time the speaker says he has spent building Sandbox Checker",
+      "t": "18:17"
+    }
   ],
   "frameworks": [
-    {"name": "RAPTOR Linux sandbox stack", "description": "Namespaces (own view of processes and network), private filesystem (target read-only, fake home), Landlock (files it may touch), seccomp (syscalls it may make), and a guarded proxy hatch for outbound calls."},
-    {"name": "Fork twice", "description": "Parent holds the keys and writes the uid map; child creates namespaces and builds the mount tree; grandchild runs mount /proc, then Landlock, then seccomp, then execs the payload."},
-    {"name": "Fallback ladder", "description": "Five rungs: full Linux stack; no private filesystem; namespaces without Landlock; Landlock without namespaces; no sandbox."},
-    {"name": "The floor", "description": "Below the full stack, refuse untrusted work unless an operator accepts less. Linux default is mount-ns and macOS default is Seatbelt. Check at setup, check again before launch, and record the protection that actually ran."},
-    {"name": "Whole-job budget (planned 3.2)", "description": "One cgroup over the whole process tree for memory, CPU and process count; refuse if a required budget cannot be enforced; record whether it was."},
-    {"name": "Run receipt (planned 3.2)", "description": "Per-run record of attempted versus successful actions (file opens, writes, connects) with a coverage statement saying where observation stopped."},
-    {"name": "Take this slide home", "description": "Set up first, lock down second; refuse if the requested protection cannot be enforced; check every route to execution; keep signing keys out of the target's reach; probe whether your launcher works inside another sandbox; list the storage your agents share."}
+    {
+      "name": "RAPTOR Linux sandbox stack",
+      "description": "Namespaces (own view of processes and network), private filesystem (target read-only, fake home), Landlock (files it may touch), seccomp (syscalls it may make), and a guarded proxy hatch for outbound calls."
+    },
+    {
+      "name": "Fork twice",
+      "description": "Parent holds the keys and writes the uid map; child creates namespaces and builds the mount tree; grandchild runs mount /proc, then Landlock, then seccomp, then execs the payload."
+    },
+    {
+      "name": "Fallback ladder",
+      "description": "Five rungs: full Linux stack; no private filesystem; namespaces without Landlock; Landlock without namespaces; no sandbox."
+    },
+    {
+      "name": "The floor",
+      "description": "Below the full stack, refuse untrusted work unless an operator accepts less. Linux default is mount-ns and macOS default is Seatbelt. Check at setup, check again before launch, and record the protection that actually ran."
+    },
+    {
+      "name": "Whole-job budget (planned 3.2)",
+      "description": "One cgroup over the whole process tree for memory, CPU and process count; refuse if a required budget cannot be enforced; record whether it was."
+    },
+    {
+      "name": "Run receipt (planned 3.2)",
+      "description": "Per-run record of attempted versus successful actions (file opens, writes, connects) with a coverage statement saying where observation stopped."
+    },
+    {
+      "name": "Take this slide home",
+      "description": "Set up first, lock down second; refuse if the requested protection cannot be enforced; check every route to execution; keep signing keys out of the target's reach; probe whether your launcher works inside another sandbox; list the storage your agents share."
+    }
   ],
   "artifacts": [
-    {"name": "RAPTOR", "kind": "repo", "note": "Open-source agentic security harness the sandbox was built for; claimed to be heavily used in CI/CD.", "url": "github.com/gadievron/raptor"},
-    {"name": "SandboxCheckr (Sandbox Checker)", "kind": "tool", "note": "Local prototype, public release pending. Reports what a host can do for sandboxing and includes an inline inspection proxy with rules; bait credentials per agent.", "url": ""},
-    {"name": "Commit 4708eb2c", "kind": "repo", "note": "RAPTOR commit dated 26 Aug 2026 with the message 'The assumption has a hole', fixing the session credential leak.", "url": ""},
-    {"name": "Iron Curtain", "kind": "tool", "note": "Named by an audience member as a comparison point; the speaker said it was much better and promised to credit it. Speaker gave no details.", "url": ""},
-    {"name": "Firecracker / KVM", "kind": "tool", "note": "Proposed throwaway-VM backend for Linux hosts.", "url": ""},
-    {"name": "Apple Virtualization.framework", "kind": "tool", "note": "Proposed backend for Mac hosts; speaker said he is looking into Apple's container runtime.", "url": ""}
+    {
+      "name": "RAPTOR",
+      "kind": "repo",
+      "note": "Open-source agentic security harness the sandbox was built for; reported as heavily used in CI/CD.",
+      "url": "github.com/gadievron/raptor"
+    },
+    {
+      "name": "SandboxCheckr (Sandbox Checker)",
+      "kind": "tool",
+      "note": "Local prototype, public release pending. Reports what a host can do for sandboxing and includes an inline inspection proxy with rules; bait credentials per agent.",
+      "url": ""
+    },
+    {
+      "name": "Commit 4708eb2c",
+      "kind": "repo",
+      "note": "RAPTOR commit dated 26 Aug 2026 with the message 'The assumption has a hole', fixing the session credential leak.",
+      "url": ""
+    },
+    {
+      "name": "Iron Curtain",
+      "kind": "tool",
+      "note": "Named by an audience member as a comparison point; the speaker said it was much better and promised to credit it. Speaker gave no details.",
+      "url": ""
+    },
+    {
+      "name": "Firecracker / KVM",
+      "kind": "tool",
+      "note": "Proposed throwaway-VM backend for Linux hosts.",
+      "url": ""
+    },
+    {
+      "name": "Apple Virtualization.framework",
+      "kind": "tool",
+      "note": "Proposed backend for Mac hosts; speaker said he is looking into Apple's container runtime.",
+      "url": ""
+    }
   ],
   "slide_only": [
     "Slide 2 shows the contents of the box (LLM-written PoCs, build scripts from an unvetted repo, CodeQL, Semgrep, AFL++, Frida, Phun) spawned by a parent holding API keys and the session credential, with 'please don't touch ~/.ssh' as the prompt and 'cat: ~/.ssh: No such file' as the sandbox.",
@@ -76,10 +240,26 @@
     "No live demo of an exploit. The speaker reported a pre-talk run of RAPTOR on his Mac inside an agent tool's existing sandbox, which refused to run because the Seatbelt profile could not be applied, and returned a misleading 'verify command line tools are installed' message."
   ],
   "quotes": [
-    {"text": "The assumption has a hole.", "speaker": "Daniel Cuthbert", "t": "03:10"},
-    {"text": "The sad reality is the vast majority of harnesses that we've tested today are sitting on that bottom rung. They are the YOLO mode of running untrusted code and binaries on your research laptop.", "speaker": "Daniel Cuthbert", "t": "07:51"},
-    {"text": "Everything now has to be tests.", "speaker": "Daniel Cuthbert", "t": "16:43"},
-    {"text": "Set it up first and then lock down second... if you can't enforce the protection, just refuse.", "speaker": "Daniel Cuthbert", "t": "19:50"}
+    {
+      "text": "The assumption has a hole.",
+      "speaker": "Daniel Cuthbert",
+      "t": "03:10"
+    },
+    {
+      "text": "The sad reality is the vast majority of harnesses that we've tested today are sitting on that bottom rung. They are the YOLO mode of running untrusted code and binaries on your research laptop.",
+      "speaker": "Daniel Cuthbert",
+      "t": "07:51"
+    },
+    {
+      "text": "Everything now has to be tests.",
+      "speaker": "Daniel Cuthbert",
+      "t": "16:43"
+    },
+    {
+      "text": "Set it up first and then lock down second... if you can't enforce the protection, just refuse.",
+      "speaker": "Daniel Cuthbert",
+      "t": "19:50"
+    }
   ],
   "offense": [
     "Untrusted repo code reading the orchestrator's environment, including the session credential, via /proc/<setup-child-pid>/environ because the setup child had joined the payload's user namespace and kept the parent's environment.",
@@ -104,11 +284,11 @@
     "Prefer disposable VMs per job (Firecracker/KVM on Linux, Virtualization.framework on Mac) with read-only source in and checked results out."
   ],
   "takeaways": [
-    "Audit your agent-execution sandbox for fail-open paths: for every degraded mode, ask whether the control the caller requested is still enforced, and if not, make it refuse.",
+    "Audit your agent-execution sandbox for fail-open paths (degraded modes that silently drop a requested protection); for every degraded mode, ask whether the control the caller requested is still enforced, and if not, make it refuse.",
     "Make the sandbox report the protection that actually ran for each job, and treat any gap between requested and applied as a failure.",
     "Test the real launcher on the real runners (CI images, AppArmor hosts, a Mac already inside another sandbox); modelled checks can pass while real launches fail.",
     "Inventory secrets and signing keys reachable from the payload's namespace, including from setup helpers that still hold the parent's environment.",
-    "Map storage that agents share and consider bait credentials per agent as cheap detection of cross-agent reuse."
+    "Map storage that agents share, and consider bait credentials per agent as cheap detection of cross-agent reuse."
   ],
   "limits": [
     "The speaker says the team does not think anything here is novel and that the sandbox will be broken again when it is upgraded.",
@@ -124,7 +304,7 @@
     "The credential leak and evidence-forging chain are described as possible; no run of an agent actually exploiting them is shown, so the chaining claim rests on the speaker's account.",
     "The 10 failures in 3 runs figure is not defined clearly (failures per run or in total), and the 500-test spoken figure and 250-test slide figure do not obviously agree.",
     "The OpenAI agent-messaging comparison appears only as a slide and the spoken part is garbled, so it should be checked against the primary source before reuse.",
-    "The 'refuse rather than degrade' approach costs availability, since most hosts will be on lower rungs; the talk does not say how many real hosts clear the floor.",
+    "The 'refuse rather than degrade' approach costs availability on hosts that sit below the floor; the talk does not say how many real hosts clear the floor.",
     "Planned items (cgroup budgets, receipts, VMs) are roadmap items, not results, and the receipts only cover attempts RAPTOR can observe.",
     "The speaker presents on behalf of the RAPTOR project, which is open source."
   ],
@@ -134,20 +314,43 @@
     "Did you investigate what agents did together in the swarm? No, there was no final job lot for that, but understanding what agents did and colluded on is on the to-do list.",
     "Did you look at Iron Curtain, and how does it compare? He had; he said it is much better and they will credit it."
   ],
-  "tags": ["sandboxing-isolation", "coding-agent-security", "autonomous-offense", "guardrails-runtime-controls"],
-  "key_frames": [
-    {"file": "t00412.jpg", "caption": "Fork-twice build: parent holds keys, child builds namespaces and mounts, grandchild applies mount /proc, Landlock, seccomp and execs the payload."},
-    {"file": "t00590.jpg", "caption": "Why the /proc bug was thought fine and what was missed: the setup child's environment readable by the payload, exposing the session credential."},
-    {"file": "t00794.jpg", "caption": "The signing-key problem: the target can read the HMAC key and forge the evidence signature."},
-    {"file": "t00855.jpg", "caption": "The floor: refuse untrusted work below the full Linux stack unless an operator accepts less; check at setup and again before launch."},
-    {"file": "t00938.jpg", "caption": "GitHub Actions slide: modelled tests green, real runner 10 failures in 3 runs, and test growth from 250 to 3,656."}
+  "tags": [
+    "sandboxing-isolation",
+    "coding-agent-security",
+    "autonomous-offense",
+    "guardrails-runtime-controls"
   ],
-  "signal": {"score": 4, "reason": "Concrete post-mortem of fail-open sandbox bugs with a clear floor rule; the evidence shown is the team's own account with commit references and a few counts."},
+  "key_frames": [
+    {
+      "file": "t00412.jpg",
+      "caption": "Fork-twice build: parent holds keys, child builds namespaces and mounts, grandchild applies mount /proc, Landlock, seccomp and execs the payload."
+    },
+    {
+      "file": "t00590.jpg",
+      "caption": "Why the /proc bug was thought fine and what was missed: the setup child's environment readable by the payload, exposing the session credential."
+    },
+    {
+      "file": "t00794.jpg",
+      "caption": "The signing-key problem: the target can read the HMAC key and forge the evidence signature."
+    },
+    {
+      "file": "t00855.jpg",
+      "caption": "The floor: refuse untrusted work below the full Linux stack unless an operator accepts less; check at setup and again before launch."
+    },
+    {
+      "file": "t00938.jpg",
+      "caption": "GitHub Actions slide: modelled tests green, real runner 10 failures in 3 runs, and test growth from 250 to 3,656."
+    }
+  ],
+  "signal": {
+    "score": 4,
+    "reason": "The talk reports a post-mortem of the team's own fail-open sandbox bugs and a refuse-below-the-floor rule, with commit references and a few counts as evidence."
+  },
   "caveats": [
     "Auto-captions garble several passages: the symlink bypass was transcribed unclearly and read from the slide, and the OpenAI shared-cache section is garbled in the transcript.",
     "The intro speaker is introduced by first name only in the transcript; the repo URL on the closing slide shows gadievron/raptor.",
-    "The speaker's affiliation is not given on a slide, in the description or in his own words beyond the title 'Security Researcher, Dinosaur Wrangler', so it is left empty.",
-    "Transcript says 'Raptor... April' with about 250 tests and elsewhere about 500 tests at the start; the slide shows 250 on 26 April, which is used as the authority.",
+    "The speaker's affiliation is not given on a slide, in the published description or in his own words beyond the title 'Security Researcher, Dinosaur Wrangler', so it is left empty.",
+    "Transcript says 'Raptor... April' with about 250 tests and elsewhere about 500 tests at the start; the slide shows 250 on 26 April, which this record uses.",
     "Transcript says the Mac test ran 'just before this talk'; slide 17 describes it as running RAPTOR from an agent tool."
   ]
 }

@@ -7,7 +7,7 @@
   "format": "talk",
   "duration_min": 25,
   "thesis": "Frontier coding agents have reached a Lee Sedol moment in cryptanalysis: in summer 2026 they helped break key-recovery assumptions that had held for 48 years in Classic McEliece, and in one month a single cryptographer with a typical developer subscription compressed roughly six months to a year of review of China's 119 new post-quantum and hash candidates.",
-  "summary": "Saarinen opens with Classic McEliece, a 1978 code-based cryptosystem that stayed in textbooks for decades because of large public keys, was modernized by Bernstein, Lange and coauthors for the NIST PQC competition, recommended by Germany's BSI from 2020, and made an ISO standard in June 2026. For 48 years the cost of recovering its secret key was estimated as a brute-force search, and the TII challenge series (2023-24, prizes of $10,000 from TII-70 up) is the benchmark. In July 2026 he used a frontier-model optimization loop to find a shortcut, which he calls HOVER, in Hemmert's high-order vanishing key recovery, solving TII-252 in about six minutes on a laptop. In August a holdout attack paper (with an AI disclosure that admits heavy AI use) and then Steve Weis, with Claude, completed a key-recovery step. Saarinen ran an eight-day human-directed AI loop to break TII-254. Every published estimate for the ISO parameter sets now sits below the claimed security level, and BSI withdrew its recommendation for new designs on September 29, 2026. The second half covers ngcc.dev: from September 21 he ran Codex and Claude Code, on about $75 a week, against 119 Chinese NGCC candidates, with a source-only harness, spec digests, briefs and a severity policy. After a week there were 191 findings, 110 of them from his project; after a month 409 active findings, 160 critical, with nearly every candidate affected. He closes on design breaks, Chinese models, AI report volume, and Q&A.",
+  "summary": "Saarinen opens with Classic McEliece, a 1978 code-based cryptosystem that stayed in textbooks for decades because of large public keys, was modernized by Bernstein, Lange and coauthors for the NIST PQC competition, recommended by Germany's BSI from 2020, and made an ISO standard in June 2026. For 48 years the cost of recovering its secret key was estimated as a brute-force search, and the TII (UAE Technology Innovation Institute) challenge series (2023-24, prizes of $10,000 from TII-70 up) is the benchmark. In July 2026 he used a frontier-model optimization loop to find a shortcut, which he calls HOVER, in Hemmert's high-order vanishing key recovery, solving TII-252 in about six minutes on a laptop. In August a holdout attack paper (with an AI disclosure that states heavy AI use) and then Steve Weis, with Claude, completed a key-recovery step. Saarinen ran an eight-day human-directed AI loop to break TII-254. Every published estimate for the ISO parameter sets now sits below the claimed security level, and BSI withdrew its recommendation for new designs on September 29, 2026. The second half covers ngcc.dev: from September 21 he ran Codex and Claude Code, on about $75 a week, against 119 Chinese candidates in NGCC, the competition run by China's Institute of Commercial Cryptography Standards, with a source-only harness (nothing a submission ships is ever executed), spec digests, briefs and a severity policy. After a week there were 191 findings, 110 of them from his project; after a month 409 active findings, 160 critical, with nearly every candidate affected.",
   "argument": [
     "Cryptanalysis is a domain where frontier agents now produce results that experts accept, and summer 2026 is the Lee Sedol moment.",
     "Classic McEliece key recovery had been assumed to cost brute-force search for 48 years; an AI-found shortcut, a holdout attack and a Claude-assisted completion pushed every published estimate for the ISO parameter sets below the claimed level.",
@@ -110,7 +110,7 @@
   "takeaways": [
     "Treat AI-assisted cryptanalysis as live: audit anything your platform depends on for post-quantum or non-standard primitives, and expect cost estimates for older schemes to be revised downward quickly.",
     "If you commission AI review of a large codebase or third-party submissions, copy the harness pattern: source-only build, isolation, evidence rules, spec digests, checklists and a severity policy, rather than a generic prompt.",
-    "Budget tracking is cheap: the claim here is that coverage of 119 candidates cost about $75 a week, so the constraint is expert direction and triage capacity, not compute.",
+    "Plan around expert direction and triage capacity rather than compute: Saarinen reports that coverage of 119 candidates cost about $75 a week.",
     "Plan for report triage: automated filtering of AI-generated reports (5 valid of 162 observations) before humans read them.",
     "Watch standards bodies and regulators for rapid guidance changes after AI-assisted breaks, and keep crypto-agility in your design so you can swap algorithms."
   ],
@@ -124,7 +124,7 @@
   ],
   "critique": [
     "The talk shows tables of solved challenges, wall times and public counts; the findings database and agent flows are only partly public, so the 191 and 409 counts cannot be independently checked from the talk alone.",
-    "The attribution split (110 from his project plus AI versus 61 human or unknown) relies on self-reported AI disclosure by other researchers, so the AI share is probably understated and cannot be verified.",
+    "The attribution split (110 from his project plus AI versus 61 human or unknown) relies on self-reported AI disclosure by other researchers, so the AI share rests on disclosure by others and cannot be verified.",
     "Counting findings by candidate mixes very different severities and a Critical label that depends on the competition's own requirements, so the count does not map directly to real-world exploitability, which the speaker partly acknowledged by saying timing attacks were rated High.",
     "The claim that AI compressed six months to a year into one month is an estimate with no baseline shown, and the effect of the speaker's own domain expertise (checklists, classification) is confounded with the model's.",
     "The headline that Classic McEliece is basically broken is softened later by far from practical; the practical evidence is BSI's guidance change rather than a deployable attack.",
@@ -144,13 +144,13 @@
     {"file": "t00946.jpg", "caption": "First-week breakdown: 191 findings by severity, scope and category, 110 from the speaker's project plus AI."},
     {"file": "t01066.jpg", "caption": "Critical bug zoo: named recurring implementation defect classes with per-scheme examples."}
   ],
-  "signal": {"score": 5, "reason": "Quantified new results (TII-252 and 254 key recoveries, estimates below the claimed level, 409 findings in a month) from a practitioner running commodity agents, with a regulator reaction that changes guidance."},
+  "signal": {"score": 5, "reason": "The talk reports quantified new results (TII-252 and 254 key recoveries, estimates below the claimed level, 409 findings in a month) from one practitioner running commodity agents, and a regulator reaction that changed guidance."},
   "caveats": [
     "Auto-caption garbles names: Lee Sedol appears as Lee settle, Steve Weis as Steve Wise, Martin Feussner as Martin Foisner, ngcc.dev as ngc.dev, and the institute name as commercial crypto standards; slide spellings used.",
     "Speaker says TII-255 is the one missing, and describes the loop as about two hours on eight GH200 GPUs; the slide shows the two-hour figure only for kernel reconstruction, with 13.6 hours per anchor for the Wiedemann stage.",
     "The transcript says 100 candidates and about 75 dollars a week; slides say 119 candidates and 117 built on day one.",
     "The speaker said BSI quoted his work; the slide confirms references 16 and 17 are his.",
-    "Several slides are shown with and without speaker camera, so some frames repeat the same slide in progressive reveal; first frame is a conference welcome slide with no talk content.",
-    "No affiliation was shown or said; the description gives only job descriptions."
+    "Several slides appear both with and without the speaker camera, so the same slide repeats in progressive reveal; the recording opens on a conference welcome slide with no talk content.",
+    "No affiliation was shown or said; the published description gives only job descriptions."
   ]
 }

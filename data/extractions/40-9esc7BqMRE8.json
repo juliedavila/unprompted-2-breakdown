@@ -3,11 +3,16 @@
   "id": "9esc7BqMRE8",
   "url": "https://www.youtube.com/watch?v=9esc7BqMRE8",
   "title": "Metrics for Agentic Systems: What \"Good\" Looks Like for a Security Agent",
-  "speakers": [{"name": "Shahanas Najeeb", "affiliation": "Salesforce"}],
+  "speakers": [
+    {
+      "name": "Shahanas Najeeb",
+      "affiliation": "Salesforce"
+    }
+  ],
   "format": "talk",
   "duration_min": 20,
   "thesis": "Activity counts such as runs, API calls and thumbs-up ratings do not show that a security agent improved security; a security agent should be judged on adoption, coverage, accuracy and ROI, with a separate safety gate, and the measurement itself has to be tested before the numbers are trusted.",
-  "summary": "Najeeb works with Salesforce SOC analysts to build agents and automation. She opens with a security review where an impressive dashboard of runs, response times and thumbs-up ratings was met with the question of what actually improved. Her team went back and defined four lenses: adoption, coverage, accuracy and return on investment. Adoption is a fraction (18 of 40 intended users), and proving real use needs telemetry from ticketing and investigation tools: binding a recommendation ID to the analyst's approved action, comparing posted summaries to see whether they were edited or ghosted, and checking that a recommended query actually ran within ten minutes. Coverage asks which eligible cases, split by impact, the agent actually reached, and underpins the other lenses. Accuracy is split into recall and precision, the compounding loss across multi-step investigations (pass^k), and a study in which most correct final answers hid a missed step. She then asks who grades the grader and gives a ladder: state checks, code checks, a calibrated model judge and expert review of a sample. ROI is capacity value minus agent cost, and cost per reviewed correct outcome. A final safety gate covers authority, adversarial input and failure handoff, tested at intervals. The result feeds an expand, fix or keep supervision decision. Q&A covered fragmented tooling across agents and how the lenses were derived.",
+  "summary": "Najeeb works with Salesforce SOC analysts to build agents and automation. She opens with a security review where an impressive dashboard of runs, response times and thumbs-up ratings was met with the question of what actually improved. Her team went back and defined four lenses: adoption, coverage, accuracy and return on investment. Adoption is a fraction (18 of 40 intended users), and proving real use needs telemetry from ticketing and investigation tools: binding a recommendation ID to the analyst's approved action, comparing posted summaries to see whether they were edited or ghosted, and checking that a recommended query actually ran within ten minutes. Coverage asks which eligible cases, split by impact, the agent actually reached, and underpins the other lenses. Accuracy is split into recall and precision, the compounding loss across multi-step investigations (pass^k), and a study in which most correct final answers hid a missed step. She then asks who grades the grader and gives a ladder: state checks, code checks, a calibrated model judge and expert review of a sample. ROI is capacity value minus agent cost, and cost per reviewed correct outcome. A final safety gate covers authority, adversarial input and failure handoff, tested at intervals. The result feeds an expand, fix or keep supervision decision.",
   "argument": [
     "Dashboards of runs, latency and thumbs-up ratings measure activity and sentiment, not security impact, and do not survive a basic question about what improved.",
     "Four lenses answer that question: adoption (are people using the outputs), coverage (does it reach the work that matters), accuracy (which mistakes could hurt) and ROI (does useful work justify the full cost).",
@@ -117,37 +122,146 @@
     }
   ],
   "numbers": [
-    {"figure": "18 of 40 = 45%", "meaning": "hypothetical adoption fraction: people using outputs over intended people with relevant work", "t": "02:42"},
-    {"figure": "45 of 60 = 75%", "meaning": "hypothetical weekly coverage: distinct cases reached over eligible cases", "t": "06:51"},
-    {"figure": "8 of 10 = 80%", "meaning": "hypothetical recall: true positives found out of true positives present", "t": "08:25"},
-    {"figure": "8 of 12 = 67% (interval 39-86%)", "meaning": "hypothetical precision, with the slide's Wilson 95 percent interval", "t": "08:56"},
-    {"figure": "75, 56, 42, 24, 10 percent", "meaning": "probability that all of 1, 2, 3, 5 and 8 independent trials pass when each passes 75 percent of the time (pass^k illustration)", "t": "09:58"},
-    {"figure": "162 of 175 (92.6%)", "meaning": "runs with a correct final answer that still had an evaluator-detected deviation, in a 240-trial study", "t": "10:29"},
-    {"figure": "0.65 AUROC or less", "meaning": "performance of tested LLM judges at detecting false success on tau2-bench per the slide", "t": "13:00"},
-    {"figure": "0.83 and 0.95", "meaning": "AUROC of domain-trained detectors on tau2-bench and AppWorld (11,755 runs, 2026 preprint)", "t": "13:00"},
-    {"figure": "6 vs 10 minutes", "meaning": "hypothetical case closing time with and without the agent, giving 400 minutes saved over 100 cases", "t": "14:39"},
-    {"figure": "300%", "meaning": "hypothetical ROI: 100 dollar agent cost against 60 dollars per hour analyst time saved", "t": "15:41"},
-    {"figure": "21,730", "meaning": "runs in a cited study where higher reasoning effort lowered accuracy in most runs", "t": "13:32"},
-    {"figure": "11% to 81%, 57% to 80%", "meaning": "hijack success lifted by tailored attacks and by 25 attempts, attributed to NIST CAISI on the slide", "t": "16:11"},
-    {"figure": "10 minutes", "meaning": "window within which a recommended query must run to count as executed", "t": "06:20"},
-    {"figure": "80%", "meaning": "share of an agent summary that must be kept for the ticket to count as edited rather than ghosted", "t": "05:16"}
+    {
+      "figure": "18 of 40 = 45%",
+      "meaning": "hypothetical adoption fraction: people using outputs over intended people with relevant work",
+      "t": "02:42"
+    },
+    {
+      "figure": "45 of 60 = 75%",
+      "meaning": "hypothetical weekly coverage: distinct cases reached over eligible cases",
+      "t": "06:51"
+    },
+    {
+      "figure": "8 of 10 = 80%",
+      "meaning": "hypothetical recall: true positives found out of true positives present",
+      "t": "08:25"
+    },
+    {
+      "figure": "8 of 12 = 67% (interval 39-86%)",
+      "meaning": "hypothetical precision, with the slide's Wilson 95 percent interval",
+      "t": "08:56"
+    },
+    {
+      "figure": "75, 56, 42, 24, 10 percent",
+      "meaning": "probability that all of 1, 2, 3, 5 and 8 independent trials pass when each passes 75 percent of the time (pass^k illustration)",
+      "t": "09:58"
+    },
+    {
+      "figure": "162 of 175 (92.6%)",
+      "meaning": "runs with a correct final answer that still had an evaluator-detected deviation, in a 240-trial study",
+      "t": "10:29"
+    },
+    {
+      "figure": "0.65 AUROC or less",
+      "meaning": "performance of tested LLM judges at detecting false success on tau2-bench per the slide",
+      "t": "13:00"
+    },
+    {
+      "figure": "0.83 and 0.95",
+      "meaning": "AUROC of domain-trained detectors on tau2-bench and AppWorld (11,755 runs, 2026 preprint)",
+      "t": "13:00"
+    },
+    {
+      "figure": "6 vs 10 minutes",
+      "meaning": "hypothetical case closing time with and without the agent, giving 400 minutes saved over 100 cases",
+      "t": "14:39"
+    },
+    {
+      "figure": "300%",
+      "meaning": "hypothetical ROI: 100 dollar agent cost against 60 dollars per hour analyst time saved",
+      "t": "15:41"
+    },
+    {
+      "figure": "21,730",
+      "meaning": "runs in a cited study where higher reasoning effort lowered accuracy in most runs",
+      "t": "13:32"
+    },
+    {
+      "figure": "11% to 81%, 57% to 80%",
+      "meaning": "hijack success lifted by tailored attacks and by 25 attempts, attributed to NIST CAISI on the slide",
+      "t": "16:11"
+    },
+    {
+      "figure": "10 minutes",
+      "meaning": "window within which a recommended query must run to count as executed",
+      "t": "06:20"
+    },
+    {
+      "figure": "80%",
+      "meaning": "share of an agent summary that must be kept for the ticket to count as edited rather than ghosted",
+      "t": "05:16"
+    }
   ],
   "frameworks": [
-    {"name": "Four lenses plus a safety gate", "description": "Adoption (are people using the outputs), coverage (does it reach the work that matters), accuracy (which mistakes could hurt us), ROI (does useful work justify the full cost), with a safety and reliability gate across all four."},
-    {"name": "Five building blocks for measuring impact", "description": "Task (what work should improve), Trial (what did the agent attempt), Grader (how do we check its work), Transcript (what evidence did we capture), Outcome (what actually changed)."},
-    {"name": "Grader ladder", "description": "State checks (did the record, case or ticket change), code checks (tools called, arguments, order, policy rules), calibrated model judge (rubric per dimension, may answer unknown), expert review (blind to the agent's answer, adjudicate disagreements). Principle on the slide: test the checker with clean and deliberately faulted runs; models agreeing with models is not truth."},
-    {"name": "Safety gate", "description": "Authority (does a sensitive action need approval before it takes effect), adversarial (can untrusted alert data hijack the agent), failure and handoff (when a tool fails or evidence conflicts, does it stop and say so). Test before launch, after every model, prompt or tool change, and on a risk-based schedule; weight by impact."},
-    {"name": "Expand, fix or keep supervision", "description": "Expand when reviewed results and value support wider use, a tested scope and not the whole queue; fix when there is skipped work, recurring errors or avoidable effort; keep supervision when important evidence is missing. Decide per action class, not per agent."},
-    {"name": "Adoption capture methods", "description": "Downstream action binding (recommendation ID bound to the approved action), the text diff grafted versus ghosted, and execution of recommended artifacts."}
+    {
+      "name": "Four lenses plus a safety gate",
+      "description": "Adoption (are people using the outputs), coverage (does it reach the work that matters), accuracy (which mistakes could hurt us), ROI (does useful work justify the full cost), with a safety and reliability gate across all four."
+    },
+    {
+      "name": "Five building blocks for measuring impact",
+      "description": "Task (what work should improve), Trial (what did the agent attempt), Grader (how do we check its work), Transcript (what evidence did we capture), Outcome (what actually changed)."
+    },
+    {
+      "name": "Grader ladder",
+      "description": "State checks (did the record, case or ticket change), code checks (tools called, arguments, order, policy rules), calibrated model judge (rubric per dimension, may answer unknown), expert review (blind to the agent's answer, adjudicate disagreements). Principle on the slide: test the checker with clean and deliberately faulted runs; models agreeing with models is not truth."
+    },
+    {
+      "name": "Safety gate",
+      "description": "Authority (does a sensitive action need approval before it takes effect), adversarial (can untrusted alert data hijack the agent), failure and handoff (when a tool fails or evidence conflicts, does it stop and say so). Test before launch, after every model, prompt or tool change, and on a risk-based schedule; weight by impact."
+    },
+    {
+      "name": "Expand, fix or keep supervision",
+      "description": "Expand when reviewed results and value support wider use, a tested scope and not the whole queue; fix when there is skipped work, recurring errors or avoidable effort; keep supervision when important evidence is missing. Decide per action class, not per agent."
+    },
+    {
+      "name": "Adoption capture methods",
+      "description": "Downstream action binding (recommendation ID bound to the approved action), the text diff grafted versus ghosted, and execution of recommended artifacts."
+    }
   ],
   "artifacts": [
-    {"name": "tau-bench", "kind": "benchmark", "note": "Cited (Yao et al., 2024) for the pass^k reliability illustration on the accuracy slide.", "url": ""},
-    {"name": "tau2-bench", "kind": "benchmark", "note": "Source of the AUROC of 0.65 or less for LLM judges and 0.83 for domain-trained detectors.", "url": ""},
-    {"name": "AppWorld", "kind": "benchmark", "note": "Domain-trained detectors reached 0.95 AUROC in a 2026 preprint covering 11,755 runs.", "url": ""},
-    {"name": "ExCyTIn-Bench", "kind": "benchmark", "note": "Named on the slide as an outside capability test that does not establish a deployed workflow's performance.", "url": ""},
-    {"name": "CyberSOCEval", "kind": "benchmark", "note": "Named alongside ExCyTIn-Bench as a capability test only.", "url": ""},
-    {"name": "arXiv 2610.01833 (2026)", "kind": "paper", "note": "Cited in the slide's source line for the process-flags statistic.", "url": ""},
-    {"name": "NIST CAISI", "kind": "standard", "note": "Cited for hijack success rates under tailored and repeated attacks.", "url": ""}
+    {
+      "name": "tau-bench",
+      "kind": "benchmark",
+      "note": "Cited (Yao et al., 2024) for the pass^k reliability illustration on the accuracy slide.",
+      "url": ""
+    },
+    {
+      "name": "tau2-bench",
+      "kind": "benchmark",
+      "note": "Source of the AUROC of 0.65 or less for LLM judges and 0.83 for domain-trained detectors.",
+      "url": ""
+    },
+    {
+      "name": "AppWorld",
+      "kind": "benchmark",
+      "note": "Domain-trained detectors reached 0.95 AUROC in a 2026 preprint covering 11,755 runs.",
+      "url": ""
+    },
+    {
+      "name": "ExCyTIn-Bench",
+      "kind": "benchmark",
+      "note": "Named on the slide as an outside capability test that does not establish a deployed workflow's performance.",
+      "url": ""
+    },
+    {
+      "name": "CyberSOCEval",
+      "kind": "benchmark",
+      "note": "Named alongside ExCyTIn-Bench as a capability test only.",
+      "url": ""
+    },
+    {
+      "name": "arXiv 2610.01833 (2026)",
+      "kind": "paper",
+      "note": "Cited in the slide's source line for the process-flags statistic.",
+      "url": ""
+    },
+    {
+      "name": "NIST CAISI",
+      "kind": "standard",
+      "note": "Cited for hijack success rates under tailored and repeated attacks.",
+      "url": ""
+    }
   ],
   "slide_only": [
     "Slide 2 states five building blocks (Task, Trial, Grader, Transcript, Outcome) and that together the answers guide whether to expand, fix or keep supervision; the speaker did not say these aloud.",
@@ -162,11 +276,31 @@
   ],
   "demos": [],
   "quotes": [
-    {"text": "A thumbs up rating is just polite sentiment rating.", "speaker": "Shahanas Najeeb", "t": "03:44"},
-    {"text": "Looking at just the final output, we cannot determine the accuracy of the agent.", "speaker": "Shahanas Najeeb", "t": "11:00"},
-    {"text": "LLMs are like people pleasers.", "speaker": "Shahanas Najeeb", "t": "12:03"},
-    {"text": "Always review the cost per reviewed correct outcome and not the total cost by the total runs.", "speaker": "Shahanas Najeeb", "t": "15:41"},
-    {"text": "What if it decides to isolate a production domain without asking a human? Then this score drops to zero.", "speaker": "Shahanas Najeeb", "t": "16:11"}
+    {
+      "text": "A thumbs up rating is just polite sentiment rating.",
+      "speaker": "Shahanas Najeeb",
+      "t": "03:44"
+    },
+    {
+      "text": "Looking at just the final output, we cannot determine the accuracy of the agent.",
+      "speaker": "Shahanas Najeeb",
+      "t": "11:00"
+    },
+    {
+      "text": "LLMs are like people pleasers.",
+      "speaker": "Shahanas Najeeb",
+      "t": "12:03"
+    },
+    {
+      "text": "Always review the cost per reviewed correct outcome and not the total cost by the total runs.",
+      "speaker": "Shahanas Najeeb",
+      "t": "15:41"
+    },
+    {
+      "text": "What if it decides to isolate a production domain without asking a human? Then this score drops to zero.",
+      "speaker": "Shahanas Najeeb",
+      "t": "16:11"
+    }
   ],
   "offense": [
     "An agent could take an unsafe production action, such as isolating a production domain, without human approval; the speaker treats this as zeroing out all other metrics.",
@@ -207,19 +341,42 @@
     "Leo (from the louis.ai team, as transcribed) asked what is bothering her as she looks ahead 6 to 12 months of evals. Answer: the agents are all over the place with no single place to measure metrics, some teams using Salesforce Analytics and others using skills; she hopes for a unified platform to evaluate agents as a whole.",
     "An audience member asked whether professionals such as statisticians helped design the evaluations. Answer: the team did extensive research on how to measure accurately and arrived at the four lenses; once defined, getting the telemetry was not complicated and the metrics could be derived."
   ],
-  "tags": ["evals-benchmarks-metrics", "ai-soc-detection-response", "guardrails-runtime-controls", "org-adoption-culture"],
-  "key_frames": [
-    {"file": "t00160.jpg", "caption": "Adoption slide: the fraction framing (18 of 40) and the three capture methods, marked as a hypothetical example."},
-    {"file": "t00318.jpg", "caption": "Accuracy slide: missed issues versus precision, the pass^k bar chart, and the 92.6 percent process-flag finding with sources."},
-    {"file": "t00606.jpg", "caption": "Grader ladder and the AUROC figures showing LLM judges perform poorly at detecting false success."},
-    {"file": "t00745.jpg", "caption": "ROI formulas: capacity value, ROI percent and cost per reviewed correct outcome."},
-    {"file": "t00878.jpg", "caption": "Safety gate across all four pillars: authority, adversarial and failure handoff, with attack-success figures."}
+  "tags": [
+    "evals-benchmarks-metrics",
+    "ai-soc-detection-response",
+    "guardrails-runtime-controls",
+    "org-adoption-culture"
   ],
-  "signal": {"score": 3, "reason": "A measurement framework with formulas and a grader ladder; the worked numbers are labeled hypothetical and the cited studies are named without detail."},
+  "key_frames": [
+    {
+      "file": "t00160.jpg",
+      "caption": "Adoption slide: the fraction framing (18 of 40) and the three capture methods, marked as a hypothetical example."
+    },
+    {
+      "file": "t00318.jpg",
+      "caption": "Accuracy slide: missed issues versus precision, the pass^k bar chart, and the 92.6 percent process-flag finding with sources."
+    },
+    {
+      "file": "t00606.jpg",
+      "caption": "Grader ladder and the AUROC figures showing LLM judges perform poorly at detecting false success."
+    },
+    {
+      "file": "t00745.jpg",
+      "caption": "ROI formulas: capacity value, ROI percent and cost per reviewed correct outcome."
+    },
+    {
+      "file": "t00878.jpg",
+      "caption": "Safety gate across all four pillars: authority, adversarial and failure handoff, with attack-success figures."
+    }
+  ],
+  "signal": {
+    "score": 3,
+    "reason": "The talk presents a measurement framework with formulas and a grader ladder; the worked numbers are labeled hypothetical and the cited studies are named without detail."
+  },
   "caveats": [
     "Auto-captions garble some proper nouns; the Q&A questioner's affiliation was transcribed as 'louis.ai' and could not be confirmed.",
     "The speaker's spoken job title was 'senior system design engineer'; the slide says Senior Agentic Security Engineer, Salesforce, and the slide is used.",
-    "Frames for slides 09 and 10 of 11 were not captured, so any content on them is unknown; slide numbers 1 to 8 and 11 appear.",
+    "Slides 09 and 10 of 11 were not captured, so any content on them is unknown; slide numbers 1 to 8 and 11 appear.",
     "Spoken description of the 240-run study and the transcript's phrasing about pass^k differ slightly from the slide; the slide's 162 of 175 and 92.6 percent are used.",
     "The 21,730-run and NIST CAISI statistics appear only on slides, and timestamps for them are approximate (the slide was on screen near those times).",
     "Slide ROI percent: transcript says 100 dollars per hour for the agent, which the example treats as a flat 100 dollars of agent cost for the 100 cases."
